@@ -8,8 +8,8 @@ ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
 /*
- *  PHP Forms API library configuration 
- */ 
+ *  PHP Forms API library configuration
+ */
 
 define('FORMS_DEFAULT_PREFIX', '<div class="form-container">');
 define('FORMS_DEFAULT_SUFFIX', '</div>');
@@ -25,7 +25,7 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 
 
 class cs_form {
-  
+
   protected $form_id = 'cs_form';
   protected $form_token = '';
   protected $action = '';
@@ -41,23 +41,23 @@ class cs_form {
   protected $valid = TRUE;
   protected $submit = '';
   protected $error = '';
-  
+
   protected $fields = array();
-  
+
   public function __construct($options = array()) {
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
     if (empty($this->submit)) {
       $this->submit = "{$this->form_id}_submit";
-    } 
+    }
     $sid = session_id();
     if (!empty($sid)) {
       $this->form_token = sha1(mt_rand(0, 1000000));
-  		$_SESSION['form_token'][$this->form_token] = $_SERVER['REQUEST_TIME'];
-		}
+      $_SESSION['form_token'][$this->form_token] = $_SERVER['REQUEST_TIME'];
+    }
   }
-  
+
   // Warning: some messy logic in calling process->submit->values
   public function values() {
     if (!$this->processed) {
@@ -69,7 +69,7 @@ class cs_form {
     }
     return $output;
   }
-  
+
   public function reset() {
     foreach ($this->fields as $name => $field) {
       $field->reset();
@@ -80,11 +80,11 @@ class cs_form {
     $this->validated = FALSE;
     $this->submitted = FALSE;
   }
-  
+
   public function is_submitted() {
     return $this->submitted;
   }
-  
+
   public function process() {
     if (!$this->processed) {
       $request = ($this->method == 'post') ? $_POST : $_GET;
@@ -113,9 +113,9 @@ class cs_form {
       }
     }
   }
-  
-  public function valid() { 
-    if ($this->validated) { 
+
+  public function valid() {
+    if ($this->validated) {
       return $this->valid;
     }
     if (!isset($_REQUEST['form_id'])) {
@@ -142,7 +142,7 @@ class cs_form {
     $this->validated = TRUE;
     return $this->valid;
   }
-  
+
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
@@ -150,11 +150,11 @@ class cs_form {
     }
     $this->fields[$name] = $field;
   }
-  
+
   public function show_errors() {
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
   }
-  
+
   public function render() {
     $output = $this->prefix;
     if (!$this->valid()) {
@@ -178,15 +178,15 @@ class cs_form {
     $output .= "</form>\n";
     return $output . $this->suffix;
   }
-  
+
   public static function validate_required($value = NULL) {
     if (!empty($value)) {
       return TRUE;
     } else {
       return "<em>%t</em> is required";
     }
-  }  
-  
+  }
+
   public static function validate_max_length($value, $options) {
     if (strlen($value) > $options) {
       return "Maximum length of <em>%t</em> is {$options}";
@@ -202,7 +202,7 @@ class cs_form {
   public static function validate_exact_length($value, $options) {
     if (strlen($value) != $options) {
       return "<em>%t</em> must be {$options} characters long.";
-    } 
+    }
     return TRUE;
   }
   public static function validate_alpha($value) {
@@ -211,35 +211,35 @@ class cs_form {
     }
     return TRUE;
   }
-  
-	protected function validate_alpha_numeric($value) {
-		if (!preg_match("/^([a-z0-9])+$/i", $value)) {
-		  return "<em>%t</em> must only contain alpha numeric characters.";
-	  } 
-	  return TRUE;
-	}
-	
-	protected function validate_alpha_dash($value) {
-		if (!preg_match("/^([-a-z0-9_-])+$/i", $value)) {
-		  return "<em>%t</em> must contain only alpha numeric characters, underscore, or dashes";
-	  }
-	  return TRUE;
-	}
-	
-	protected function validate_numeric($value) {
-		if (!is_numeric($value)) {
-		  return "<em>%t</em> must be numeric.";
-	  } 
-	  return TRUE;
-	}
-	
-	protected function validate_integer($value) {
-		if (!preg_match( '/^[\-+]?[0-9]+$/', $value)) {
-		  return "<em>%t</em> must be an integer.";
-	  }
-	  return TRUE;
-	}
-	
+
+  protected function validate_alpha_numeric($value) {
+    if (!preg_match("/^([a-z0-9])+$/i", $value)) {
+      return "<em>%t</em> must only contain alpha numeric characters.";
+    }
+    return TRUE;
+  }
+
+  protected function validate_alpha_dash($value) {
+    if (!preg_match("/^([-a-z0-9_-])+$/i", $value)) {
+      return "<em>%t</em> must contain only alpha numeric characters, underscore, or dashes";
+    }
+    return TRUE;
+  }
+
+  protected function validate_numeric($value) {
+    if (!is_numeric($value)) {
+      return "<em>%t</em> must be numeric.";
+    }
+    return TRUE;
+  }
+
+  protected function validate_integer($value) {
+    if (!preg_match( '/^[\-+]?[0-9]+$/', $value)) {
+      return "<em>%t</em> must be an integer.";
+    }
+    return TRUE;
+  }
+
   public static function validate_match($value, $options) {
     $other = cs_form::scan_array($options, $_REQUEST);
     if ($value != $other) {
@@ -247,7 +247,7 @@ class cs_form {
     }
     return TRUE;
   }
-  
+
   public static function validate_file_extension($value, $options) {
     $options = explode(',', $options);
     $ext = substr(strrchr($value['filepath'], '.'), 1);
@@ -269,13 +269,13 @@ class cs_form {
     }
     return TRUE;
   }
-  
+
   private static function format_bytes($size) {
     $units = array(' B', ' KB', ' MB', ' GB', ' TB');
     for ($i = 0; $size >= 1024 && $i < 4; $i++) $size /= 1024;
     return round($size, 2).$units[$i];
   }
-  
+
   public static function validate_email($email) {
     if (empty($email)) return TRUE;
     $check_dns = FORMS_VALIDATE_EMAIL_DNS;
@@ -307,14 +307,14 @@ class cs_form {
       }
       if (in_array($domain, $blocked_domains)) {
         return "<em>%t</em> is not a valid email. Domain name is in list of disallowed domains.";
-      }  
+      }
       if ($check_dns && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {
         return "<em>%t</em> is not a valid email. Domain name not found in DNS.";
       }
     }
     return TRUE;
   }
-  
+
   public static function process_trim($text) {
     return trim($text);
   }
@@ -324,18 +324,18 @@ class cs_form {
   public static function process_rtrim($text) {
     return rtrim($text);
   }
-  
+
   private static function _validate_utf8($text) {
     if (strlen($text) == 0) {
       return TRUE;
     }
     return (preg_match('/^./us', $text) == 1);
   }
-  
+
   public static function process_xss_weak($string) {
     return filter_xss($string, array('a|abbr|acronym|address|b|bdo|big|blockquote|br|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|h1|h2|h3|h4|h5|h6|hr|i|img|ins|kbd|li|ol|p|pre|q|samp|small|span|strong|sub|sup|table|tbody|td|tfoot|th|thead|tr|tt|ul|var'));
   }
-  
+
   public static function process_xss($string, $allowed_tags = FORMS_XSS_ALLOWED_TAGS) {
     // Only operate on valid UTF-8 strings. This is necessary to prevent cross
     // site scripting issues on Internet Explorer 6.
@@ -368,7 +368,7 @@ class cs_form {
       >                 # just a >
       )%x', 'cs_form::_filter_xss_split', $string);
   }
-  
+
   private static function _filter_xss_split($m, $store = FALSE) {
     static $allowed_html;
 
@@ -419,12 +419,12 @@ class cs_form {
 
     return "<$elem$attr2$xhtml_slash>";
   }
-  
+
   public static function process_plain($text) {
     // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
   }
-  
+
   public static function attributes($attributes) {
     if (is_array($attributes)) {
       $t = '';
@@ -434,7 +434,7 @@ class cs_form {
       return $t;
     }
   }
-  
+
   private static function scan_array($string, $array) {
     list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
     if ( $key && $rest ) {
@@ -445,7 +445,7 @@ class cs_form {
         return FALSE;
     }
   }
-  
+
 }
 
 class cs_field {
@@ -466,7 +466,7 @@ class cs_field {
   protected $weight = 0;
   protected $value = '';
   protected $error = '';
-  
+
   public function __construct($options = array()) {
     foreach ($options as $name => $value) {
       $this->$name = $value;
@@ -485,11 +485,11 @@ class cs_field {
   public function get_weight() {
     return $this->weight;
   }
-  
+
   public function process($value) {
     $this->value = $value;
   }
-  
+
   public function preprocess($process_type = "preprocess") {
     foreach ($this->$process_type as $processor) {
       $processor = "process_{$processor}";
@@ -503,7 +503,7 @@ class cs_field {
   public function postprocess() {
     $this->preprocess("postprocess");
   }
-  
+
   public function valid() {
     foreach ($this->validate as $validator) {
       $matches = array();
@@ -522,42 +522,109 @@ class cs_field {
     }
     return TRUE;
   }
-  
+
   public function show_errors() {
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
+  }
+
+
+  public function get_attributes($reserved_arr = array('type','name','id','value')){
+    return $this->get_attributes_string($this->attributes, $reserved_arr);
+  }
+
+  public function get_attributes_string( $attributes_arr, $reserved_arr = array('type','name','id','value')){
+    $attributes = '';
+    foreach ($reserved_arr as $key => $reserved) {
+      if(isset($attributes_arr[$reserved])) unset($attributes_arr[$reserved]);
+    }
+    foreach ($attributes_arr as $key => $value) {
+      if(!is_string($value)) continue;
+      $value = cs_form::process_plain($value);
+      $attributes .= " {$key}=\"{$value}\"";
+    }
+    $attributes = trim($attributes);
+    return empty($attributes) ? '' : ' ' . $attributes;
+  }
+
+  public function getPrefix(){
+    if (!empty($this->error)) {
+      if(preg_match("/class=\".*?\"/i", $this->prefix)){
+        return preg_replace("/class=\"(.*?)\"/i", "class=\"\\1 error\"", $this->prefix);
+      }
+    }
+    return $this->suffix;
+  }
+  public function getSuffix(){
+    return $this->suffix;
   }
 
 }
 
 class cs_submit extends cs_field {
-  
+
   public function render($name) {
     if (empty($this->value)) {
       $this->value = 'Submit';
     }
+
+    $attributes = $this->get_attributes(array('type','name','id','value'));
     $output = $this->prefix;
-    $output .= "<input type=\"submit\" id=\"{$name}\" name=\"{$name}\" value=\"{$this->value}\" />\n";
+    $output .= "<input type=\"submit\" id=\"{$name}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
     return $output . $this->suffix;
+  }
+
+}
+
+class cs_reset extends cs_field {
+
+  public function render($name) {
+    if (empty($this->value)) {
+      $this->value = 'Reset';
+    }
+
+    $attributes = $this->get_attributes(array('type','name','id','value'));
+    $output = $this->prefix;
+    $output .= "<input type=\"reset\" id=\"{$name}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
+    return $output . $this->suffix;
+  }
+
+}
+
+class cs_markup extends cs_field {
+
+  public function render($name) {
+    $output = $this->prefix;
+    $output .= $this->value;
+    return $output . $this->suffix;
+  }
+
+  public function valid() {
+    return TRUE;
   }
 }
 
 class cs_textfield extends cs_field {
-  
+
   public function render($name) {
-    $output = $this->prefix;
-    $this->attributes['class'] = 'textfield';
+    $output = $this->getPrefix();
+    $this->attributes['class'] = (isset($this->attributes['class']) ? $this->attributes['class'].' ':'').'textfield';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
+
+    $attributes = $this->get_attributes(array('type','name','id','value'));
+
     $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    $output .= "<label for=\"{$name}\">{$this->title}{$required}</label>\n";
-    $output .= "<input type=\"text\" id=\"{$name}\" name=\"{$name}\" value=\"{$this->value}\" size=\"{$this->size}\" class=\"{$this->attributes['class']}\" />\n";
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$name}\">{$this->title}{$required}</label>\n";
+    }
+    $output .= "<input type=\"text\" id=\"{$name}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
-    return $output . $this->suffix;
+    return $output . $this->getSuffix();
   }
-  
+
 }
 
 class cs_textarea extends cs_field {
@@ -565,25 +632,45 @@ class cs_textarea extends cs_field {
   protected $rows = 5;
 
   public function render($name) {
-    $output = $this->prefix;
-    $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
-    $output .= "<textarea id=\"{$name}\" name=\"{$name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\">\n";
+    $output = $this->getPrefix();
+
+    $this->attributes['class'] = (isset($this->attributes['class']) ? $this->attributes['class'].' ':'').'textarea';
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+
+    $attributes = $this->get_attributes(array('name','id','value','rows','cols'));
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
+    }
+    $output .= "<textarea id=\"{$name}\" name=\"{$name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n";
     $output .= $this->value;
     $output .= "</textarea>";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
-    return $output . $this->suffix;
+    return $output . $this->getSuffix();
   }
 }
 
 
 class cs_password extends cs_field {
   public function render($name) {
-    $output = $this->prefix;
-    $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
-    $output .= "<input type=\"password\" id=\"{$name}\" name=\"{$name}\" value=\"\" size=\"{$this->size}\" />\n";
-    return $output . $this->suffix;
+    $output = $this->getPrefix();
+
+    $this->attributes['class'] = (isset($this->attributes['class']) ? $this->attributes['class'].' ':'').'password';
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    $attributes = $this->get_attributes(array('type','name','id','value'));
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
+    }
+    $output .= "<input type=\"password\" id=\"{$name}\" name=\"{$name}\" value=\"\"{$attributes} />\n";
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->getSuffix();
   }
 }
 
@@ -592,8 +679,17 @@ class cs_select extends cs_field {
   protected $multiple = FALSE;
 
   public function render($name) {
-    $output = $this->prefix;
-    $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
+    $output = $this->getPrefix();
+
+    $this->attributes['class'] = (isset($this->attributes['class']) ? $this->attributes['class'].' ':'').'password';
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    $attributes = $this->get_attributes(array('type','name','id','value'));
+
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
+    }
     $extra = ($this->multiple) ? ' multiple' : '';
     $field_name = ($this->multiple) ? "{$name}[]" : $name;
     $output .= "<select name=\"{$field_name}\" id=\"{$name}\"{$extra}>\n";
@@ -601,37 +697,69 @@ class cs_select extends cs_field {
       $output .= "<option value=\"{$key}\">{$value}</option>\n";
     }
     $output .= "</select>\n";
-    return $output . $this->suffix;
-  } 
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->getSuffix();
+  }
 }
 
 class cs_radios extends cs_field {
   public function render($name) {
-    $output = $this->prefix;
-    $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
-    foreach ($this->options as $key => $value) {
-      $checked = ($this->value == $key) ? ' checked=\"checked\"' : '';
-      $output .= "<label><input type=\"radio\" name=\"{$name}\" value=\"{$key}\"{$checked} />{$value}</label>\n";
+    $output = $this->getPrefix();
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
     }
-    return $output . $this->suffix;
+    foreach ($this->options as $key => $value) {
+      $attributes = $this->get_attributes(array('type','name','id','value'));
+      if(is_array($value) && isset($value['attributes'])){
+        $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
+      }
+      if(is_array($value)){
+        $value = $value['value'];
+      }
+
+      $checked = ($this->value == $key) ? ' checked=\"checked\"' : '';
+      $output .= "<label><input type=\"radio\" name=\"{$name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+    }
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->getSuffix();
   }
 }
 
 class cs_checkboxes extends cs_field {
   public function render($name) {
-    $output = $this->prefix;
+    if(!is_array($this->default_value)) {
+      $this->default_value = array($this->default_value);
+    }
+
+    $output = $this->getPrefix();
     if (!empty($this->title)) {
       $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
     }
     foreach ($this->options as $key => $value) {
+
+      $attributes = $this->get_attributes(array('type','name','id','value'));
+      if(is_array($value) && isset($value['attributes'])){
+        $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
+      }
+      if(is_array($value)){
+        $value = $value['value'];
+      }
+
       $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked=\"checked\"' : '';
-      $output .= "<label><input type=\"checkbox\" name=\"{$name}[]\" value=\"{$key}\"{$checked} />{$value}</label>\n";
+      $output .= "<label><input type=\"checkbox\" name=\"{$name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
-    return $output . $this->suffix;
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->getSuffix();
   }
 }
 
-class cs_file extends  cs_field {
+class cs_file extends cs_field {
   protected $uploaded = FALSE;
 
   public function __construct($options = array()) {
@@ -642,15 +770,25 @@ class cs_file extends  cs_field {
   }
 
   public function render($name) {
-    $output = $this->prefix;
+    $output = $this->getPrefix();
+
+    $this->attributes['class'] = (isset($this->attributes['class']) ? $this->attributes['class'].' ':'').'file';
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    $attributes = $this->get_attributes(array('type','name','id','size'));
+
     if (!empty($this->title)) {
       $output .= "<label for=\"{$name}\">{$this->title}</label>\n";
     }
-    $output .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$name}\" />";
+    $output .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$name}\"{$attributes}/>";
     $output .= "<input type=\"file\" name=\"{$name}\" size=\"{$this->size}\" />";
-    return $output . $this->suffix;
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->getSuffix();
   }
-  
+
   public function process($value, $name) {
     $this->value = array(
       'filepath' => $this->destination .'/'. basename($_FILES[$name]['name']),
@@ -663,8 +801,8 @@ class cs_file extends  cs_field {
       $this->uploaded = TRUE;
     }
   }
-  
-  public function valid() {  
+
+  public function valid() {
     if ($this->uploaded) {
       return TRUE;
     }
@@ -674,12 +812,12 @@ class cs_file extends  cs_field {
 
 
 class cs_fieldset extends cs_field {
-  
+
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
-  
+
   protected $fields = array();
-  
+
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
@@ -687,7 +825,7 @@ class cs_fieldset extends cs_field {
     }
     $this->fields[$name] = $field;
   }
-  
+
   public function values() {
     $output = array();
     foreach ($fields as $name => $field) {
@@ -695,10 +833,10 @@ class cs_fieldset extends cs_field {
     }
     return $output;
   }
-  
+
   public function render($parent_name) {
     $output = $this->prefix;
-    $this->attributes['class'] = 'fieldset';
+    $this->attributes['class'] = (isset($this->attributes['class']) ? $this->attributes['class'].' ':'').'fieldset';
     if ($this->collapsible) {
       $this->attributes['class'] .= ' collapsible';
       if ($this->collapsed) {
@@ -707,13 +845,18 @@ class cs_fieldset extends cs_field {
         $this->attributes['class'] .= ' expanded';
       }
     }
-    $output .= "<fieldset class=\"{$this->attributes['class']}\">\n<legend>{$this->title}</legend>\n<div class=\"fieldset-inner\">\n";
+    $attributes = $this->get_attributes(array('type','name','id','value'));
+    $output .= "<fieldset{$attributes}>\n";
+    if (!empty($this->title)) {
+      $output .= "<legend>{$this->title}</legend>\n";
+    }
+    $output .= "<div class=\"fieldset-inner\">\n";
     foreach ($this->fields as $name => $field) {
       $output .= $field->render("{$parent_name}[{$name}]");
     }
     return $output ."</div></fieldset>\n". $this->suffix;
   }
-  
+
   public function preprocess() {
     foreach ($this->fields as $field) {
       $field->preprocess();
@@ -724,7 +867,7 @@ class cs_fieldset extends cs_field {
       $this->fields[$name]->process($value);
     }
   }
-  
+
   public function valid() {
     $valid = TRUE;
     foreach ($this->fields as $field) {
@@ -741,12 +884,10 @@ class cs_fieldset extends cs_field {
     }
     return $output;
   }
-  
+
   public function reset() {
     foreach ($this->fields as $field) {
       $field->reset();
     }
-  } 
+  }
 }
-
-
