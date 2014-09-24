@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
@@ -22,19 +22,28 @@ $form->add_field('message', array(
   'postprocess' => array('xss'),
   'title' => 'Your message',
 ));
+$form->add_field('hidden1', array(
+  'type' => 'hidden',
+  'default_value' => 'aaaa',
+));
+$form->add_field('markup1', array(
+  'type' => 'markup',
+  'value' => 'aaaa',
+));
 $form->add_field('submit', array(
   'type' => 'submit',
+  'value' => 'Send',
 ));
 
 // Submit function to call when the form is submitted and passes validation.
-// This is where you would send the email (using PHP mail function) 
+// This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
 function contact_submit(&$form) {
   $form_values = $form->values();
   print_r($form_values);
   // Reset the form if you want it to display again.
   // $form->reset();
-} 
+}
 
 
 ?><!DOCTYPE html>
