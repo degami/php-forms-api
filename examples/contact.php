@@ -29,6 +29,7 @@ $form->add_field('hidden1', array(
 $form->add_field('markup1', array(
   'type' => 'markup',
   'value' => 'aaaa',
+  'weight' => -10,
 ));
 $form->add_field('submit', array(
   'type' => 'submit',
