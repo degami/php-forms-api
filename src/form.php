@@ -42,6 +42,7 @@ class cs_form {
   protected $submit = '';
   protected $error = '';
 
+  protected $insert_field_order = array();
   protected $fields = array();
 
   public function __construct($options = array()) {
@@ -150,6 +151,7 @@ class cs_form {
       $field = new $field_type($field);
     }
     $this->fields[$name] = $field;
+    $this->insert_field_order[] = $name;
   }
 
   public function show_errors() {
@@ -171,7 +173,15 @@ class cs_form {
       $attributes .= " {$key}=\"{$value}\"";
     }
 
-    uasort($this->fields, 'cs_form::order_by_weight');
+    // uasort($this->fields, 'cs_form::order_by_weight');
+
+    $insertorder = array_flip($this->insert_field_order);
+    $weights = array();
+    foreach ($this->fields as $key => $elem) {
+      $weights[$key]  = $elem->get_weight();
+      $order[$key] = $insertorder[$key];
+    }
+    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->fields);
 
     $output .= "<form action=\"{$this->action}\" method=\"{$this->method}\"{$attributes}>\n";
     foreach ($this->fields as $name => $field) {
@@ -457,7 +467,6 @@ class cs_form {
       }
       return ($a->get_weight() < $b->get_weight()) ? -1 : 1;
   }
-
 }
 
 class cs_field {
@@ -913,6 +922,7 @@ class cs_fieldset extends cs_field {
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
 
+  protected $insert_field_order = array();
   protected $fields = array();
 
   public function add_field($name, $field) {
@@ -921,6 +931,7 @@ class cs_fieldset extends cs_field {
       $field = new $field_type($field);
     }
     $this->fields[$name] = $field;
+    $this->insert_field_order[] = $name;
   }
 
   public function values() {
@@ -949,7 +960,14 @@ class cs_fieldset extends cs_field {
       $output .= "<legend>{$this->title}</legend>\n";
     }
 
-    uasort($this->fields, 'cs_form::order_by_weight');
+    // uasort($this->fields, 'cs_form::order_by_weight');
+    $insertorder = array_flip($this->insert_field_order);
+    $weights = array();
+    foreach ($this->fields as $key => $elem) {
+      $weights[$key]  = $elem->get_weight();
+      $order[$key] = $insertorder[$key];
+    }
+    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->fields);
 
     $output .= "<div class=\"fieldset-inner\">\n";
     foreach ($this->fields as $name => $field) {
