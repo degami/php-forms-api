@@ -171,7 +171,7 @@ class cs_form {
       $attributes .= " {$key}=\"{$value}\"";
     }
 
-    usort($this->fields, 'cs_form::order_by_weight');
+    uasort($this->fields, 'cs_form::order_by_weight');
 
     $output .= "<form action=\"{$this->action}\" method=\"{$this->method}\"{$attributes}>\n";
     foreach ($this->fields as $name => $field) {
@@ -949,7 +949,7 @@ class cs_fieldset extends cs_field {
       $output .= "<legend>{$this->title}</legend>\n";
     }
 
-    usort($this->fields, 'cs_form::order_by_weight');
+    uasort($this->fields, 'cs_form::order_by_weight');
 
     $output .= "<div class=\"fieldset-inner\">\n";
     foreach ($this->fields as $name => $field) {
