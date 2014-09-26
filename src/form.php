@@ -154,6 +154,14 @@ class cs_form {
     $this->insert_field_order[] = $name;
   }
 
+  public function get_fields(){
+    return $this->fields;
+  }
+
+  public function get_field($field_name){
+    return isset($this->fields[$field_name]) ? $this->fields[$field_name] : NULL;
+  }
+
   public function show_errors() {
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
   }
@@ -462,8 +470,7 @@ class cs_form {
 
   public static function order_by_weight($a, $b){
       if ($a->get_weight() == $b->get_weight()) {
-          // return 0;
-        return 1;
+        return 0;
       }
       return ($a->get_weight() < $b->get_weight()) ? -1 : 1;
   }
@@ -917,13 +924,18 @@ class cs_file extends cs_field {
 }
 
 
-class cs_fieldset extends cs_field {
-
-  protected $collapsible = FALSE;
-  protected $collapsed = FALSE;
+class cs_fields_container extends cs_field {
 
   protected $insert_field_order = array();
   protected $fields = array();
+
+  public function get_fields(){
+    return $this->fields;
+  }
+
+  public function get_field($field_name){
+    return isset($this->fields[$field_name]) ? $this->fields[$field_name] : NULL;
+  }
 
   public function add_field($name, $field) {
     if (!is_object($field)) {
@@ -936,44 +948,10 @@ class cs_fieldset extends cs_field {
 
   public function values() {
     $output = array();
-    foreach ($fields as $name => $field) {
+    foreach ($this->fields as $name => $field) {
       $output[$name] = $field->values();
     }
     return $output;
-  }
-
-  public function render($parent_name) {
-    $id = !empty($this->id) ? $this->id : $parent_name;
-    $output = $this->prefix;
-    $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
-    if ($this->collapsible) {
-      $this->attributes['class'] .= ' collapsible';
-      if ($this->collapsed) {
-        $this->attributes['class'] .= ' collapsed';
-      } else {
-        $this->attributes['class'] .= ' expanded';
-      }
-    }
-    $attributes = $this->get_attributes();
-    $output .= "<fieldset id=\"{$id}\"{$attributes}>\n";
-    if (!empty($this->title)) {
-      $output .= "<legend>{$this->title}</legend>\n";
-    }
-
-    // uasort($this->fields, 'cs_form::order_by_weight');
-    $insertorder = array_flip($this->insert_field_order);
-    $weights = array();
-    foreach ($this->fields as $key => $elem) {
-      $weights[$key]  = $elem->get_weight();
-      $order[$key] = $insertorder[$key];
-    }
-    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->fields);
-
-    $output .= "<div class=\"fieldset-inner\">\n";
-    foreach ($this->fields as $name => $field) {
-      $output .= $field->render("{$parent_name}[{$name}]");
-    }
-    return $output ."</div></fieldset>\n". $this->suffix;
   }
 
   public function preprocess() {
@@ -1009,4 +987,46 @@ class cs_fieldset extends cs_field {
       $field->reset();
     }
   }
+
+}
+
+class cs_fieldset extends cs_fields_container {
+
+  protected $collapsible = FALSE;
+  protected $collapsed = FALSE;
+
+  public function render($parent_name) {
+    $id = !empty($this->id) ? $this->id : $parent_name;
+    $output = $this->prefix;
+    $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if ($this->collapsible) {
+      $this->attributes['class'] .= ' collapsible';
+      if ($this->collapsed) {
+        $this->attributes['class'] .= ' collapsed';
+      } else {
+        $this->attributes['class'] .= ' expanded';
+      }
+    }
+    $attributes = $this->get_attributes();
+    $output .= "<fieldset id=\"{$id}\"{$attributes}>\n";
+    if (!empty($this->title)) {
+      $output .= "<legend>{$this->title}</legend>\n";
+    }
+
+    // uasort($this->fields, 'cs_form::order_by_weight');
+    $insertorder = array_flip($this->insert_field_order);
+    $weights = array();
+    foreach ($this->fields as $key => $elem) {
+      $weights[$key]  = $elem->get_weight();
+      $order[$key] = $insertorder[$key];
+    }
+    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->fields);
+
+    $output .= "<div class=\"fieldset-inner\">\n";
+    foreach ($this->fields as $name => $field) {
+      $output .= $field->render("{$parent_name}[{$name}]");
+    }
+    return $output ."</div></fieldset>\n". $this->suffix;
+  }
+
 }

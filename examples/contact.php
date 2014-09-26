@@ -36,6 +36,11 @@ $fieldset->add_field('message', array(
     'style' => 'width: 100%',
    ),
 ));
+$fieldset->add_field('checkboxes', array(
+  'type' => 'checkboxes',
+  'options' => array(0=>'zero',1=>'one',2=>'two'),
+  'default_value' => 1,
+));
 $fieldset->add_field('markup1', array(
   'type' => 'markup',
   'value' => 'aaaa',
