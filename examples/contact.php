@@ -6,30 +6,45 @@ require '../src/form.php';
 
 // Generate a simple contact form
 $form = new cs_form(array('form_id' => 'contact'));
-$form->add_field('name', array(
+$fieldset = new cs_fieldset(array('attributes'=>array(
+  'style' => 'width: 400px',
+)));
+$fieldset->add_field('name', array(
   'type' => 'textfield',
   'validate' => array('required'),
   'preprocess' => array('trim'),
   'title' => 'Your name',
+  'attributes' => array(
+    'style' => 'width: 100%',
+   ),
 ));
-$form->add_field('email', array(
+$fieldset->add_field('email', array(
   'type' => 'textfield',
   'validate' => array('required', 'email'),
   'title' => 'Your email address',
+  'attributes' => array(
+    'style' => 'width: 100%',
+   ),
 ));
-$form->add_field('message', array(
+$fieldset->add_field('message', array(
   'type' => 'textarea',
   'postprocess' => array('xss'),
   'title' => 'Your message',
+  'rows' => 10,
+  'attributes' => array(
+    'placeholder' => 'Type your message',
+    'style' => 'width: 100%',
+   ),
 ));
-$form->add_field('hidden1', array(
-  'type' => 'hidden',
-  'default_value' => 'aaaa',
-));
-$form->add_field('markup1', array(
+$fieldset->add_field('markup1', array(
   'type' => 'markup',
   'value' => 'aaaa',
   'weight' => -10,
+));
+$form->add_field('fieldset', $fieldset);
+$form->add_field('hidden1', array(
+  'type' => 'hidden',
+  'default_value' => 'aaaa',
 ));
 $form->add_field('submit', array(
   'type' => 'submit',

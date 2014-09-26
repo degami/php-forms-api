@@ -119,7 +119,8 @@ class cs_form {
       return $this->valid;
     }
     if (!isset($_REQUEST['form_id'])) {
-      $this->valid = FALSE;
+      return NULL;
+      //$this->valid = FALSE;
     } else if ($_REQUEST['form_id'] == $this->form_id) {
       $sid = session_id();
       if (!empty($sid)) {
@@ -157,7 +158,7 @@ class cs_form {
 
   public function render() {
     $output = $this->prefix;
-    if (!$this->valid()) {
+    if ( $this->valid() === FALSE) {
       $output .= "<div class=\"error\"><ul>";
       $output .= $this->show_errors();
       foreach ($this->fields as $field) {
