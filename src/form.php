@@ -973,7 +973,8 @@ class cs_fields_container extends cs_field {
     //   $this->get_field($name)->process($value, $name);
     // }
     foreach ($this->get_fields() as $name => $field) {
-      if(isset($values[$name])){
+      if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
+      else if(!empty($values[$name])){
         $this->get_field($name)->process($values[$name], $name);
       }
     }
