@@ -919,8 +919,9 @@ class cs_file extends cs_field {
       'mimetype' => $_FILES[$name]['type'],
     );
     if ($this->valid()) {
-      move_uploaded_file($_FILES[$name]['tmp_name'], $this->value['filepath']);
-      $this->uploaded = TRUE;
+      if( @move_uploaded_file($_FILES[$name]['tmp_name'], $this->value['filepath']) == TRUE ){
+        $this->uploaded = TRUE;
+      }
     }
   }
 
