@@ -5,7 +5,10 @@ session_start();
 require '../src/form.php';
 
 // Generate a simple contact form
-$form = new cs_form(array('form_id' => 'contact'));
+$form = new cs_form(array(
+  'form_id' => 'contact',
+  'attributes'=>array('enctype'=>'multipart/form-data')
+));
 $fieldset = new cs_fieldset(array('attributes'=>array(
   'style' => 'width: 400px',
 )));
@@ -41,11 +44,16 @@ $fieldset->add_field('checkboxes', array(
   'options' => array(0=>'zero',1=>'one',2=>'two'),
   'default_value' => 1,
 ));
+$fieldset->add_field('file', array(
+  'type' => 'file',
+  'destination' => dirname(__FILE__),
+));
 $fieldset->add_field('markup1', array(
   'type' => 'markup',
   'value' => 'aaaa',
   'weight' => -10,
 ));
+
 $form->add_field('fieldset', $fieldset);
 $form->add_field('hidden1', array(
   'type' => 'hidden',

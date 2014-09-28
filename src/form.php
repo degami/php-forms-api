@@ -65,14 +65,14 @@ class cs_form {
       $this->process();
     }
     $output = array();
-    foreach ($this->fields as $name => $field) {
+    foreach ($this->get_fields() as $name => $field) {
       $output[$name] = $field->values();
     }
     return $output;
   }
 
   public function reset() {
-    foreach ($this->fields as $name => $field) {
+    foreach ($this->get_fields() as $name => $field) {
       $field->reset();
       unset($_POST[$name]);
     }
@@ -90,16 +90,24 @@ class cs_form {
     if (!$this->processed) {
       $request = ($this->method == 'post') ? $_POST : $_GET;
       if (isset($request['form_id']) && $request['form_id'] == $this->form_id) {
-        foreach ($request as $name => $value) {
-          if (isset($this->fields[$name])) {
-            $this->fields[$name]->process($value, $name);
+        // foreach ($request as $name => $value) {
+        //   if ( $this->get_field($name) !== NULL ) {
+        //     $this->get_field($name)->process($value, $name);
+        //   }
+        // }
+
+        foreach ($this->get_fields() as $name => $field) {
+          if( $field instanceof cs_fields_container ) $this->get_field($name)->process($request);
+          else if ( !empty($request[$name]) ) {
+            $this->get_field($name)->process($request[$name], $name);
           }
         }
+
       }
       $this->processed = TRUE;
     }
     if (!$this->preprocessors) {
-      foreach ($this->fields as $name => $field) {
+      foreach ($this->get_fields() as $name => $field) {
         $field->preprocess();
       }
     }
@@ -107,7 +115,7 @@ class cs_form {
       $this->submitted = TRUE;
       $submit_function = $this->submit;
       if (function_exists($submit_function)) {
-        foreach ($this->fields as $name => $field) {
+        foreach ($this->get_fields() as $name => $field) {
           $field->postprocess();
         }
         $submit_function($this, ($this->method == 'post') ? $_POST : $_GET);
@@ -135,7 +143,7 @@ class cs_form {
           }
         }
       }
-      foreach ($this->fields as $field) {
+      foreach ($this->get_fields() as $field) {
         if (!$field->valid()) {
           $this->valid = FALSE;
         }
@@ -154,7 +162,7 @@ class cs_form {
     $this->insert_field_order[] = $name;
   }
 
-  public function get_fields(){
+  public function &get_fields(){
     return $this->fields;
   }
 
@@ -171,7 +179,7 @@ class cs_form {
     if ( $this->valid() === FALSE) {
       $output .= "<div class=\"error\"><ul>";
       $output .= $this->show_errors();
-      foreach ($this->fields as $field) {
+      foreach ($this->get_fields() as $field) {
         $output .= $field->show_errors();
       }
       $output .= "</div>";
@@ -185,14 +193,14 @@ class cs_form {
 
     $insertorder = array_flip($this->insert_field_order);
     $weights = array();
-    foreach ($this->fields as $key => $elem) {
+    foreach ($this->get_fields() as $key => $elem) {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->fields);
+    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
 
     $output .= "<form action=\"{$this->action}\" method=\"{$this->method}\"{$attributes}>\n";
-    foreach ($this->fields as $name => $field) {
+    foreach ($this->get_fields() as $name => $field) {
       $output .= $field->render($name);
     }
     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
@@ -826,7 +834,7 @@ class cs_radios extends cs_field {
         $value = $value['value'];
       }
 
-      $checked = ($this->value == $key) ? ' checked=\"checked\"' : '';
+      $checked = ($this->value == $key) ? ' checked="checked"' : '';
       $output .= "<label><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
     if (!empty($this->description)) {
@@ -860,7 +868,7 @@ class cs_checkboxes extends cs_field {
         $value = $value['value'];
       }
 
-      $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked=\"checked\"' : '';
+      $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked="checked"' : '';
       $output .= "<label><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
     if (!empty($this->description)) {
@@ -872,6 +880,7 @@ class cs_checkboxes extends cs_field {
 
 class cs_file extends cs_field {
   protected $uploaded = FALSE;
+  protected $destination;
 
   public function __construct($options = array()) {
     parent::__construct($options);
@@ -894,8 +903,8 @@ class cs_file extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
     }
-    $output .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$name}\"{$attributes}/>";
-    $output .= "<input type=\"file\" id=\"{$id}\" name=\"{$name}\" size=\"{$this->size}\" />";
+    $output .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$name}\" />";
+    $output .= "<input type=\"file\" id=\"{$id}\" name=\"{$name}\" size=\"{$this->size}\"{$attributes} />";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -929,7 +938,7 @@ class cs_fields_container extends cs_field {
   protected $insert_field_order = array();
   protected $fields = array();
 
-  public function get_fields(){
+  public function &get_fields(){
     return $this->fields;
   }
 
@@ -948,26 +957,31 @@ class cs_fields_container extends cs_field {
 
   public function values() {
     $output = array();
-    foreach ($this->fields as $name => $field) {
+    foreach ($this->get_fields() as $name => $field) {
       $output[$name] = $field->values();
     }
     return $output;
   }
 
   public function preprocess() {
-    foreach ($this->fields as $field) {
+    foreach ($this->get_fields() as $field) {
       $field->preprocess();
     }
   }
   public function process($values) {
-    foreach ($values as $name => $value) {
-      $this->fields[$name]->process($value);
+    // foreach ($values as $name => $value) {
+    //   $this->get_field($name)->process($value, $name);
+    // }
+    foreach ($this->get_fields() as $name => $field) {
+      if(isset($values[$name])){
+        $this->get_field($name)->process($values[$name], $name);
+      }
     }
   }
 
   public function valid() {
     $valid = TRUE;
-    foreach ($this->fields as $field) {
+    foreach ($this->get_fields() as $field) {
       if (!$field->valid()) {
         $valid = FALSE;
       }
@@ -976,14 +990,14 @@ class cs_fields_container extends cs_field {
   }
   public function show_errors() {
     $output = "";
-    foreach ($this->fields as $field) {
+    foreach ($this->get_fields() as $field) {
       $output .= $field->show_errors();
     }
     return $output;
   }
 
   public function reset() {
-    foreach ($this->fields as $field) {
+    foreach ($this->get_fields() as $field) {
       $field->reset();
     }
   }
@@ -1016,15 +1030,16 @@ class cs_fieldset extends cs_fields_container {
     // uasort($this->fields, 'cs_form::order_by_weight');
     $insertorder = array_flip($this->insert_field_order);
     $weights = array();
-    foreach ($this->fields as $key => $elem) {
+    foreach ($this->get_fields() as $key => $elem) {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->fields);
+    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
 
     $output .= "<div class=\"fieldset-inner\">\n";
-    foreach ($this->fields as $name => $field) {
-      $output .= $field->render("{$parent_name}[{$name}]");
+    foreach ($this->get_fields() as $name => $field) {
+      // $output .= $field->render("{$parent_name}[{$name}]");
+      $output .= $field->render("{$name}");
     }
     return $output ."</div></fieldset>\n". $this->suffix;
   }
