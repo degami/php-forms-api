@@ -7,7 +7,7 @@ require '../src/form.php';
 // Generate a simple contact form
 $form = new cs_form(array(
   'form_id' => 'contact',
-  'attributes'=>array('enctype'=>'multipart/form-data')
+//  'attributes'=>array('enctype'=>'multipart/form-data')
 ));
 $fieldset = new cs_fieldset(array('attributes'=>array(
   'style' => 'width: 500px',

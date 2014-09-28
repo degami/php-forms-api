@@ -154,6 +154,10 @@ class cs_form {
     return $this->valid;
   }
 
+  public function set_attribute($name,$value){
+    $this->attributes[$name] = $value;
+  }
+
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
@@ -185,10 +189,6 @@ class cs_form {
       }
       $output .= "</div>";
     }
-    $attributes = '';
-    foreach ($this->attributes as $key => $value) {
-      $attributes .= " {$key}=\"{$value}\"";
-    }
 
     // uasort($this->fields, 'cs_form::order_by_weight');
 
@@ -200,10 +200,19 @@ class cs_form {
     }
     array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
 
-    $output .= "<form action=\"{$this->action}\" method=\"{$this->method}\"{$attributes}>\n";
+    $fields_html = '';
     foreach ($this->get_fields() as $name => $field) {
-      $output .= $field->render($name, $this);
+      $fields_html .= $field->render($name, $this);
     }
+
+    $attributes = '';
+    foreach ($this->attributes as $key => $value) {
+      if($key == 'action' || $key == 'method') continue;
+      $attributes .= " {$key}=\"{$value}\"";
+    }
+
+    $output .= "<form action=\"{$this->action}\" method=\"{$this->method}\"{$attributes}>\n";
+    $output .= $fields_html;
     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
     $output .= "</form>\n";
@@ -908,6 +917,8 @@ class cs_file extends cs_field {
   public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
+
+    $form->set_attribute('enctype', 'multipart/form-data');
 
     $this->attributes['class'] = trim('file '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
