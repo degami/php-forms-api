@@ -41,6 +41,7 @@ class cs_form {
   protected $valid = TRUE;
   protected $submit = '';
   protected $error = '';
+  protected $js = array();
 
   protected $insert_field_order = array();
   protected $fields = array();
@@ -201,12 +202,26 @@ class cs_form {
 
     $output .= "<form action=\"{$this->action}\" method=\"{$this->method}\"{$attributes}>\n";
     foreach ($this->get_fields() as $name => $field) {
-      $output .= $field->render($name);
+      $output .= $field->render($name, $this);
     }
     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
     $output .= "</form>\n";
+    if(!empty($this->js)){
+      $output .= "
+      <script type=\"text/javascript\">
+        (function($){
+          $(document).ready(function(){
+            ".implode("",$this->js)."
+          });
+        })(jQuery);
+      </script>";
+    }
     return $output . $this->suffix;
+  }
+
+  public function add_js($js){
+    $this->js[] = $js;
   }
 
   public static function validate_required($value = NULL) {
@@ -607,7 +622,7 @@ class cs_submit extends cs_field {
     }
   }
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     if (empty($this->value)) {
       $this->value = 'Submit';
@@ -634,7 +649,7 @@ class cs_reset extends cs_field {
     }
   }
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     if (empty($this->value)) {
       $this->value = 'Reset';
@@ -661,7 +676,7 @@ class cs_button extends cs_field {
     }
   }
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $this->attributes['class'] = trim('button '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -685,7 +700,7 @@ class cs_markup extends cs_field {
     }
   }
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $output = $this->get_prefix();
     $output .= $this->value;
     return $output . $this->get_suffix();
@@ -698,7 +713,7 @@ class cs_markup extends cs_field {
 
 class cs_hidden extends cs_field {
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $this->attributes['class'] = trim('hidden '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
@@ -709,7 +724,7 @@ class cs_hidden extends cs_field {
 
 class cs_textfield extends cs_field {
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
 
@@ -737,7 +752,7 @@ class cs_textarea extends cs_field {
 
   protected $rows = 5;
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
 
@@ -762,7 +777,7 @@ class cs_textarea extends cs_field {
 
 
 class cs_password extends cs_field {
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
 
@@ -787,7 +802,7 @@ class cs_select extends cs_field {
 
   protected $multiple = FALSE;
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
 
@@ -805,7 +820,8 @@ class cs_select extends cs_field {
     $field_name = ($this->multiple) ? "{$name}[]" : $name;
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
     foreach ($this->options as $key => $value) {
-      $output .= "<option value=\"{$key}\">{$value}</option>\n";
+      $selected = ($key == $this->value) ? ' selected="selected"' : '';
+      $output .= "<option value=\"{$key}\"{$selected}>{$value}</option>\n";
     }
     $output .= "</select>\n";
     if (!empty($this->description)) {
@@ -816,7 +832,7 @@ class cs_select extends cs_field {
 }
 
 class cs_radios extends cs_field {
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
     if (!empty($this->title)) {
@@ -845,7 +861,7 @@ class cs_radios extends cs_field {
 }
 
 class cs_checkboxes extends cs_field {
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     if(!is_array($this->default_value)) {
       $this->default_value = array($this->default_value);
@@ -889,7 +905,7 @@ class cs_file extends cs_field {
     }
   }
 
-  public function render($name) {
+  public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
 
@@ -933,6 +949,77 @@ class cs_file extends cs_field {
   }
 }
 
+class cs_date extends cs_field {
+  private $start_year;
+  private $end_year;
+
+  public function __construct($options = array()) {
+
+    $this->start_year = date('Y')-100;
+    $this->end_year = date('Y')+100;
+    $this->default_value = array(
+      'year'=>date('Y'),
+      'month'=>date('m'),
+      'day'=>date('d'),
+    );
+
+    parent::__construct($options);
+  }
+
+  public function render($name, cs_form $form) {
+    $id = !empty($this->id) ? $this->id : $name;
+    $output = $this->get_prefix();
+
+    $this->attributes['class'] = trim('date '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes(array('type','name','id','size'));
+
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+    }
+    $output .= "<div id=\"{$id}\">";
+    $output .= "<select name=\"{$name}[day]\">";
+    for($i=1;$i<=31;$i++){
+      $selected = ($i == $this->value['day']) ? ' selected="selected"' : '';
+      $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
+    }
+    $output .= "</select>";
+    $output .= "<select name=\"{$name}[month]\">";
+    for($i=1;$i<=12;$i++){
+      $selected = ($i == $this->value['month']) ? ' selected="selected"' : '';
+      $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
+    }
+    $output .= "</select>";
+    $output .= "<select name=\"{$name}[year]\">";
+    for($i=$this->start_year;$i<=$this->end_year;$i++){
+      $selected = ($i == $this->value['year']) ? ' selected="selected"' : '';
+      $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
+    }
+    $output .= "</select>";
+    $output .= "</div>";
+
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->get_suffix();
+  }
+
+  public function process($value, $name) {
+    $this->value = array(
+      'year' => $value['year'],
+      'month' => $value['month'],
+      'day' => $value['day'],
+    );
+  }
+
+  public function valid() {
+
+    return parent::valid();
+  }
+}
 
 class cs_fields_container extends cs_field {
 
@@ -1011,7 +1098,7 @@ class cs_fieldset extends cs_fields_container {
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
 
-  public function render($parent_name) {
+  public function render($parent_name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $parent_name;
     $output = $this->prefix;
     $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -1041,9 +1128,70 @@ class cs_fieldset extends cs_fields_container {
     $output .= "<div class=\"fieldset-inner\">\n";
     foreach ($this->get_fields() as $name => $field) {
       // $output .= $field->render("{$parent_name}[{$name}]");
-      $output .= $field->render("{$name}");
+      $output .= $field->render("{$name}", $form);
     }
     return $output ."</div></fieldset>\n". $this->suffix;
+  }
+
+}
+
+class cs_tabs extends cs_fields_container {
+  protected $tabs = array();
+
+  public function add_tab($title){
+    $this->tabs[] = array('title'=>$title,'fieldnames'=>array());
+  }
+
+  public function add_field($name, $field, $tabindex = 0) {
+    if (!is_object($field)) {
+      $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
+      $field = new $field_type($field);
+    }
+    $this->fields[$name] = $field;
+    $this->insert_field_order[$tabindex][] = $name;
+    $this->tabs[$tabindex]['fieldnames'][] = $name;
+  }
+
+  public function get_tab_fields($tabindex){
+    $out = array();
+    $fieldsnames = $this->tabs[$tabindex]['fieldnames'];
+    foreach($fieldsnames as $name){
+      $out[$name] = $this->get_field($name);
+    }
+    return $out;
+  }
+
+  public function render($parent_name, cs_form $form) {
+    $id = !empty($this->id) ? $this->id : $parent_name;
+    $output = $this->prefix;
+    $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    $attributes = $this->get_attributes();
+
+    $form->add_js("$('#{$id}').tabs();");
+    $output .= "<div id=\"{$id}\"{$attributes}>\n";
+
+    $tabs_html = array();
+    $tab_links = array();
+    foreach($this->tabs as $tabindex => $tab){
+      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+      $weights = array();
+      $order = array();
+      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+        $weights[$key]  = $elem->get_weight();
+        $order[$key] = $insertorder[$key];
+      }
+      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+
+      $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->tabs[$tabindex]['title']."</a></li>";
+      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
+      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+        $tabs_html[$tabindex] .= $field->render("{$name}", $form);
+      }
+      $tabs_html[$tabindex] .= "</div>\n";
+    }
+    $output .= "<ul>".implode("",$tab_links)."</ul>".implode("",$tabs_html). "</div>\n";
+
+    return $output . $this->suffix;
   }
 
 }

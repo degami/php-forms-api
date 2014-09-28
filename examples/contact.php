@@ -10,7 +10,7 @@ $form = new cs_form(array(
   'attributes'=>array('enctype'=>'multipart/form-data')
 ));
 $fieldset = new cs_fieldset(array('attributes'=>array(
-  'style' => 'width: 400px',
+  'style' => 'width: 500px',
 )));
 $fieldset->add_field('name', array(
   'type' => 'textfield',
@@ -39,22 +39,54 @@ $fieldset->add_field('message', array(
     'style' => 'width: 100%',
    ),
 ));
-$fieldset->add_field('checkboxes', array(
-  'type' => 'checkboxes',
-  'options' => array(0=>'zero',1=>'one',2=>'two'),
-  'default_value' => 1,
-));
-$fieldset->add_field('file', array(
-  'type' => 'file',
-  'destination' => dirname(__FILE__),
-));
+
 $fieldset->add_field('markup1', array(
   'type' => 'markup',
   'value' => 'aaaa',
   'weight' => -10,
 ));
-
 $form->add_field('fieldset', $fieldset);
+
+$tabs = new cs_tabs(array('attributes'=>array(
+  'style' => 'width: 500px',
+)));
+
+$tabs->add_tab('tab1');
+$tabs->add_tab('tab2');
+
+
+$tabs->add_field('date', array(
+  'type' => 'date',
+));
+
+$tabs->add_field('markup2',array(
+  'type' => 'markup',
+  'value' => 'bbb',
+),0);
+$tabs->add_field('markup3',array(
+  'type' => 'markup',
+  'value' => 'ccc',
+),1);
+$tabs->add_field('checkboxes', array(
+  'type' => 'checkboxes',
+  'options' => array(0=>'zero',1=>'one',2=>'two'),
+  'default_value' => 1,
+));
+$tabs->add_field('file', array(
+  'type' => 'file',
+  'destination' => dirname(__FILE__),
+),1);
+
+$tabs->add_field('select', array(
+  'type' => 'select',
+  'options' => array('1'=>'one','2'=>'two','3'=>'three'),
+  'default_value' => '2',
+),1);
+
+
+
+$form->add_field('tabs', $tabs);
+
 $form->add_field('hidden1', array(
   'type' => 'hidden',
   'default_value' => 'aaaa',
@@ -85,6 +117,9 @@ function contact_submit(&$form) {
 	span.required { color: red; }
 	.error { background: #FFA07A; }
 	</style>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 </head>
 
 <body>
