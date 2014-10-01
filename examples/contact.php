@@ -79,7 +79,7 @@ $tabs->add_field('file', array(
 
 $tabs->add_field('select', array(
   'type' => 'select',
-  'options' => array('1'=>'one','2'=>'two','3'=>'three'),
+  'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
   'default_value' => '2',
 ),1);
 
@@ -91,6 +91,14 @@ $form->add_field('hidden1', array(
   'type' => 'hidden',
   'default_value' => 'aaaa',
 ));
+
+$form->add_field('checkbox', array(
+  'type' => 'checkbox',
+  'default_value' => 'checkbox',
+  'title' => 'Check me',
+  'validate' => array( array('validator'=>'required','error_message'=>'You must check the <strong>%t</strong> checkbox!' ) ),
+));
+
 $form->add_field('submit', array(
   'type' => 'submit',
   'value' => 'Send',

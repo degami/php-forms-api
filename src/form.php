@@ -89,14 +89,13 @@ class cs_form {
 
   public function process() {
     if (!$this->processed) {
-      $request = ($this->method == 'post') ? $_POST : $_GET;
+      $request = (strtolower($this->method) == 'post') ? $_POST : $_GET;
       if (isset($request['form_id']) && $request['form_id'] == $this->form_id) {
         // foreach ($request as $name => $value) {
         //   if ( $this->get_field($name) !== NULL ) {
         //     $this->get_field($name)->process($value, $name);
         //   }
         // }
-
         foreach ($this->get_fields() as $name => $field) {
           if( $field instanceof cs_fields_container ) $this->get_field($name)->process($request);
           else if ( !empty($request[$name]) ) {
@@ -119,7 +118,7 @@ class cs_form {
         foreach ($this->get_fields() as $name => $field) {
           $field->postprocess();
         }
-        $submit_function($this, ($this->method == 'post') ? $_POST : $_GET);
+        $submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
       }
     }
   }
@@ -568,16 +567,24 @@ class cs_field {
   public function valid() {
     foreach ($this->validate as $validator) {
       $matches = array();
-      preg_match('/^([A-Za-z0-9_]+)(\[(.+)\])?$/', $validator, $matches);
-      $validator = "validate_{$matches[1]}";
+      if(is_array($validator)){
+        $validator_func = $validator['validator'];
+      }else{
+        $validator_func = $validator;
+      }
+      preg_match('/^([A-Za-z0-9_]+)(\[(.+)\])?$/', $validator_func, $matches);
+      $validator_func = "validate_{$matches[1]}";
       $options = isset($matches[3]) ? $matches[3] : NULL;
-      if (function_exists($validator)) {
-        $error = $validator($this->value, $options);
+      if (function_exists($validator_func)) {
+        $error = $validator_func($this->value, $options);
       } else {
-        $error = cs_form::$validator($this->value, $options);
+        $error = cs_form::$validator_func($this->value, $options);
       }
       if ($error !== TRUE) {
         $this->error = str_replace('%t', $this->title, $error);
+        if(is_array($validator) && !empty($validator['error_message'])){
+          $this->error = str_replace('%t', $this->title, $validator['error_message']);
+        }
         return FALSE;
       }
     }
@@ -830,7 +837,16 @@ class cs_select extends cs_field {
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
     foreach ($this->options as $key => $value) {
       $selected = ($key == $this->value) ? ' selected="selected"' : '';
-      $output .= "<option value=\"{$key}\"{$selected}>{$value}</option>\n";
+      if(is_array($value)){
+        $output .= "<optgroup label=\"{$key}\">";
+        foreach($value as $optgroupkey=>$optgroupvalue){
+          $selected = ($optgroupkey == $this->value) ? ' selected="selected"' : '';
+          $output .= "<option value=\"{$optgroupkey}\"{$selected}>{$optgroupvalue}</option>\n";
+        }
+        $output .= "</optgroup>";
+      }else {
+        $output .= "<option value=\"{$key}\"{$selected}>{$value}</option>\n";
+      }
     }
     $output .= "</select>\n";
     if (!empty($this->description)) {
@@ -902,6 +918,36 @@ class cs_checkboxes extends cs_field {
     return $output . $this->get_suffix();
   }
 }
+
+
+class cs_checkbox extends cs_field {
+  public function __construct($options = array()) {
+    foreach ($options as $name => $value) {
+      $this->$name = $value;
+    }
+  }
+
+  public function render($name, cs_form $form) {
+    $id = !empty($this->id) ? $this->id : $name;
+
+    $output = $this->get_prefix();
+    if (empty($this->title)) {
+      $this->title = $this->value;
+    }
+
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes();
+
+    $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
+    $output .= "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->default_value}\"{$checked}{$attributes} />{$this->title}</label>\n";
+
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->get_suffix();
+  }
+}
+
 
 class cs_file extends cs_field {
   protected $uploaded = FALSE;
