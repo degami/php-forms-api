@@ -38,7 +38,7 @@ class cs_form {
   protected $preprocessors = FALSE;
   protected $validated = FALSE;
   protected $submitted = FALSE;
-  protected $valid = TRUE;
+  protected $valid = NULL;
   protected $submit = '';
   protected $error = '';
   protected $js = array();
@@ -102,23 +102,24 @@ class cs_form {
             $this->get_field($name)->process($request[$name], $name);
           }
         }
-
-      }
-      $this->processed = TRUE;
-    }
-    if (!$this->preprocessors) {
-      foreach ($this->get_fields() as $name => $field) {
-        $field->preprocess();
+        $this->processed = TRUE;
       }
     }
-    if ((!$this->submitted) && $this->valid()) {
-      $this->submitted = TRUE;
-      $submit_function = $this->submit;
-      if (function_exists($submit_function)) {
+    if($this->processed == TRUE){
+      if (!$this->preprocessors) {
         foreach ($this->get_fields() as $name => $field) {
-          $field->postprocess();
+          $field->preprocess();
         }
-        $submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
+      }
+      if ((!$this->submitted) && $this->valid()) {
+        $this->submitted = TRUE;
+        $submit_function = $this->submit;
+        if (function_exists($submit_function)) {
+          foreach ($this->get_fields() as $name => $field) {
+            $field->postprocess();
+          }
+          $submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
+        }
       }
     }
   }
@@ -148,9 +149,10 @@ class cs_form {
           $this->valid = FALSE;
         }
       }
+      $this->validated = TRUE;
+      return $this->valid;
     }
-    $this->validated = TRUE;
-    return $this->valid;
+    return NULL;
   }
 
   public function set_attribute($name,$value){
@@ -181,7 +183,7 @@ class cs_form {
   public function render() {
     $output = $this->prefix;
     if ( $this->valid() === FALSE) {
-      $output .= "<div class=\"error\"><ul>";
+      $output .= "<div class=\"errors\"><ul>";
       $output .= $this->show_errors();
       foreach ($this->get_fields() as $field) {
         $output .= $field->show_errors();
@@ -778,8 +780,9 @@ class cs_textarea extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('name','id','value','rows','cols'));
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
     $output .= "<textarea id=\"{$id}\" name=\"{$name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n";
     $output .= $this->value;
@@ -803,8 +806,9 @@ class cs_password extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
     $output .= "<input type=\"password\" id=\"{$id}\" name=\"{$name}\" value=\"\"{$attributes} />\n";
     if (!empty($this->description)) {
@@ -829,8 +833,9 @@ class cs_select extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
     $extra = ($this->multiple) ? ' multiple' : '';
     $field_name = ($this->multiple) ? "{$name}[]" : $name;
@@ -860,10 +865,10 @@ class cs_radios extends cs_field {
   public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
 
     foreach ($this->options as $key => $value) {
@@ -893,8 +898,9 @@ class cs_checkboxes extends cs_field {
     }
 
     $output = $this->get_prefix();
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
 
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -931,8 +937,9 @@ class cs_checkbox extends cs_field {
     $id = !empty($this->id) ? $this->id : $name;
 
     $output = $this->get_prefix();
-    if (empty($this->title)) {
-      $this->title = $this->value;
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
 
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -973,8 +980,9 @@ class cs_file extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size'));
 
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
     $output .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$name}\" />";
     $output .= "<input type=\"file\" id=\"{$id}\" name=\"{$name}\" size=\"{$this->size}\"{$attributes} />";
@@ -1034,8 +1042,9 @@ class cs_date extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size'));
 
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}</label>\n";
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
     $output .= "<div id=\"{$id}\">";
     $output .= "<select name=\"{$name}[day]\">";
