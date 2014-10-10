@@ -1,0 +1,18 @@
+{
+"name": "degami/twitter-api-php",
+"description": "A simple to use Forms API for generating, validating and processing forms in PHP",
+"version": "0.1",
+"type": "library",
+"keywords": ["forms", "PHP", "API"],
+"homepage": "https://github.com/degami/php-forms-api",
+"license": "GNU Public License",
+"authors": [
+{
+"name": "degami@github.com",
+"homepage": "https://github.com/degami/php-forms-api"
+}
+],
+"autoload": {
+"files": ["scr/forms.php"]
+}
+}
