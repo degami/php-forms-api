@@ -13,6 +13,6 @@
 }
 ],
 "autoload": {
-"files": ["src/forms.php"]
+"files": ["src/form.php"]
 }
 }
