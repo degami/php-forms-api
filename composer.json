@@ -1,5 +1,5 @@
 {
-"name": "degami/twitter-api-php",
+"name": "degami/php-forms-api",
 "description": "A simple to use Forms API for generating, validating and processing forms in PHP",
 "version": "0.1",
 "type": "library",
