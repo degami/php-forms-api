@@ -51,6 +51,10 @@ $tabs = new cs_tabs(array('attributes'=>array(
   'style' => 'width: 500px',
 )));
 
+// $tabs = new cs_accordion(array('attributes'=>array(
+//   'style' => 'width: 500px',
+// )));
+
 $tabs->add_tab('tab1');
 $tabs->add_tab('tab2');
 
