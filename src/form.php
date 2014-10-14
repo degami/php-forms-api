@@ -1087,6 +1087,35 @@ class cs_date extends cs_field {
   }
 }
 
+
+class cs_spinner extends cs_field {
+
+  public function render($name, cs_form $form) {
+    $id = !empty($this->id) ? $this->id : $name;
+    $output = $this->get_prefix();
+
+    $form->add_js("$('#{$id}').spinner();");
+
+    $this->attributes['class'] = trim('spinner '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes();
+
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+    }
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->get_suffix();
+  }
+
+}
+
 class cs_fields_container extends cs_field {
 
   protected $insert_field_order = array();

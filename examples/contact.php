@@ -51,17 +51,25 @@ $tabs = new cs_tabs(array('attributes'=>array(
   'style' => 'width: 500px',
 )));
 
-// $tabs = new cs_accordion(array('attributes'=>array(
-//   'style' => 'width: 500px',
-// )));
-
 $tabs->add_tab('tab1');
 $tabs->add_tab('tab2');
 
 
-$tabs->add_field('date', array(
+$accordion = new cs_accordion(array('attributes'=>array(
+  'style' => 'width: 500px',
+)));
+
+$accordion->add_tab('accordion1');
+$accordion->add_tab('accordion2');
+
+$accordion->add_field('spinner', array(
+  'type' => 'spinner',
+  'title' => 'Select a value',
+),0);
+
+$accordion->add_field('date', array(
   'type' => 'date',
-));
+),1);
 
 $tabs->add_field('markup2',array(
   'type' => 'markup',
@@ -88,7 +96,7 @@ $tabs->add_field('select', array(
 ),1);
 
 
-
+$form->add_field('accordion', $accordion);
 $form->add_field('tabs', $tabs);
 
 $form->add_field('hidden1', array(
