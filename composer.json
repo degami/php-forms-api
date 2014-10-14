@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-    "components/jqueryui" : "dev-master"
+    "components/jqueryui": "1.11.1"
   },
   "autoload": {
     "files": ["src/form.php"]
