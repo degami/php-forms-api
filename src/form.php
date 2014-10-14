@@ -1201,7 +1201,7 @@ class cs_fieldset extends cs_fields_container {
 
 }
 
-class cs_tabs extends cs_fields_container {
+class cs_fields_container_tabbed extends cs_fields_container{
   protected $tabs = array();
 
   public function add_tab($title){
@@ -1226,6 +1226,9 @@ class cs_tabs extends cs_fields_container {
     }
     return $out;
   }
+}
+
+class cs_tabs extends cs_fields_container_tabbed {
 
   public function render($parent_name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $parent_name;
@@ -1256,6 +1259,42 @@ class cs_tabs extends cs_fields_container {
       $tabs_html[$tabindex] .= "</div>\n";
     }
     $output .= "<ul>".implode("",$tab_links)."</ul>".implode("",$tabs_html). "</div>\n";
+
+    return $output . $this->suffix;
+  }
+
+}
+
+class cs_accordion extends cs_fields_container_tabbed {
+
+  public function render($parent_name, cs_form $form) {
+    $id = !empty($this->id) ? $this->id : $parent_name;
+    $output = $this->prefix;
+    $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    $attributes = $this->get_attributes();
+
+    $form->add_js("$('#{$id}').accordion();");
+    $output .= "<div id=\"{$id}\"{$attributes}>\n";
+
+    $tabs_html = array();
+    foreach($this->tabs as $tabindex => $tab){
+      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+      $weights = array();
+      $order = array();
+      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+        $weights[$key]  = $elem->get_weight();
+        $order[$key] = $insertorder[$key];
+      }
+      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+
+      $tabs_html[$tabindex] = "<h3>".$this->tabs[$tabindex]['title']."</h3>";
+      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
+      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+        $tabs_html[$tabindex] .= $field->render("{$name}", $form);
+      }
+      $tabs_html[$tabindex] .= "</div>\n";
+    }
+    $output .= implode("",$tabs_html). "</div>\n";
 
     return $output . $this->suffix;
   }
