@@ -501,6 +501,24 @@ class cs_form {
     }
   }
 
+  public static function array_flatten($array) {
+     $return = array();
+     foreach ($array as $key => $value) {
+         if (is_array($value)){ $return = array_merge($return, cs_form::array_flatten($value));}
+         else {$return[$key] = $value;}
+     }
+     return $return;
+  }
+
+  public static function array_get_values($search_key, $array) {
+     $return = array();
+     foreach ($array as $key => $value) {
+         if (is_array($value)){ $return = array_merge($return, cs_form::array_get_values($search_key, $value));}
+         else if($key == $search_key){$return[] = $value;}
+     }
+     return $return;
+  }
+
   public static function order_by_weight($a, $b){
       if ($a->get_weight() == $b->get_weight()) {
         return 0;
@@ -858,6 +876,41 @@ class cs_select extends cs_field {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
     return $output . $this->get_suffix();
+  }
+}
+
+class cs_slider extends cs_select{
+
+  public function __construct($options){
+    parent::__construct($options);
+
+    // get the "default_value" index value
+    $values = cs_form::array_get_values($this->default_value,$this->options);
+    $oldkey_value = end($values);
+
+    // flatten the options array ang get a numeric keyset
+    $this->options = cs_form::array_flatten($this->options);
+
+    // search the new index
+    $this->value = $this->default_value = array_search($oldkey_value,$this->options);
+  }
+
+  public function render($name, cs_form $form){
+    $id = !empty($this->id) ? $this->id : $name;
+    $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
+    $form->add_js("
+      $('#{$id}-slider').slider({
+        min: 1,
+        max: ".count($this->options).",
+        value: $( \"#{$id}\" )[ 0 ].selectedIndex + 1,
+        slide: function( event, ui ) {
+          $( \"#{$id}\" )[ 0 ].selectedIndex = ui.value - 1;
+        }
+      });
+      $( \"#{$id}\" ).change(function() {
+        $('#{$id}-slider').slider(\"value\", this.selectedIndex + 1 );
+      }).hide();");
+    return parent::render($name, $form);
   }
 }
 

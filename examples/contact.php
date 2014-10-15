@@ -95,6 +95,11 @@ $tabs->add_field('select', array(
   'default_value' => '2',
 ),1);
 
+$tabs->add_field('slider', array(
+  'type' => 'slider',
+  'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
+  'default_value' => '2',
+),1);
 
 $form->add_field('accordion', $accordion);
 $form->add_field('tabs', $tabs);
