@@ -550,9 +550,9 @@ class cs_field {
   protected $value = '';
   protected $error = '';
   protected $name = '';
-  protected $id = null;
+  protected $id = NULL;
 
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
@@ -670,7 +670,7 @@ class cs_field {
 
 class cs_submit extends cs_field {
 
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
@@ -698,7 +698,7 @@ class cs_submit extends cs_field {
 
 class cs_reset extends cs_field {
 
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
@@ -726,7 +726,7 @@ class cs_reset extends cs_field {
 
 class cs_button extends cs_field {
 
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
@@ -751,7 +751,7 @@ class cs_button extends cs_field {
 
 class cs_markup extends cs_field {
 
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
@@ -869,14 +869,14 @@ class cs_field_multivalues extends cs_field {
   private static function has_key($needle, $haystack) {
     foreach ($haystack as $key => $value) {
         if ($needle == $key) {
-            return true;
+            return TRUE;
         } else if(is_array($value)) {
-            if( $this->has_key($needle, $value) == true ){
-              return true;
+            if( $this->has_key($needle, $value) == TRUE ){
+              return TRUE;
             }
         }
     }
-    return false;
+    return FALSE;
   }
 
   private function options_has_key($needle){
@@ -886,16 +886,16 @@ class cs_field_multivalues extends cs_field {
   public function valid(){
     if(!is_array($this->value) && !empty($this->value)){
       $check = $this->options_has_key($this->value);
-      if(!$check) return false;
+      if(!$check) return FALSE;
     }else if(is_array($this->value)){
-      $check = true;
+      $check = TRUE;
       foreach ($this->value as $key => $value) {
         $check &= $this->options_has_key($value);
       }
       if(!$check) {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
         $this->error = "{$titlestr}: Invalid choice";
-        return false;
+        return FALSE;
       }
     }
     return parent::valid();
@@ -947,7 +947,7 @@ class cs_select extends cs_field_multivalues {
 
 class cs_slider extends cs_select{
 
-  public function __construct($options, $name = null){
+  public function __construct($options, $name = NULL){
     parent::__construct($options, $name);
 
     // get the "default_value" index value
@@ -1046,7 +1046,7 @@ class cs_checkboxes extends cs_field_multivalues {
 
 
 class cs_checkbox extends cs_field {
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
@@ -1080,7 +1080,7 @@ class cs_file extends cs_field {
   protected $uploaded = FALSE;
   protected $destination;
 
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
     parent::__construct($options, $name);
     if (!isset($options['size'])) {
       $this->size = 30;
@@ -1138,7 +1138,7 @@ class cs_date extends cs_field {
   private $start_year;
   private $end_year;
 
-  public function __construct($options = array(), $name = null) {
+  public function __construct($options = array(), $name = NULL) {
 
     $this->start_year = date('Y')-100;
     $this->end_year = date('Y')+100;
@@ -1205,7 +1205,7 @@ class cs_date extends cs_field {
     if( !checkdate( $this->value['month'] , $this->value['day'] , $this->value['year'] ) ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
       $this->error = "{$titlestr}: Invalid date";
-      return false;
+      return FALSE;
     }
     return parent::valid();
   }
@@ -1318,7 +1318,7 @@ class cs_fieldset extends cs_fields_container {
   protected $collapsed = FALSE;
 
   public function render(cs_form $form) {
-    static $js_collapsible_added = false;
+    static $js_collapsible_added = FALSE;
     $id = $this->get_html_id();
     $output = $this->prefix;
     $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -1344,7 +1344,7 @@ class cs_fieldset extends cs_fields_container {
           });
         });
         $('fieldset.collapsible.collapsed .fieldset-inner').hide();");
-        $js_collapsible_added = true;
+        $js_collapsible_added = TRUE;
       }
     }
     $attributes = $this->get_attributes();
