@@ -847,6 +847,38 @@ class cs_field_multivalues extends cs_field {
     return $this->options;
   }
 
+
+  private static function has_key($needle, $haystack) {
+    //@print "find $needle in ".var_dump(array_keys($haystack)).'<br />';
+    foreach ($haystack as $key => $value) {
+        if ($needle == $key) {
+            return true;
+        } else if(is_array($value)) {
+            if( $this->has_key($needle, $value) == true ){
+              return true;
+            }
+        }
+    }
+    return false;
+  }
+
+  private function options_has_key($needle){
+    return cs_field_multivalues::has_key($needle,$this->options);
+  }
+
+  public function valid(){
+    if(!is_array($this->value) && !empty($this->value)){
+      $check = $this->options_has_key($this->value);
+      if(!$check) return false;
+    }else if(is_array($this->value)){
+      $check = true;
+      foreach ($this->value as $key => $value) {
+        $check &= $this->options_has_key($value);
+      }
+      if(!$check) return false;
+    }
+    return parent::valid();
+  }
 }
 
 class cs_select extends cs_field_multivalues {
@@ -1148,7 +1180,7 @@ class cs_date extends cs_field {
   }
 
   public function valid() {
-
+    if( !checkdate( $this->value['month'] , $this->value['day'] , $this->value['year'] ) ) return false;
     return parent::valid();
   }
 }
