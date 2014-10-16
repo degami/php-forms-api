@@ -203,7 +203,9 @@ class cs_form {
 
     $fields_html = '';
     foreach ($this->get_fields() as $name => $field) {
-      $fields_html .= $field->render($name, $this);
+      if( is_object($field) && method_exists ( $field , 'render' ) ){
+        $fields_html .= $field->render($name, $this);
+      }
     }
 
     $attributes = '';
@@ -217,7 +219,9 @@ class cs_form {
     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
     $output .= "</form>\n";
-    if(!empty($this->js)){
+
+    $this->js = array_filter(array_map('trim',$this->js));
+    if(!empty( $this->js )){
       $output .= "
       <script type=\"text/javascript\">
         (function($){
@@ -836,7 +840,16 @@ class cs_password extends cs_field {
   }
 }
 
-class cs_select extends cs_field {
+class cs_field_multivalues extends cs_field {
+  protected $options = array();
+
+  public function &get_options(){
+    return $this->options;
+  }
+
+}
+
+class cs_select extends cs_field_multivalues {
 
   protected $multiple = FALSE;
 
@@ -914,7 +927,7 @@ class cs_slider extends cs_select{
   }
 }
 
-class cs_radios extends cs_field {
+class cs_radios extends cs_field_multivalues {
   public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     $output = $this->get_prefix();
@@ -943,7 +956,7 @@ class cs_radios extends cs_field {
   }
 }
 
-class cs_checkboxes extends cs_field {
+class cs_checkboxes extends cs_field_multivalues {
   public function render($name, cs_form $form) {
     $id = !empty($this->id) ? $this->id : $name;
     if(!is_array($this->default_value)) {
