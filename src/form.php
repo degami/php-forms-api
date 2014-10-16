@@ -183,7 +183,7 @@ class cs_form {
   public function render() {
     $output = $this->prefix;
     if ( $this->valid() === FALSE) {
-      $output .= "<div class=\"errors\"><ul>";
+      $output .= "<div class=\"errors ui-state-error ui-corner-all\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>";
       $output .= $this->show_errors();
       foreach ($this->get_fields() as $field) {
         $output .= $field->show_errors();
@@ -226,7 +226,7 @@ class cs_form {
       <script type=\"text/javascript\">
         (function($){
           $(document).ready(function(){
-            ".implode("",$this->js)."
+            ".implode(";\n",$this->js)."
           });
         })(jQuery);
       </script>";
@@ -1318,6 +1318,7 @@ class cs_fieldset extends cs_fields_container {
   protected $collapsed = FALSE;
 
   public function render(cs_form $form) {
+    static $js_collapsible_added = false;
     $id = $this->get_html_id();
     $output = $this->prefix;
     $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -1327,6 +1328,23 @@ class cs_fieldset extends cs_fields_container {
         $this->attributes['class'] .= ' collapsed';
       } else {
         $this->attributes['class'] .= ' expanded';
+      }
+
+      if( !$js_collapsible_added ){
+        $form->add_js("
+        $('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
+          evt.preventDefault();
+          var \$this = \$(this);
+          \$this.parent().find('.fieldset-inner').toggle( 'blind', {}, 500, function(){
+            if(\$this.parent().hasClass('expanded')){
+              \$this.parent().removeClass('expanded').addClass('collapsed');
+            }else{
+              \$this.parent().removeClass('collapsed').addClass('expanded');
+            }
+          });
+        });
+        $('fieldset.collapsible.collapsed .fieldset-inner').hide();");
+        $js_collapsible_added = true;
       }
     }
     $attributes = $this->get_attributes();

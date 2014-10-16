@@ -9,9 +9,22 @@ $form = new cs_form(array(
   'form_id' => 'contact',
 //  'attributes'=>array('enctype'=>'multipart/form-data')
 ));
-$fieldset = new cs_fieldset(array('attributes'=>array(
-  'style' => 'width: 500px',
-)));
+$fieldset = new cs_fieldset(
+  array('attributes'=>array(
+    'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
+  ),
+  'collapsible' => true,
+  'title' => 'my fieldset',
+),'fieldset');
+
+$fieldset2 = new cs_fieldset(
+  array('attributes'=>array(
+    'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
+  ),
+  'collapsible' => true,
+  'title' => 'my fieldset 2',
+),'fieldset2');
+
 $fieldset->add_field('name', array(
   'type' => 'textfield',
   'validate' => array('required'),
@@ -29,7 +42,7 @@ $fieldset->add_field('email', array(
     'style' => 'width: 100%',
    ),
 ));
-$fieldset->add_field('message', array(
+$fieldset2->add_field('message', array(
   'type' => 'textarea',
   'postprocess' => array('xss'),
   'title' => 'Your message',
@@ -45,7 +58,8 @@ $fieldset->add_field('markup1', array(
   'value' => 'aaaa',
   'weight' => -10,
 ));
-$form->add_field('fieldset', $fieldset);
+$form->add_field($fieldset->get_name(), $fieldset);
+$form->add_field($fieldset2->get_name(), $fieldset2);
 
 $tabs = new cs_tabs(array('attributes'=>array(
   'style' => 'width: 500px',
@@ -141,6 +155,21 @@ function contact_submit(&$form) {
 	label { display: block; }
 	span.required { color: red; }
 	.error { background: #FFA07A; }
+  input[type=text],
+  input[type=password],
+  input[type=checkbox],
+  textarea{
+    border: solid 1px #cecece;
+    width: auto;
+    margin: 0;
+  }
+  input.spinner{border: 0;}
+  fieldset.collapsed{
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+  }
 	</style>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
