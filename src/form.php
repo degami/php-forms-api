@@ -162,7 +162,7 @@ class cs_form {
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
-      $field = new $field_type($field);
+      $field = new $field_type($field, $name);
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
@@ -204,7 +204,7 @@ class cs_form {
     $fields_html = '';
     foreach ($this->get_fields() as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'render' ) ){
-        $fields_html .= $field->render($name, $this);
+        $fields_html .= $field->render($this);
       }
     }
 
@@ -549,9 +549,11 @@ class cs_field {
   protected $weight = 0;
   protected $value = '';
   protected $error = '';
+  protected $name = '';
   protected $id = null;
 
-  public function __construct($options = array()) {
+  public function __construct($options = array(), $name = null) {
+    $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
@@ -564,6 +566,17 @@ class cs_field {
 
   public function reset() {
     $this->value = $this->default_value;
+  }
+
+  public function get_name(){
+    return $this->name;
+  }
+  public function get_id(){
+    return $this->id;
+  }
+
+  public function get_html_id(){
+    return !empty($this->id) ? $this->get_id() : $this->get_name();
   }
 
   public function get_weight() {
@@ -607,7 +620,8 @@ class cs_field {
       if ($error !== TRUE) {
         $this->error = str_replace('%t', $this->title, $error);
         if(is_array($validator) && !empty($validator['error_message'])){
-          $this->error = str_replace('%t', $this->title, $validator['error_message']);
+          $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
+          $this->error = str_replace('%t', $titlestr, $validator['error_message']);
         }
         return FALSE;
       }
@@ -656,14 +670,15 @@ class cs_field {
 
 class cs_submit extends cs_field {
 
-  public function __construct($options = array()) {
+  public function __construct($options = array(), $name = null) {
+    $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
   }
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     if (empty($this->value)) {
       $this->value = 'Submit';
     }
@@ -671,7 +686,7 @@ class cs_submit extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
     $output = $this->get_prefix();
-    $output .= "<input type=\"submit\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
     return $output . $this->get_suffix();
   }
 
@@ -683,14 +698,15 @@ class cs_submit extends cs_field {
 
 class cs_reset extends cs_field {
 
-  public function __construct($options = array()) {
+  public function __construct($options = array(), $name = null) {
+    $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
   }
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     if (empty($this->value)) {
       $this->value = 'Reset';
     }
@@ -698,7 +714,7 @@ class cs_reset extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
     $output = $this->get_prefix();
-    $output .= "<input type=\"reset\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
     return $output . $this->get_suffix();
   }
 
@@ -710,19 +726,20 @@ class cs_reset extends cs_field {
 
 class cs_button extends cs_field {
 
-  public function __construct($options = array()) {
+  public function __construct($options = array(), $name = null) {
+    $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
   }
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $this->attributes['class'] = trim('button '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
     $output = $this->get_prefix();
-    $output .= "<button id=\"{$id}\" name=\"{$name}\"{$attributes}>{$this->value}</button>\n";
+    $output .= "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes}>{$this->value}</button>\n";
     return $output . $this->get_suffix();
   }
 
@@ -734,13 +751,14 @@ class cs_button extends cs_field {
 
 class cs_markup extends cs_field {
 
-  public function __construct($options = array()) {
+  public function __construct($options = array(), $name = null) {
+    $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
   }
 
-  public function render($name, cs_form $form) {
+  public function render(cs_form $form) {
     $output = $this->get_prefix();
     $output .= $this->value;
     return $output . $this->get_suffix();
@@ -753,19 +771,19 @@ class cs_markup extends cs_field {
 
 class cs_hidden extends cs_field {
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $this->attributes['class'] = trim('hidden '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
-    return "<input type=\"hidden\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
+    return "<input type=\"hidden\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
   }
 
 }
 
 class cs_textfield extends cs_field {
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
 
     $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -779,7 +797,7 @@ class cs_textfield extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -792,8 +810,8 @@ class cs_textarea extends cs_field {
 
   protected $rows = 5;
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
 
     $this->attributes['class'] = trim('textarea '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -806,7 +824,7 @@ class cs_textarea extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<textarea id=\"{$id}\" name=\"{$name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n";
+    $output .= "<textarea id=\"{$id}\" name=\"{$this->name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n";
     $output .= $this->value;
     $output .= "</textarea>";
     if (!empty($this->description)) {
@@ -818,8 +836,8 @@ class cs_textarea extends cs_field {
 
 
 class cs_password extends cs_field {
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
 
     $this->attributes['class'] = trim('password '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -832,7 +850,7 @@ class cs_password extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"password\" id=\"{$id}\" name=\"{$name}\" value=\"\"{$attributes} />\n";
+    $output .= "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" value=\"\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -849,7 +867,6 @@ class cs_field_multivalues extends cs_field {
 
 
   private static function has_key($needle, $haystack) {
-    //@print "find $needle in ".var_dump(array_keys($haystack)).'<br />';
     foreach ($haystack as $key => $value) {
         if ($needle == $key) {
             return true;
@@ -875,7 +892,11 @@ class cs_field_multivalues extends cs_field {
       foreach ($this->value as $key => $value) {
         $check &= $this->options_has_key($value);
       }
-      if(!$check) return false;
+      if(!$check) {
+        $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
+        $this->error = "{$titlestr}: Invalid choice";
+        return false;
+      }
     }
     return parent::valid();
   }
@@ -885,8 +906,8 @@ class cs_select extends cs_field_multivalues {
 
   protected $multiple = FALSE;
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
 
     $this->attributes['class'] = trim('select '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -901,7 +922,7 @@ class cs_select extends cs_field_multivalues {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
     $extra = ($this->multiple) ? ' multiple' : '';
-    $field_name = ($this->multiple) ? "{$name}[]" : $name;
+    $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
     foreach ($this->options as $key => $value) {
       $selected = ($key == $this->value) ? ' selected="selected"' : '';
@@ -926,8 +947,8 @@ class cs_select extends cs_field_multivalues {
 
 class cs_slider extends cs_select{
 
-  public function __construct($options){
-    parent::__construct($options);
+  public function __construct($options, $name = null){
+    parent::__construct($options, $name);
 
     // get the "default_value" index value
     $values = cs_form::array_get_values($this->default_value,$this->options);
@@ -940,8 +961,8 @@ class cs_slider extends cs_select{
     $this->value = $this->default_value = array_search($oldkey_value,$this->options);
   }
 
-  public function render($name, cs_form $form){
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form){
+    $id = $this->get_html_id();
     $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
     $form->add_js("
       $('#{$id}-slider').slider({
@@ -955,13 +976,13 @@ class cs_slider extends cs_select{
       $( \"#{$id}\" ).change(function() {
         $('#{$id}-slider').slider(\"value\", this.selectedIndex + 1 );
       }).hide();");
-    return parent::render($name, $form);
+    return parent::render($form);
   }
 }
 
 class cs_radios extends cs_field_multivalues {
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
     $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
@@ -979,7 +1000,7 @@ class cs_radios extends cs_field_multivalues {
       }
 
       $checked = ($this->value == $key) ? ' checked="checked"' : '';
-      $output .= "<label><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+      $output .= "<label><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$this->name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
@@ -989,8 +1010,8 @@ class cs_radios extends cs_field_multivalues {
 }
 
 class cs_checkboxes extends cs_field_multivalues {
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     if(!is_array($this->default_value)) {
       $this->default_value = array($this->default_value);
     }
@@ -1014,7 +1035,7 @@ class cs_checkboxes extends cs_field_multivalues {
       }
 
       $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked="checked"' : '';
-      $output .= "<label><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+      $output .= "<label><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$this->name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
@@ -1025,14 +1046,15 @@ class cs_checkboxes extends cs_field_multivalues {
 
 
 class cs_checkbox extends cs_field {
-  public function __construct($options = array()) {
+  public function __construct($options = array(), $name = null) {
+    $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
   }
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
 
     $output = $this->get_prefix();
     $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
@@ -1044,7 +1066,7 @@ class cs_checkbox extends cs_field {
     $attributes = $this->get_attributes();
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
-    $output .= "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->default_value}\"{$checked}{$attributes} />{$this->title}</label>\n";
+    $output .= "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} />{$this->title}</label>\n";
 
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
@@ -1058,15 +1080,15 @@ class cs_file extends cs_field {
   protected $uploaded = FALSE;
   protected $destination;
 
-  public function __construct($options = array()) {
-    parent::__construct($options);
+  public function __construct($options = array(), $name = null) {
+    parent::__construct($options, $name);
     if (!isset($options['size'])) {
       $this->size = 30;
     }
   }
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
 
     $form->set_attribute('enctype', 'multipart/form-data');
@@ -1082,8 +1104,8 @@ class cs_file extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"hidden\" name=\"{$name}\" value=\"{$name}\" />";
-    $output .= "<input type=\"file\" id=\"{$id}\" name=\"{$name}\" size=\"{$this->size}\"{$attributes} />";
+    $output .= "<input type=\"hidden\" name=\"{$this->name}\" value=\"{$this->name}\" />";
+    $output .= "<input type=\"file\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\"{$attributes} />";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -1116,7 +1138,7 @@ class cs_date extends cs_field {
   private $start_year;
   private $end_year;
 
-  public function __construct($options = array()) {
+  public function __construct($options = array(), $name = null) {
 
     $this->start_year = date('Y')-100;
     $this->end_year = date('Y')+100;
@@ -1126,11 +1148,11 @@ class cs_date extends cs_field {
       'day'=>date('d'),
     );
 
-    parent::__construct($options);
+    parent::__construct($options, $name);
   }
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
 
     $this->attributes['class'] = trim('date '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -1145,19 +1167,19 @@ class cs_date extends cs_field {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
     $output .= "<div id=\"{$id}\">";
-    $output .= "<select name=\"{$name}[day]\">";
+    $output .= "<select name=\"{$this->name}[day]\">";
     for($i=1;$i<=31;$i++){
       $selected = ($i == $this->value['day']) ? ' selected="selected"' : '';
       $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
     }
     $output .= "</select>";
-    $output .= "<select name=\"{$name}[month]\">";
+    $output .= "<select name=\"{$this->name}[month]\">";
     for($i=1;$i<=12;$i++){
       $selected = ($i == $this->value['month']) ? ' selected="selected"' : '';
       $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
     }
     $output .= "</select>";
-    $output .= "<select name=\"{$name}[year]\">";
+    $output .= "<select name=\"{$this->name}[year]\">";
     for($i=$this->start_year;$i<=$this->end_year;$i++){
       $selected = ($i == $this->value['year']) ? ' selected="selected"' : '';
       $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
@@ -1180,7 +1202,11 @@ class cs_date extends cs_field {
   }
 
   public function valid() {
-    if( !checkdate( $this->value['month'] , $this->value['day'] , $this->value['year'] ) ) return false;
+    if( !checkdate( $this->value['month'] , $this->value['day'] , $this->value['year'] ) ) {
+      $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
+      $this->error = "{$titlestr}: Invalid date";
+      return false;
+    }
     return parent::valid();
   }
 }
@@ -1188,8 +1214,8 @@ class cs_date extends cs_field {
 
 class cs_spinner extends cs_field {
 
-  public function render($name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->get_prefix();
 
     $form->add_js("$('#{$id}').spinner();");
@@ -1205,7 +1231,7 @@ class cs_spinner extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -1230,7 +1256,7 @@ class cs_fields_container extends cs_field {
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
-      $field = new $field_type($field);
+      $field = new $field_type($field, $name);
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
@@ -1291,8 +1317,8 @@ class cs_fieldset extends cs_fields_container {
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
 
-  public function render($parent_name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $parent_name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->prefix;
     $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if ($this->collapsible) {
@@ -1321,7 +1347,7 @@ class cs_fieldset extends cs_fields_container {
     $output .= "<div class=\"fieldset-inner\">\n";
     foreach ($this->get_fields() as $name => $field) {
       // $output .= $field->render("{$parent_name}[{$name}]");
-      $output .= $field->render("{$name}", $form);
+      $output .= $field->render($form);
     }
     return $output ."</div></fieldset>\n". $this->suffix;
   }
@@ -1338,7 +1364,7 @@ class cs_fields_container_tabbed extends cs_fields_container{
   public function add_field($name, $field, $tabindex = 0) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
-      $field = new $field_type($field);
+      $field = new $field_type($field, $name);
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[$tabindex][] = $name;
@@ -1357,8 +1383,8 @@ class cs_fields_container_tabbed extends cs_fields_container{
 
 class cs_tabs extends cs_fields_container_tabbed {
 
-  public function render($parent_name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $parent_name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->prefix;
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
@@ -1381,7 +1407,7 @@ class cs_tabs extends cs_fields_container_tabbed {
       $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->tabs[$tabindex]['title']."</a></li>";
       $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
-        $tabs_html[$tabindex] .= $field->render("{$name}", $form);
+        $tabs_html[$tabindex] .= $field->render($form);
       }
       $tabs_html[$tabindex] .= "</div>\n";
     }
@@ -1394,8 +1420,8 @@ class cs_tabs extends cs_fields_container_tabbed {
 
 class cs_accordion extends cs_fields_container_tabbed {
 
-  public function render($parent_name, cs_form $form) {
-    $id = !empty($this->id) ? $this->id : $parent_name;
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
     $output = $this->prefix;
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
@@ -1416,7 +1442,7 @@ class cs_accordion extends cs_fields_container_tabbed {
       $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
       $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
-        $output .= $field->render("{$name}", $form);
+        $output .= $field->render($form);
       }
       $output .= "</div>\n";
     }

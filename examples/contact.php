@@ -49,7 +49,7 @@ $form->add_field('fieldset', $fieldset);
 
 $tabs = new cs_tabs(array('attributes'=>array(
   'style' => 'width: 500px',
-)));
+)),'tabs');
 
 $tabs->add_tab('tab1');
 $tabs->add_tab('tab2');
@@ -57,7 +57,7 @@ $tabs->add_tab('tab2');
 
 $accordion = new cs_accordion(array('attributes'=>array(
   'style' => 'width: 500px',
-)));
+)),'accordion');
 
 $accordion->add_tab('accordion1');
 $accordion->add_tab('accordion2');
@@ -101,8 +101,8 @@ $tabs->add_field('slider', array(
   'default_value' => '2',
 ),1);
 
-$form->add_field('accordion', $accordion);
-$form->add_field('tabs', $tabs);
+$form->add_field($accordion->get_name(), $accordion);
+$form->add_field($tabs->get_name(), $tabs);
 
 $form->add_field('hidden1', array(
   'type' => 'hidden',
