@@ -22,6 +22,7 @@ $fieldset2 = new cs_fieldset(
     'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
   ),
   'collapsible' => true,
+  'collapsed' => true,
   'title' => 'my fieldset 2',
 ),'fieldset2');
 
