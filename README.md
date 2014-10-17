@@ -68,10 +68,6 @@ used to generate the HTML ID tag, so must be unique for valid HTML. It is also
 used in generating the default name of the php function to use when the form is
 submitted.
 
-NB: If you are using file uploads in your form then you must specify the
-enctype. For more information see the [Form objects] section of the API
-reference.
-
 ### Add fields to your form
 
 You can add any number of fields to a form, but the only required field is a
