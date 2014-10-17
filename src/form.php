@@ -540,13 +540,9 @@ class cs_form {
 
 abstract class cs_field {
 
-  protected $title = '';
-  protected $description = '';
-  protected $attributes = array();
   protected $autocomplete_path = FALSE;
   protected $ajax = FALSE;
-  protected $default_value;
-  protected $disabled = FALSE;
+  protected $error = NULL;
   protected $validate = array();
   protected $preprocess = array();
   protected $postprocess = array();
@@ -554,10 +550,14 @@ abstract class cs_field {
   protected $suffix = FORMS_DEFAULT_FIELD_SUFFIX;
   protected $size = 60;
   protected $weight = 0;
-  protected $value = '';
-  protected $error = '';
-  protected $name = '';
+  protected $name = NULL;
   protected $id = NULL;
+  protected $title = NULL;
+  protected $description = NULL;
+  protected $attributes = array();
+  protected $disabled = FALSE;
+  protected $default_value = NULL;
+  protected $value = NULL;
 
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
@@ -809,7 +809,9 @@ class cs_markup extends cs_field {
     return TRUE;
   }
 
-  public function is_a_value(){return FALSE;}
+  public function is_a_value(){
+    return FALSE;
+  }
 }
 
 class cs_hidden extends cs_field {

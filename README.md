@@ -189,13 +189,13 @@ They are always valid.
 
     $options += array(
       'options' => array(),
+      'multiple' => FALSE,
     );
 
 #### Sliders
 
     $options += array(
       'options' => array(),
-      'multiple' => FALSE,
     );
 
 #### Radio buttons
