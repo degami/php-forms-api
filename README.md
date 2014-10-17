@@ -19,14 +19,14 @@ Requirements: PHP 5.2.5+
 ## Roadmap
 
  * **Finish the Documentation!**
- * Finish implementation of options such as _disabled_, _attributes_,
+ * ~~Finish implementation of options such as _disabled_, _attributes_,~~
  * Offer a wider range of examples
- * Complete the javascript functionality for collapsible fieldsets and the
+ * Complete the javascript functionality for ~~collapsible fieldsets and~~ the
    password strength meter for password fields.
  * Complete unit tests.
  * AJAX support for field submission and file uploads.
  * Provide a better default theme and a methodology for defining themes.
- * Implement new field types such as button, dates
+ * ~~Implement new field types such as button, dates~~
  * Add support for masked fields, possibly using a jquery plugin.
 
 ## Introduction
@@ -173,9 +173,9 @@ Here are the available fields and their options:
 
 #### Text areas
 
-  $options += array(
-    'rows' => 5,
-  );
+    $options += array(
+      'rows' => 5,
+    );
 
 #### Submit buttons
 
@@ -185,28 +185,28 @@ Here are the available fields and their options:
 
 #### Select lists
 
-  $options += array(
-    'options' => array(),
-  );
+    $options += array(
+      'options' => array(),
+    );
 
 #### Sliders
 
-  $options += array(
-    'options' => array(),
-    'multiple' => FALSE,
-  );
+    $options += array(
+      'options' => array(),
+      'multiple' => FALSE,
+    );
 
 #### Radio buttons
 
-  $options += array(
-    'options' => array(),
-  );
+    $options += array(
+      'options' => array(),
+    );
 
 #### Checkboxes
 
-  $options += array(
-    'options' => array(),
-  );
+    $options += array(
+      'options' => array(),
+    );
 
 #### Checkbox
 
@@ -216,21 +216,21 @@ Here are the available fields and their options:
 
 #### Files
 
-  $options += array(
-    'destination' => '',
-  );
+    $options += array(
+      'destination' => '',
+    );
 
 #### Dates
 
-  $options += array(
-    'start_year' => '',
-    'end_year' => '',
-  );
-  $options['default_value'] = array(
-    'year'=>'',
-    'month'=>'',
-    'day'=>'',
-  );
+    $options += array(
+      'start_year' => '',
+      'end_year' => '',
+    );
+    $options['default_value'] = array(
+      'year'=>'',
+      'month'=>'',
+      'day'=>'',
+    );
 
 #### Field sets
 
