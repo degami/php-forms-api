@@ -531,7 +531,7 @@ class cs_form {
   }
 }
 
-class cs_field {
+abstract class cs_field {
 
   protected $title = '';
   protected $description = '';
@@ -665,6 +665,8 @@ class cs_field {
   public function get_suffix(){
     return $this->suffix;
   }
+
+  abstract public function render(cs_form $form);
 
 }
 
@@ -858,7 +860,7 @@ class cs_password extends cs_field {
   }
 }
 
-class cs_field_multivalues extends cs_field {
+abstract class cs_field_multivalues extends cs_field {
   protected $options = array();
 
   public function &get_options(){
@@ -1240,7 +1242,7 @@ class cs_spinner extends cs_field {
 
 }
 
-class cs_fields_container extends cs_field {
+abstract class cs_fields_container extends cs_field {
 
   protected $insert_field_order = array();
   protected $fields = array();
@@ -1372,7 +1374,7 @@ class cs_fieldset extends cs_fields_container {
 
 }
 
-class cs_fields_container_tabbed extends cs_fields_container{
+abstract class cs_fields_container_tabbed extends cs_fields_container{
   protected $tabs = array();
 
   public function add_tab($title){
