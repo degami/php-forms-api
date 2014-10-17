@@ -67,7 +67,9 @@ class cs_form {
     }
     $output = array();
     foreach ($this->get_fields() as $name => $field) {
-      $output[$name] = $field->values();
+      if($field->is_a_value() == TRUE){
+        $output[$name] = $field->values();
+      }
     }
     return $output;
   }
@@ -222,11 +224,16 @@ class cs_form {
 
     $this->js = array_filter(array_map('trim',$this->js));
     if(!empty( $this->js )){
+      foreach($this->js as &$js_string){
+        if($js_string[strlen($js_string)-1] == ';'){
+          $js_string = substr($js_string,0,strlen($js_string)-1);
+        }
+      }
       $output .= "
       <script type=\"text/javascript\">
         (function($){
           $(document).ready(function(){
-            ".implode(";\n",$this->js)."
+            ".implode(";\n",$this->js).";
           });
         })(jQuery);
       </script>";
@@ -666,8 +673,8 @@ abstract class cs_field {
     return $this->suffix;
   }
 
-  abstract public function render(cs_form $form);
-
+  abstract public function render(cs_form $form); // renders html
+  abstract public function is_a_value();          // tells if component value is passed on the parent values() function call
 }
 
 class cs_submit extends cs_field {
@@ -690,6 +697,10 @@ class cs_submit extends cs_field {
     $output = $this->get_prefix();
     $output .= "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
     return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 
   public function valid() {
@@ -720,6 +731,10 @@ class cs_reset extends cs_field {
     return $output . $this->get_suffix();
   }
 
+  public function is_a_value(){
+    return FALSE;
+  }
+
   public function valid() {
     return TRUE;
   }
@@ -745,6 +760,10 @@ class cs_button extends cs_field {
     return $output . $this->get_suffix();
   }
 
+  public function is_a_value(){
+    return TRUE;
+  }
+
   public function valid() {
     return TRUE;
   }
@@ -766,6 +785,10 @@ class cs_value extends cs_field {
   public function valid() {
     return TRUE;
   }
+
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 class cs_markup extends cs_field {
@@ -785,6 +808,8 @@ class cs_markup extends cs_field {
   public function valid() {
     return TRUE;
   }
+
+  public function is_a_value(){return FALSE;}
 }
 
 class cs_hidden extends cs_field {
@@ -794,6 +819,10 @@ class cs_hidden extends cs_field {
     $this->attributes['class'] = trim('hidden '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
     return "<input type=\"hidden\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 
 }
@@ -820,6 +849,10 @@ class cs_textfield extends cs_field {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
     return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 
 }
@@ -850,6 +883,10 @@ class cs_textarea extends cs_field {
     }
     return $output . $this->get_suffix();
   }
+
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 
@@ -873,6 +910,10 @@ class cs_password extends cs_field {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
     return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 }
 
@@ -961,6 +1002,10 @@ class cs_select extends cs_field_multivalues {
     }
     return $output . $this->get_suffix();
   }
+
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 class cs_slider extends cs_select{
@@ -983,16 +1028,16 @@ class cs_slider extends cs_select{
     $id = $this->get_html_id();
     $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
     $form->add_js("
-      $('#{$id}-slider').slider({
+      \$('#{$id}-slider').slider({
         min: 1,
         max: ".count($this->options).",
-        value: $( \"#{$id}\" )[ 0 ].selectedIndex + 1,
+        value: \$( \"#{$id}\" )[ 0 ].selectedIndex + 1,
         slide: function( event, ui ) {
-          $( \"#{$id}\" )[ 0 ].selectedIndex = ui.value - 1;
+          \$( \"#{$id}\" )[ 0 ].selectedIndex = ui.value - 1;
         }
       });
-      $( \"#{$id}\" ).change(function() {
-        $('#{$id}-slider').slider(\"value\", this.selectedIndex + 1 );
+      \$( \"#{$id}\" ).change(function() {
+        \$('#{$id}-slider').slider(\"value\", this.selectedIndex + 1 );
       }).hide();");
     return parent::render($form);
   }
@@ -1024,6 +1069,10 @@ class cs_radios extends cs_field_multivalues {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
     return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 }
 
@@ -1060,6 +1109,10 @@ class cs_checkboxes extends cs_field_multivalues {
     }
     return $output . $this->get_suffix();
   }
+
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 
@@ -1090,6 +1143,10 @@ class cs_checkbox extends cs_field {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
     return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 }
 
@@ -1149,6 +1206,10 @@ class cs_file extends cs_field {
       return TRUE;
     }
     return parent::valid();
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 }
 
@@ -1227,6 +1288,10 @@ class cs_date extends cs_field {
     }
     return parent::valid();
   }
+
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 
@@ -1236,7 +1301,7 @@ class cs_spinner extends cs_field {
     $id = $this->get_html_id();
     $output = $this->get_prefix();
 
-    $form->add_js("$('#{$id}').spinner();");
+    $form->add_js("\$('#{$id}').spinner();");
 
     $this->attributes['class'] = trim('spinner '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -1256,6 +1321,9 @@ class cs_spinner extends cs_field {
     return $output . $this->get_suffix();
   }
 
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 abstract class cs_fields_container extends cs_field {
@@ -1283,7 +1351,9 @@ abstract class cs_fields_container extends cs_field {
   public function values() {
     $output = array();
     foreach ($this->get_fields() as $name => $field) {
-      $output[$name] = $field->values();
+      if($field->is_a_value() == TRUE){
+        $output[$name] = $field->values();
+      }
     }
     return $output;
   }
@@ -1328,6 +1398,9 @@ abstract class cs_fields_container extends cs_field {
     }
   }
 
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 class cs_fieldset extends cs_fields_container {
@@ -1350,7 +1423,7 @@ class cs_fieldset extends cs_fields_container {
 
       if( !$js_collapsible_added ){
         $form->add_js("
-        $('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
+        \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
           evt.preventDefault();
           var \$this = \$(this);
           \$this.parent().find('.fieldset-inner').toggle( 'blind', {}, 500, function(){
@@ -1425,7 +1498,7 @@ class cs_tabs extends cs_fields_container_tabbed {
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
-    $form->add_js("$('#{$id}').tabs();");
+    $form->add_js("\$('#{$id}').tabs();");
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
     $tabs_html = array();
@@ -1462,7 +1535,7 @@ class cs_accordion extends cs_fields_container_tabbed {
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
-    $form->add_js("$('#{$id}').accordion();");
+    $form->add_js("\$('#{$id}').accordion();");
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
     foreach($this->tabs as $tabindex => $tab){

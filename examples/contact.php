@@ -145,6 +145,12 @@ $form->add_field('submit', array(
   'value' => 'Send',
 ));
 
+$form->add_field('reset', array(
+  'type' => 'reset',
+  'value' => 'Reset',
+));
+
+
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.

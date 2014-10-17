@@ -216,6 +216,8 @@ They are always valid.
 
 #### Markup
 
+Markup values are not passed to the values() function
+
 #### Values
 
 Values are passed with the form on submit but are not shown during render.
