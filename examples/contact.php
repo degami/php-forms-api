@@ -9,6 +9,15 @@ $form = new cs_form(array(
   'form_id' => 'contact',
 //  'attributes'=>array('enctype'=>'multipart/form-data')
 ));
+
+$object = new stdClass;
+$object->val1='val1';
+
+$form->add_field('object',array(
+  'type'=>'value',
+  'value' => $object,
+));
+
 $fieldset = new cs_fieldset(
   array('attributes'=>array(
     'style' => 'width: 500px;padding: 10px 10px 10px 5px;',

@@ -751,8 +751,24 @@ class cs_button extends cs_field {
 
 }
 
-class cs_markup extends cs_field {
+class cs_value extends cs_field {
+  public function __construct($options = array(), $name = NULL) {
+    $this->name = $name;
+    foreach ($options as $name => $value) {
+      $this->$name = $value;
+    }
+  }
 
+  public function render(cs_form $form) {
+    return '';
+  }
+
+  public function valid() {
+    return TRUE;
+  }
+}
+
+class cs_markup extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {

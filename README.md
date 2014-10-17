@@ -175,9 +175,15 @@ Here are the available fields and their options:
 
 #### Submit buttons
 
+They are always valid.
+
 #### Reset buttons
 
+They are always valid.
+
 #### Buttons
+
+They are always valid.
 
 #### Select lists
 
@@ -209,6 +215,11 @@ Here are the available fields and their options:
 #### Hidden values
 
 #### Markup
+
+#### Values
+
+Values are passed with the form on submit but are not shown during render.
+They are always valid.
 
 #### Files
 
