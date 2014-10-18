@@ -93,6 +93,12 @@ $accordion->add_field('spinner', array(
 
 $accordion->add_field('date', array(
   'type' => 'date',
+  'title' => 'select date',
+),1);
+
+$accordion->add_field('datepicker', array(
+  'type' => 'datepicker',
+  'title' => 'date picker',
 ),1);
 
 $tabs->add_field('markup2',array(
@@ -131,6 +137,36 @@ $form->add_field($tabs->get_name(), $tabs);
 $form->add_field('hidden1', array(
   'type' => 'hidden',
   'default_value' => 'aaaa',
+));
+
+
+$form->add_field('autocomplete', array(
+  'type' => 'autocomplete',
+  'title' => 'autocomplete',
+  'options' => array(
+    'ActionScript',
+    'AppleScript',
+    'Asp',
+    'BASIC',
+    'C',
+    'C++',
+    'Clojure',
+    'COBOL',
+    'ColdFusion',
+    'Erlang',
+    'Fortran',
+    'Groovy',
+    'Haskell',
+    'Java',
+    'JavaScript',
+    'Lisp',
+    'Perl',
+    'PHP',
+    'Python',
+    'Ruby',
+    'Scala',
+    'Scheme'
+  ),
 ));
 
 $form->add_field('checkbox', array(

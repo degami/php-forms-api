@@ -165,6 +165,17 @@ Here are the available fields and their options:
 
 #### Text fields
 
+#### Autocomplete
+
+    $options += array(
+      'autocomplete_path' => '',
+      'options' => array(),
+      'min_length' => 3,
+    );
+
+if options array is defined, it is used as source for the autocomplete widget,
+otherwise autocomplete_path is used
+
 #### Password fields
 
 #### Text areas
@@ -239,6 +250,12 @@ They are always valid.
       'year'=>'',
       'month'=>'',
       'day'=>'',
+    );
+
+#### Date Pickers
+
+    $options += array(
+      'date_format' => 'yy-mm-dd',
     );
 
 #### Field sets

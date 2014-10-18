@@ -540,7 +540,6 @@ class cs_form {
 
 abstract class cs_field {
 
-  protected $autocomplete_path = FALSE;
   protected $ajax = FALSE;
   protected $error = NULL;
   protected $validate = array();
@@ -678,7 +677,6 @@ abstract class cs_field {
 }
 
 class cs_submit extends cs_field {
-
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
@@ -706,11 +704,9 @@ class cs_submit extends cs_field {
   public function valid() {
     return TRUE;
   }
-
 }
 
 class cs_reset extends cs_field {
-
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
@@ -738,11 +734,9 @@ class cs_reset extends cs_field {
   public function valid() {
     return TRUE;
   }
-
 }
 
 class cs_button extends cs_field {
-
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
@@ -767,7 +761,6 @@ class cs_button extends cs_field {
   public function valid() {
     return TRUE;
   }
-
 }
 
 class cs_value extends cs_field {
@@ -815,7 +808,6 @@ class cs_markup extends cs_field {
 }
 
 class cs_hidden extends cs_field {
-
   public function render(cs_form $form) {
     $id = $this->get_html_id();
     $this->attributes['class'] = trim('hidden '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
@@ -826,11 +818,9 @@ class cs_hidden extends cs_field {
   public function is_a_value(){
     return TRUE;
   }
-
 }
 
 class cs_textfield extends cs_field {
-
   public function render(cs_form $form) {
     $id = $this->get_html_id();
     $output = $this->get_prefix();
@@ -856,11 +846,59 @@ class cs_textfield extends cs_field {
   public function is_a_value(){
     return TRUE;
   }
+}
 
+class cs_autocomplete extends cs_field{
+  protected $autocomplete_path = FALSE;
+  protected $options = array();
+  protected $min_length = 3;
+
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
+    $output = $this->get_prefix();
+
+    $this->attributes['class'] = trim('autocomplete '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes();
+
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+    }
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+
+    $form->add_js("
+      \$( \"#{$id}\" )
+      .bind( \"keydown\", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).autocomplete( \"instance\" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        source: ".((!empty($this->options)) ? json_encode($this->options) : "\"{$this->autocomplete_path}\"").",
+        minLength: {$this->min_length},
+        focus: function() {
+          return false;
+        }
+      });
+    ");
+
+    return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 class cs_textarea extends cs_field {
-
   protected $rows = 5;
 
   public function render(cs_form $form) {
@@ -964,7 +1002,6 @@ abstract class cs_field_multivalues extends cs_field {
 }
 
 class cs_select extends cs_field_multivalues {
-
   protected $multiple = FALSE;
 
   public function render(cs_form $form) {
@@ -1011,7 +1048,6 @@ class cs_select extends cs_field_multivalues {
 }
 
 class cs_slider extends cs_select{
-
   public function __construct($options, $name = NULL){
     parent::__construct($options, $name);
 
@@ -1296,9 +1332,40 @@ class cs_date extends cs_field {
   }
 }
 
+class cs_datepicker extends cs_field {
+  protected $date_format = 'yy-mm-dd';
+
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
+    $output = $this->get_prefix();
+
+    $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes();
+
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+    }
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+
+    $form->add_js("\$('#{$id}').datepicker({dateFormat: \"{$this->date_format}\"});");
+
+    return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
+  }
+}
 
 class cs_spinner extends cs_field {
-
   public function render(cs_form $form) {
     $id = $this->get_html_id();
     $output = $this->get_prefix();
@@ -1329,7 +1396,6 @@ class cs_spinner extends cs_field {
 }
 
 abstract class cs_fields_container extends cs_field {
-
   protected $insert_field_order = array();
   protected $fields = array();
 
@@ -1406,7 +1472,6 @@ abstract class cs_fields_container extends cs_field {
 }
 
 class cs_fieldset extends cs_fields_container {
-
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
 
@@ -1462,7 +1527,6 @@ class cs_fieldset extends cs_fields_container {
     }
     return $output ."</div></fieldset>\n". $this->suffix;
   }
-
 }
 
 abstract class cs_fields_container_tabbed extends cs_fields_container{
@@ -1493,7 +1557,6 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
 }
 
 class cs_tabs extends cs_fields_container_tabbed {
-
   public function render(cs_form $form) {
     $id = $this->get_html_id();
     $output = $this->prefix;
@@ -1526,11 +1589,9 @@ class cs_tabs extends cs_fields_container_tabbed {
 
     return $output . $this->suffix;
   }
-
 }
 
 class cs_accordion extends cs_fields_container_tabbed {
-
   public function render(cs_form $form) {
     $id = $this->get_html_id();
     $output = $this->prefix;
@@ -1561,5 +1622,4 @@ class cs_accordion extends cs_fields_container_tabbed {
 
     return $output . $this->suffix;
   }
-
 }
