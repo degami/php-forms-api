@@ -178,6 +178,10 @@ class cs_form {
     return isset($this->fields[$field_name]) ? $this->fields[$field_name] : NULL;
   }
 
+  public function get_id(){
+    return $this->form_id;
+  }
+
   public function show_errors() {
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
   }
@@ -216,7 +220,7 @@ class cs_form {
       $attributes .= " {$key}=\"{$value}\"";
     }
 
-    $output .= "<form action=\"{$this->action}\" method=\"{$this->method}\"{$attributes}>\n";
+    $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
     $output .= $fields_html;
     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
@@ -874,15 +878,15 @@ class cs_autocomplete extends cs_field{
     }
 
     $form->add_js("
-      \$( \"#{$id}\" )
-      .bind( \"keydown\", function( event ) {
+      \$('#{$id}','#{$form->get_id()}')
+      .bind( 'keydown', function( event ) {
         if ( event.keyCode === $.ui.keyCode.TAB &&
-        $( this ).autocomplete( \"instance\" ).menu.active ) {
+        \$( this ).autocomplete( 'instance' ).menu.active ) {
           event.preventDefault();
         }
       })
       .autocomplete({
-        source: ".((!empty($this->options)) ? json_encode($this->options) : "\"{$this->autocomplete_path}\"").",
+        source: ".((!empty($this->options)) ? json_encode($this->options) : "'{$this->autocomplete_path}'").",
         minLength: {$this->min_length},
         focus: function() {
           return false;
@@ -1066,16 +1070,16 @@ class cs_slider extends cs_select{
     $id = $this->get_html_id();
     $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
     $form->add_js("
-      \$('#{$id}-slider').slider({
+      \$('#{$id}-slider','#{$form->get_id()}').slider({
         min: 1,
         max: ".count($this->options).",
-        value: \$( \"#{$id}\" )[ 0 ].selectedIndex + 1,
+        value: \$( '#{$id}' )[ 0 ].selectedIndex + 1,
         slide: function( event, ui ) {
-          \$( \"#{$id}\" )[ 0 ].selectedIndex = ui.value - 1;
+          \$( '#{$id}' )[ 0 ].selectedIndex = ui.value - 1;
         }
       });
-      \$( \"#{$id}\" ).change(function() {
-        \$('#{$id}-slider').slider(\"value\", this.selectedIndex + 1 );
+      \$( '#{$id}' ).change(function() {
+        \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
       }).hide();");
     return parent::render($form);
   }
@@ -1355,7 +1359,7 @@ class cs_datepicker extends cs_field {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
 
-    $form->add_js("\$('#{$id}').datepicker({dateFormat: \"{$this->date_format}\"});");
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
 
     return $output . $this->get_suffix();
   }
@@ -1370,7 +1374,7 @@ class cs_spinner extends cs_field {
     $id = $this->get_html_id();
     $output = $this->get_prefix();
 
-    $form->add_js("\$('#{$id}').spinner();");
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').spinner();");
 
     $this->attributes['class'] = trim('spinner '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -1563,7 +1567,7 @@ class cs_tabs extends cs_fields_container_tabbed {
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
-    $form->add_js("\$('#{$id}').tabs();");
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
     $tabs_html = array();
@@ -1598,7 +1602,7 @@ class cs_accordion extends cs_fields_container_tabbed {
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
-    $form->add_js("\$('#{$id}').accordion();");
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion();");
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
     foreach($this->tabs as $tabindex => $tab){
