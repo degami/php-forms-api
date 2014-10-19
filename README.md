@@ -168,6 +168,7 @@ Here are the available fields and their options:
 #### Autocomplete
 
     $options += array(
+      'type' => 'autocomplete',
       'autocomplete_path' => '',
       'options' => array(),
       'min_length' => 3,
@@ -178,27 +179,45 @@ otherwise autocomplete_path is used
 
 #### Password fields
 
+    $options += array(
+      'type' => 'password',
+    );
+
 #### Text areas
 
     $options += array(
+      'type' => 'textarea',
       'rows' => 5,
     );
 
 #### Submit buttons
 
+    $options += array(
+      'type' => 'submit',
+    );
+
 They are always valid.
 
 #### Reset buttons
 
+    $options += array(
+      'type' => 'reset',
+    );
+
 They are always valid.
 
 #### Buttons
+
+    $options += array(
+      'type' => 'button',
+    );
 
 They are always valid.
 
 #### Select lists
 
     $options += array(
+      'type' => 'select',
       'options' => array(),
       'multiple' => FALSE,
     );
@@ -206,30 +225,49 @@ They are always valid.
 #### Sliders
 
     $options += array(
+      'type' => 'slider',
       'options' => array(),
     );
 
 #### Radio buttons
 
     $options += array(
+      'type' => 'radios',
       'options' => array(),
     );
 
 #### Checkboxes
 
     $options += array(
+      'type' => 'checkboxes',
       'options' => array(),
     );
 
 #### Checkbox
 
+    $options += array(
+      'type' => 'checkbox',
+    );
+
 #### Hidden values
 
+    $options += array(
+      'type' => 'hidden',
+    );
+
 #### Markup
+
+    $options += array(
+      'type' => 'markup',
+    );
 
 Markup values are not passed to the values() function
 
 #### Values
+
+    $options += array(
+      'type' => 'value',
+    );
 
 Values are passed with the form on submit but are not shown during render.
 They are always valid.
@@ -237,12 +275,14 @@ They are always valid.
 #### Files
 
     $options += array(
+      'type' => 'file',
       'destination' => '',
     );
 
 #### Dates
 
     $options += array(
+      'type' => 'date',
       'start_year' => '',
       'end_year' => '',
     );
@@ -255,12 +295,14 @@ They are always valid.
 #### Date Pickers
 
     $options += array(
+      'type' => 'datepicker',
       'date_format' => 'yy-mm-dd',
     );
 
 #### Times
 
     $options += array(
+      'type' => 'time',
       'granularity' => 'seconds', // one of: hours, minutes or seconds
     );
     $options['default_value'] = array(
@@ -271,11 +313,22 @@ They are always valid.
 
 #### Field sets
 
+    $options += array(
+      'type' => 'fieldset',
+    );
+
 #### Tabs
+
+    $options += array(
+      'type' => 'tabs',
+    );
+
 
 #### Accordions
 
-
+    $options += array(
+      'type' => 'accordion',
+    );
 
 
 ### Validators reference
