@@ -635,7 +635,7 @@ abstract class cs_field {
       if ($error !== TRUE) {
         $this->error = str_replace('%t', $this->title, $error);
         if(is_array($validator) && !empty($validator['error_message'])){
-          $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
+          $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
           $this->error = str_replace('%t', $titlestr, $validator['error_message']);
         }
         return FALSE;
