@@ -258,6 +258,17 @@ They are always valid.
       'date_format' => 'yy-mm-dd',
     );
 
+#### Times
+
+    $options += array(
+      'granularity' => 'seconds', // one of: hours, minutes or seconds
+    );
+    $options['default_value'] = array(
+      'hours'=>'',
+      'minutes'=>'',
+      'seconds'=>'',
+    );
+
 #### Field sets
 
 #### Tabs

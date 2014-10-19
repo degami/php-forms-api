@@ -96,6 +96,13 @@ $accordion->add_field('date', array(
   'title' => 'select date',
 ),1);
 
+$accordion->add_field('time', array(
+  'type' => 'time',
+  'title' => 'time',
+  'granularity' => 'minutes',
+  'default_value' => array('hours'=>10,'minutes'=>23)
+),1);
+
 $accordion->add_field('datepicker', array(
   'type' => 'datepicker',
   'title' => 'date picker',

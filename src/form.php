@@ -1261,8 +1261,8 @@ class cs_file extends cs_field {
 }
 
 class cs_date extends cs_field {
-  private $start_year;
-  private $end_year;
+  protected $start_year;
+  protected $end_year;
 
   public function __construct($options = array(), $name = NULL) {
 
@@ -1367,6 +1367,104 @@ class cs_datepicker extends cs_field {
     $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
 
     return $output . $this->get_suffix();
+  }
+
+  public function is_a_value(){
+    return TRUE;
+  }
+}
+
+class cs_time extends cs_field {
+  protected $granularity = 'seconds';
+
+  public function __construct($options = array(), $name = NULL) {
+
+    $this->default_value = array(
+      'hours'=>0,
+      'minutes'=>0,
+      'seconds'=>0,
+    );
+
+    parent::__construct($options, $name);
+  }
+
+  public function render(cs_form $form) {
+    $id = $this->get_html_id();
+    $output = $this->get_prefix();
+
+    $this->attributes['class'] = trim('time '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes(array('type','name','id','size'));
+
+    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+    if (!empty($this->title)) {
+      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+    }
+    $output .= "<div id=\"{$id}\">";
+    $output .= "<select name=\"{$this->name}[hours]\">";
+    for($i=0;$i<=23;$i++){
+      $selected = ($i == $this->value['hours']) ? ' selected="selected"' : '';
+      $output .= "<option value=\"{$i}\"{$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
+    }
+    $output .= "</select>";
+    if($this->granularity != 'hours'){
+      $output .= "<select name=\"{$this->name}[minutes]\">";
+      for($i=0;$i<=59;$i++){
+        $selected = ($i == $this->value['minutes']) ? ' selected="selected"' : '';
+        $output .= "<option value=\"{$i}\"{$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
+      }
+      $output .= "</select>";
+      if($this->granularity != 'minutes'){
+        $output .= "<select name=\"{$this->name}[seconds]\">";
+        for($i=0;$i<=59;$i++){
+          $selected = ($i == $this->value['seconds']) ? ' selected="selected"' : '';
+          $output .= "<option value=\"{$i}\"{$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
+        }
+        $output .= "</select>";
+      }
+    }
+    $output .= "</div>";
+
+    if (!empty($this->description)) {
+      $output .= "<div class=\"description\">{$this->description}</div>";
+    }
+    return $output . $this->get_suffix();
+  }
+
+  public function process($value, $name) {
+    $this->value = array(
+      'hours' => $value['hours'],
+    );
+    if($this->granularity!='hours'){
+      $this->value['minutes'] = $value['minutes'];
+      if($this->granularity!='minutes'){
+        $this->value['seconds'] = $value['seconds'];
+      }
+    }
+  }
+
+  public function valid() {
+
+    $check = TRUE;
+    $check &= ($this->value['hours']>=0 && $this->value['hours']<=23);
+
+    if($this->granularity != 'hours'){
+      $check &= ($this->value['minutes']>=0 && $this->value['minutes']<=59);
+
+      if($this->granularity != 'minutes'){
+        $check &= ($this->value['seconds']>=0 && $this->value['seconds']<=59);
+      }
+    }
+
+    if( ! $check ) {
+      $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
+      $this->error = "{$titlestr}: Invalid time";
+      return FALSE;
+    }
+    return parent::valid();
   }
 
   public function is_a_value(){
