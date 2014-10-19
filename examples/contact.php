@@ -18,13 +18,40 @@ $form->add_field('object',array(
   'value' => $object,
 ));
 
-$fieldset = new cs_fieldset(
-  array('attributes'=>array(
+$form->add_field('fieldset', array(
+  'type' => 'fieldset',
+  'attributes'=>array(
     'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
   ),
   'collapsible' => true,
   'title' => 'my fieldset',
-),'fieldset');
+));
+
+$form->get_field('fieldset')->add_field('name', array(
+  'type' => 'textfield',
+  'validate' => array('required'),
+  'preprocess' => array('trim'),
+  'title' => 'Your name',
+  'attributes' => array(
+    'style' => 'width: 100%',
+   ),
+));
+$form->get_field('fieldset')->add_field('email', array(
+  'type' => 'textfield',
+  'validate' => array('required', 'email'),
+  'title' => 'Your email address',
+  'attributes' => array(
+    'style' => 'width: 100%',
+   ),
+));
+$form->get_field('fieldset')->add_field('markup1', array(
+  'type' => 'markup',
+  'value' => 'aaaa',
+  'weight' => -10,
+));
+
+
+
 
 $fieldset2 = new cs_fieldset(
   array('attributes'=>array(
@@ -35,23 +62,6 @@ $fieldset2 = new cs_fieldset(
   'title' => 'my fieldset 2',
 ),'fieldset2');
 
-$fieldset->add_field('name', array(
-  'type' => 'textfield',
-  'validate' => array('required'),
-  'preprocess' => array('trim'),
-  'title' => 'Your name',
-  'attributes' => array(
-    'style' => 'width: 100%',
-   ),
-));
-$fieldset->add_field('email', array(
-  'type' => 'textfield',
-  'validate' => array('required', 'email'),
-  'title' => 'Your email address',
-  'attributes' => array(
-    'style' => 'width: 100%',
-   ),
-));
 $fieldset2->add_field('message', array(
   'type' => 'textarea',
   'postprocess' => array('xss'),
@@ -63,12 +73,6 @@ $fieldset2->add_field('message', array(
    ),
 ));
 
-$fieldset->add_field('markup1', array(
-  'type' => 'markup',
-  'value' => 'aaaa',
-  'weight' => -10,
-));
-$form->add_field($fieldset->get_name(), $fieldset);
 $form->add_field($fieldset2->get_name(), $fieldset2);
 
 $tabs = new cs_tabs(array('attributes'=>array(
