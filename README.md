@@ -165,6 +165,10 @@ Here are the available fields and their options:
 
 #### Text fields
 
+    $options += array(
+      'type' => 'textfield',
+    );
+
 #### Autocomplete
 
     $options += array(
