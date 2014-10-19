@@ -1473,24 +1473,33 @@ class cs_time extends cs_field {
 }
 
 class cs_spinner extends cs_field {
+  protected $min = NULL;
+  protected $max = NULL;
+  protected $step = 1;
+
   public function render(cs_form $form) {
     $id = $this->get_html_id();
     $output = $this->get_prefix();
 
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').spinner();");
+    $js_options = '';$html_options = '';
+    if( is_numeric($this->min) && is_numeric($this->max) && $this->max >= $this->min ){
+      $js_options = "{min: $this->min, max: $this->max, step: $this->step}";
+      $html_options = " min=\"{$this->min}\" max=\"{$this->max}\" step=\"{$this->step}\"";
+    }
+
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').attr('type','text').spinner({$js_options});");
 
     $this->attributes['class'] = trim('spinner '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
-
+    $attributes = $this->get_attributes(array('type','name','id','value','min','max','step'));
     $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$html_options}{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }

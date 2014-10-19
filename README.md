@@ -177,6 +177,15 @@ Here are the available fields and their options:
 if options array is defined, it is used as source for the autocomplete widget,
 otherwise autocomplete_path is used
 
+#### Spinners
+
+    $options += array(
+      'type' => 'spinner',
+      'min'  => NULL,
+      'max'  => NULL,
+      'step' => 1,
+    );
+
 #### Password fields
 
     $options += array(
