@@ -553,7 +553,7 @@ abstract class cs_field {
   protected $postprocess = array();
   protected $prefix = FORMS_DEFAULT_FIELD_PREFIX;
   protected $suffix = FORMS_DEFAULT_FIELD_SUFFIX;
-  protected $size = 60;
+  protected $size = 20;
   protected $weight = 0;
   protected $name = NULL;
   protected $id = NULL;
@@ -845,7 +845,7 @@ class cs_textfield extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -877,7 +877,7 @@ class cs_autocomplete extends cs_field{
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -954,7 +954,7 @@ class cs_password extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" value=\"\"{$attributes} />\n";
+    $output .= "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -979,7 +979,7 @@ abstract class cs_field_multivalues extends cs_field {
         if ($needle == $key) {
             return TRUE;
         } else if(is_array($value)) {
-            if( $this->has_key($needle, $value) == TRUE ){
+            if( cs_field_multivalues::has_key($needle, $value) == TRUE ){
               return TRUE;
             }
         }
@@ -1028,7 +1028,7 @@ class cs_select extends cs_field_multivalues {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $extra = ($this->multiple) ? ' multiple' : '';
+    $extra = ($this->multiple) ? ' multiple="multiple" size="'.$this->size.'" ' : '';
     $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
     foreach ($this->options as $key => $value) {
@@ -1359,7 +1359,7 @@ class cs_datepicker extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
@@ -1499,7 +1499,7 @@ class cs_spinner extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$html_options}{$attributes} />\n";
+    $output .= "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$html_options}{$attributes} />\n";
     if (!empty($this->description)) {
       $output .= "<div class=\"description\">{$this->description}</div>";
     }
