@@ -165,6 +165,8 @@ class cs_form {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
       $field = new $field_type($field, $name);
+    }else{
+      $field->set_name($name);
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
@@ -578,6 +580,9 @@ abstract class cs_field {
     $this->value = $this->default_value;
   }
 
+  public function set_name($name){
+    $this->name = $name;
+  }
   public function get_name(){
     return $this->name;
   }
@@ -1415,6 +1420,8 @@ abstract class cs_fields_container extends cs_field {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
       $field = new $field_type($field, $name);
+    }else{
+      $field->set_name($name);
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
@@ -1544,6 +1551,8 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
       $field = new $field_type($field, $name);
+    }else{
+      $field->set_name($name);
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[$tabindex][] = $name;
