@@ -1580,9 +1580,9 @@ abstract class cs_fields_container extends cs_field {
     return $output;
   }
 
-  public function preprocess() {
+  public function preprocess($process_type = "preprocess") {
     foreach ($this->get_fields() as $field) {
-      $field->preprocess();
+      $field->preprocess($process_type);
     }
   }
   public function process($values) {
