@@ -1286,7 +1286,7 @@ class cs_date extends cs_field {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('type','name','id','size'));
+    $attributes = $this->get_attributes(array('type','name','id','size','day','month','year'));
 
     $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
@@ -1415,7 +1415,7 @@ class cs_time extends cs_field {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('type','name','id','size'));
+    $attributes = $this->get_attributes(array('type','name','id','size','hours','minutes','seconds'));
 
     $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
     if (!empty($this->title)) {
