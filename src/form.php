@@ -1292,20 +1292,38 @@ class cs_date extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<div id=\"{$id}\">";
-    $output .= "<select name=\"{$this->name}[day]\">";
+    $output .= "<div id=\"{$id}\"{$attributes}>";
+
+    $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+    if(isset($this->attributes['day']) && is_array($this->attributes['day'])){
+      if($this->disabled == TRUE) $this->attributes['day']['disabled']='disabled';
+      $attributes = $this->get_attributes_string($this->attributes['day'],array('type','name','id','value'));
+    }
+    $output .= "<select name=\"{$this->name}[day]\"{$attributes}>";
     for($i=1;$i<=31;$i++){
       $selected = ($i == $this->value['day']) ? ' selected="selected"' : '';
       $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
     }
     $output .= "</select>";
-    $output .= "<select name=\"{$this->name}[month]\">";
+
+    $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+    if(isset($this->attributes['month']) && is_array($this->attributes['month'])){
+      if($this->disabled == TRUE) $this->attributes['month']['disabled']='disabled';
+      $attributes = $this->get_attributes_string($this->attributes['month'],array('type','name','id','value'));
+    }
+    $output .= "<select name=\"{$this->name}[month]\"{$attributes}>";
     for($i=1;$i<=12;$i++){
       $selected = ($i == $this->value['month']) ? ' selected="selected"' : '';
       $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
     }
     $output .= "</select>";
-    $output .= "<select name=\"{$this->name}[year]\">";
+
+    $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+    if(isset($this->attributes['year']) && is_array($this->attributes['year'])){
+      if($this->disabled == TRUE) $this->attributes['year']['disabled']='disabled';
+      $attributes = $this->get_attributes_string($this->attributes['year'],array('type','name','id','value'));
+    }
+    $output .= "<select name=\"{$this->name}[year]\"{$attributes}>";
     for($i=$this->start_year;$i<=$this->end_year;$i++){
       $selected = ($i == $this->value['year']) ? ' selected="selected"' : '';
       $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
@@ -1403,22 +1421,40 @@ class cs_time extends cs_field {
     if (!empty($this->title)) {
       $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
     }
-    $output .= "<div id=\"{$id}\">";
-    $output .= "<select name=\"{$this->name}[hours]\">";
+    $output .= "<div id=\"{$id}\"{$attributes}>";
+
+    $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+    if(isset($this->attributes['hours']) && is_array($this->attributes['hours'])){
+      if($this->disabled == TRUE) $this->attributes['hours']['disabled']='disabled';
+      $attributes = $this->get_attributes_string($this->attributes['hours'],array('type','name','id','value'));
+    }
+    $output .= "<select name=\"{$this->name}[hours]\"{$attributes}>";
     for($i=0;$i<=23;$i++){
       $selected = ($i == $this->value['hours']) ? ' selected="selected"' : '';
       $output .= "<option value=\"{$i}\"{$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
     }
     $output .= "</select>";
     if($this->granularity != 'hours'){
-      $output .= "<select name=\"{$this->name}[minutes]\">";
+
+      $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+      if(isset($this->attributes['minutes']) && is_array($this->attributes['minutes'])){
+        if($this->disabled == TRUE) $this->attributes['minutes']['disabled']='disabled';
+        $attributes = $this->get_attributes_string($this->attributes['minutes'],array('type','name','id','value'));
+      }
+      $output .= "<select name=\"{$this->name}[minutes]\"{$attributes}>";
       for($i=0;$i<=59;$i++){
         $selected = ($i == $this->value['minutes']) ? ' selected="selected"' : '';
         $output .= "<option value=\"{$i}\"{$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
       }
       $output .= "</select>";
       if($this->granularity != 'minutes'){
-        $output .= "<select name=\"{$this->name}[seconds]\">";
+
+        $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+        if(isset($this->attributes['seconds']) && is_array($this->attributes['seconds'])){
+          if($this->disabled == TRUE) $this->attributes['seconds']['disabled']='disabled';
+          $attributes = $this->get_attributes_string($this->attributes['seconds'],array('type','name','id','value'));
+        }
+        $output .= "<select name=\"{$this->name}[seconds]\"{$attributes}>";
         for($i=0;$i<=59;$i++){
           $selected = ($i == $this->value['seconds']) ? ' selected="selected"' : '';
           $output .= "<option value=\"{$i}\"{$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
