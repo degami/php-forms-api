@@ -805,17 +805,20 @@ abstract class cs_field {
         $validator_func = $validator;
       }
       preg_match('/^([A-Za-z0-9_]+)(\[(.+)\])?$/', $validator_func, $matches);
+      if(!isset($matches[1])) continue;
       $validator_func = "validate_{$matches[1]}";
       $options = isset($matches[3]) ? $matches[3] : NULL;
       if (function_exists($validator_func)) {
         $error = $validator_func($this->value, $options);
       } else {
-        $error = cs_form::$validator_func($this->value, $options);
+        if(method_exists('cs_form', $validator_func))
+          $error = cs_form::$validator_func($this->value, $options);
       }
-      if ($error !== TRUE) {
-        $this->error = str_replace('%t', $this->title, $error);
+      if (isset($error) && $error !== TRUE) {
+        $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
+        if(empty($error)) $error = '%t - Error.';
+        $this->error = str_replace('%t', $titlestr, $error);
         if(is_array($validator) && !empty($validator['error_message'])){
-          $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
           $this->error = str_replace('%t', $titlestr, $validator['error_message']);
         }
         return FALSE;
@@ -1716,6 +1719,7 @@ abstract class cs_fields_container extends cs_field {
     $valid = TRUE;
     foreach ($this->get_fields() as $field) {
       if (!$field->valid()) {
+        // not returnig FALSE to let all the fields to be validated
         $valid = FALSE;
       }
     }

@@ -4,6 +4,11 @@
 session_start();
 require '../src/form.php';
 
+function validate_multiple_by($string,$length = 1){
+  if(!is_numeric($length) || $length == 0) $length = 1;
+  return ((strlen("".$string)%$length) == 0) ? TRUE : '<strong>%t</strong> length must be multiple of '.$length;
+}
+
 // Generate a simple contact form
 $form = new cs_form(array(
   'form_id' => 'contact',
@@ -33,7 +38,7 @@ $form->add_field('fieldset', array(
 
 $form->get_field('fieldset')->add_field('name', array(
   'type' => 'textfield',
-  'validate' => array('required'),
+  'validate' => array('required','multiple_by[3]'),
   'preprocess' => array('trim'),
   'title' => 'Your name',
   'attributes' => array(
@@ -224,7 +229,23 @@ function contact_submit(&$form) {
 	<style>
 	label { display: block; }
 	span.required { color: red; }
-	.error { background: #FFA07A; }
+	.form-item.error input,
+  .form-item.error select,
+  .form-item.error textarea {
+    background-color: #FFA07A;
+  }
+
+  .form-item.error label {
+    color: #ff4f64;
+    font-weight: bold;
+  }
+
+
+  .form-item input,
+  .form-item select,
+  .form-item textarea{
+    max-width: 99%;
+  }
   input[type=text],
   input[type=password],
   input[type=checkbox],
