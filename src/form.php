@@ -41,6 +41,7 @@ class cs_form {
   protected $valid = NULL;
   protected $submit = '';
   protected $error = '';
+  protected $inline_errors = FALSE;
   protected $js = array();
 
   protected $insert_field_order = array();
@@ -188,15 +189,25 @@ class cs_form {
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
   }
 
+  public function errors_inline() {
+    return $this->inline_errors;
+  }
+
   public function render() {
     $output = $this->prefix;
+
     if ( $this->valid() === FALSE) {
-      $output .= "<div class=\"errors ui-state-error ui-corner-all\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>";
-      $output .= $this->show_errors();
-      foreach ($this->get_fields() as $field) {
-        $output .= $field->show_errors();
+      $errors = $this->show_errors();
+      if(!$this->errors_inline()){
+        foreach ($this->get_fields() as $field) {
+          $errors .= $field->show_errors();
+        }
       }
-      $output .= "</div>";
+      if(trim($errors)!=''){
+        $output .= "<div class=\"errors ui-state-error ui-corner-all\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>";
+        $output .= $errors;
+        $output .= "</div>";
+      }
     }
 
     // uasort($this->fields, 'cs_form::order_by_weight');
@@ -699,6 +710,10 @@ abstract class cs_field {
       if (!empty($this->description)) {
         $output .= "<div class=\"description\">{$this->description}</div>";
       }
+    }
+
+    if($form->errors_inline() == TRUE && !empty($this->error) ){
+      $output.= '<div class="inline-error error">'.$this->error.'</div>';
     }
     $output .= $this->get_suffix();
 
