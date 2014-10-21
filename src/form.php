@@ -511,16 +511,160 @@ class cs_form {
     $attrlist = preg_replace('%(\s?)/\s*$%', '\1', $attrlist);
 
     // Clean up attributes
-    $attr2 = implode(' ', _filter_xss_attributes($attrlist));
+    $attr2 = implode(' ', cs_form::_filter_xss_attributes($attrlist));
     $attr2 = preg_replace('/[<>]/', '', $attr2);
     $attr2 = strlen($attr2) ? ' ' . $attr2 : '';
 
     return "<$elem$attr2$xhtml_slash>";
   }
 
+  private static function _filter_xss_attributes($attr) {
+    $attrarr = array();
+    $mode = 0;
+    $attrname = '';
+
+    while (strlen($attr) != 0) {
+      // Was the last operation successful?
+      $working = 0;
+
+      switch ($mode) {
+        case 0:
+          // Attribute name, href for instance.
+          if (preg_match('/^([-a-zA-Z]+)/', $attr, $match)) {
+            $attrname = strtolower($match[1]);
+            $skip = ($attrname == 'style' || substr($attrname, 0, 2) == 'on');
+            $working = $mode = 1;
+            $attr = preg_replace('/^[-a-zA-Z]+/', '', $attr);
+          }
+          break;
+
+        case 1:
+          // Equals sign or valueless ("selected").
+          if (preg_match('/^\s*=\s*/', $attr)) {
+            $working = 1;
+            $mode = 2;
+            $attr = preg_replace('/^\s*=\s*/', '', $attr);
+            break;
+          }
+
+          if (preg_match('/^\s+/', $attr)) {
+            $working = 1;
+            $mode = 0;
+            if (!$skip) {
+              $attrarr[] = $attrname;
+            }
+            $attr = preg_replace('/^\s+/', '', $attr);
+          }
+          break;
+
+        case 2:
+          // Attribute value, a URL after href= for instance.
+          if (preg_match('/^"([^"]*)"(\s+|$)/', $attr, $match)) {
+            $thisval = cs_form::_filter_xss_bad_protocol($match[1]);
+
+            if (!$skip) {
+              $attrarr[] = "$attrname=\"$thisval\"";
+            }
+            $working = 1;
+            $mode = 0;
+            $attr = preg_replace('/^"[^"]*"(\s+|$)/', '', $attr);
+            break;
+          }
+
+          if (preg_match("/^'([^']*)'(\s+|$)/", $attr, $match)) {
+            $thisval = cs_form::_filter_xss_bad_protocol($match[1]);
+
+            if (!$skip) {
+              $attrarr[] = "$attrname='$thisval'";
+            }
+            $working = 1;
+            $mode = 0;
+            $attr = preg_replace("/^'[^']*'(\s+|$)/", '', $attr);
+            break;
+          }
+
+          if (preg_match("%^([^\s\"']+)(\s+|$)%", $attr, $match)) {
+            $thisval = cs_form::_filter_xss_bad_protocol($match[1]);
+
+            if (!$skip) {
+              $attrarr[] = "$attrname=\"$thisval\"";
+            }
+            $working = 1;
+            $mode = 0;
+            $attr = preg_replace("%^[^\s\"']+(\s+|$)%", '', $attr);
+          }
+          break;
+      }
+
+      if ($working == 0) {
+        // Not well formed; remove and try again.
+        $attr = preg_replace('/
+          ^
+          (
+          "[^"]*("|$)     # - a string that starts with a double quote, up until the next double quote or the end of the string
+          |               # or
+          \'[^\']*(\'|$)| # - a string that starts with a quote, up until the next quote or the end of the string
+          |               # or
+          \S              # - a non-whitespace character
+          )*              # any number of the above three
+          \s*             # any number of whitespaces
+          /x', '', $attr);
+        $mode = 0;
+      }
+    }
+
+    // The attribute list ends with a valueless attribute like "selected".
+    if ($mode == 1 && !$skip) {
+      $attrarr[] = $attrname;
+    }
+    return $attrarr;
+  }
+
+  private static function _filter_xss_bad_protocol($string, $decode = TRUE) {
+    if ($decode) {
+      $string = process_entity_decode($string);
+    }
+    return process_plain(cs_form::_strip_dangerous_protocols($string));
+  }
+
+  private static function _strip_dangerous_protocols($uri) {
+    static $allowed_protocols;
+
+    if (!isset($allowed_protocols)) {
+      $allowed_protocols = array_flip(array('ftp', 'http', 'https', 'irc', 'mailto', 'news', 'nntp', 'rtsp', 'sftp', 'ssh', 'tel', 'telnet', 'webcal'));
+    }
+
+    // Iteratively remove any invalid protocol found.
+    do {
+      $before = $uri;
+      $colonpos = strpos($uri, ':');
+      if ($colonpos > 0) {
+        // We found a colon, possibly a protocol. Verify.
+        $protocol = substr($uri, 0, $colonpos);
+        // If a colon is preceded by a slash, question mark or hash, it cannot
+        // possibly be part of the URL scheme. This must be a relative URL, which
+        // inherits the (safe) protocol of the base document.
+        if (preg_match('![/?#]!', $protocol)) {
+          break;
+        }
+        // Check if this is a disallowed protocol. Per RFC2616, section 3.2.3
+        // (URI Comparison) scheme comparison must be case-insensitive.
+        if (!isset($allowed_protocols[strtolower($protocol)])) {
+          $uri = substr($uri, $colonpos + 1);
+        }
+      }
+    } while ($before != $uri);
+
+    return $uri;
+  }
+
   public static function process_plain($text) {
       // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+  }
+
+  public static function process_entity_decode($text) {
+    return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
   }
 
   public static function attributes($attributes) {
