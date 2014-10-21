@@ -681,8 +681,32 @@ abstract class cs_field {
     return $this->suffix;
   }
 
-  abstract public function render(cs_form $form); // renders html
-  abstract public function is_a_value();          // tells if component value is passed on the parent values() function call
+  public function render(cs_form $form) {
+
+    $id = $this->get_html_id();
+    $output = $this->get_prefix();
+
+    if( !($this instanceof cs_fields_container)){
+      $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+      if (!empty($this->title)) {
+        $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+      }
+    }
+
+    $output .= $this->render_field($form);
+
+    if( !($this instanceof cs_fields_container)){
+      if (!empty($this->description)) {
+        $output .= "<div class=\"description\">{$this->description}</div>";
+      }
+    }
+    $output .= $this->get_suffix();
+
+    return $output ;
+  }
+
+  abstract public function render_field(cs_form $form); // renders html
+  abstract public function is_a_value();                // tells if component value is passed on the parent values() function call
 }
 
 class cs_submit extends cs_field {
@@ -693,7 +717,7 @@ class cs_submit extends cs_field {
     }
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if (empty($this->value)) {
       $this->value = 'Submit';
@@ -701,9 +725,8 @@ class cs_submit extends cs_field {
     $this->attributes['class'] = trim('submit '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = $this->get_prefix();
-    $output .= "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
-    return $output . $this->get_suffix();
+    $output = "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    return $output;
   }
 
   public function is_a_value(){
@@ -723,7 +746,7 @@ class cs_reset extends cs_field {
     }
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if (empty($this->value)) {
       $this->value = 'Reset';
@@ -731,9 +754,8 @@ class cs_reset extends cs_field {
     $this->attributes['class'] = trim('reset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = $this->get_prefix();
-    $output .= "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
-    return $output . $this->get_suffix();
+    $output = "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    return $output;
   }
 
   public function is_a_value(){
@@ -753,14 +775,13 @@ class cs_button extends cs_field {
     }
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $this->attributes['class'] = trim('button '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = $this->get_prefix();
-    $output .= "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes}>{$this->value}</button>\n";
-    return $output . $this->get_suffix();
+    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes}>{$this->value}</button>\n";
+    return $output;
   }
 
   public function is_a_value(){
@@ -774,13 +795,15 @@ class cs_button extends cs_field {
 
 class cs_value extends cs_field {
   public function __construct($options = array(), $name = NULL) {
+    $this->prefix = '';
+    $this->suffix = '';
     $this->name = $name;
     foreach ($options as $name => $value) {
       $this->$name = $value;
     }
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     return '';
   }
 
@@ -801,10 +824,9 @@ class cs_markup extends cs_field {
     }
   }
 
-  public function render(cs_form $form) {
-    $output = $this->get_prefix();
-    $output .= $this->value;
-    return $output . $this->get_suffix();
+  public function render_field(cs_form $form) {
+    $output = $this->value;
+    return $output;
   }
 
   public function valid() {
@@ -817,7 +839,13 @@ class cs_markup extends cs_field {
 }
 
 class cs_hidden extends cs_field {
-  public function render(cs_form $form) {
+  public function __construct($options = array(), $name = NULL) {
+    $this->prefix = '';
+    $this->suffix = '';
+    parent::__construct($options,$name);
+  }
+
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $this->attributes['class'] = trim('hidden '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
@@ -830,9 +858,9 @@ class cs_hidden extends cs_field {
 }
 
 class cs_textfield extends cs_field {
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -840,16 +868,8 @@ class cs_textfield extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -862,9 +882,9 @@ class cs_autocomplete extends cs_field{
   protected $options = array();
   protected $min_length = 3;
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('autocomplete '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -873,14 +893,7 @@ class cs_autocomplete extends cs_field{
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
 
     $form->add_js("
       \$('#{$id}','#{$form->get_id()}')
@@ -899,7 +912,7 @@ class cs_autocomplete extends cs_field{
       });
     ");
 
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -910,9 +923,9 @@ class cs_autocomplete extends cs_field{
 class cs_textarea extends cs_field {
   protected $rows = 5;
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('textarea '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -920,17 +933,10 @@ class cs_textarea extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('name','id','value','rows','cols'));
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<textarea id=\"{$id}\" name=\"{$this->name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n";
     $output .= $this->value;
     $output .= "</textarea>";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -940,9 +946,9 @@ class cs_textarea extends cs_field {
 
 
 class cs_password extends cs_field {
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('password '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -950,15 +956,8 @@ class cs_password extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -1013,9 +1012,9 @@ abstract class cs_field_multivalues extends cs_field {
 class cs_select extends cs_field_multivalues {
   protected $multiple = FALSE;
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('select '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -1024,10 +1023,6 @@ class cs_select extends cs_field_multivalues {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $extra = ($this->multiple) ? ' multiple="multiple" size="'.$this->size.'" ' : '';
     $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
@@ -1045,10 +1040,7 @@ class cs_select extends cs_field_multivalues {
       }
     }
     $output .= "</select>\n";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -1071,7 +1063,7 @@ class cs_slider extends cs_select{
     $this->value = $this->default_value = array_search($oldkey_value,$this->options);
   }
 
-  public function render(cs_form $form){
+  public function render_field(cs_form $form){
     $id = $this->get_html_id();
     $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
     $form->add_js("
@@ -1086,18 +1078,14 @@ class cs_slider extends cs_select{
       \$( '#{$id}' ).change(function() {
         \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
       }).hide();");
-    return parent::render($form);
+    return parent::render_field($form);
   }
 }
 
 class cs_radios extends cs_field_multivalues {
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
+    $output = '';
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
 
     foreach ($this->options as $key => $value) {
@@ -1112,10 +1100,7 @@ class cs_radios extends cs_field_multivalues {
       $checked = ($this->value == $key) ? ' checked="checked"' : '';
       $output .= "<label><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$this->name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -1124,22 +1109,16 @@ class cs_radios extends cs_field_multivalues {
 }
 
 class cs_checkboxes extends cs_field_multivalues {
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if(!is_array($this->default_value)) {
       $this->default_value = array($this->default_value);
     }
 
-    $output = $this->get_prefix();
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
-
+    $output = '';
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
 
     foreach ($this->options as $key => $value) {
-
       $attributes = $this->get_attributes();
       if(is_array($value) && isset($value['attributes'])){
         $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
@@ -1151,10 +1130,7 @@ class cs_checkboxes extends cs_field_multivalues {
       $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked="checked"' : '';
       $output .= "<label><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$this->name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -1171,25 +1147,16 @@ class cs_checkbox extends cs_field {
     }
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
-    $output = $this->get_prefix();
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
-
+    $output = '';
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
     $output .= "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} />{$this->title}</label>\n";
-
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -1209,9 +1176,9 @@ class cs_file extends cs_field {
     }
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $form->set_attribute('enctype', 'multipart/form-data');
 
@@ -1222,16 +1189,9 @@ class cs_file extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size'));
 
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<input type=\"hidden\" name=\"{$this->name}\" value=\"{$this->name}\" />";
     $output .= "<input type=\"file\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\"{$attributes} />";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function process($value, $name) {
@@ -1277,9 +1237,9 @@ class cs_date extends cs_field {
     parent::__construct($options, $name);
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('date '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -1288,10 +1248,6 @@ class cs_date extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size','day','month','year'));
 
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<div id=\"{$id}\"{$attributes}>";
 
     $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
@@ -1331,10 +1287,7 @@ class cs_date extends cs_field {
     $output .= "</select>";
     $output .= "</div>";
 
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function process($value, $name) {
@@ -1362,9 +1315,9 @@ class cs_date extends cs_field {
 class cs_datepicker extends cs_field {
   protected $date_format = 'yy-mm-dd';
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -1373,18 +1326,11 @@ class cs_datepicker extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
 
     $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
 
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function is_a_value(){
@@ -1406,9 +1352,9 @@ class cs_time extends cs_field {
     parent::__construct($options, $name);
   }
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $this->attributes['class'] = trim('time '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -1417,10 +1363,6 @@ class cs_time extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size','hours','minutes','seconds'));
 
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
     $output .= "<div id=\"{$id}\"{$attributes}>";
 
     $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
@@ -1464,10 +1406,7 @@ class cs_time extends cs_field {
     }
     $output .= "</div>";
 
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+    return $output;
   }
 
   public function process($value, $name) {
@@ -1513,9 +1452,9 @@ class cs_spinner extends cs_field {
   protected $max = NULL;
   protected $step = 1;
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = '';
 
     $js_options = '';$html_options = '';
     if( is_numeric($this->min) && is_numeric($this->max) && $this->max >= $this->min ){
@@ -1531,15 +1470,10 @@ class cs_spinner extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','value','min','max','step'));
-    $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-    if (!empty($this->title)) {
-      $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
-    }
+
     $output .= "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$html_options}{$attributes} />\n";
-    if (!empty($this->description)) {
-      $output .= "<div class=\"description\">{$this->description}</div>";
-    }
-    return $output . $this->get_suffix();
+
+    return $output;
   }
 
   public function is_a_value(){
@@ -1629,10 +1563,10 @@ class cs_fieldset extends cs_fields_container {
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
 
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     static $js_collapsible_added = FALSE;
     $id = $this->get_html_id();
-    $output = $this->prefix;
+    $output = '';
     $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if ($this->collapsible) {
       $this->attributes['class'] .= ' collapsible';
@@ -1679,7 +1613,8 @@ class cs_fieldset extends cs_fields_container {
       // $output .= $field->render("{$parent_name}[{$name}]");
       $output .= $field->render($form);
     }
-    return $output ."</div></fieldset>\n". $this->suffix;
+    $output .= "</div></fieldset>\n";
+    return $output;
   }
 }
 
@@ -1713,9 +1648,9 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
 }
 
 class cs_tabs extends cs_fields_container_tabbed {
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->prefix;
+    $output = '';
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
@@ -1743,14 +1678,14 @@ class cs_tabs extends cs_fields_container_tabbed {
     }
     $output .= "<ul>".implode("",$tab_links)."</ul>".implode("",$tabs_html). "</div>\n";
 
-    return $output . $this->suffix;
+    return $output;
   }
 }
 
 class cs_accordion extends cs_fields_container_tabbed {
-  public function render(cs_form $form) {
+  public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = $this->prefix;
+    $output = '';
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
@@ -1776,6 +1711,6 @@ class cs_accordion extends cs_fields_container_tabbed {
     }
     $output .= "</div>\n";
 
-    return $output . $this->suffix;
+    return $output;
   }
 }
