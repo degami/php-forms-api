@@ -860,7 +860,6 @@ class cs_hidden extends cs_field {
 class cs_textfield extends cs_field {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = '';
 
     $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -868,7 +867,7 @@ class cs_textfield extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
     return $output;
   }
 
@@ -884,8 +883,6 @@ class cs_autocomplete extends cs_field{
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = '';
-
     $this->attributes['class'] = trim('autocomplete '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
@@ -893,7 +890,7 @@ class cs_autocomplete extends cs_field{
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
 
     $form->add_js("
       \$('#{$id}','#{$form->get_id()}')
@@ -925,7 +922,6 @@ class cs_textarea extends cs_field {
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = '';
 
     $this->attributes['class'] = trim('textarea '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -933,9 +929,7 @@ class cs_textarea extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('name','id','value','rows','cols'));
-    $output .= "<textarea id=\"{$id}\" name=\"{$this->name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n";
-    $output .= $this->value;
-    $output .= "</textarea>";
+    $output = "<textarea id=\"{$id}\" name=\"{$this->name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n".$this->value."</textarea>";
     return $output;
   }
 
@@ -948,7 +942,6 @@ class cs_textarea extends cs_field {
 class cs_password extends cs_field {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = '';
 
     $this->attributes['class'] = trim('password '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -956,7 +949,7 @@ class cs_password extends cs_field {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output .= "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
+    $output = "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
     return $output;
   }
 
@@ -1150,12 +1143,11 @@ class cs_checkbox extends cs_field {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
-    $output = '';
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
-    $output .= "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} />{$this->title}</label>\n";
+    $output = "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} />{$this->title}</label>\n";
     return $output;
   }
 
@@ -1317,7 +1309,6 @@ class cs_datepicker extends cs_field {
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = '';
 
     $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
@@ -1326,7 +1317,7 @@ class cs_datepicker extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
 
-    $output .= "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
 
     $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
 
