@@ -149,7 +149,7 @@ $form->add_field('hidden1', array(
 
 
 
-$form->add_field('actions', array(
+$form->add_field('container', array(
   'type' => 'div_container',
   'weight' => 1000,
 ));
@@ -182,12 +182,15 @@ $form->add_field('autocomplete', array(
     'Scheme'
   ),
 ))
-->get_field('actions')
+->get_field('container')
 ->add_field('checkbox', array(
   'type' => 'checkbox',
   'default_value' => 'checkbox',
   'title' => 'Check me',
   'validate' => array( array('validator'=>'required','error_message'=>'You must check the <strong>%t</strong> checkbox!' ) ),
+))
+->add_field('actions', array(
+  'type' => 'div_container',
 ))
 ->add_field('submit', array(
   'type' => 'submit',
