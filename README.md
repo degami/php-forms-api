@@ -324,6 +324,12 @@ They are always valid.
       'seconds'=>'',
     );
 
+#### Div containers
+
+    $options += array(
+      'type' => 'div_container',
+    );
+
 #### Field sets
 
     $options += array(
