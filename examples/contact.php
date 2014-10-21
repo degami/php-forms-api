@@ -17,7 +17,10 @@ $object->val1='val1';
 $form->add_field('object',array(
   'type'=>'value',
   'value' => $object,
+  'my_evil_option' => 'evil_value',
 ));
+
+// var_dump( isset($form->get_field('object')->my_evil_option) ); // evil option is not contained
 
 $form->add_field('fieldset', array(
   'type' => 'fieldset',

@@ -49,7 +49,8 @@ class cs_form {
 
   public function __construct($options = array()) {
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
     if (empty($this->submit)) {
       $this->submit = "{$this->form_id}_submit";
@@ -255,11 +256,11 @@ class cs_form {
       }
       $output .= "
       <script type=\"text/javascript\">
-        (function($){
-          $(document).ready(function(){
-            ".implode(";\n",$this->js).";
-          });
-        })(jQuery);
+      (function($){
+        $(document).ready(function(){
+          ".implode(";\n",$this->js).";
+        });
+      })(jQuery);
       </script>";
     }
     return $output . $this->suffix;
@@ -285,18 +286,21 @@ class cs_form {
     }
     return TRUE;
   }
+
   public static function validate_min_length($value, $options) {
     if (strlen($value) < $options) {
       return "<em>%t</em> must be longer than {$options}";
     }
     return TRUE;
   }
+
   public static function validate_exact_length($value, $options) {
     if (strlen($value) != $options) {
       return "<em>%t</em> must be {$options} characters long.";
     }
     return TRUE;
   }
+
   public static function validate_alpha($value) {
     if (!preg_match( "/^([a-z])+$/i", $value)) {
       return "<em>%t</em> must contain alphabetic characters.";
@@ -348,12 +352,14 @@ class cs_form {
     }
     return TRUE;
   }
+
   public static function validate_file_not_exists($value) {
     if (file_exists($value['filepath'])) {
       return "The file <em>%t</em> has already been uploaded";
     }
     return TRUE;
   }
+
   public static function validate_max_file_size($value, $options) {
     if ($value['filesize'] > $options) {
       $max_size = cs_form::format_bytes($options);
@@ -394,7 +400,7 @@ class cs_form {
         return "<em>%t</em> is not a valid email. Domain name has two consecutive dots.";
       } else if (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/', str_replace("\\\\","",$local))) {
         if (!preg_match('/^"(\\\\"|[^"])+"$/', str_replace("\\\\","",$local))) {
-        return "<em>%t</em> is not a valid email. Invalid character in local part.";
+          return "<em>%t</em> is not a valid email. Invalid character in local part.";
         }
       }
       if (in_array($domain, $blocked_domains)) {
@@ -513,7 +519,7 @@ class cs_form {
   }
 
   public static function process_plain($text) {
-    // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
+      // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
   }
 
@@ -530,37 +536,43 @@ class cs_form {
   private static function scan_array($string, $array) {
     list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
     if ( $key && $rest ) {
-        return @cs_form::scan_array($rest, $array[$key]);
+      return @cs_form::scan_array($rest, $array[$key]);
     } elseif ( $key ) {
-        return $array[$key];
+      return $array[$key];
     } else {
-        return FALSE;
+      return FALSE;
     }
   }
 
   public static function array_flatten($array) {
-     $return = array();
-     foreach ($array as $key => $value) {
-         if (is_array($value)){ $return = array_merge($return, cs_form::array_flatten($value));}
-         else {$return[$key] = $value;}
-     }
-     return $return;
+    $return = array();
+    foreach ($array as $key => $value) {
+      if (is_array($value)){
+        $return = array_merge($return, cs_form::array_flatten($value));
+      } else {
+        $return[$key] = $value;
+      }
+    }
+    return $return;
   }
 
   public static function array_get_values($search_key, $array) {
-     $return = array();
-     foreach ($array as $key => $value) {
-         if (is_array($value)){ $return = array_merge($return, cs_form::array_get_values($search_key, $value));}
-         else if($key == $search_key){$return[] = $value;}
-     }
-     return $return;
+    $return = array();
+    foreach ($array as $key => $value) {
+      if (is_array($value)){
+        $return = array_merge($return, cs_form::array_get_values($search_key, $value));
+      }else if($key == $search_key){
+        $return[] = $value;
+      }
+    }
+    return $return;
   }
 
   public static function order_by_weight($a, $b){
-      if ($a->get_weight() == $b->get_weight()) {
-        return 0;
-      }
-      return ($a->get_weight() < $b->get_weight()) ? -1 : 1;
+    if ($a->get_weight() == $b->get_weight()) {
+      return 0;
+    }
+    return ($a->get_weight() < $b->get_weight()) ? -1 : 1;
   }
 }
 
@@ -587,7 +599,8 @@ abstract class cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
     $this->value = $this->default_value;
   }
@@ -634,6 +647,7 @@ abstract class cs_field {
       }
     }
   }
+
   public function postprocess() {
     $this->preprocess("postprocess");
   }
@@ -699,6 +713,7 @@ abstract class cs_field {
     }
     return $this->prefix;
   }
+
   public function get_suffix(){
     return $this->suffix;
   }
@@ -739,7 +754,8 @@ class cs_submit extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
   }
 
@@ -768,7 +784,8 @@ class cs_reset extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
   }
 
@@ -797,7 +814,8 @@ class cs_button extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
   }
 
@@ -825,7 +843,8 @@ class cs_value extends cs_field {
     $this->suffix = '';
     $this->name = $name;
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
   }
 
@@ -846,7 +865,8 @@ class cs_markup extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
   }
 
@@ -909,20 +929,12 @@ class cs_autocomplete extends cs_field{
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $this->attributes['class'] = trim('autocomplete '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
-    if (!empty($this->error)) {
-      $this->attributes['class'] .= ' error';
-    }
-    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
 
-    $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
 
     $form->add_js("
       \$('#{$id}','#{$form->get_id()}')
       .bind( 'keydown', function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-        \$( this ).autocomplete( 'instance' ).menu.active ) {
+        if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
           event.preventDefault();
         }
       })
@@ -934,6 +946,15 @@ class cs_autocomplete extends cs_field{
         }
       });
     ");
+
+    $this->attributes['class'] = trim('autocomplete '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if (!empty($this->error)) {
+      $this->attributes['class'] .= ' error';
+    }
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes();
+
+    $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
 
     return $output;
   }
@@ -994,13 +1015,13 @@ abstract class cs_field_multivalues extends cs_field {
 
   private static function has_key($needle, $haystack) {
     foreach ($haystack as $key => $value) {
-        if ($needle == $key) {
-            return TRUE;
-        } else if(is_array($value)) {
-            if( cs_field_multivalues::has_key($needle, $value) == TRUE ){
-              return TRUE;
-            }
+      if ($needle == $key) {
+        return TRUE;
+      } else if(is_array($value)) {
+        if( cs_field_multivalues::has_key($needle, $value) == TRUE ){
+          return TRUE;
         }
+      }
     }
     return FALSE;
   }
@@ -1094,9 +1115,9 @@ class cs_slider extends cs_select{
           \$( '#{$id}' )[ 0 ].selectedIndex = ui.value - 1;
         }
       });
-      \$( '#{$id}' ).change(function() {
-        \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
-      }).hide();");
+    \$( '#{$id}' ).change(function() {
+      \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
+    }).hide();");
     return parent::render_field($form);
   }
 }
@@ -1162,7 +1183,8 @@ class cs_checkbox extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
     foreach ($options as $name => $value) {
-      $this->$name = $value;
+      if( property_exists(get_class($this), $name) )
+        $this->$name = $value;
     }
   }
 
@@ -1186,13 +1208,6 @@ class cs_checkbox extends cs_field {
 class cs_file extends cs_field {
   protected $uploaded = FALSE;
   protected $destination;
-
-  public function __construct($options = array(), $name = NULL) {
-    parent::__construct($options, $name);
-    if (!isset($options['size'])) {
-      $this->size = 30;
-    }
-  }
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
@@ -1336,6 +1351,8 @@ class cs_datepicker extends cs_field {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
+
     $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
@@ -1344,8 +1361,6 @@ class cs_datepicker extends cs_field {
     $attributes = $this->get_attributes();
 
     $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
-
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
 
     return $output;
   }
@@ -1623,18 +1638,18 @@ class cs_fieldset extends cs_fields_container {
 
       if( !$js_collapsible_added ){
         $form->add_js("
-        \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
-          evt.preventDefault();
-          var \$this = \$(this);
-          \$this.parent().find('.fieldset-inner').toggle( 'blind', {}, 500, function(){
-            if(\$this.parent().hasClass('expanded')){
-              \$this.parent().removeClass('expanded').addClass('collapsed');
-            }else{
-              \$this.parent().removeClass('collapsed').addClass('expanded');
-            }
+          \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
+            evt.preventDefault();
+            var \$this = \$(this);
+            \$this.parent().find('.fieldset-inner').toggle( 'blind', {}, 500, function(){
+              if(\$this.parent().hasClass('expanded')){
+                \$this.parent().removeClass('expanded').addClass('collapsed');
+              }else{
+                \$this.parent().removeClass('collapsed').addClass('expanded');
+              }
+            });
           });
-        });
-        $('fieldset.collapsible.collapsed .fieldset-inner').hide();");
+          \$('fieldset.collapsible.collapsed .fieldset-inner').hide();");
         $js_collapsible_added = TRUE;
       }
     }
@@ -1702,11 +1717,13 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
 class cs_tabs extends cs_fields_container_tabbed {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
+
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
+
     $output = '';
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
     $tabs_html = array();
@@ -1737,11 +1754,13 @@ class cs_tabs extends cs_fields_container_tabbed {
 class cs_accordion extends cs_fields_container_tabbed {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
+
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion();");
+
     $output = '';
     $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion();");
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
     foreach($this->tabs as $tabindex => $tab){
