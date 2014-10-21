@@ -52,18 +52,16 @@ $form->get_field('fieldset')->add_field('markup1', array(
 ));
 
 
-
-
-$fieldset2 = new cs_fieldset(
-  array('attributes'=>array(
+$form->add_field('fieldset2',array(
+  'type' => 'fieldset',
+  'attributes'=>array(
     'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
   ),
   'collapsible' => true,
   'collapsed' => true,
   'title' => 'my fieldset 2',
-),'fieldset2');
-
-$fieldset2->add_field('message', array(
+))
+->add_field('message', array(
   'type' => 'textarea',
   'postprocess' => array('xss'),
   'title' => 'Your message',
@@ -73,15 +71,6 @@ $fieldset2->add_field('message', array(
     'style' => 'width: 100%',
    ),
 ));
-
-$form->add_field($fieldset2->get_name(), $fieldset2);
-
-$tabs = new cs_tabs(array('attributes'=>array(
-  'style' => 'width: 500px',
-)),'tabs');
-
-$tabs->add_tab('tab1');
-$tabs->add_tab('tab2');
 
 
 $accordion = new cs_accordion(array('attributes'=>array(
@@ -112,45 +101,58 @@ $accordion->add_field('datepicker', array(
   'type' => 'datepicker',
   'title' => 'date picker',
 ),1);
+$form->add_field($accordion->get_name(), $accordion);
 
-$tabs->add_field('markup2',array(
+
+$form->add_field('tabs',array(
+  'type' => 'tabs',
+  'attributes'=>array(
+    'style' => 'width: 500px',
+  ),
+))
+->add_tab('tab1') //index 0
+->add_tab('tab2') //index 1
+->add_field('markup2',array(
   'type' => 'markup',
   'value' => 'bbb',
-),0);
-$tabs->add_field('markup3',array(
+),0) //to tab 0
+->add_field('markup3',array(
   'type' => 'markup',
   'value' => 'ccc',
-),1);
-$tabs->add_field('checkboxes', array(
+),1) //to tab 1
+->add_field('checkboxes', array(
   'type' => 'checkboxes',
   'options' => array(0=>'zero',1=>'one',2=>'two'),
   'default_value' => 1,
-));
-$tabs->add_field('file', array(
+)) //to tab 0
+->add_field('file', array(
   'type' => 'file',
   'destination' => dirname(__FILE__),
-),1);
-
-$tabs->add_field('select', array(
+),1) //to tab 1
+->add_field('select', array(
   'type' => 'select',
   'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
   'default_value' => '2',
-),1);
-
-$tabs->add_field('slider', array(
+),1) //to tab 1
+->add_field('slider', array(
   'type' => 'slider',
   'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
   'default_value' => '2',
-),1);
+),1); //to tab 1
 
-$form->add_field($accordion->get_name(), $accordion);
-$form->add_field($tabs->get_name(), $tabs);
 
 $form->add_field('hidden1', array(
   'type' => 'hidden',
   'default_value' => 'aaaa',
 ));
 
+
+
+
+$form->add_field('actions', array(
+  'type' => 'div_container',
+  'weight' => 1000,
+));
 
 $form->add_field('autocomplete', array(
   'type' => 'autocomplete',
@@ -179,21 +181,19 @@ $form->add_field('autocomplete', array(
     'Scala',
     'Scheme'
   ),
-));
-
-$form->add_field('checkbox', array(
+))
+->get_field('actions')
+->add_field('checkbox', array(
   'type' => 'checkbox',
   'default_value' => 'checkbox',
   'title' => 'Check me',
   'validate' => array( array('validator'=>'required','error_message'=>'You must check the <strong>%t</strong> checkbox!' ) ),
-));
-
-$form->add_field('submit', array(
+))
+->add_field('submit', array(
   'type' => 'submit',
   'value' => 'Send',
-));
-
-$form->add_field('reset', array(
+))
+->add_field('reset', array(
   'type' => 'reset',
   'value' => 'Reset',
 ));

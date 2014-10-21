@@ -160,6 +160,8 @@ class cs_form {
 
   public function set_attribute($name,$value){
     $this->attributes[$name] = $value;
+
+    return $this;
   }
 
   public function add_field($name, $field) {
@@ -171,6 +173,11 @@ class cs_form {
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
+
+    if($field instanceof cs_fields_container)
+      return $field;
+
+    return $this;
   }
 
   public function &get_fields(){
@@ -260,6 +267,8 @@ class cs_form {
 
   public function add_js($js){
     $this->js[] = $js;
+
+    return $this;
   }
 
   public static function validate_required($value = NULL) {
@@ -593,6 +602,8 @@ abstract class cs_field {
 
   public function set_name($name){
     $this->name = $name;
+
+    return $this;
   }
   public function get_name(){
     return $this->name;
@@ -1162,7 +1173,7 @@ class cs_checkbox extends cs_field {
     $attributes = $this->get_attributes();
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
-    $output = "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} />{$this->title}</label>\n";
+    $output = "<label><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> {$this->title}</label>\n";
     return $output;
   }
 
@@ -1508,6 +1519,11 @@ abstract class cs_fields_container extends cs_field {
     }
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
+
+    if($field instanceof cs_fields_container)
+      return $field;
+
+    return $this;
   }
 
   public function values() {
@@ -1562,6 +1578,29 @@ abstract class cs_fields_container extends cs_field {
 
   public function is_a_value(){
     return TRUE;
+  }
+}
+
+class cs_div_container extends cs_fields_container {
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    $this->attributes['class'] = trim('container '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    $attributes = $this->get_attributes();
+    $output = "<div id=\"{$id}\"{$attributes}>\n";
+
+    $insertorder = array_flip($this->insert_field_order);
+    $weights = array();
+    foreach ($this->get_fields() as $key => $elem) {
+      $weights[$key]  = $elem->get_weight();
+      $order[$key] = $insertorder[$key];
+    }
+    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
+    foreach ($this->get_fields() as $name => $field) {
+      $output .= $field->render($form);
+    }
+    $output .= "</div>\n";
+
+    return $output;
   }
 }
 
@@ -1629,6 +1668,8 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
 
   public function add_tab($title){
     $this->tabs[] = array('title'=>$title,'fieldnames'=>array());
+
+    return $this;
   }
 
   public function add_field($name, $field, $tabindex = 0) {
@@ -1641,6 +1682,11 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
     $this->fields[$name] = $field;
     $this->insert_field_order[$tabindex][] = $name;
     $this->tabs[$tabindex]['fieldnames'][] = $name;
+
+    if($field instanceof cs_fields_container)
+      return $field;
+
+    return $this;
   }
 
   public function get_tab_fields($tabindex){
