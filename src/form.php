@@ -281,6 +281,7 @@ class cs_form {
   }
 
   public static function validate_max_length($value, $options) {
+    // if(!is_string($value)) throw new Exception("Invalid value - max_length is meant for strings, ".gettype($value)." given");
     if (strlen($value) > $options) {
       return "Maximum length of <em>%t</em> is {$options}";
     }
@@ -288,6 +289,7 @@ class cs_form {
   }
 
   public static function validate_min_length($value, $options) {
+    // if(!is_string($value)) throw new Exception("Invalid value - min_length is meant for strings, ".gettype($value)." given");
     if (strlen($value) < $options) {
       return "<em>%t</em> must be longer than {$options}";
     }
@@ -295,6 +297,7 @@ class cs_form {
   }
 
   public static function validate_exact_length($value, $options) {
+    // if(!is_string($value)) throw new Exception("Invalid value - exact_length is meant for strings, ".gettype($value)." given");
     if (strlen($value) != $options) {
       return "<em>%t</em> must be {$options} characters long.";
     }
@@ -302,6 +305,7 @@ class cs_form {
   }
 
   public static function validate_alpha($value) {
+    // if(!is_string($value)) throw new Exception("Invalid value - alpha is meant for strings, ".gettype($value)." given");
     if (!preg_match( "/^([a-z])+$/i", $value)) {
       return "<em>%t</em> must contain alphabetic characters.";
     }
@@ -309,6 +313,7 @@ class cs_form {
   }
 
   protected function validate_alpha_numeric($value) {
+    // if(!is_string($value) && !is_numeric($value)) throw new Exception("Invalid value - alpha_numeric is meant for strings or numeric values, ".gettype($value)." given");
     if (!preg_match("/^([a-z0-9])+$/i", $value)) {
       return "<em>%t</em> must only contain alpha numeric characters.";
     }
@@ -316,6 +321,7 @@ class cs_form {
   }
 
   protected function validate_alpha_dash($value) {
+    // if(!is_string($value)) throw new Exception("Invalid value - alpha_dash is meant for strings, ".gettype($value)." given");
     if (!preg_match("/^([-a-z0-9_-])+$/i", $value)) {
       return "<em>%t</em> must contain only alpha numeric characters, underscore, or dashes";
     }
@@ -1388,6 +1394,19 @@ class cs_file extends cs_field {
       if( @move_uploaded_file($_FILES[$name]['tmp_name'], $this->value['filepath']) == TRUE ){
         $this->uploaded = TRUE;
       }
+    }
+  }
+
+  public static function validate_required($value = NULL) {
+    if (!empty($value) &&
+      (isset($value['filepath']) && !empty($value['filepath'])) &&
+      (isset($value['filename']) && !empty($value['filename'])) &&
+      (isset($value['mimetype']) && !empty($value['mimetype'])) &&
+      (isset($value['filesize']) && $value['filesize']>=0)
+    ) {
+      return TRUE;
+    } else {
+      return "<em>%t</em> is required";
     }
   }
 

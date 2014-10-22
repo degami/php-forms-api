@@ -136,6 +136,7 @@ $form->add_field('tabs',array(
 ->add_field('file', array(
   'type' => 'file',
   'destination' => dirname(__FILE__),
+  'validate' => array('required'),
 ),1) //to tab 1
 ->add_field('select', array(
   'type' => 'select',
