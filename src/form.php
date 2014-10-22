@@ -810,7 +810,10 @@ abstract class cs_field {
       $options = isset($matches[3]) ? $matches[3] : NULL;
       if (function_exists($validator_func)) {
         $error = $validator_func($this->value, $options);
-      } else {
+      } else if(method_exists(get_class($this), $validator_func)){
+          $classmethod= "".get_class($this)."::".$validator_func;
+          $error = call_user_func( $classmethod, $this->value, $options );
+      }else {
         if(method_exists('cs_form', $validator_func))
           $error = cs_form::$validator_func($this->value, $options);
       }
