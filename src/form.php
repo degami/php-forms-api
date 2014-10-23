@@ -244,8 +244,6 @@ class cs_form extends cs_element{
       }
     }
 
-    // uasort($this->fields, 'cs_form::order_by_weight');
-
     $insertorder = array_flip($this->insert_field_order);
     $weights = array();
     foreach ($this->get_fields() as $key => $elem) {
@@ -698,16 +696,6 @@ class cs_form extends cs_element{
     return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
   }
 
-  // public static function attributes($attributes) {
-  //   if (is_array($attributes)) {
-  //     $t = '';
-  //     foreach ($attributes as $key => $value) {
-  //       $t .= " $key=" . '"' . cs_form::process_plain($value) . '"';
-  //     }
-  //     return $t;
-  //   }
-  // }
-
   private static function scan_array($string, $array) {
     list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
     if ( $key && $rest ) {
@@ -873,13 +861,13 @@ abstract class cs_field extends cs_element{
     if(preg_match("/class=\".*?\"/i", $this->prefix)){
       if(isset($this->attributes['class']) && !empty($this->attributes['class'])){
         if(!preg_match("/class=\".*?\s?".$this->attributes['class']."-container\s?.*?\"/i", $this->prefix)){
-          return preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} ".$this->attributes['class']."-container\"", $this->prefix);
+          $this->prefix = preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} ".$this->attributes['class']."-container\"", $this->prefix);
         }
       }
 
       if (!empty($this->error)) {
         if(!preg_match("/class=\".*?\s?error\s?.*?\"/i", $this->prefix)){
-          return preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} error\"", $this->prefix);
+          $this->prefix = preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} error\"", $this->prefix);
         }
       }
     }
@@ -1930,7 +1918,6 @@ class cs_fieldset extends cs_fields_container {
       $output .= "<legend>{$this->title}</legend>\n";
     }
 
-    // uasort($this->fields, 'cs_form::order_by_weight');
     $insertorder = array_flip($this->insert_field_order);
     $weights = array();
     foreach ($this->get_fields() as $key => $elem) {
