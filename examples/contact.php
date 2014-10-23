@@ -200,6 +200,7 @@ $form->add_field('autocomplete', array(
 ))
 ->add_field('actions', array(
   'type' => 'tag_container',
+  'tag' => 'div',
 ))
 ->add_field('submit', array(
   'type' => 'submit',

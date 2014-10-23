@@ -328,10 +328,11 @@ They are always valid.
       'seconds'=>'',
     );
 
-#### Div containers
+#### Tag containers
 
     $options += array(
-      'type' => 'div_container',
+      'type' => 'tag_container',
+      'tag' => 'div',
     );
 
 #### Field sets
