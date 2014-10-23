@@ -11,10 +11,15 @@ ini_set('display_startup_errors', TRUE);
  *  PHP Forms API library configuration
  */
 
-define('FORMS_DEFAULT_PREFIX', '<div class="form-container">');
-define('FORMS_DEFAULT_SUFFIX', '</div>');
-define('FORMS_DEFAULT_FIELD_PREFIX', '<div class="form-item">');
-define('FORMS_DEFAULT_FIELD_SUFFIX', '</div>');
+// define('FORMS_DEFAULT_PREFIX', '<div class="form-container">');
+// define('FORMS_DEFAULT_SUFFIX', '</div>');
+// define('FORMS_DEFAULT_FIELD_PREFIX', '<div class="form-item">');
+// define('FORMS_DEFAULT_FIELD_SUFFIX', '</div>');
+
+define('FORMS_DEFAULT_FORM_CONTAINER_TAG', 'div');
+define('FORMS_DEFAULT_FORM_CONTAINER_CLASS', 'form-container');
+define('FORMS_DEFAULT_FIELD_CONTAINER_TAG', 'div');
+define('FORMS_DEFAULT_FIELD_CONTAINER_CLASS', 'form-item');
 define('FORMS_VALIDATE_EMAIL_DNS', TRUE);
 define('FORMS_VALIDATE_EMAIL_BLOCKED_DOMAINS', 'mailinator.com|guerrillamail.com');
 define('FORMS_BASE_PATH', '');
@@ -24,6 +29,8 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 // TODO: Support edit forms by allowing an array of values to be specified, not just taken from _REQUEST
 
 class cs_element{
+  protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
+  protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
   protected $error = NULL;
   protected $attributes = array();
 
@@ -53,6 +60,35 @@ class cs_element{
     $attributes = trim($attributes);
     return empty($attributes) ? '' : ' ' . $attributes;
   }
+
+  public function get_prefix(){
+    if(!empty($this->container_tag)){
+
+      if(preg_match("/<\/?(.*?)\s.*?(class=\"(.*?)\")?.*?>/i",$this->container_tag,$matches)){
+        // if a <tag> is contained try to get tag and class
+        $this->container_tag = $matches[1];
+        $this->container_class = (!empty($this->container_class) ? $this->container_class : '') . (!empty($matches[3]) ? ' '.$matches[3] : '');
+      }
+
+      $class = $this->container_class;
+      if(isset($this->attributes['class']) && !empty($this->attributes['class'])){
+        $class .= ' '.$this->attributes['class'].'-container';
+      }
+      if (!empty($this->error)) {
+        $class .= ' error';
+      }
+      $class = trim($class);
+      return "<{$this->container_tag} class=\"{$class}\">";
+    }
+    return '';
+  }
+
+  public function get_suffix(){
+    if(!empty($this->container_tag)){
+      return "</{$this->container_tag}>";
+    }
+    return '';
+  }
 }
 
 
@@ -63,8 +99,8 @@ class cs_form extends cs_element{
   protected $action = '';
   protected $attributes = array();
   protected $method = 'post';
-  protected $prefix = FORMS_DEFAULT_PREFIX;
-  protected $suffix = FORMS_DEFAULT_SUFFIX;
+  protected $prefix = '';
+  protected $suffix = '';
   protected $validate = array();
   protected $processed = FALSE;
   protected $preprocessors = FALSE;
@@ -80,6 +116,10 @@ class cs_form extends cs_element{
   protected $fields = array();
 
   public function __construct($options = array()) {
+
+    $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
+    $this->container_class = FORMS_DEFAULT_FORM_CONTAINER_CLASS;
+
     foreach ($options as $name => $value) {
       if( property_exists(get_class($this), $name) )
         $this->$name = $value;
@@ -228,7 +268,7 @@ class cs_form extends cs_element{
   }
 
   public function render() {
-    $output = $this->prefix;
+    $output = $this->get_prefix();
 
     if ( $this->valid() === FALSE) {
       $errors = $this->show_errors();
@@ -283,7 +323,7 @@ class cs_form extends cs_element{
       })(jQuery);
       </script>";
     }
-    return $output . $this->suffix;
+    return $output . $this->get_suffix();
   }
 
   public function add_js($js){
@@ -745,8 +785,8 @@ abstract class cs_field extends cs_element{
   protected $validate = array();
   protected $preprocess = array();
   protected $postprocess = array();
-  protected $prefix = FORMS_DEFAULT_FIELD_PREFIX;
-  protected $suffix = FORMS_DEFAULT_FIELD_SUFFIX;
+  protected $prefix = '';
+  protected $suffix = '';
   protected $size = 20;
   protected $weight = 0;
   protected $name = NULL;
@@ -857,31 +897,11 @@ abstract class cs_field extends cs_element{
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
   }
 
-  public function get_prefix(){
-    if(preg_match("/class=\".*?\"/i", $this->prefix)){
-      if(isset($this->attributes['class']) && !empty($this->attributes['class'])){
-        if(!preg_match("/class=\".*?\s?".$this->attributes['class']."-container\s?.*?\"/i", $this->prefix)){
-          $this->prefix = preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} ".$this->attributes['class']."-container\"", $this->prefix);
-        }
-      }
-
-      if (!empty($this->error)) {
-        if(!preg_match("/class=\".*?\s?error\s?.*?\"/i", $this->prefix)){
-          $this->prefix = preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} error\"", $this->prefix);
-        }
-      }
-    }
-    return $this->prefix;
-  }
-
-  public function get_suffix(){
-    return $this->suffix;
-  }
-
   public function render(cs_form $form) {
 
     $id = $this->get_html_id();
     $output = $this->get_prefix();
+    $output.=$this->prefix;
 
     if( !($this instanceof cs_fields_container)){
       $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
@@ -901,6 +921,8 @@ abstract class cs_field extends cs_element{
     if($form->errors_inline() == TRUE && !empty($this->error) ){
       $output.= '<div class="inline-error error">'.$this->error.'</div>';
     }
+
+    $output .= $this->suffix;
     $output .= $this->get_suffix();
 
     return $output ;
@@ -996,8 +1018,8 @@ class cs_button extends cs_field {
 
 class cs_value extends cs_field {
   public function __construct($options = array(), $name = NULL) {
-    $this->prefix = '';
-    $this->suffix = '';
+    $this->container_tag = '';
+    $this->container_class = '';
     parent::__construct($options,$name);
     if(isset($options['value'])){
       $this->value = $options['value'];
@@ -1041,8 +1063,8 @@ class cs_markup extends cs_field {
 
 class cs_hidden extends cs_field {
   public function __construct($options = array(), $name = NULL) {
-    $this->prefix = '';
-    $this->suffix = '';
+    $this->container_tag = '';
+    $this->container_class = '';
     parent::__construct($options,$name);
   }
 

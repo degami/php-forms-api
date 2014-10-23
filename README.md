@@ -154,8 +154,10 @@ Here are the available fields and their options:
       'attributes' => array(),
       'default_value' => '',
       'disabled' => FALSE,
-      'prefix' => FORMS_DEFAULT_FIELD_PREFIX, // set in configuration
-      'suffix' => FORMS_DEFAULT_FIELD_SUFFIX, // set in configuration
+      'container_tag' => FORMS_DEFAULT_FIELD_CONTAINER_TAG, //set in configuration
+      'container_class' => FORMS_DEFAULT_FIELD_CONTAINER_CLASS, //set in configuration
+      'prefix' => '',
+      'suffix' => '',
       'size' => 60,
       'weight' => 0,
       'validate' = array(),
