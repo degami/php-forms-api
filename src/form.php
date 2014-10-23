@@ -240,7 +240,7 @@ class cs_form extends cs_element{
       if(trim($errors)!=''){
         $output .= "<div class=\"errors ui-state-error ui-corner-all\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>";
         $output .= $errors;
-        $output .= "</div>";
+        $output .= "</ul></div>";
       }
     }
 
