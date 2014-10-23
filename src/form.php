@@ -1879,12 +1879,22 @@ abstract class cs_fields_container extends cs_field {
   }
 }
 
-class cs_div_container extends cs_fields_container {
+class cs_tag_container extends cs_fields_container {
+  protected $tag = 'div';
+
+  public function __construct($options = array(),$name = NULL){
+    parent::__construct($options,$name);
+
+    if($this->attributes['class'] == 'tag_container'){ // if set to the default
+      $this->attributes['class'] = $this->tag.'_container';
+    }
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     // $this->attributes['class'] = trim('container '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
-    $output = "<div id=\"{$id}\"{$attributes}>\n";
+    $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
 
     $insertorder = array_flip($this->insert_field_order);
     $weights = array();
@@ -1896,7 +1906,7 @@ class cs_div_container extends cs_fields_container {
     foreach ($this->get_fields() as $name => $field) {
       $output .= $field->render($form);
     }
-    $output .= "</div>\n";
+    $output .= "</{$this->tag}>\n";
 
     return $output;
   }

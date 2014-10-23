@@ -159,7 +159,7 @@ $form->add_field('hidden1', array(
 
 
 $form->add_field('container', array(
-  'type' => 'div_container',
+  'type' => 'tag_container',
   'weight' => 1000,
 ));
 
@@ -199,7 +199,7 @@ $form->add_field('autocomplete', array(
   'validate' => array( array('validator'=>'required','error_message'=>'You must check the <strong>%t</strong> checkbox!' ) ),
 ))
 ->add_field('actions', array(
-  'type' => 'div_container',
+  'type' => 'tag_container',
 ))
 ->add_field('submit', array(
   'type' => 'submit',
