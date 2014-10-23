@@ -46,6 +46,7 @@ class cs_element{
       if(!is_string($value)) continue;
       $value = cs_form::process_plain($value);
       if(!empty($value)){
+        $value=trim($value);
         $attributes .= " {$key}=\"{$value}\"";
       }
     }
@@ -372,6 +373,7 @@ class cs_form extends cs_element{
   }
 
   public static function validate_file_extension($value, $options) {
+    if(!isset($value['filepath'])) return "<em>%t</em> - Error. value has no filepath attribute";
     $options = explode(',', $options);
     $ext = substr(strrchr($value['filepath'], '.'), 1);
     if (!in_array($ext, $options)) {
@@ -381,6 +383,7 @@ class cs_form extends cs_element{
   }
 
   public static function validate_file_not_exists($value) {
+    if(!isset($value['filepath'])) return "<em>%t</em> - Error. value has no filepath attribute";
     if (file_exists($value['filepath'])) {
       return "The file <em>%t</em> has already been uploaded";
     }
@@ -388,6 +391,7 @@ class cs_form extends cs_element{
   }
 
   public static function validate_max_file_size($value, $options) {
+    if(!isset($value['filesize'])) return "<em>%t</em> - Error. value has no filesize attribute";
     if ($value['filesize'] > $options) {
       $max_size = cs_form::format_bytes($options);
       return "The file <em>%t</em> is too big. Maximum filesize is {$max_size}.";
@@ -771,6 +775,11 @@ abstract class cs_field extends cs_element{
       if( property_exists(get_class($this), $name) )
         $this->$name = $value;
     }
+
+    if(!isset($this->attributes['class'])){
+      $this->attributes['class'] = preg_replace("/^cs_/","",get_class($this));
+    }
+
     $this->value = $this->default_value;
   }
 
@@ -861,9 +870,17 @@ abstract class cs_field extends cs_element{
   }
 
   public function get_prefix(){
-    if (!empty($this->error)) {
-      if(preg_match("/class=\".*?\"/i", $this->prefix)){
-        return preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} error\"", $this->prefix);
+    if(preg_match("/class=\".*?\"/i", $this->prefix)){
+      if(isset($this->attributes['class']) && !empty($this->attributes['class'])){
+        if(!preg_match("/class=\".*?\s?".$this->attributes['class']."-container\s?.*?\"/i", $this->prefix)){
+          return preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} ".$this->attributes['class']."-container\"", $this->prefix);
+        }
+      }
+
+      if (!empty($this->error)) {
+        if(!preg_match("/class=\".*?\s?error\s?.*?\"/i", $this->prefix)){
+          return preg_replace("/class=\"(.*?)\"/i", "class=\"\${1} error\"", $this->prefix);
+        }
       }
     }
     return $this->prefix;
@@ -907,10 +924,9 @@ abstract class cs_field extends cs_element{
 
 class cs_submit extends cs_field {
   public function __construct($options = array(), $name = NULL) {
-    $this->name = $name;
-    foreach ($options as $name => $value) {
-      if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+    parent::__construct($options,$name);
+    if(isset($options['value'])){
+      $this->value = $options['value'];
     }
   }
 
@@ -919,7 +935,7 @@ class cs_submit extends cs_field {
     if (empty($this->value)) {
       $this->value = 'Submit';
     }
-    $this->attributes['class'] = trim('submit '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('submit '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
     $output = "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
@@ -937,10 +953,9 @@ class cs_submit extends cs_field {
 
 class cs_reset extends cs_field {
   public function __construct($options = array(), $name = NULL) {
-    $this->name = $name;
-    foreach ($options as $name => $value) {
-      if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+    parent::__construct($options,$name);
+    if(isset($options['value'])){
+      $this->value = $options['value'];
     }
   }
 
@@ -949,7 +964,7 @@ class cs_reset extends cs_field {
     if (empty($this->value)) {
       $this->value = 'Reset';
     }
-    $this->attributes['class'] = trim('reset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('reset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
     $output = "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
@@ -967,16 +982,15 @@ class cs_reset extends cs_field {
 
 class cs_button extends cs_field {
   public function __construct($options = array(), $name = NULL) {
-    $this->name = $name;
-    foreach ($options as $name => $value) {
-      if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+    parent::__construct($options,$name);
+    if(isset($options['value'])){
+      $this->value = $options['value'];
     }
   }
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $this->attributes['class'] = trim('button '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('button '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
     $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes}>{$this->value}</button>\n";
@@ -996,10 +1010,9 @@ class cs_value extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->prefix = '';
     $this->suffix = '';
-    $this->name = $name;
-    foreach ($options as $name => $value) {
-      if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+    parent::__construct($options,$name);
+    if(isset($options['value'])){
+      $this->value = $options['value'];
     }
   }
 
@@ -1018,10 +1031,9 @@ class cs_value extends cs_field {
 
 class cs_markup extends cs_field {
   public function __construct($options = array(), $name = NULL) {
-    $this->name = $name;
-    foreach ($options as $name => $value) {
-      if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+    parent::__construct($options,$name);
+    if(isset($options['value'])){
+      $this->value = $options['value'];
     }
   }
 
@@ -1048,7 +1060,7 @@ class cs_hidden extends cs_field {
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $this->attributes['class'] = trim('hidden '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('hidden '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
     return "<input type=\"hidden\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
   }
@@ -1062,7 +1074,8 @@ class cs_textfield extends cs_field {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
-    $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1102,7 +1115,8 @@ class cs_autocomplete extends cs_field{
       });
     ");
 
-    $this->attributes['class'] = trim('autocomplete '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('autocomplete '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1125,7 +1139,8 @@ class cs_textarea extends cs_field {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
-    $this->attributes['class'] = trim('textarea '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('textarea '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1145,7 +1160,8 @@ class cs_password extends cs_field {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
-    $this->attributes['class'] = trim('password '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('password '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1294,7 +1310,8 @@ class cs_select extends cs_field_multivalues {
     $id = $this->get_html_id();
     $output = '';
 
-    $this->attributes['class'] = trim('select '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('select '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1328,6 +1345,11 @@ class cs_slider extends cs_select{
 
     // search the new index
     $this->value = $this->default_value = array_search($oldkey_value,$this->options);
+
+    if(!isset($options['attributes']['class'])){
+      $options['attributes']['class'] = '';
+    }
+    $options['attributes']['class'].=' slider';
 
     parent::__construct($options, $name);
   }
@@ -1444,7 +1466,8 @@ class cs_file extends cs_field {
 
     $form->set_attribute('enctype', 'multipart/form-data');
 
-    $this->attributes['class'] = trim('file '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('file '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1516,7 +1539,8 @@ class cs_date extends cs_field {
     $id = $this->get_html_id();
     $output = '';
 
-    $this->attributes['class'] = trim('date '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('date '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1595,7 +1619,8 @@ class cs_datepicker extends cs_field {
 
     $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
 
-    $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('textfield '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1630,7 +1655,8 @@ class cs_time extends cs_field {
     $id = $this->get_html_id();
     $output = '';
 
-    $this->attributes['class'] = trim('time '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('time '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1738,7 +1764,8 @@ class cs_spinner extends cs_field {
 
     $form->add_js("\$('#{$id}','#{$form->get_id()}').attr('type','text').spinner({$js_options});");
 
-    $this->attributes['class'] = trim('spinner '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('spinner '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
       $this->attributes['class'] .= ' error';
     }
@@ -1842,7 +1869,7 @@ abstract class cs_fields_container extends cs_field {
 class cs_div_container extends cs_fields_container {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $this->attributes['class'] = trim('container '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('container '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
     $output = "<div id=\"{$id}\"{$attributes}>\n";
 
@@ -1870,7 +1897,8 @@ class cs_fieldset extends cs_fields_container {
     static $js_collapsible_added = FALSE;
     $id = $this->get_html_id();
     $output = '';
-    $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('fieldset '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->collapsible) {
       $this->attributes['class'] .= ' collapsible';
       if ($this->collapsed) {
@@ -1964,7 +1992,7 @@ class cs_tabs extends cs_fields_container_tabbed {
     $form->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
 
     $output = '';
-    $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
@@ -2001,7 +2029,7 @@ class cs_accordion extends cs_fields_container_tabbed {
     $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion();");
 
     $output = '';
-    $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
+    // $this->attributes['class'] = trim('tabs '.(isset($this->attributes['class']) ? $this->attributes['class'] : ''));
     $attributes = $this->get_attributes();
 
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
