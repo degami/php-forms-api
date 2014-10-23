@@ -1272,7 +1272,9 @@ class cs_select extends cs_field_multivalues {
 
     if(isset($options['options'])){
       foreach($options['options'] as $k => $o){
-        if(is_array($o)){
+        if( $o instanceof cs_option || $o instanceof cs_optgroup ){
+          $this->options[] = $o;
+        }else if(is_array($o)){
           $this->options[] = new cs_optgroup( $k , array('options' => $o) );
         }else{
           $this->options[] = new cs_option( $k , $o );
@@ -1303,17 +1305,6 @@ class cs_select extends cs_field_multivalues {
     $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
     foreach ($this->options as $key => $value) {
-    //   $selected = ($key == $this->value) ? ' selected="selected"' : '';
-    //   if(is_array($value)){
-    //     $output .= "<optgroup label=\"{$key}\">";
-    //     foreach($value as $optgroupkey=>$optgroupvalue){
-    //       $selected = ($optgroupkey == $this->value) ? ' selected="selected"' : '';
-    //       $output .= "<option value=\"{$optgroupkey}\"{$selected}>{$optgroupvalue}</option>\n";
-    //     }
-    //     $output .= "</optgroup>";
-    //   }else {
-    //     $output .= "<option value=\"{$key}\"{$selected}>{$value}</option>\n";
-    //   }
       $output .= $value->render($this);
     }
     $output .= "</select>\n";
