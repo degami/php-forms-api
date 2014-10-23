@@ -132,8 +132,10 @@ default values:
       'action' => '',
       'attributes' => array(),
       'method' => 'post',
-      'prefix' => FORMS_DEFAULT_PREFIX, // set in configuration
-      'suffix' => FORMS_DEFAULT_SUFFIX, // set in configuration
+      'container_tag' => FORMS_DEFAULT_FORM_CONTAINER_TAG, //set in configuration
+      'container_class' => FORMS_DEFAULT_FORM_CONTAINER_CLASS, //set in configuration
+      'prefix' => '',
+      'suffix' => '',
       'submit' => FORM_ID .'_submit',
     );
 

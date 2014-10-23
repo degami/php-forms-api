@@ -269,6 +269,7 @@ class cs_form extends cs_element{
 
   public function render() {
     $output = $this->get_prefix();
+    $output .= $this->prefix;
 
     if ( $this->valid() === FALSE) {
       $errors = $this->show_errors();
@@ -323,7 +324,9 @@ class cs_form extends cs_element{
       })(jQuery);
       </script>";
     }
-    return $output . $this->get_suffix();
+    $output .= $this->suffix;
+    $output .= $this->get_suffix();
+    return $output;
   }
 
   public function add_js($js){
