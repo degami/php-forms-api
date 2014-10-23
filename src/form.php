@@ -23,8 +23,39 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 // Here are some prioity things I'm working on:
 // TODO: Support edit forms by allowing an array of values to be specified, not just taken from _REQUEST
 
+class cs_element{
+  protected $error = NULL;
+  protected $attributes = array();
 
-class cs_form {
+  public function set_attribute($name,$value){
+    $this->attributes[$name] = $value;
+
+    return $this;
+  }
+
+  public function get_attributes($reserved_arr = array('type','name','id','value')){
+    return $this->get_attributes_string($this->attributes, $reserved_arr);
+  }
+
+  public function get_attributes_string( $attributes_arr, $reserved_arr = array('type','name','id','value')){
+    $attributes = '';
+    foreach ($reserved_arr as $key => $reserved) {
+      if(isset($attributes_arr[$reserved])) unset($attributes_arr[$reserved]);
+    }
+    foreach ($attributes_arr as $key => $value) {
+      if(!is_string($value)) continue;
+      $value = cs_form::process_plain($value);
+      if(!empty($value)){
+        $attributes .= " {$key}=\"{$value}\"";
+      }
+    }
+    $attributes = trim($attributes);
+    return empty($attributes) ? '' : ' ' . $attributes;
+  }
+}
+
+
+class cs_form extends cs_element{
 
   protected $form_id = 'cs_form';
   protected $form_token = '';
@@ -159,12 +190,6 @@ class cs_form {
     return NULL;
   }
 
-  public function set_attribute($name,$value){
-    $this->attributes[$name] = $value;
-
-    return $this;
-  }
-
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
@@ -235,11 +260,7 @@ class cs_form {
       }
     }
 
-    $attributes = '';
-    foreach ($this->attributes as $key => $value) {
-      if($key == 'action' || $key == 'method') continue;
-      $attributes .= " {$key}=\"{$value}\"";
-    }
+    $attributes = $this->get_attributes(array('action','method','id'));
 
     $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
     $output .= $fields_html;
@@ -673,15 +694,15 @@ class cs_form {
     return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
   }
 
-  public static function attributes($attributes) {
-    if (is_array($attributes)) {
-      $t = '';
-      foreach ($attributes as $key => $value) {
-        $t .= " $key=" . '"' . cs_form::process_plain($value) . '"';
-      }
-      return $t;
-    }
-  }
+  // public static function attributes($attributes) {
+  //   if (is_array($attributes)) {
+  //     $t = '';
+  //     foreach ($attributes as $key => $value) {
+  //       $t .= " $key=" . '"' . cs_form::process_plain($value) . '"';
+  //     }
+  //     return $t;
+  //   }
+  // }
 
   private static function scan_array($string, $array) {
     list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
@@ -726,10 +747,9 @@ class cs_form {
   }
 }
 
-abstract class cs_field {
+abstract class cs_field extends cs_element{
 
   protected $ajax = FALSE;
-  protected $error = NULL;
   protected $validate = array();
   protected $preprocess = array();
   protected $postprocess = array();
@@ -741,7 +761,6 @@ abstract class cs_field {
   protected $id = NULL;
   protected $title = NULL;
   protected $description = NULL;
-  protected $attributes = array();
   protected $disabled = FALSE;
   protected $default_value = NULL;
   protected $value = NULL;
@@ -817,11 +836,12 @@ abstract class cs_field {
       if (function_exists($validator_func)) {
         $error = $validator_func($this->value, $options);
       } else if(method_exists(get_class($this), $validator_func)){
-          $classmethod= "".get_class($this)."::".$validator_func;
+          $classmethod = get_class($this)."::".$validator_func;
           $error = call_user_func( $classmethod, $this->value, $options );
       }else {
-        if(method_exists('cs_form', $validator_func))
+        if(method_exists('cs_form', $validator_func)){
           $error = cs_form::$validator_func($this->value, $options);
+        }
       }
       if (isset($error) && $error !== TRUE) {
         $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
@@ -838,27 +858,6 @@ abstract class cs_field {
 
   public function show_errors() {
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
-  }
-
-
-  public function get_attributes($reserved_arr = array('type','name','id','value')){
-    return $this->get_attributes_string($this->attributes, $reserved_arr);
-  }
-
-  public function get_attributes_string( $attributes_arr, $reserved_arr = array('type','name','id','value')){
-    $attributes = '';
-    foreach ($reserved_arr as $key => $reserved) {
-      if(isset($attributes_arr[$reserved])) unset($attributes_arr[$reserved]);
-    }
-    foreach ($attributes_arr as $key => $value) {
-      if(!is_string($value)) continue;
-      $value = cs_form::process_plain($value);
-      if(!empty($value)){
-        $attributes .= " {$key}=\"{$value}\"";
-      }
-    }
-    $attributes = trim($attributes);
-    return empty($attributes) ? '' : ' ' . $attributes;
   }
 
   public function get_prefix(){
@@ -1205,8 +1204,89 @@ abstract class cs_field_multivalues extends cs_field {
   }
 }
 
+
+class cs_option extends cs_element{
+  protected $label;
+  protected $key;
+
+  function __construct($key, $label, $options = array()) {
+    $this->key = $key;
+    $this->label = $label;
+
+    foreach ($options as $key => $value) {
+      if( property_exists(get_class($this), $key) )
+        $this->$key = $value;
+    }
+  }
+
+  public function render(cs_select $form_field){
+    $selected = ($this->key == $form_field->get_value()) ? ' selected="selected"' : '';
+    $output = "<option value=\"{$this->key}\"{$selected}>{$this->label}</option>\n";
+    return $output;
+  }
+}
+
+class cs_optgroup extends cs_element{
+  protected $options;
+  protected $label;
+
+  function __construct($label, $options) {
+    $this->label = $label;
+
+    if(isset($options['options'])){
+      foreach ($options['options'] as $key => $value) {
+        if($value instanceof cs_option) {
+          $this->add_option($value);
+        } else {
+          $this->add_option( new cs_option($key , $value) );
+        }
+      }
+      unset($options['options']);
+    }
+
+    foreach ($options as $key => $value) {
+      if( property_exists(get_class($this), $key) )
+        $this->$key = $value;
+    }
+  }
+
+  public function add_option(cs_option $option){
+    $this->options[] = $option;
+  }
+
+  public function render(cs_select $form_field){
+    $attributes = $this->get_attributes(array('label'));
+    $output = "<optgroup label=\"{$this->label}\"{$attributes}>\n";
+    foreach ($this->options as $option) {
+      $output .= $option->render($form_field);
+    }
+    $output .= "</optgroup>\n";
+    return $output;
+  }
+}
+
 class cs_select extends cs_field_multivalues {
   protected $multiple = FALSE;
+
+  public function __construct($options,$name) {
+
+    if(isset($options['options'])){
+      foreach($options['options'] as $k => $o){
+        if(is_array($o)){
+          $this->options[] = new cs_optgroup( $k , array('options' => $o) );
+        }else{
+          $this->options[] = new cs_option( $k , $o );
+        }
+      }
+      unset($options['options']);
+    }
+
+    parent::__construct($options,$name);
+  }
+
+  public function get_value(){
+    return $this->value;
+  }
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
@@ -1223,17 +1303,18 @@ class cs_select extends cs_field_multivalues {
     $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
     foreach ($this->options as $key => $value) {
-      $selected = ($key == $this->value) ? ' selected="selected"' : '';
-      if(is_array($value)){
-        $output .= "<optgroup label=\"{$key}\">";
-        foreach($value as $optgroupkey=>$optgroupvalue){
-          $selected = ($optgroupkey == $this->value) ? ' selected="selected"' : '';
-          $output .= "<option value=\"{$optgroupkey}\"{$selected}>{$optgroupvalue}</option>\n";
-        }
-        $output .= "</optgroup>";
-      }else {
-        $output .= "<option value=\"{$key}\"{$selected}>{$value}</option>\n";
-      }
+    //   $selected = ($key == $this->value) ? ' selected="selected"' : '';
+    //   if(is_array($value)){
+    //     $output .= "<optgroup label=\"{$key}\">";
+    //     foreach($value as $optgroupkey=>$optgroupvalue){
+    //       $selected = ($optgroupkey == $this->value) ? ' selected="selected"' : '';
+    //       $output .= "<option value=\"{$optgroupkey}\"{$selected}>{$optgroupvalue}</option>\n";
+    //     }
+    //     $output .= "</optgroup>";
+    //   }else {
+    //     $output .= "<option value=\"{$key}\"{$selected}>{$value}</option>\n";
+    //   }
+      $output .= $value->render($this);
     }
     $output .= "</select>\n";
     return $output;
@@ -1246,17 +1327,18 @@ class cs_select extends cs_field_multivalues {
 
 class cs_slider extends cs_select{
   public function __construct($options, $name = NULL){
-    parent::__construct($options, $name);
-
     // get the "default_value" index value
     $values = cs_form::array_get_values($this->default_value,$this->options);
     $oldkey_value = end($values);
 
     // flatten the options array ang get a numeric keyset
-    $this->options = cs_form::array_flatten($this->options);
+    // $this->options = cs_form::array_flatten($this->options);
+    $options['options'] = cs_form::array_flatten($options['options']);
 
     // search the new index
     $this->value = $this->default_value = array_search($oldkey_value,$this->options);
+
+    parent::__construct($options, $name);
   }
 
   public function render_field(cs_form $form){
