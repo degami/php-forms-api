@@ -221,12 +221,15 @@ class cs_form extends cs_element{
   }
 
   public function add_field($name, $field) {
-    if (!is_object($field)) {
+    if (is_array($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
       $field = new $field_type($field, $name);
-    }else{
+    }else if($field instanceof cs_field){
       $field->set_name($name);
+    }else{
+      throw new Exception("Error adding field. Array or cs_field subclass expected, ".gettype($field)." given", 1);
     }
+
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
 
