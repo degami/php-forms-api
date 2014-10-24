@@ -939,6 +939,12 @@ abstract class cs_field extends cs_element{
   abstract public function is_a_value();                // tells if component value is passed on the parent values() function call
 }
 
+
+/* #########################################################
+   ####                    FIELDS                       ####
+   ######################################################### */
+
+
 class cs_submit extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
@@ -1784,6 +1790,12 @@ class cs_spinner extends cs_field {
     return TRUE;
   }
 }
+
+
+/* #########################################################
+   ####              FIELD CONTAINERS                   ####
+   ######################################################### */
+
 
 abstract class cs_fields_container extends cs_field {
   protected $insert_field_order = array();
