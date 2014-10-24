@@ -92,16 +92,16 @@ class cs_form extends cs_element{
   protected $form_id = 'cs_form';
   protected $form_token = '';
   protected $action = '';
-  protected $attributes = array();
   protected $method = 'post';
   protected $prefix = '';
   protected $suffix = '';
-  protected $validate = array();
   protected $processed = FALSE;
   protected $preprocessors = FALSE;
   protected $validated = FALSE;
   protected $submitted = FALSE;
   protected $valid = NULL;
+
+  protected $validate = '';
   protected $submit = '';
   protected $error = '';
   protected $inline_errors = FALSE;
@@ -119,8 +119,11 @@ class cs_form extends cs_element{
       if( property_exists(get_class($this), $name) )
         $this->$name = $value;
     }
-    if (empty($this->submit)) {
+    if (empty($this->submit) || !is_callable($this->submit)) {
       $this->submit = "{$this->form_id}_submit";
+    }
+    if (empty($this->validate) || !is_callable($this->validate)) {
+      $this->submit = "{$this->form_id}_validate";
     }
     $sid = session_id();
     if (!empty($sid)) {
@@ -214,6 +217,15 @@ class cs_form extends cs_element{
           $this->valid = FALSE;
         }
       }
+
+      $validate_function = $this->validate;
+      if (function_exists($validate_function)) {
+        if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
+          $this->valid = FALSE;
+          $this->error = is_string($error) ? $error : 'Error. Form is not valid';
+        }
+      }
+
       $this->validated = TRUE;
       return $this->valid;
     }
