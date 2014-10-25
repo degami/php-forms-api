@@ -123,7 +123,7 @@ class cs_form extends cs_element{
       $this->submit = "{$this->form_id}_submit";
     }
     if (empty($this->validate) || !is_callable($this->validate)) {
-      $this->submit = "{$this->form_id}_validate";
+      $this->validate = "{$this->form_id}_validate";
     }
     $sid = session_id();
     if (!empty($sid)) {

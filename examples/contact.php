@@ -136,7 +136,7 @@ $form->add_field('tabs',array(
 ->add_field('file', array(
   'type' => 'file',
   'destination' => dirname(__FILE__),
-  'validate' => array('required'),
+  // 'validate' => array('required'),
 ),1) //to tab 1
 ->add_field('select', array(
   'type' => 'select',
@@ -222,6 +222,12 @@ function contact_submit(&$form) {
   // $form->reset();
 }
 
+function contact_validate(&$form) {
+  $form_values = $form->values();
+  if($form_values['fieldset']['name'] == 'aaa' && $form_values['tabs']['slider']==2) return "You shall not pass!!!";
+
+  return TRUE;
+}
 
 ?><!DOCTYPE html>
 <html lang="en">
