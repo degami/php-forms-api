@@ -88,7 +88,8 @@ This is what happens when you submit a form for processing:
  * Validate the form. If the form was not submitted fail validation without
    checking anything so the form displays for the first time. If this request
    was the result of submitting this form run all field validators. If any of
-   the validators fail set error conditions in the form.
+   the validators fail set error conditions in the form. Then the form's level
+   validate handler is called if it is found.
  * If the form was submitted and passed validation run any field processors
    defined to run after validation (postprocess). Then check if the submit
    handler is exists as a php function.
