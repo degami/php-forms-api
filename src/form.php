@@ -317,7 +317,10 @@ class cs_form extends cs_element{
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
     $output .= "</form>\n";
 
-    $output .= $this->generate_js();
+    $js = $this->generate_js();
+    if(!empty( $js )){
+      $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
+    }
 
     $output .= $this->suffix;
     $output .= $this->get_suffix();
@@ -330,6 +333,10 @@ class cs_form extends cs_element{
     return $this;
   }
 
+  public function get_js($js){
+    return $this->js;
+  }
+
   public function generate_js(){
     $this->js = array_filter(array_map('trim',$this->js));
     if(!empty( $this->js )){
@@ -340,13 +347,11 @@ class cs_form extends cs_element{
       }
 
       return "
-      <script type=\"text/javascript\">
       (function($){
         $(document).ready(function(){
           ".implode(";\n",$this->js).";
         });
-      })(jQuery);
-      </script>";
+      })(jQuery);";
     }
     return "";
   }
