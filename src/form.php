@@ -820,6 +820,7 @@ abstract class cs_field extends cs_element{
   protected $disabled = FALSE;
   protected $default_value = NULL;
   protected $value = NULL;
+  protected $pre_rendered = FALSE;
 
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
@@ -841,6 +842,7 @@ abstract class cs_field extends cs_element{
 
   public function reset() {
     $this->value = $this->default_value;
+    $this->pre_rendered = FALSE;
   }
 
   public function set_name($name){
@@ -921,6 +923,12 @@ abstract class cs_field extends cs_element{
     return empty($this->error) ? '' : "<li>{$this->error}</li>";
   }
 
+  public function pre_render(cs_form $form){
+    $this->pre_rendered = TRUE;
+    // should not return value, just change element/form state
+    return;
+  }
+
   public function render(cs_form $form) {
 
     $id = $this->get_html_id();
@@ -934,6 +942,7 @@ abstract class cs_field extends cs_element{
       }
     }
 
+    $this->pre_render($form);
     $output .= $this->render_field($form);
 
     if( !($this instanceof cs_fields_container)){
@@ -1130,9 +1139,8 @@ class cs_autocomplete extends cs_field{
   protected $options = array();
   protected $min_length = 3;
 
-  public function render_field(cs_form $form) {
+  public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-
 
     $form->add_js("
       \$('#{$id}','#{$form->get_id()}')
@@ -1149,6 +1157,12 @@ class cs_autocomplete extends cs_field{
         }
       });
     ");
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
@@ -1385,9 +1399,8 @@ class cs_slider extends cs_select{
     parent::__construct($options, $name);
   }
 
-  public function render_field(cs_form $form){
+  public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
     $form->add_js("
       \$('#{$id}-slider','#{$form->get_id()}').slider({
         min: 1,
@@ -1400,6 +1413,13 @@ class cs_slider extends cs_select{
     \$( '#{$id}' ).change(function() {
       \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
     }).hide();");
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form){
+    $id = $this->get_html_id();
+    $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
     return parent::render_field($form);
   }
 }
@@ -1643,10 +1663,15 @@ class cs_date extends cs_field {
 class cs_datepicker extends cs_field {
   protected $date_format = 'yy-mm-dd';
 
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
+
+    parent::pre_render($form);
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
@@ -1779,17 +1804,27 @@ class cs_spinner extends cs_field {
   protected $max = NULL;
   protected $step = 1;
 
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+
+    $js_options = '';
+    if( is_numeric($this->min) && is_numeric($this->max) && $this->max >= $this->min ){
+      $js_options = "{min: $this->min, max: $this->max, step: $this->step}";
+    }
+
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').attr('type','text').spinner({$js_options});");
+
+    parent::pre_render($form);
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '';
 
-    $js_options = '';$html_options = '';
+    $html_options = '';
     if( is_numeric($this->min) && is_numeric($this->max) && $this->max >= $this->min ){
-      $js_options = "{min: $this->min, max: $this->max, step: $this->step}";
       $html_options = " min=\"{$this->min}\" max=\"{$this->max}\" step=\"{$this->step}\"";
     }
-
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').attr('type','text').spinner({$js_options});");
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if (!empty($this->error)) {
@@ -1931,10 +1966,10 @@ class cs_fieldset extends cs_fields_container {
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
 
-  public function render_field(cs_form $form) {
+  public function pre_render(cs_form $form){
     static $js_collapsible_added = FALSE;
     $id = $this->get_html_id();
-    $output = '';
+
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->collapsible) {
       $this->attributes['class'] .= ' collapsible';
@@ -1961,6 +1996,14 @@ class cs_fieldset extends cs_fields_container {
         $js_collapsible_added = TRUE;
       }
     }
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    $output = '';
+
     $attributes = $this->get_attributes();
     $output .= "<fieldset id=\"{$id}\"{$attributes}>\n";
     if (!empty($this->title)) {
@@ -2022,10 +2065,16 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
 }
 
 class cs_tabs extends cs_fields_container_tabbed {
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
+
+    parent::pre_render($form);
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
 
     $output = '';
     $attributes = $this->get_attributes();
@@ -2058,10 +2107,16 @@ class cs_tabs extends cs_fields_container_tabbed {
 }
 
 class cs_accordion extends cs_fields_container_tabbed {
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion();");
+
+    parent::pre_render($form);
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion();");
 
     $output = '';
     $attributes = $this->get_attributes();
