@@ -149,9 +149,14 @@ class cs_form extends cs_element{
   public function reset() {
     foreach ($this->get_fields() as $name => $field) {
       $field->reset();
-      @unset( (strtolower($this->method) == 'post') ? $_POST[$name] : $_GET[$name] );
+      if(strtolower($this->method) == 'post') {
+        unset( $_POST[$name] );
+      } else {
+        unset( $_GET[$name] );
+      }
+      unset( $_REQUEST[$name] );
     }
-    @unset($_REQUEST['form_id']);
+    unset($_REQUEST['form_id']);
     $this->processed = FALSE;
     $this->validated = FALSE;
     $this->submitted = FALSE;
