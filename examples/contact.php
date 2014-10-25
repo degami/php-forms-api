@@ -273,9 +273,11 @@ function contact_validate(&$form) {
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
   <script type="text/javascript"><?php
+/*
     // if you wish to have form's js scripts here rather than after the form....
     $form->pre_render(); // call all elements pre_render, so they can attach js to the form element
     print $form->generate_js();
+*/
   ?></script>
   <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 </head>

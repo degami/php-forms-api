@@ -357,8 +357,7 @@ class cs_form extends cs_element{
       }
 
       $this->js_generated = TRUE;
-      return "
-      (function($){
+      return "(function($){
         $(document).ready(function(){
           ".implode(";\n",$this->js).";
         });
