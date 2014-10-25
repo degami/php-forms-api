@@ -106,6 +106,7 @@ class cs_form extends cs_element{
   protected $error = '';
   protected $inline_errors = FALSE;
   protected $js = array();
+  protected $js_generated = FALSE;
 
   protected $insert_field_order = array();
   protected $fields = array();
@@ -160,6 +161,7 @@ class cs_form extends cs_element{
     $this->processed = FALSE;
     $this->validated = FALSE;
     $this->submitted = FALSE;
+    $this->js_generated = FALSE;
   }
 
   public function is_submitted() {
@@ -276,6 +278,14 @@ class cs_form extends cs_element{
     return $this->inline_errors;
   }
 
+  public function pre_render(){
+    foreach ($this->get_fields() as $name => $field) {
+      if( is_object($field) && method_exists ( $field , 'pre_render' ) ){
+        $field->pre_render($this);
+      }
+    }
+  }
+
   public function render() {
     $output = $this->get_prefix();
     $output .= $this->prefix;
@@ -339,13 +349,14 @@ class cs_form extends cs_element{
 
   public function generate_js(){
     $this->js = array_filter(array_map('trim',$this->js));
-    if(!empty( $this->js )){
+    if(!empty( $this->js ) && !$this->js_generated ){
       foreach($this->js as &$js_string){
         if($js_string[strlen($js_string)-1] == ';'){
           $js_string = substr($js_string,0,strlen($js_string)-1);
         }
       }
 
+      $this->js_generated = TRUE;
       return "
       (function($){
         $(document).ready(function(){
@@ -1899,6 +1910,15 @@ abstract class cs_fields_container extends cs_field {
         $this->get_field($name)->process($values[$name], $name);
       }
     }
+  }
+
+  public function pre_render(cs_form $form){
+    foreach ($this->get_fields() as $name => $field) {
+      if( is_object($field) && method_exists ( $field , 'pre_render' ) ){
+        $field->pre_render($form);
+      }
+    }
+    parent::pre_render($form);
   }
 
   public function valid() {
