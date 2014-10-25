@@ -317,22 +317,8 @@ class cs_form extends cs_element{
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
     $output .= "</form>\n";
 
-    $this->js = array_filter(array_map('trim',$this->js));
-    if(!empty( $this->js )){
-      foreach($this->js as &$js_string){
-        if($js_string[strlen($js_string)-1] == ';'){
-          $js_string = substr($js_string,0,strlen($js_string)-1);
-        }
-      }
-      $output .= "
-      <script type=\"text/javascript\">
-      (function($){
-        $(document).ready(function(){
-          ".implode(";\n",$this->js).";
-        });
-      })(jQuery);
-      </script>";
-    }
+    $output .= $this->generate_js();
+
     $output .= $this->suffix;
     $output .= $this->get_suffix();
     return $output;
@@ -342,6 +328,27 @@ class cs_form extends cs_element{
     $this->js[] = $js;
 
     return $this;
+  }
+
+  public function generate_js(){
+    $this->js = array_filter(array_map('trim',$this->js));
+    if(!empty( $this->js )){
+      foreach($this->js as &$js_string){
+        if($js_string[strlen($js_string)-1] == ';'){
+          $js_string = substr($js_string,0,strlen($js_string)-1);
+        }
+      }
+
+      return "
+      <script type=\"text/javascript\">
+      (function($){
+        $(document).ready(function(){
+          ".implode(";\n",$this->js).";
+        });
+      })(jQuery);
+      </script>";
+    }
+    return "";
   }
 
   public static function validate_required($value = NULL) {
