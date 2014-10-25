@@ -357,11 +357,11 @@ class cs_form extends cs_element{
       }
 
       $this->js_generated = TRUE;
-      return "(function($){
-        $(document).ready(function(){
-          ".implode(";\n",$this->js).";
-        });
-      })(jQuery);";
+      return "(function($){\n".
+        "\t$(document).ready(function(){\n".
+        "\t\t".implode(";\n\t\t",$this->js).";\n".
+        "\t});\n".
+      "})(jQuery);";
     }
     return "";
   }
