@@ -53,6 +53,15 @@ $form->get_field('fieldset')->add_field('email', array(
     'style' => 'width: 100%',
    ),
 ));
+$form->get_field('fieldset')->add_field('password', array(
+  'type' => 'password',
+  'validate' => array('required'),
+  'title' => 'Your Password',
+  'attributes' => array(
+    'style' => 'width: 100%',
+   ),
+  'with_confirm' => TRUE,
+));
 $form->get_field('fieldset')->add_field('markup1', array(
   'type' => 'markup',
   'value' => 'aaaa',

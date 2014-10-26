@@ -348,7 +348,6 @@ They are always valid.
       'type' => 'tabs',
     );
 
-
 #### Accordions
 
     $options += array(

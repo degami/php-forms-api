@@ -104,6 +104,7 @@ class cs_form extends cs_element{
   protected $validate = '';
   protected $submit = '';
   protected $error = '';
+
   protected $inline_errors = FALSE;
   protected $js = array();
   protected $js_generated = FALSE;
@@ -343,7 +344,7 @@ class cs_form extends cs_element{
     return $this;
   }
 
-  public function get_js($js){
+  public function &get_js($js){
     return $this->js;
   }
 
@@ -1214,6 +1215,9 @@ class cs_textarea extends cs_field {
 
 
 class cs_password extends cs_field {
+  protected $with_confirm = FALSE;
+  protected $confirm_string = "Confirm password";
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -1224,7 +1228,21 @@ class cs_password extends cs_field {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
     $output = "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
+    if($this->with_confirm == TRUE){
+      $output .= "<label for=\"{$id}-confirm\">{$this->confirm_string}</label>";
+      $output .= "<input type=\"password\" id=\"{$id}-confirm\" name=\"{$this->name}_confirm\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
+    }
     return $output;
+  }
+
+  public function valid(){
+    if($this->with_confirm == TRUE){
+      if(!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value ) {
+        $this->error = "The passwords do not match";
+        return FALSE;
+      }
+    }
+    return parent::valid();
   }
 
   public function is_a_value(){
@@ -1953,6 +1971,9 @@ class cs_tag_container extends cs_fields_container {
   protected $tag = 'div';
 
   public function __construct($options = array(),$name = NULL){
+    // $this->container_tag = NULL;
+    // $this->container_class = NULL;
+
     parent::__construct($options,$name);
 
     if($this->attributes['class'] == 'tag_container'){ // if set to the default
