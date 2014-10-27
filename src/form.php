@@ -96,7 +96,6 @@ class cs_form extends cs_element{
   protected $prefix = '';
   protected $suffix = '';
   protected $processed = FALSE;
-  protected $preprocessors = FALSE;
   protected $validated = FALSE;
   protected $submitted = FALSE;
   protected $valid = NULL;
@@ -183,10 +182,8 @@ class cs_form extends cs_element{
       }
     }
     if($this->processed == TRUE){
-      if (!$this->preprocessors) {
-        foreach ($this->get_fields() as $name => $field) {
-          $field->preprocess();
-        }
+      foreach ($this->get_fields() as $name => $field) {
+        $field->preprocess();
       }
       if ((!$this->submitted) && $this->valid()) {
         $this->submitted = TRUE;
