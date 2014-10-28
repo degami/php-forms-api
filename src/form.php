@@ -235,7 +235,7 @@ class cs_form extends cs_element{
       if (function_exists($validate_function)) {
         if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
           $this->valid = FALSE;
-          $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', __FUNCTION__ );
+          $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', $validate_function );
         }
       }
 
@@ -271,8 +271,32 @@ class cs_form extends cs_element{
     return $this->fields;
   }
 
+  public function get_fields_by_type($field_types){
+    if(!is_array($field_types)) $field_types = array($field_types);
+    $out = array();
+
+    foreach($this->get_fields() as $field){
+      if($field instanceof cs_fields_container){
+        $out = array_merge($out,$field->get_fields_by_type($field_types));
+      }else{
+        if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
+          $out[] = $field;
+        }
+      }
+    }
+    return $out;
+  }
+
   public function get_field($field_name){
     return isset($this->fields[$field_name]) ? $this->fields[$field_name] : NULL;
+  }
+
+  public function get_triggering_element(){
+    $fields = $this->get_fields_by_type(array('submit','button'));
+    foreach($fields as $field){
+      if($field->get_clicked() == TRUE) return $field;
+    }
+    return NULL;
   }
 
   public function get_id(){
@@ -830,6 +854,7 @@ abstract class cs_field extends cs_element{
   protected $postprocess = array();
   protected $size = 20;
   protected $weight = 0;
+  protected $type = '';
   protected $name = NULL;
   protected $id = NULL;
   protected $title = NULL;
@@ -850,6 +875,10 @@ abstract class cs_field extends cs_element{
       $this->attributes['class'] = preg_replace("/^cs_/","",get_class($this));
     }
 
+    if(empty($this->type)){
+      $this->type = preg_replace("/^cs_/","",get_class($this));
+    }
+
     $this->value = $this->default_value;
   }
 
@@ -860,6 +889,10 @@ abstract class cs_field extends cs_element{
   public function reset() {
     $this->value = $this->default_value;
     $this->pre_rendered = FALSE;
+  }
+
+  public function get_type(){
+    return $this->type;
   }
 
   public function set_name($name){
@@ -1003,6 +1036,10 @@ abstract class cs_action extends cs_field{
       $this->value = $options['value'];
     }
     $this->clicked = FALSE;
+  }
+
+  public function get_clicked(){
+    return $this->clicked;
   }
 
   public function process($value){
@@ -1900,6 +1937,22 @@ abstract class cs_fields_container extends cs_field {
 
   public function &get_fields(){
     return $this->fields;
+  }
+
+  public function get_fields_by_type($field_types){
+    if(!is_array($field_types)) $field_types = array($field_types);
+    $out = array();
+
+    foreach($this->get_fields() as $field){
+      if($field instanceof cs_fields_container){
+        $out = array_merge($out,$field->get_fields_by_type($field_types));
+      }else{
+        if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
+          $out[] = $field;
+        }
+      }
+    }
+    return $out;
   }
 
   public function get_field($field_name){

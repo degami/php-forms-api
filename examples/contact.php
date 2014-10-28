@@ -6,7 +6,7 @@ require '../src/form.php';
 
 function validate_multiple_by($string,$length = 1){
   if(!is_numeric($length) || $length == 0) $length = 1;
-  return ( (strlen("".$string)%$length) > 0 && (strlen("".$string)%$length) == 0) ? TRUE : '<strong>%t</strong> length must be multiple of '.$length;
+  return ( strlen("".$string) > 0 && (strlen("".$string)%$length) == 0) ? TRUE : '<strong>%t</strong> length must be multiple of '.$length;
 }
 
 // Generate a simple contact form
@@ -231,6 +231,8 @@ $form->add_field('autocomplete', array(
 function contact_submit(&$form) {
   $form_values = $form->values();
   // var_export($form);
+  // get submission triggering element
+  // var_dump($form->get_triggering_element());
   print_r($form_values);
   // Reset the form if you want it to display again.
   // $form->reset();
