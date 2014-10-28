@@ -6,7 +6,7 @@ require '../src/form.php';
 
 function validate_multiple_by($string,$length = 1){
   if(!is_numeric($length) || $length == 0) $length = 1;
-  return ((strlen("".$string)%$length) == 0) ? TRUE : '<strong>%t</strong> length must be multiple of '.$length;
+  return ( (strlen("".$string)%$length) > 0 && (strlen("".$string)%$length) == 0) ? TRUE : '<strong>%t</strong> length must be multiple of '.$length;
 }
 
 // Generate a simple contact form
@@ -55,7 +55,7 @@ $form->get_field('fieldset')->add_field('email', array(
 ));
 $form->get_field('fieldset')->add_field('password', array(
   'type' => 'password',
-  'validate' => array('required'),
+  // 'validate' => array('required'),
   'title' => 'Your Password',
   'attributes' => array(
     'style' => 'width: 100%',
@@ -215,6 +215,10 @@ $form->add_field('autocomplete', array(
   'type' => 'submit',
   'value' => 'Send',
 ))
+->add_field('submit2', array(
+  'type' => 'submit',
+  'value' => 'Send2',
+))
 ->add_field('reset', array(
   'type' => 'reset',
   'value' => 'Reset',
@@ -226,6 +230,7 @@ $form->add_field('autocomplete', array(
 // as this is not a real example I'm just outputting the values for now.
 function contact_submit(&$form) {
   $form_values = $form->values();
+  // var_export($form);
   print_r($form_values);
   // Reset the form if you want it to display again.
   // $form->reset();

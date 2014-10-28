@@ -26,8 +26,18 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 abstract class cs_element{
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
-  protected $error = NULL;
+  protected $errors = array();
   protected $attributes = array();
+  protected $prefix = '';
+  protected $suffix = '';
+
+  public function add_error($error_string,$validate_function_name){
+    $this->errors[$validate_function_name] = $error_string;
+  }
+
+  public function get_errors(){
+    return $this->errors;
+  }
 
   public function set_attribute($name,$value){
     $this->attributes[$name] = $value;
@@ -69,7 +79,7 @@ abstract class cs_element{
       if(isset($this->attributes['class']) && !empty($this->attributes['class'])){
         $class .= ' '.$this->attributes['class'].'-container';
       }
-      if (!empty($this->error)) {
+      if (!empty($this->get_errors())) {
         $class .= ' error';
       }
       $class = trim($class);
@@ -93,8 +103,6 @@ class cs_form extends cs_element{
   protected $form_token = '';
   protected $action = '';
   protected $method = 'post';
-  protected $prefix = '';
-  protected $suffix = '';
   protected $processed = FALSE;
   protected $validated = FALSE;
   protected $submitted = FALSE;
@@ -208,11 +216,11 @@ class cs_form extends cs_element{
       $sid = session_id();
       if (!empty($sid)) {
         $this->valid = FALSE;
-        $this->error = 'Form is invalid or has expired';
+        $this->add_error('Form is invalid or has expired',__FUNCTION__);
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - 7200) {
             $this->valid = TRUE;
-            $this->error = '';
+            $this->errors = array();
             unset($_SESSION['form_token'][$_REQUEST['form_token']]);
           }
         }
@@ -227,7 +235,7 @@ class cs_form extends cs_element{
       if (function_exists($validate_function)) {
         if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
           $this->valid = FALSE;
-          $this->error = is_string($error) ? $error : 'Error. Form is not valid';
+          $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', __FUNCTION__ );
         }
       }
 
@@ -240,6 +248,9 @@ class cs_form extends cs_element{
   public function add_field($name, $field) {
     if (is_array($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
+      if(!class_exists($field_type)){
+        throw new Exception("Error adding field. Class $field_type not found", 1);
+      }
       $field = new $field_type($field, $name);
     }else if($field instanceof cs_field){
       $field->set_name($name);
@@ -269,7 +280,7 @@ class cs_form extends cs_element{
   }
 
   public function show_errors() {
-    return empty($this->error) ? '' : "<li>{$this->error}</li>";
+    return empty($this->get_errors()) ? '' : "<li>".implode('</li><li>',$this->get_errors())."</li>";
   }
 
   public function errors_inline() {
@@ -476,7 +487,7 @@ class cs_form extends cs_element{
   }
 
   public static function validate_email($email) {
-    if (empty($email)) return TRUE;
+    if (empty($email)) return FALSE;
     $check_dns = FORMS_VALIDATE_EMAIL_DNS;
     $blocked_domains = explode('|', FORMS_VALIDATE_EMAIL_BLOCKED_DOMAINS);
     $atIndex = strrpos($email, "@");
@@ -817,8 +828,6 @@ abstract class cs_field extends cs_element{
   protected $validate = array();
   protected $preprocess = array();
   protected $postprocess = array();
-  protected $prefix = '';
-  protected $suffix = '';
   protected $size = 20;
   protected $weight = 0;
   protected $name = NULL;
@@ -893,6 +902,8 @@ abstract class cs_field extends cs_element{
   }
 
   public function valid() {
+    $this->errors = array();
+
     foreach ($this->validate as $validator) {
       $matches = array();
       if(is_array($validator)){
@@ -917,18 +928,23 @@ abstract class cs_field extends cs_element{
       if (isset($error) && $error !== TRUE) {
         $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
         if(empty($error)) $error = '%t - Error.';
-        $this->error = str_replace('%t', $titlestr, $error);
+        $this->add_error(str_replace('%t', $titlestr, $error), $validator_func);
         if(is_array($validator) && !empty($validator['error_message'])){
-          $this->error = str_replace('%t', $titlestr, $validator['error_message']);
+          $this->add_error(str_replace('%t', $titlestr, $validator['error_message']),$validator_func);
         }
-        return FALSE;
+        // return FALSE;
       }
     }
+
+    if( !empty($this->get_errors()) ){
+      return FALSE;
+    }
+
     return TRUE;
   }
 
   public function show_errors() {
-    return empty($this->error) ? '' : "<li>{$this->error}</li>";
+    return empty($this->get_errors()) ? '' : "<li>".implode("</li><li>",$this->get_errors())."</li>";
   }
 
   public function pre_render(cs_form $form){
@@ -959,8 +975,8 @@ abstract class cs_field extends cs_element{
       }
     }
 
-    if($form->errors_inline() == TRUE && !empty($this->error) ){
-      $output.= '<div class="inline-error error">'.$this->error.'</div>';
+    if($form->errors_inline() == TRUE && !empty($this->get_errors()) ){
+      $output.= '<div class="inline-error error">'.implode("<br />",$this->get_errors()).'</div>';
     }
 
     $output .= $this->suffix;
@@ -978,15 +994,32 @@ abstract class cs_field extends cs_element{
    ####                    FIELDS                       ####
    ######################################################### */
 
+abstract class cs_action extends cs_field{
+  protected $clicked = FALSE;
 
-class cs_submit extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     if(isset($options['value'])){
       $this->value = $options['value'];
     }
+    $this->clicked = FALSE;
   }
 
+  public function process($value){
+    parent::process($value);
+    $this->clicked = TRUE;
+  }
+
+  public function reset(){
+    $this->clicked = FALSE;
+  }
+
+  public function valid() {
+    return TRUE;
+  }
+}
+
+class cs_submit extends cs_action {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if (empty($this->value)) {
@@ -1001,11 +1034,23 @@ class cs_submit extends cs_field {
   public function is_a_value(){
     return TRUE;
   }
+}
 
-  public function valid() {
+
+class cs_button extends cs_action {
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes();
+    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes}>{$this->value}</button>\n";
+    return $output;
+  }
+
+  public function is_a_value(){
     return TRUE;
   }
 }
+
 
 class cs_reset extends cs_field {
   public function __construct($options = array(), $name = NULL) {
@@ -1028,31 +1073,6 @@ class cs_reset extends cs_field {
 
   public function is_a_value(){
     return FALSE;
-  }
-
-  public function valid() {
-    return TRUE;
-  }
-}
-
-class cs_button extends cs_field {
-  public function __construct($options = array(), $name = NULL) {
-    parent::__construct($options,$name);
-    if(isset($options['value'])){
-      $this->value = $options['value'];
-    }
-  }
-
-  public function render_field(cs_form $form) {
-    $id = $this->get_html_id();
-    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
-    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes}>{$this->value}</button>\n";
-    return $output;
-  }
-
-  public function is_a_value(){
-    return TRUE;
   }
 
   public function valid() {
@@ -1128,7 +1148,7 @@ class cs_textfield extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1173,7 +1193,7 @@ class cs_autocomplete extends cs_field{
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1196,7 +1216,7 @@ class cs_textarea extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1219,7 +1239,7 @@ class cs_password extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1235,7 +1255,7 @@ class cs_password extends cs_field {
   public function valid(){
     if($this->with_confirm == TRUE){
       if(!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value ) {
-        $this->error = "The passwords do not match";
+        $this->add_error("The passwords do not match",__FUNCTION__);
         return FALSE;
       }
     }
@@ -1283,7 +1303,7 @@ abstract class cs_field_multivalues extends cs_field {
       }
       if(!$check) {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-        $this->error = "{$titlestr}: Invalid choice";
+        $this->add_error("{$titlestr}: Invalid choice",__FUNCTION__);
         return FALSE;
       }
     }
@@ -1382,7 +1402,7 @@ class cs_select extends cs_field_multivalues {
     $output = '';
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1543,7 +1563,7 @@ class cs_file extends cs_field {
     $form->set_attribute('enctype', 'multipart/form-data');
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1615,7 +1635,7 @@ class cs_date extends cs_field {
     $output = '';
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1674,7 +1694,7 @@ class cs_date extends cs_field {
   public function valid() {
     if( !checkdate( $this->value['month'] , $this->value['day'] , $this->value['year'] ) ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->error = "{$titlestr}: Invalid date";
+      $this->add_error("{$titlestr}: Invalid date", __FUNCTION__);
       return FALSE;
     }
     return parent::valid();
@@ -1699,7 +1719,7 @@ class cs_datepicker extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1734,7 +1754,7 @@ class cs_time extends cs_field {
     $output = '';
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1813,7 +1833,7 @@ class cs_time extends cs_field {
 
     if( ! $check ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->error = "{$titlestr}: Invalid time";
+      $this->add_error("{$titlestr}: Invalid time", __FUNCTION__);
       return FALSE;
     }
     return parent::valid();
@@ -1852,7 +1872,7 @@ class cs_spinner extends cs_field {
     }
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->error)) {
+    if (!empty($this->get_errors())) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1889,6 +1909,9 @@ abstract class cs_fields_container extends cs_field {
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
+      if(!class_exists($field_type)){
+        throw new Exception("Error adding field. Class $field_type not found", 1);
+      }
       $field = new $field_type($field, $name);
     }else{
       $field->set_name($name);
@@ -2076,6 +2099,9 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
   public function add_field($name, $field, $tabindex = 0) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
+      if(!class_exists($field_type)){
+        throw new Exception("Error adding field. Class $field_type not found", 1);
+      }
       $field = new $field_type($field, $name);
     }else{
       $field->set_name($name);
