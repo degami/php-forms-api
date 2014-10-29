@@ -150,6 +150,9 @@ class cs_form extends cs_element{
     foreach ($this->get_fields() as $name => $field) {
       if($field->is_a_value() == TRUE){
         $output[$name] = $field->values();
+        if(is_array($output[$name]) && empty($output[$name])){
+          unset($output[$name]);
+        }
       }
     }
     return $output;
@@ -1049,6 +1052,7 @@ abstract class cs_action extends cs_field{
 
   public function reset(){
     $this->clicked = FALSE;
+    parent::reset();
   }
 
   public function valid() {
@@ -1983,6 +1987,9 @@ abstract class cs_fields_container extends cs_field {
     foreach ($this->get_fields() as $name => $field) {
       if($field->is_a_value() == TRUE){
         $output[$name] = $field->values();
+        if(is_array($output[$name]) && empty($output[$name])){
+          unset($output[$name]);
+        }
       }
     }
     return $output;
