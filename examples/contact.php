@@ -219,6 +219,10 @@ $form->add_field('autocomplete', array(
   'type' => 'submit',
   'value' => 'Send2',
 ))
+->add_field('button', array(
+  'type' => 'button',
+  'value' => 'Send3',
+))
 ->add_field('reset', array(
   'type' => 'reset',
   'value' => 'Reset',

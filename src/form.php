@@ -185,7 +185,7 @@ class cs_form extends cs_element{
       if (isset($request['form_id']) && $request['form_id'] == $this->form_id) {
         foreach ($this->get_fields() as $name => $field) {
           if( $field instanceof cs_fields_container ) $this->get_field($name)->process($request);
-          else if ( !empty($request[$name]) ) {
+          else if ( isset($request[$name]) ) {
             $this->get_field($name)->process($request[$name], $name);
           }
         }
@@ -1079,11 +1079,18 @@ class cs_submit extends cs_action {
 
 
 class cs_button extends cs_action {
+  private $label;
+
+  public function __construct($options = array(), $name = NULL){
+    parent::__construct($options,$name);
+    if(empty($this->label)) $this->label = $this->value;
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes}>{$this->value}</button>\n";
+    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes} value=\"{$this->value}\">{$this->label}</button>\n";
     return $output;
   }
 
@@ -2003,7 +2010,7 @@ abstract class cs_fields_container extends cs_field {
   public function process($values) {
     foreach ($this->get_fields() as $name => $field) {
       if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
-      else if(!empty($values[$name])){
+      else if(isset($values[$name])){
         $this->get_field($name)->process($values[$name], $name);
       }
     }
