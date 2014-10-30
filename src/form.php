@@ -924,11 +924,16 @@ abstract class cs_field extends cs_element{
 
   public function preprocess($process_type = "preprocess") {
     foreach ($this->$process_type as $processor) {
-      $processor = "process_{$processor}";
-      if (function_exists($processor)) {
-        $this->value = $processor($this->value);
+      $processor_func = "process_{$processor}";
+      if (function_exists($processor_func)) {
+        $this->value = $processor_func($this->value);
+      } else if(method_exists(get_class($this), $processor_func)){
+          $this->value = call_user_func( array($this, $processor_func), $this->value );
       } else {
-        $this->value = cs_form::$processor($this->value);
+        if(method_exists('cs_form', $processor_func)){
+          //$this->value = cs_form::$processor_func($this->value);
+          $this->value = call_user_func( array('cs_form',$processor_func), $this->value );
+        }
       }
     }
   }
@@ -954,11 +959,13 @@ abstract class cs_field extends cs_element{
       if (function_exists($validator_func)) {
         $error = $validator_func($this->value, $options);
       } else if(method_exists(get_class($this), $validator_func)){
-          $classmethod = get_class($this)."::".$validator_func;
-          $error = call_user_func( $classmethod, $this->value, $options );
+        // $classmethod = get_class($this)."::".$validator_func;
+        // $error = call_user_func( $classmethod, $this->value, $options );
+        $error = call_user_func( array(get_class($this), $validator_func), $this->value, $options );
       }else {
         if(method_exists('cs_form', $validator_func)){
-          $error = cs_form::$validator_func($this->value, $options);
+          //$error = cs_form::$validator_func($this->value, $options);
+          $error = call_user_func( array('cs_form', $validator_func), $this->value, $options );
         }
       }
       if (isset($error) && $error !== TRUE) {
