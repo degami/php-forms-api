@@ -223,6 +223,14 @@ $form->add_field('autocomplete', array(
   'type' => 'button',
   'value' => 'Send3',
 ))
+->add_field('image', array(
+  'type' => 'image_button',
+  'value' => 'Send4',
+  'src' => 'https://www.google.it/images/srpr/logo11w.png',
+  'attributes' => array(
+    'width' => '100',
+  ),
+))
 ->add_field('reset', array(
   'type' => 'reset',
   'value' => 'Reset',
@@ -236,7 +244,9 @@ function contact_submit(&$form) {
   $form_values = $form->values();
   // var_export($form);
   // get submission triggering element
-  // var_dump($form->get_triggering_element());
+
+var_dump($_POST);
+  var_dump($form->get_triggering_element());
   print_r($form_values);
   // Reset the form if you want it to display again.
   // $form->reset();

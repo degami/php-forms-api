@@ -182,6 +182,22 @@ class cs_form extends cs_element{
   public function process() {
     if (!$this->processed) {
       $request = (strtolower($this->method) == 'post') ? $_POST : $_GET;
+
+      foreach($request as $key => $val){
+        if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && !empty($this->get_fields_by_type_and_name('image_button',$matches[1])) ){
+          //assume this is an input type="image"
+          if( isset($request[$matches[1].'_'.(($matches[2] == 'x')?'y':'x')]) ){
+            $request[$matches[1]] = array(
+              'x'=>$request[$matches[1].'_x'],
+              'y'=>$request[$matches[1].'_y'],
+            );
+
+            unset($request[$matches[1].'_x']);
+            unset($request[$matches[1].'_y']);
+          }
+        }
+      }
+
       if (isset($request['form_id']) && $request['form_id'] == $this->form_id) {
         foreach ($this->get_fields() as $name => $field) {
           if( $field instanceof cs_fields_container ) $this->get_field($name)->process($request);
@@ -290,12 +306,28 @@ class cs_form extends cs_element{
     return $out;
   }
 
+  public function get_fields_by_type_and_name($field_types,$name){
+    if(!is_array($field_types)) $field_types = array($field_types);
+    $out = array();
+
+    foreach($this->get_fields() as $field){
+      if($field instanceof cs_fields_container){
+        $out = array_merge($out, $field->get_fields_by_type_and_name($field_types,$name));
+      }else{
+        if($field instanceof cs_field && in_array($field->get_type(), $field_types) && $field->get_name() == $name) {
+          $out[] = $field;
+        }
+      }
+    }
+    return $out;
+  }
+
   public function get_field($field_name){
     return isset($this->fields[$field_name]) ? $this->fields[$field_name] : NULL;
   }
 
   public function get_triggering_element(){
-    $fields = $this->get_fields_by_type(array('submit','button'));
+    $fields = $this->get_fields_by_type(array('submit','button','image_button'));
     foreach($fields as $field){
       if($field->get_clicked() == TRUE) return $field;
     }
@@ -858,6 +890,7 @@ abstract class cs_field extends cs_element{
   protected $size = 20;
   protected $weight = 0;
   protected $type = '';
+  protected $stop_on_first_error = FALSE;
   protected $name = NULL;
   protected $id = NULL;
   protected $title = NULL;
@@ -975,7 +1008,10 @@ abstract class cs_field extends cs_element{
         if(is_array($validator) && !empty($validator['error_message'])){
           $this->add_error(str_replace('%t', $titlestr, $validator['error_message']),$validator_func);
         }
-        // return FALSE;
+
+        if($this->stop_on_first_error){
+          return FALSE;
+        }
       }
     }
 
@@ -1086,7 +1122,7 @@ class cs_submit extends cs_action {
 
 
 class cs_button extends cs_action {
-  private $label;
+  protected $label;
 
   public function __construct($options = array(), $name = NULL){
     parent::__construct($options,$name);
@@ -1106,6 +1142,23 @@ class cs_button extends cs_action {
   }
 }
 
+class cs_image_button extends cs_action {
+  protected $src;
+  protected $alt;
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
+    $attributes = $this->get_attributes(array('type','name','id','value','src','alt'));
+    //  value=\"{$this->value}\"
+    $output = "<input id=\"{$id}\" name=\"{$this->name}\" type=\"image\" src=\"{$this->src}\" alt=\"{$this->alt}\"{$attributes} />\n";
+    return $output;
+  }
+
+  public function is_a_value(){
+    return TRUE;
+  }
+}
 
 class cs_reset extends cs_field {
   public function __construct($options = array(), $name = NULL) {
@@ -1963,9 +2016,25 @@ abstract class cs_fields_container extends cs_field {
 
     foreach($this->get_fields() as $field){
       if($field instanceof cs_fields_container){
-        $out = array_merge($out,$field->get_fields_by_type($field_types));
+        $out = array_merge($out, $field->get_fields_by_type($field_types));
       }else{
         if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
+          $out[] = $field;
+        }
+      }
+    }
+    return $out;
+  }
+
+  public function get_fields_by_type_and_name($field_types,$name){
+    if(!is_array($field_types)) $field_types = array($field_types);
+    $out = array();
+
+    foreach($this->get_fields() as $field){
+      if($field instanceof cs_fields_container){
+        $out = array_merge($out, $field->get_fields_by_type_and_name($field_types,$name));
+      }else{
+        if($field instanceof cs_field && in_array($field->get_type(), $field_types) && $field->get_name() == $name) {
           $out[] = $field;
         }
       }
