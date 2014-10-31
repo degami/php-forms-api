@@ -23,6 +23,79 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 // Here are some prioity things I'm working on:
 // TODO: Support edit forms by allowing an array of values to be specified, not just taken from _REQUEST
 
+class cs_ordered_functions implements Iterator{
+  private $position = 0;
+  private $array = array();
+  private $sort_callback = NULL;
+
+  public function __construct(array $array, $sort_callback = NULL) {
+      $this->position = 0;
+      $this->array = $array;
+      $this->sort_callback = $sort_callback;
+      $this->sort();
+  }
+
+  function sort(){
+    // $this->array = array_filter( array_map('trim', $this->array) );
+    // $this->array = array_unique( array_map('strtolower', $this->array) );
+
+    foreach ($this->array as &$value) {
+      if(is_string($value)){
+        $value = strtolower(trim($value));
+      }else if(is_array($value) && isset($value['validator'])){
+        $value['validator'] = strtolower(trim($value['validator']));
+      }
+    }
+    $this->array = array_unique($this->array);
+
+    if(!empty($this->sort_callback) && is_callable($this->sort_callback)){
+      usort($this->array, $this->sort_callback);
+    }
+  }
+
+  function rewind() {
+    $this->position = 0;
+    $this->sort();
+  }
+
+  function current() {
+    return $this->array[$this->position];
+  }
+
+  function key() {
+    return $this->position;
+  }
+
+  function next() {
+    ++$this->position;
+  }
+
+  function valid() {
+    return isset($this->array[$this->position]);
+  }
+
+  public function has_value($value){
+    return in_array($value, $this->array);
+  }
+
+  public function has_key($key){
+    return in_array($key, array_keys($this->array));
+  }
+
+  public function values(){
+    return array_values($this->array);
+  }
+
+  public function keys(){
+    return array_keys($this->array);
+  }
+
+  public function add_element($value){
+    $this->array[] = $value;
+    $this->sort();
+  }
+}
+
 abstract class cs_element{
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
@@ -879,6 +952,17 @@ class cs_form extends cs_element{
     }
     return ($a->get_weight() < $b->get_weight()) ? -1 : 1;
   }
+
+  public static function order_validators($a,$b){
+    if(is_array($a) && isset($a['validator'])) $a = $a['validator'];
+    if(is_array($b) && isset($b['validator'])) $b = $b['validator'];
+
+    if($a == $b) return 0;
+    if($a == 'required') return -1;
+    if($b == 'required') return 1;
+
+    return $a > $b ? 1 : -1;
+  }
 }
 
 abstract class cs_field extends cs_element{
@@ -913,6 +997,18 @@ abstract class cs_field extends cs_element{
 
     if(empty($this->type)){
       $this->type = preg_replace("/^cs_/","",get_class($this));
+    }
+
+    if(!$this->validate instanceof cs_ordered_functions){
+      $this->validate = new cs_ordered_functions($this->validate,'cs_form::order_validators');
+    }
+
+    if(!$this->preprocess instanceof cs_ordered_functions){
+      $this->preprocess = new cs_ordered_functions($this->preprocess);
+    }
+
+    if(!$this->postprocess instanceof cs_ordered_functions){
+      $this->postprocess = new cs_ordered_functions($this->postprocess);
     }
 
     $this->value = $this->default_value;
@@ -1039,7 +1135,9 @@ abstract class cs_field extends cs_element{
     $output.=$this->prefix;
 
     if( !($this instanceof cs_fields_container)){
-      $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+      // $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
+      if(!is_object($this->validate)){print "validate: ".gettype($this->validate)." name ".$this->name;}
+      $required = ($this->validate->has_value('required')) ? ' <span class="required">*</span>' : '';
       if (!empty($this->title)) {
         $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
       }
@@ -1648,10 +1746,10 @@ class cs_checkboxes extends cs_field_multivalues {
 
 class cs_checkbox extends cs_field {
   public function __construct($options = array(), $name = NULL) {
-    $this->name = $name;
-    foreach ($options as $name => $value) {
-      if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+    parent::__construct($options,$name);
+    $this->value = NULL;
+    if(isset($options['value'])){
+      $this->value = $options['value'];
     }
   }
 

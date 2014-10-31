@@ -38,7 +38,7 @@ $form->add_field('fieldset', array(
 
 $form->get_field('fieldset')->add_field('name', array(
   'type' => 'textfield',
-  'validate' => array('required','multiple_by[3]'),
+  'validate' => array('multiple_by[3]','ReQuired'), // will be reordered and normalized
   'preprocess' => array('trim'),
   'title' => 'Your name',
   'attributes' => array(
@@ -237,7 +237,6 @@ $form->add_field('autocomplete', array(
   'value' => 'Reset',
 ));
 
-
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
@@ -246,7 +245,6 @@ function contact_submit(&$form) {
   // var_export($form);
   // get submission triggering element
 
-var_dump($_POST);
   var_dump($form->get_triggering_element());
   print_r($form_values);
   // Reset the form if you want it to display again.
