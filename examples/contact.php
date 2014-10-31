@@ -147,8 +147,9 @@ $form->add_field('tabs',array(
   'destination' => dirname(__FILE__),
   // 'validate' => array('required'),
 ),1) //to tab 1
-->add_field('select', array(
-  'type' => 'select',
+->add_field('selectmenu', array(
+  'type' => 'selectmenu',
+  'title' => 'select a number',
   'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
   'default_value' => '2',
 ),1) //to tab 1

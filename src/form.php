@@ -1045,7 +1045,10 @@ abstract class cs_field extends cs_element{
       }
     }
 
-    $this->pre_render($form);
+    if(!$this->pre_rendered){
+      $this->pre_render($form);
+      $this->pre_rendered = TRUE;
+    }
     $output .= $this->render_field($form);
 
     if( !($this instanceof cs_fields_container)){
@@ -1528,6 +1531,15 @@ class cs_select extends cs_field_multivalues {
 
   public function is_a_value(){
     return TRUE;
+  }
+}
+
+class cs_selectmenu extends cs_select{
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').selectmenu({width: 'auto' });");
+
+    parent::pre_render($form);
   }
 }
 
