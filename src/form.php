@@ -2458,7 +2458,8 @@ class cs_ordered_functions implements Iterator{
   }
 
   public function has_value($value){
-    return in_array($value, $this->array);
+    // return in_array($value, $this->array);
+    return in_array($value, $this->values());
   }
 
   public function has_key($key){
@@ -2466,7 +2467,16 @@ class cs_ordered_functions implements Iterator{
   }
 
   public function values(){
-    return array_values($this->array);
+    // return array_values($this->array);
+    $out = array();
+    foreach ($this->array as $key => $value) {
+      if(is_array($value) && isset($value[$this->type])){
+        $out[] = $value[$this->type];
+      }else{
+        $out[] = $value;
+      }
+    }
+    return $out;
   }
 
   public function keys(){
