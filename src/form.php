@@ -23,79 +23,6 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 // Here are some prioity things I'm working on:
 // TODO: Support edit forms by allowing an array of values to be specified, not just taken from _REQUEST
 
-class cs_ordered_functions implements Iterator{
-  private $position = 0;
-  private $array = array();
-  private $sort_callback = NULL;
-
-  public function __construct(array $array, $sort_callback = NULL) {
-      $this->position = 0;
-      $this->array = $array;
-      $this->sort_callback = $sort_callback;
-      $this->sort();
-  }
-
-  function sort(){
-    // $this->array = array_filter( array_map('trim', $this->array) );
-    // $this->array = array_unique( array_map('strtolower', $this->array) );
-
-    foreach ($this->array as &$value) {
-      if(is_string($value)){
-        $value = strtolower(trim($value));
-      }else if(is_array($value) && isset($value['validator'])){
-        $value['validator'] = strtolower(trim($value['validator']));
-      }
-    }
-    $this->array = array_unique($this->array);
-
-    if(!empty($this->sort_callback) && is_callable($this->sort_callback)){
-      usort($this->array, $this->sort_callback);
-    }
-  }
-
-  function rewind() {
-    $this->position = 0;
-    $this->sort();
-  }
-
-  function current() {
-    return $this->array[$this->position];
-  }
-
-  function key() {
-    return $this->position;
-  }
-
-  function next() {
-    ++$this->position;
-  }
-
-  function valid() {
-    return isset($this->array[$this->position]);
-  }
-
-  public function has_value($value){
-    return in_array($value, $this->array);
-  }
-
-  public function has_key($key){
-    return in_array($key, array_keys($this->array));
-  }
-
-  public function values(){
-    return array_values($this->array);
-  }
-
-  public function keys(){
-    return array_keys($this->array);
-  }
-
-  public function add_element($value){
-    $this->array[] = $value;
-    $this->sort();
-  }
-}
-
 abstract class cs_element{
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
@@ -168,6 +95,10 @@ abstract class cs_element{
     return '';
   }
 }
+
+/* #########################################################
+   ####                      FORM                       ####
+   ######################################################### */
 
 
 class cs_form extends cs_element{
@@ -965,6 +896,12 @@ class cs_form extends cs_element{
   }
 }
 
+
+/* #########################################################
+   ####                  FIELD BASE                     ####
+   ######################################################### */
+
+
 abstract class cs_field extends cs_element{
 
   protected $ajax = FALSE;
@@ -1000,15 +937,15 @@ abstract class cs_field extends cs_element{
     }
 
     if(!$this->validate instanceof cs_ordered_functions){
-      $this->validate = new cs_ordered_functions($this->validate,'cs_form::order_validators');
+      $this->validate = new cs_ordered_functions($this->validate,'validator','cs_form::order_validators');
     }
 
     if(!$this->preprocess instanceof cs_ordered_functions){
-      $this->preprocess = new cs_ordered_functions($this->preprocess);
+      $this->preprocess = new cs_ordered_functions($this->preprocess, 'preprocessor');
     }
 
     if(!$this->postprocess instanceof cs_ordered_functions){
-      $this->postprocess = new cs_ordered_functions($this->postprocess);
+      $this->postprocess = new cs_ordered_functions($this->postprocess, 'postprocessor');
     }
 
     $this->value = $this->default_value;
@@ -2459,5 +2396,85 @@ class cs_accordion extends cs_fields_container_tabbed {
     $output .= "</div>\n";
 
     return $output;
+  }
+}
+
+
+/* #########################################################
+   ####                 ACCESSORIES                     ####
+   ######################################################### */
+
+
+class cs_ordered_functions implements Iterator{
+  private $position = 0;
+  private $array = array();
+  private $sort_callback = NULL;
+
+  public function __construct(array $array, $type, $sort_callback = NULL) {
+      $this->position = 0;
+      $this->array = $array;
+      $this->type = $type;
+      $this->sort_callback = $sort_callback;
+      $this->sort();
+  }
+
+  function sort(){
+    // $this->array = array_filter( array_map('trim', $this->array) );
+    // $this->array = array_unique( array_map('strtolower', $this->array) );
+
+    foreach ($this->array as &$value) {
+      if(is_string($value)){
+        $value = strtolower(trim($value));
+      }else if(is_array($value) && isset($value[$this->type])){
+        $value[$this->type] = strtolower(trim($value[$this->type]));
+      }
+    }
+    $this->array = array_unique($this->array);
+
+    if(!empty($this->sort_callback) && is_callable($this->sort_callback)){
+      usort($this->array, $this->sort_callback);
+    }
+  }
+
+  function rewind() {
+    $this->position = 0;
+    $this->sort();
+  }
+
+  function current() {
+    return $this->array[$this->position];
+  }
+
+  function key() {
+    return $this->position;
+  }
+
+  function next() {
+    ++$this->position;
+  }
+
+  function valid() {
+    return isset($this->array[$this->position]);
+  }
+
+  public function has_value($value){
+    return in_array($value, $this->array);
+  }
+
+  public function has_key($key){
+    return in_array($key, array_keys($this->array));
+  }
+
+  public function values(){
+    return array_values($this->array);
+  }
+
+  public function keys(){
+    return array_keys($this->array);
+  }
+
+  public function add_element($value){
+    $this->array[] = $value;
+    $this->sort();
   }
 }
