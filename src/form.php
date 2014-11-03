@@ -1308,10 +1308,19 @@ class cs_textfield extends cs_field {
   }
 }
 
-class cs_autocomplete extends cs_field{
+class cs_autocomplete extends cs_textfield{
   protected $autocomplete_path = FALSE;
   protected $options = array();
   protected $min_length = 3;
+
+  public function __construct($options, $name = NULL){
+    if(!isset($options['attributes']['class'])){
+      $options['attributes']['class'] = '';
+    }
+    $options['attributes']['class'].=' autocomplete';
+
+    parent::__construct($options, $name);
+  }
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
@@ -1333,25 +1342,6 @@ class cs_autocomplete extends cs_field{
     ");
 
     parent::pre_render($form);
-  }
-
-  public function render_field(cs_form $form) {
-    $id = $this->get_html_id();
-
-    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
-      $this->attributes['class'] .= ' error';
-    }
-    if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
-
-    $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$attributes} />\n";
-
-    return $output;
-  }
-
-  public function is_a_value(){
-    return TRUE;
   }
 }
 
@@ -2277,7 +2267,7 @@ class cs_fieldset extends cs_fields_container {
   }
 }
 
-abstract class cs_fields_container_tabbed extends cs_fields_container{
+abstract class cs_fields_container_multiple extends cs_fields_container{
   protected $tabs = array();
 
   public function add_tab($title){
@@ -2317,7 +2307,7 @@ abstract class cs_fields_container_tabbed extends cs_fields_container{
   }
 }
 
-class cs_tabs extends cs_fields_container_tabbed {
+class cs_tabs extends cs_fields_container_multiple {
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
@@ -2359,7 +2349,7 @@ class cs_tabs extends cs_fields_container_tabbed {
   }
 }
 
-class cs_accordion extends cs_fields_container_tabbed {
+class cs_accordion extends cs_fields_container_multiple {
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
@@ -2397,6 +2387,90 @@ class cs_accordion extends cs_fields_container_tabbed {
 
     return $output;
   }
+}
+
+
+class cs_sortable extends cs_fields_container_multiple{
+
+  private $deltas = array();
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').sortable().disableSelection();");
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+
+    $output = '';
+    $attributes = $this->get_attributes();
+
+    $output .= "<div id=\"{$id}\"{$attributes}>\n";
+
+    foreach($this->tabs as $tabindex => $tab){
+      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+      $weights = array();
+      $order = array();
+      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+        $weights[$key]  = $elem->get_weight();
+        $order[$key] = $insertorder[$key];
+      }
+      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+
+      // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
+      $output .= "<div id=\"{$id}-sortable-{$tabindex}\" class=\"tab-inner\">\n";
+      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+        $output .= $field->render($form);
+      }
+      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
+      $output .= "</div>\n";
+    }
+    $output .= "</div>\n";
+
+    return $output;
+  }
+
+  public function values() {
+    $output = array();
+
+    usort($this->get_fields_with_delta(), 'cs_sortable::orderby_delta');
+
+    foreach ($this->get_fields() as $name => $field) {
+      if($field->is_a_value() == TRUE){
+        $output[$name] = $field->values();
+        if(is_array($output[$name]) && empty($output[$name])){
+          unset($output[$name]);
+        }
+      }
+    }
+    return $output;
+  }
+
+  public function process($values) {
+    foreach ($this->get_fields() as $name => $field) {
+      if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
+      else if(isset($values[$name])){
+        $this->get_field($name)->process($values[$name], $name);
+        $this->deltas[$name]=0;
+      }
+    }
+  }
+
+  private function get_fields_with_delta(){
+    $out = array();
+    foreach($this->get_fields() as $key => $field){
+      $out[$key]=array('field'=> $field,'delta'=>$this->deltas[$key]);
+    }
+    return $out;
+  }
+
+  private static function orderby_delta($a,$b){
+    if($a['delta']==$b['delta']) return 0;
+    return ($a['delta']>$b['delta']) ? 1:-1;
+  }
+
 }
 
 
