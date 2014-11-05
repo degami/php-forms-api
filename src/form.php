@@ -2305,6 +2305,14 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     }
     return $out;
   }
+
+  public function get_tabindex($field_name){
+    foreach($this->tabs as $tabindex => $tab){
+      if(in_array($field_name, $tab['fieldnames'])) return $tabindex;
+    }
+    return -1;
+  }
+
 }
 
 class cs_tabs extends cs_fields_container_multiple {
@@ -2394,9 +2402,22 @@ class cs_sortable extends cs_fields_container_multiple{
 
   private $deltas = array();
 
+  public function add_field($name, $field) {
+    //force every field to have its own tab.
+    $this->deltas[$name] = count($this->get_fields());
+    return parent::add_field($name, $field, $this->deltas[$name]);
+  }
+
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').sortable().disableSelection();");
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
+      placeholder: \"ui-state-highlight\",
+      stop: function( event, ui ) {
+      $(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
+        $(elem).val(index);
+      });
+      }
+    });");
 
     parent::pre_render($form);
   }
@@ -2420,12 +2441,12 @@ class cs_sortable extends cs_fields_container_multiple{
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
-      $output .= "<div id=\"{$id}-sortable-{$tabindex}\" class=\"tab-inner\">\n";
+      $output .= "<div id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span><div style=\"display: inline-block;\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $output .= $field->render($form);
       }
       $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
-      $output .= "</div>\n";
+      $output .= "</div></div>\n";
     }
     $output .= "</div>\n";
 
@@ -2435,9 +2456,11 @@ class cs_sortable extends cs_fields_container_multiple{
   public function values() {
     $output = array();
 
-    usort($this->get_fields_with_delta(), 'cs_sortable::orderby_delta');
+    $fields_with_delta = $this->get_fields_with_delta();
+    usort($fields_with_delta, 'cs_sortable::orderby_delta');
 
-    foreach ($this->get_fields() as $name => $field) {
+    foreach ($fields_with_delta as $name => $info) {
+      $field = $info['field'];
       if($field->is_a_value() == TRUE){
         $output[$name] = $field->values();
         if(is_array($output[$name]) && empty($output[$name])){
@@ -2450,11 +2473,14 @@ class cs_sortable extends cs_fields_container_multiple{
 
   public function process($values) {
     foreach ($this->get_fields() as $name => $field) {
+      $tabindex = $this->get_tabindex($field->get_name());
+
       if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
       else if(isset($values[$name])){
         $this->get_field($name)->process($values[$name], $name);
-        $this->deltas[$name]=0;
       }
+
+      $this->deltas[$name]=isset($values[$this->get_html_id().'-delta-'.$tabindex]) ? $values[$this->get_html_id().'-delta-'.$tabindex] : 0;
     }
   }
 

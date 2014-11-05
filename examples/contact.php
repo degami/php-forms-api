@@ -166,7 +166,17 @@ $form->add_field('hidden1', array(
 ));
 
 
+$sortable = $form->add_field('sortable',array(
+  'type' => 'sortable',
+));
 
+for($i=0;$i<5;$i++){
+  $field = array(
+    'title' => 'Textfield '.($i+1),
+    'type' => 'textfield',
+  );
+  $sortable->add_field('sortable_field_'.$i,$field);
+}
 
 $form->add_field('container', array(
   'type' => 'tag_container',
@@ -245,7 +255,7 @@ function contact_submit(&$form) {
   // var_export($form);
   // get submission triggering element
 
-  var_dump($form->get_triggering_element());
+  // var_dump($form->get_triggering_element());
   print_r($form_values);
   // Reset the form if you want it to display again.
   // $form->reset();
