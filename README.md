@@ -201,6 +201,8 @@ otherwise autocomplete_path is used
 
     $options += array(
       'type' => 'password',
+      'with_confirm' => FALSE,
+      'confirm_string' => 'Confirm password',
     );
 
 #### Text areas
@@ -232,7 +234,15 @@ They are always valid.
       'type' => 'button',
     );
 
-They are always valid.
+#### Image Buttons
+
+    $options += array(
+      'type' => 'image_button',
+      'src' => '',
+      'alt' => '',
+    );
+
+They are always valid. The value after submit is an array containing fields x,y
 
 #### Select lists
 
