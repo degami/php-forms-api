@@ -2,15 +2,17 @@
 
 ## Important notices
 
+This project is a fork from : https://github.com/darrenmothersele/php-forms-api
+
 The main repository for this code is github. If you have received the file
 from another location please check this URL for the latest version:
 
-    https://github.com/darrenmothersele/php-forms-api
+    https://github.com/degami/php-forms-api
 
 For bug reports, feature requests, or support requests, please start a case
 on the GitHub case tracker:
 
-    https://github.com/darrenmothersele/php-forms-api/issues
+    https://github.com/degami/php-forms-api/issues
 
 This library is open source licenses using GPL. See LICENSE.txt for more info.
 
@@ -352,6 +354,12 @@ They are always valid.
 
     $options += array(
       'type' => 'accordion',
+    );
+
+#### Sortables
+
+    $options += array(
+      'type' => 'sortable',
     );
 
 
