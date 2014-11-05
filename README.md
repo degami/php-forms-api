@@ -232,6 +232,7 @@ They are always valid.
 
     $options += array(
       'type' => 'button',
+      'label' => '',
     );
 
 #### Image Buttons
