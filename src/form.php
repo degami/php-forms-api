@@ -912,6 +912,7 @@ abstract class cs_field extends cs_element{
   protected $weight = 0;
   protected $type = '';
   protected $stop_on_first_error = FALSE;
+  protected $tooltip = FALSE;
   protected $name = NULL;
   protected $id = NULL;
   protected $title = NULL;
@@ -1073,10 +1074,17 @@ abstract class cs_field extends cs_element{
 
     if( !($this instanceof cs_fields_container)){
       // $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
-      if(!is_object($this->validate)){print "validate: ".gettype($this->validate)." name ".$this->name;}
       $required = ($this->validate->has_value('required')) ? ' <span class="required">*</span>' : '';
-      if (!empty($this->title)) {
-        $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+      if(!empty($this->title)){
+        if ( $this->tooltip == FALSE ) {
+          $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+        } else {
+          if( !in_array('title', array_keys($this->attributes)) ){
+            $this->attributes['title'] = strip_tags($this->title.$required);
+            $id = $this->get_html_id();
+            $form->add_js("\$('#{$id}','#{$form->get_id()}').tooltip();");
+          }
+        }
       }
     }
 
@@ -1347,6 +1355,15 @@ class cs_autocomplete extends cs_textfield{
 
 class cs_textarea extends cs_field {
   protected $rows = 5;
+  protected $resizable = FALSE;
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    if($this->resizable == TRUE){
+      $form->add_js("\$('#{$id}','#{$form->get_id()}').resizable({handles:\"se\"});");
+    }
+    parent::pre_render($form);
+  }
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
@@ -1392,7 +1409,9 @@ class cs_password extends cs_field {
     if($this->with_confirm == TRUE){
       if(!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value ) {
         $this->add_error("The passwords do not match",__FUNCTION__);
-        return FALSE;
+
+        if($this->stop_on_first_error)
+          return FALSE;
       }
     }
     return parent::valid();
@@ -1440,7 +1459,9 @@ abstract class cs_field_multivalues extends cs_field {
       if(!$check) {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
         $this->add_error("{$titlestr}: Invalid choice",__FUNCTION__);
-        return FALSE;
+
+        if($this->stop_on_first_error)
+          return FALSE;
       }
     }
     return parent::valid();
@@ -1840,7 +1861,9 @@ class cs_date extends cs_field {
     if( !checkdate( $this->value['month'] , $this->value['day'] , $this->value['year'] ) ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
       $this->add_error("{$titlestr}: Invalid date", __FUNCTION__);
-      return FALSE;
+
+      if($this->stop_on_first_error)
+        return FALSE;
     }
     return parent::valid();
   }
@@ -1979,7 +2002,9 @@ class cs_time extends cs_field {
     if( ! $check ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
       $this->add_error("{$titlestr}: Invalid time", __FUNCTION__);
-      return FALSE;
+
+      if($this->stop_on_first_error)
+        return FALSE;
     }
     return parent::valid();
   }

@@ -41,6 +41,7 @@ $form->get_field('fieldset')->add_field('name', array(
   'validate' => array('multiple_by[3]','ReQuired'), // will be reordered and normalized
   'preprocess' => array('trim'),
   'title' => 'Your name',
+  'tooltip' => TRUE,
   'attributes' => array(
     'style' => 'width: 100%',
    ),
@@ -83,6 +84,7 @@ $form->add_field('fieldset2',array(
   'postprocess' => array('xss'),
   'title' => 'Your message',
   'rows' => 10,
+  'resizable' => TRUE,
   'attributes' => array(
     'placeholder' => 'Type your message',
     'style' => 'width: 100%',

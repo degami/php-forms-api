@@ -159,6 +159,8 @@ Here are the available fields and their options:
       'attributes' => array(),
       'default_value' => '',
       'disabled' => FALSE,
+      'stop_on_first_error' => FALSE,
+      'tooltip' => FALSE,
       'container_tag' => FORMS_DEFAULT_FIELD_CONTAINER_TAG, //set in configuration
       'container_class' => FORMS_DEFAULT_FIELD_CONTAINER_CLASS, //set in configuration
       'prefix' => '',
@@ -210,6 +212,7 @@ otherwise autocomplete_path is used
     $options += array(
       'type' => 'textarea',
       'rows' => 5,
+      'resizable' => FALSE,
     );
 
 #### Submit buttons
