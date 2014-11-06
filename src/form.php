@@ -114,7 +114,6 @@ class cs_form extends cs_element{
 
   protected $validate = '';
   protected $submit = '';
-  protected $error = '';
 
   protected $inline_errors = FALSE;
   protected $js = array();
@@ -177,6 +176,7 @@ class cs_form extends cs_element{
     $this->validated = FALSE;
     $this->submitted = FALSE;
     $this->js_generated = FALSE;
+    $this->errors = array();
   }
 
   public function is_submitted() {
@@ -959,6 +959,7 @@ abstract class cs_field extends cs_element{
   public function reset() {
     $this->value = $this->default_value;
     $this->pre_rendered = FALSE;
+    $this->errors = array();
   }
 
   public function get_type(){
