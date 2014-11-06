@@ -184,6 +184,15 @@ class cs_form extends cs_element{
   }
 
   public function process() {
+
+    // let others alter the form
+    $defined_functions = get_defined_functions();
+    foreach( $defined_functions['user'] as $function_name){
+      if( preg_match("/.*?_{$this->form_id}_form_alter$/i", $function_name) ){
+        $function_name($this);
+      }
+    }
+
     if (!$this->processed) {
       $request = (strtolower($this->method) == 'post') ? $_POST : $_GET;
 
