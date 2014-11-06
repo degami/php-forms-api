@@ -76,7 +76,7 @@ $form->add_field('fieldset2',array(
     'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
   ),
   'collapsible' => true,
-  'collapsed' => true,
+  'collapsed' => false,
   'title' => 'my fieldset 2',
 ))
 ->add_field('message', array(
@@ -86,6 +86,7 @@ $form->add_field('fieldset2',array(
   'rows' => 10,
   'resizable' => TRUE,
   'attributes' => array(
+    'style' => 'width: 100%;height: 200px;',
     'placeholder' => 'Type your message',
     'style' => 'width: 100%',
    ),
