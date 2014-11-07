@@ -111,9 +111,8 @@ class cs_form extends cs_element{
   protected $validated = FALSE;
   protected $submitted = FALSE;
   protected $valid = NULL;
-
-  protected $validate = '';
-  protected $submit = '';
+  protected $validate = array();
+  protected $submit = array();
 
   protected $inline_errors = FALSE;
   protected $js = array();
@@ -132,10 +131,10 @@ class cs_form extends cs_element{
         $this->$name = $value;
     }
     if (empty($this->submit) || !is_callable($this->submit)) {
-      $this->submit = "{$this->form_id}_submit";
+      array_push($this->submit, "{$this->form_id}_submit");
     }
     if (empty($this->validate) || !is_callable($this->validate)) {
-      $this->validate = "{$this->form_id}_validate";
+      array_push($this->validate, "{$this->form_id}_validate");
     }
     $sid = session_id();
     if (!empty($sid)) {
@@ -177,6 +176,7 @@ class cs_form extends cs_element{
     $this->submitted = FALSE;
     $this->js_generated = FALSE;
     $this->errors = array();
+    $this->valid = NULL;
   }
 
   public function is_submitted() {
@@ -227,12 +227,14 @@ class cs_form extends cs_element{
       }
       if ((!$this->submitted) && $this->valid()) {
         $this->submitted = TRUE;
-        $submit_function = $this->submit;
-        if (function_exists($submit_function)) {
-          foreach ($this->get_fields() as $name => $field) {
-            $field->postprocess();
+        foreach ($this->get_fields() as $name => $field) {
+          $field->postprocess();
+        }
+
+        foreach($this->submit as $submit_function){
+          if (function_exists($submit_function)) {
+            $submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
           }
-          $submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
         }
       }
     }
@@ -263,14 +265,14 @@ class cs_form extends cs_element{
         }
       }
 
-      $validate_function = $this->validate;
-      if (function_exists($validate_function)) {
-        if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
-          $this->valid = FALSE;
-          $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', $validate_function );
+      foreach($this->validate as $validate_function){
+        if (function_exists($validate_function)) {
+          if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
+            $this->valid = FALSE;
+            $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', $validate_function );
+          }
         }
       }
-
       $this->validated = TRUE;
       return $this->valid;
     }
