@@ -136,6 +136,15 @@ class cs_form extends cs_element{
     if (empty($this->validate) || !is_callable($this->validate)) {
       array_push($this->validate, "{$this->form_id}_validate");
     }
+
+    if(!$this->validate instanceof cs_ordered_functions){
+      $this->validate = new cs_ordered_functions($this->validate,'validator');
+    }
+
+    if(!$this->submit instanceof cs_ordered_functions){
+      $this->submit = new cs_ordered_functions($this->submit,'submitter');
+    }
+
     $sid = session_id();
     if (!empty($sid)) {
       $this->form_token = sha1(mt_rand(0, 1000000));
@@ -347,6 +356,14 @@ class cs_form extends cs_element{
       if($field->get_clicked() == TRUE) return $field;
     }
     return NULL;
+  }
+
+  public function get_submit(){
+    return $this->submit;
+  }
+
+  public function get_validate(){
+    return $this->validate;
   }
 
   public function get_id(){
@@ -903,7 +920,8 @@ class cs_form extends cs_element{
     if($a == 'required') return -1;
     if($b == 'required') return 1;
 
-    return $a > $b ? 1 : -1;
+    return 0;
+//    return $a > $b ? 1 : -1;
   }
 }
 
@@ -975,6 +993,18 @@ abstract class cs_field extends cs_element{
 
   public function get_type(){
     return $this->type;
+  }
+
+  public function get_validate(){
+    return $this->validate;
+  }
+
+  public function get_preprocess(){
+    return $this->preprocess;
+  }
+
+  public function get_postprocess(){
+    return $this->postprocess;
   }
 
   public function set_name($name){
@@ -1497,7 +1527,8 @@ class cs_option extends cs_element{
 
   public function render(cs_select $form_field){
     $selected = ($this->key == $form_field->get_value()) ? ' selected="selected"' : '';
-    $output = "<option value=\"{$this->key}\"{$selected}>{$this->label}</option>\n";
+    $attributes = $this->get_attributes(array('value','selected'));
+    $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>{$this->label}</option>\n";
     return $output;
   }
 }
@@ -2622,6 +2653,11 @@ class cs_ordered_functions implements Iterator{
 
   public function add_element($value){
     $this->array[] = $value;
+    $this->sort();
+  }
+
+  public function remove_element($value){
+    $this->array = array_diff($this->array, array($value));
     $this->sort();
   }
 }
