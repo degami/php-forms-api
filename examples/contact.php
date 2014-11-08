@@ -90,6 +90,11 @@ $form->add_field('fieldset2',array(
     'placeholder' => 'Type your message',
     'style' => 'width: 100%',
    ),
+))
+->add_field('masked',array(
+  'title' => 'Phone',
+  'type' => 'maskedfield',
+  'mask'=>'0000-0000',
 ));
 
 
@@ -314,6 +319,7 @@ function contact_validate(&$form) {
 	</style>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="http://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
   <script type="text/javascript"><?php
 /*
     // if you wish to have form's js scripts here rather than after the form....

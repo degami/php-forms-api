@@ -1395,6 +1395,51 @@ class cs_autocomplete extends cs_textfield{
   }
 }
 
+class cs_maskedfield extends cs_textfield{
+  protected $mask;
+
+  /* jQuery Mask Plugin patterns */
+  private $translation = array(
+    '0'  =>  "\d",
+    '9'  =>  "\d?",
+    '#'  =>  "\d+",
+    'A'  =>  "[a-zA-Z0-9]",
+    'S'  =>  "[a-zA-Z]",
+  );
+
+  public function __construct($options, $name = NULL){
+    if(!isset($options['attributes']['class'])){
+      $options['attributes']['class'] = '';
+    }
+    $options['attributes']['class'].=' maskedfield';
+
+    parent::__construct($options, $name);
+  }
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').mask('{$this->mask}');");
+    parent::pre_render($form);
+  }
+
+  public function valid() {
+    $mask = $this->mask;
+    $mask = preg_replace("(\[|\]|\(|\))","\\\1",$mask);
+    foreach($this->translation as $search => $replace){
+      $mask = str_replace($search, $replace, $mask);
+    }
+    $mask = '/^'.$mask.'$/';
+    if(!preg_match($mask,$this->value)){
+      $this->add_error("Value does not conform to mask",__FUNCTION__);
+
+      if($this->stop_on_first_error)
+        return FALSE;
+    }
+
+    return parent::valid();
+  }
+}
+
 class cs_textarea extends cs_field {
   protected $rows = 5;
   protected $resizable = FALSE;
