@@ -86,6 +86,7 @@ This is what happens when you submit a form for processing:
  * Check the incoming request to see if form has been submitted. If this page
    request is the result of a submission then copy the values from the request
    into the form.
+ * Call any alter functions for this form_id.
  * Run any field processors defined to run before validation (preprocess).
  * Validate the form. If the form was not submitted fail validation without
    checking anything so the form displays for the first time. If this request
