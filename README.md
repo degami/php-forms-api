@@ -17,7 +17,8 @@ on the GitHub case tracker:
 This library is open source licenses using GPL. See LICENSE.txt for more info.
 
 Requirements: PHP 5.2.5+
-
+              jQuery UI
+              jQuery-mask-plugin ( https://github.com/igorescobar/jQuery-Mask-Plugin )
 ## Roadmap
 
  * **Finish the Documentation!**
