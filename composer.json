@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-      "components/jqueryui": "*" //,
+      "components/jqueryui": "*"
       // "phpteamapi/jquery-mask-plugin": "dev-master" // packagist package info is broken
   },
   "autoload": {
