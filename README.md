@@ -20,7 +20,7 @@ Requirements:
 
   * PHP 5.2.5+
   * jQuery UI
-  * jQuery-mask-plugin ( https://github.com/igorescobar/jQuery-Mask-Plugin )
+  * jQuery-mask-plugin ( https://github.com/igorescobar/jQuery-Mask-Plugin component is not included as a dependency in composer.json as the packagist.org package info is broken, you need do download the file by yourself )
 
 ## Roadmap
 
