@@ -1517,9 +1517,26 @@ abstract class cs_field_multivalues extends cs_field {
   }
 
 
-  private static function has_key($needle, $haystack) {
+  // private static function has_key($needle, $haystack) {
+  //   foreach ($haystack as $key => $value) {
+  //     if ($needle == $key) {
+  //       return TRUE;
+  //     } else if(is_array($value)) {
+  //       if( cs_field_multivalues::has_key($needle, $value) == TRUE ){
+  //         return TRUE;
+  //       }
+  //     }
+  //   }
+  //   return FALSE;
+  // }
+
+  public static function has_key($needle, $haystack) {
     foreach ($haystack as $key => $value) {
-      if ($needle == $key) {
+      if($value instanceof cs_option){
+        if($value->get_key() == $needle) return TRUE;
+      }else if($value instanceof cs_optgroup){
+        if($value->options_has_key($needle) == TRUE) return TRUE;
+      }else if ($needle == $key) {
         return TRUE;
       } else if(is_array($value)) {
         if( cs_field_multivalues::has_key($needle, $value) == TRUE ){
@@ -1530,7 +1547,7 @@ abstract class cs_field_multivalues extends cs_field {
     return FALSE;
   }
 
-  private function options_has_key($needle){
+  public function options_has_key($needle){
     return cs_field_multivalues::has_key($needle,$this->options);
   }
 
@@ -1576,6 +1593,10 @@ class cs_option extends cs_element{
     $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>{$this->label}</option>\n";
     return $output;
   }
+
+  public function get_key(){
+    return $this->key;
+  }
 }
 
 class cs_optgroup extends cs_element{
@@ -1600,6 +1621,10 @@ class cs_optgroup extends cs_element{
       if( property_exists(get_class($this), $key) )
         $this->$key = $value;
     }
+  }
+
+  public function options_has_key($needle){
+    return cs_field_multivalues::has_key($needle,$this->options);
   }
 
   public function add_option(cs_option $option){

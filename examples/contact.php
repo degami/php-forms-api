@@ -30,7 +30,7 @@ $form->add_field('object',array(
 $form->add_field('fieldset', array(
   'type' => 'fieldset',
   'attributes'=>array(
-    'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
+    //'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
   ),
   'collapsible' => true,
   'title' => 'my fieldset',
@@ -73,7 +73,7 @@ $form->get_field('fieldset')->add_field('markup1', array(
 $form->add_field('fieldset2',array(
   'type' => 'fieldset',
   'attributes'=>array(
-    'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
+    // 'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
   ),
   'collapsible' => true,
   'collapsed' => false,
@@ -99,7 +99,7 @@ $form->add_field('fieldset2',array(
 
 
 $accordion = new cs_accordion(array('attributes'=>array(
-  'style' => 'width: 500px',
+  // 'style' => 'width: 500px',
 )),'accordion');
 
 $accordion->add_tab('accordion1');
@@ -132,7 +132,7 @@ $form->add_field($accordion->get_name(), $accordion);
 $form->add_field('tabs',array(
   'type' => 'tabs',
   'attributes'=>array(
-    'style' => 'width: 500px',
+    // 'style' => 'width: 500px',
   ),
 ))
 ->add_tab('tab1') //index 0
@@ -282,6 +282,11 @@ function contact_validate(&$form) {
 	<meta charset="utf-8" />
 	<title>Example contact form</title>
 	<style>
+  body {
+    font-family: Arial;
+    font-size: 14px;
+    background: #c6c6c6;
+  }
 	label { display: block; }
 	span.required { color: red; }
 	.form-item.error input,
@@ -298,8 +303,11 @@ function contact_validate(&$form) {
 
   .form-item input,
   .form-item select,
+  .form-item button,
   .form-item textarea{
     max-width: 99%;
+    border: solid 1px #cecece;
+    padding: 4px;
   }
   input[type=text],
   input[type=password],
@@ -316,6 +324,27 @@ function contact_validate(&$form) {
     border-right-width: 0px;
     border-left-width: 0px;
   }
+
+  .fieldset-container,
+  .accordion-container,
+  .tabs-container,
+  .sortable-container,
+  .autocomplete-container,
+  .div_container-container{
+    margin-top: 20px;
+  }
+
+  #actions .form-item{
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  #page{
+    width: 78%;
+    padding: 1%;
+    margin: auto;
+    background: #fff;
+  }
 	</style>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
@@ -327,19 +356,22 @@ function contact_validate(&$form) {
     print $form->generate_js();
 */
   ?></script>
-  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/flick/jquery-ui.css">
 </head>
 
 <body>
 <a href="contact.php">Go back</a>
-<pre style="font-size:10px;"><?php $form->process(); ?></pre>
-<h1>Example Form</h1>
-<?php if ($form->is_submitted()): ?>
-  <!-- if the form was reset during the submit handler we would never see this -->
-  <p>Thanks for submitting the form.</p>
-<?php else: ?>
-  <?php print $form->render(); ?>
-<?php endif; ?>
-<pre style="font-size:10px;"><?php // print_r($form); ?></pre>
+<div id="page">
+  <h1>Example Form</h1>
+
+  <pre style="font-size:10px;"><?php $form->process(); ?></pre>
+  <?php if ($form->is_submitted()): ?>
+    <!-- if the form was reset during the submit handler we would never see this -->
+    <p>Thanks for submitting the form.</p>
+  <?php else: ?>
+    <?php print $form->render(); ?>
+  <?php endif; ?>
+  <pre style="font-size:10px;"><?php // print_r($form); ?></pre>
+</div>
 </body>
 </html>
