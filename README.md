@@ -204,6 +204,13 @@ otherwise autocomplete_path is used
       'step' => 1,
     );
 
+#### Masked fields
+
+    $options += array(
+      'type' => 'maskedfield',
+      'mask' => '',
+    );
+
 #### Password fields
 
     $options += array(
