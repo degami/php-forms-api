@@ -14,7 +14,7 @@
   ],
   "require": {
       "components/jqueryui": "*",
-      "phpteamapi/jquery-mask-plugin": "*"
+      "phpteamapi/jquery-mask-plugin": "dev-master"
   },
   "autoload": {
     "files": ["src/form.php"]
