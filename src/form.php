@@ -2076,9 +2076,15 @@ class cs_time extends cs_field {
   public function pre_render(cs_form $form){
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
+
       $form->add_js("\$('#{$id} select[name=\"{$this->name}[hours]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
-      $form->add_js("\$('#{$id} select[name=\"{$this->name}[minutes]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
-      $form->add_js("\$('#{$id} select[name=\"{$this->name}[seconds]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      if($this->granularity != 'hours'){
+        $form->add_js("\$('#{$id} select[name=\"{$this->name}[minutes]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+
+        if($this->granularity != 'minutes'){
+          $form->add_js("\$('#{$id} select[name=\"{$this->name}[seconds]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+        }
+      }
     }
 
     parent::pre_render($form);
