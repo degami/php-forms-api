@@ -237,6 +237,7 @@ $form->add_field('autocomplete', array(
 ->add_field('submit2', array(
   'type' => 'submit',
   'value' => 'Send2',
+  'js_button' => TRUE,
 ))
 ->add_field('button', array(
   'type' => 'button',
@@ -249,10 +250,12 @@ $form->add_field('autocomplete', array(
   'attributes' => array(
     'width' => '100',
   ),
+  'js_button' => TRUE,
 ))
 ->add_field('reset', array(
   'type' => 'reset',
   'value' => 'Reset',
+  'js_button' => TRUE,
 ));
 
 // Submit function to call when the form is submitted and passes validation.

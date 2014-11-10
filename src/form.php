@@ -1163,6 +1163,7 @@ abstract class cs_field extends cs_element{
 
 abstract class cs_action extends cs_field{
   protected $clicked = FALSE;
+  protected $js_button = FALSE;
 
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
@@ -1188,6 +1189,15 @@ abstract class cs_action extends cs_field{
 
   public function valid() {
     return TRUE;
+  }
+
+  public function pre_render(cs_form $form){
+    if($this->js_button == TRUE){
+      $id = $this->get_html_id();
+
+      $form->add_js("\$('#{$id}','#{$form->get_id()}').button();");
+    }
+    parent::pre_render($form);
   }
 }
 
@@ -1249,11 +1259,22 @@ class cs_image_button extends cs_action {
 }
 
 class cs_reset extends cs_field {
+  protected $js_button = FALSE;
+
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     if(isset($options['value'])){
       $this->value = $options['value'];
     }
+  }
+
+  public function pre_render(cs_form $form){
+    if($this->js_button == TRUE){
+      $id = $this->get_html_id();
+
+      $form->add_js("\$('#{$id}','#{$form->get_id()}').button();");
+    }
+    parent::pre_render($form);
   }
 
   public function render_field(cs_form $form) {
@@ -2407,6 +2428,10 @@ class cs_fieldset extends cs_fields_container {
 
 abstract class cs_fields_container_multiple extends cs_fields_container{
   protected $tabs = array();
+
+  public function &get_tabs(){
+    return $this->tabs;
+  }
 
   public function add_tab($title){
     $this->tabs[] = array('title'=>$title,'fieldnames'=>array());
