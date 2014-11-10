@@ -261,7 +261,7 @@ They are always valid.
       'js_button' => FALSE,
     );
 
-They are always valid. The value after submit is an array containing fields x, y
+They are always valid. The value after submit is an array containing fields x,y
 
 #### Select lists
 
