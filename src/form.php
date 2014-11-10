@@ -1247,6 +1247,15 @@ class cs_image_button extends cs_clickable {
   protected $src;
   protected $alt;
 
+  public function __construct($options = array(), $name = NULL) {
+    $this->default_value = array(
+      'x'=>-1,
+      'y'=>-1,
+    );
+
+    parent::__construct($options, $name);
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2009,6 +2018,13 @@ class cs_date extends cs_field {
 
   public function is_a_value(){
     return TRUE;
+  }
+
+  public function ts_start(){
+    return mktime(0,0,0,$this->value['month'],$this->value['day'],$this->value['year']);
+  }
+  public function ts_end(){
+    return mktime(23,59,59,$this->value['month'],$this->value['day'],$this->value['year']);
   }
 }
 

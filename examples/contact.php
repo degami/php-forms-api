@@ -247,7 +247,6 @@ $form->add_field('autocomplete', array(
 ))
 ->add_field('image', array(
   'type' => 'image_button',
-  'value' => 'Send4',
   'src' => 'https://www.google.it/images/srpr/logo11w.png',
   'attributes' => array(
     'width' => '100',
