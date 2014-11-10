@@ -1160,10 +1160,22 @@ abstract class cs_field extends cs_element{
 /* #########################################################
    ####                    FIELDS                       ####
    ######################################################### */
-
 abstract class cs_action extends cs_field{
-  protected $clicked = FALSE;
   protected $js_button = FALSE;
+
+  public function pre_render(cs_form $form){
+    if($this->js_button == TRUE){
+      $id = $this->get_html_id();
+
+      $form->add_js("\$('#{$id}','#{$form->get_id()}').button();");
+    }
+    parent::pre_render($form);
+  }
+
+}
+
+abstract class cs_clickable extends cs_action{
+  protected $clicked = FALSE;
 
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
@@ -1190,18 +1202,9 @@ abstract class cs_action extends cs_field{
   public function valid() {
     return TRUE;
   }
-
-  public function pre_render(cs_form $form){
-    if($this->js_button == TRUE){
-      $id = $this->get_html_id();
-
-      $form->add_js("\$('#{$id}','#{$form->get_id()}').button();");
-    }
-    parent::pre_render($form);
-  }
 }
 
-class cs_submit extends cs_action {
+class cs_submit extends cs_clickable {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if (empty($this->value)) {
@@ -1219,7 +1222,7 @@ class cs_submit extends cs_action {
 }
 
 
-class cs_button extends cs_action {
+class cs_button extends cs_clickable {
   protected $label;
 
   public function __construct($options = array(), $name = NULL){
@@ -1240,7 +1243,7 @@ class cs_button extends cs_action {
   }
 }
 
-class cs_image_button extends cs_action {
+class cs_image_button extends cs_clickable {
   protected $src;
   protected $alt;
 
@@ -1258,23 +1261,13 @@ class cs_image_button extends cs_action {
   }
 }
 
-class cs_reset extends cs_field {
-  protected $js_button = FALSE;
+class cs_reset extends cs_action {
 
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     if(isset($options['value'])){
       $this->value = $options['value'];
     }
-  }
-
-  public function pre_render(cs_form $form){
-    if($this->js_button == TRUE){
-      $id = $this->get_html_id();
-
-      $form->add_js("\$('#{$id}','#{$form->get_id()}').button();");
-    }
-    parent::pre_render($form);
   }
 
   public function render_field(cs_form $form) {
