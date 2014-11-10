@@ -1909,6 +1909,7 @@ class cs_file extends cs_field {
 class cs_date extends cs_field {
   protected $start_year;
   protected $end_year;
+  protected $js_selects = FALSE;
 
   public function __construct($options = array(), $name = NULL) {
 
@@ -1921,6 +1922,17 @@ class cs_date extends cs_field {
     );
 
     parent::__construct($options, $name);
+  }
+
+  public function pre_render(cs_form $form){
+    if($this->js_selects == TRUE){
+      $id = $this->get_html_id();
+      $form->add_js("\$('#{$id} select[name=\"{$this->name}[day]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      $form->add_js("\$('#{$id} select[name=\"{$this->name}[month]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      $form->add_js("\$('#{$id} select[name=\"{$this->name}[year]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+    }
+
+    parent::pre_render($form);
   }
 
   public function render_field(cs_form $form) {
@@ -2032,6 +2044,7 @@ class cs_datepicker extends cs_field {
 
 class cs_time extends cs_field {
   protected $granularity = 'seconds';
+  protected $js_selects = FALSE;
 
   public function __construct($options = array(), $name = NULL) {
 
@@ -2042,6 +2055,17 @@ class cs_time extends cs_field {
     );
 
     parent::__construct($options, $name);
+  }
+
+  public function pre_render(cs_form $form){
+    if($this->js_selects == TRUE){
+      $id = $this->get_html_id();
+      $form->add_js("\$('#{$id} select[name=\"{$this->name}[hours]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      $form->add_js("\$('#{$id} select[name=\"{$this->name}[minutes]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      $form->add_js("\$('#{$id} select[name=\"{$this->name}[seconds]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+    }
+
+    parent::pre_render($form);
   }
 
   public function render_field(cs_form $form) {

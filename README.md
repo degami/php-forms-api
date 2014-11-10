@@ -231,6 +231,7 @@ otherwise autocomplete_path is used
 
     $options += array(
       'type' => 'submit',
+      'js_button' => FALSE,
     );
 
 They are always valid.
@@ -248,6 +249,7 @@ They are always valid.
     $options += array(
       'type' => 'button',
       'label' => '',
+      'js_button' => FALSE,
     );
 
 #### Image Buttons
@@ -256,6 +258,7 @@ They are always valid.
       'type' => 'image_button',
       'src' => '',
       'alt' => '',
+      'js_button' => FALSE,
     );
 
 They are always valid. The value after submit is an array containing fields x,y
@@ -266,6 +269,12 @@ They are always valid. The value after submit is an array containing fields x,y
       'type' => 'select',
       'options' => array(),
       'multiple' => FALSE,
+    );
+
+#### Select Menus
+
+    $options += array(
+      'type' => 'selectmenu',
     );
 
 #### Sliders
@@ -331,6 +340,7 @@ They are always valid.
       'type' => 'date',
       'start_year' => '',
       'end_year' => '',
+      'js_selects' => FALSE,
     );
     $options['default_value'] = array(
       'year'=>'',
@@ -350,6 +360,7 @@ They are always valid.
     $options += array(
       'type' => 'time',
       'granularity' => 'seconds', // one of: hours, minutes or seconds
+      'js_selects' => FALSE,
     );
     $options['default_value'] = array(
       'hours'=>'',

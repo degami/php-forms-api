@@ -113,13 +113,15 @@ $accordion->add_field('spinner', array(
 $accordion->add_field('date', array(
   'type' => 'date',
   'title' => 'select date',
+  'js_selects' => FALSE,
 ),1);
 
 $accordion->add_field('time', array(
   'type' => 'time',
   'title' => 'time',
   'granularity' => 'minutes',
-  'default_value' => array('hours'=>10,'minutes'=>23)
+  'default_value' => array('hours'=>10,'minutes'=>23),
+  'js_selects' => FALSE,
 ),1);
 
 $accordion->add_field('datepicker', array(
@@ -308,6 +310,7 @@ function contact_validate(&$form) {
   .form-item select,
   .form-item button,
   .form-item textarea{
+    font-size: 12px;
     max-width: 99%;
     border: solid 1px #cecece;
     padding: 4px;
