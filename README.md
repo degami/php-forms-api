@@ -418,7 +418,7 @@ when you need them, or you can have them run automatically during forms
 processing. You can specify processors to run on a field before or after the
 field is passed for validation.
 
-Plain, Trim, LTrim, RTrim, XSS, XSS Weak,
+Plain, Trim, LTrim, RTrim, XSS, XSS Weak, Addslashes
 
 
 
