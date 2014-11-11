@@ -870,6 +870,12 @@ class cs_form extends cs_element{
     return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
   }
 
+  public static function process_addslashes($text) {
+    if(!get_magic_quotes_gpc() && !preg_match("/\\/i",$text))
+      return addslashes($text);
+    else return $text;
+  }
+
   private static function scan_array($string, $array) {
     list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
     if ( $key && $rest ) {
@@ -1123,9 +1129,10 @@ abstract class cs_field extends cs_element{
         } else {
           if( !in_array('title', array_keys($this->attributes)) ){
             $this->attributes['title'] = strip_tags($this->title.$required);
-            $id = $this->get_html_id();
-            $form->add_js("\$('#{$id}','#{$form->get_id()}').tooltip();");
           }
+
+          $id = $this->get_html_id();
+          $form->add_js("\$('#{$id}','#{$form->get_id()}').tooltip();");
         }
       }
     }
@@ -1172,6 +1179,14 @@ abstract class cs_action extends cs_field{
     parent::pre_render($form);
   }
 
+  public function is_a_value(){
+    return FALSE;
+  }
+
+  public function valid() {
+    return TRUE;
+  }
+
 }
 
 abstract class cs_clickable extends cs_action{
@@ -1199,7 +1214,7 @@ abstract class cs_clickable extends cs_action{
     parent::reset();
   }
 
-  public function valid() {
+  public function is_a_value(){
     return TRUE;
   }
 }
@@ -1216,9 +1231,6 @@ class cs_submit extends cs_clickable {
     return $output;
   }
 
-  public function is_a_value(){
-    return TRUE;
-  }
 }
 
 
@@ -1238,9 +1250,6 @@ class cs_button extends cs_clickable {
     return $output;
   }
 
-  public function is_a_value(){
-    return TRUE;
-  }
 }
 
 class cs_image_button extends cs_clickable {
@@ -1265,9 +1274,6 @@ class cs_image_button extends cs_clickable {
     return $output;
   }
 
-  public function is_a_value(){
-    return TRUE;
-  }
 }
 
 class cs_reset extends cs_action {
@@ -1290,13 +1296,6 @@ class cs_reset extends cs_action {
     return $output;
   }
 
-  public function is_a_value(){
-    return FALSE;
-  }
-
-  public function valid() {
-    return TRUE;
-  }
 }
 
 class cs_value extends cs_field {
@@ -1593,6 +1592,10 @@ abstract class cs_field_multivalues extends cs_field {
     }
     return parent::valid();
   }
+
+  public function is_a_value(){
+    return TRUE;
+  }
 }
 
 
@@ -1710,10 +1713,6 @@ class cs_select extends cs_field_multivalues {
     $output .= "</select>\n";
     return $output;
   }
-
-  public function is_a_value(){
-    return TRUE;
-  }
 }
 
 class cs_selectmenu extends cs_select{
@@ -1792,9 +1791,6 @@ class cs_radios extends cs_field_multivalues {
     return $output;
   }
 
-  public function is_a_value(){
-    return TRUE;
-  }
 }
 
 class cs_checkboxes extends cs_field_multivalues {
@@ -1822,9 +1818,6 @@ class cs_checkboxes extends cs_field_multivalues {
     return $output;
   }
 
-  public function is_a_value(){
-    return TRUE;
-  }
 }
 
 
