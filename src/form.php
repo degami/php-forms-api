@@ -121,6 +121,8 @@ class cs_form extends cs_element{
   protected $insert_field_order = array();
   protected $fields = array();
 
+  private $current_step = 0;
+
   public function __construct($options = array()) {
 
     $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
@@ -192,7 +194,16 @@ class cs_form extends cs_element{
     return $this->submitted;
   }
 
-  public function process() {
+  private function inject_values($request){
+    foreach ($this->get_fields() as $name => $field) {
+      if( $field instanceof cs_fields_container ) $this->get_field($name)->process($request);
+      else if ( isset($request[$name]) ) {
+        $this->get_field($name)->process($request[$name], $name);
+      }
+    }
+  }
+
+  public function process( $values = array() ) {
 
     // let others alter the form
     $defined_functions = get_defined_functions();
@@ -203,7 +214,11 @@ class cs_form extends cs_element{
     }
 
     if (!$this->processed) {
-      $request = (strtolower($this->method) == 'post') ? $_POST : $_GET;
+      if( empty($values) ){
+        $request = (strtolower($this->method) == 'post') ? $_POST : $_GET;
+      }else{
+        $request = $values;
+      }
 
       foreach($request as $key => $val){
         if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && !empty($this->get_fields_by_type_and_name('image_button',$matches[1])) ){
@@ -221,15 +236,12 @@ class cs_form extends cs_element{
       }
 
       if (isset($request['form_id']) && $request['form_id'] == $this->form_id) {
-        foreach ($this->get_fields() as $name => $field) {
-          if( $field instanceof cs_fields_container ) $this->get_field($name)->process($request);
-          else if ( isset($request[$name]) ) {
-            $this->get_field($name)->process($request[$name], $name);
-          }
-        }
+        // insert values into fields
+        $this->inject_values($request);
         $this->processed = TRUE;
       }
     }
+
     if($this->processed == TRUE){
       foreach ($this->get_fields() as $name => $field) {
         $field->preprocess();
@@ -242,7 +254,8 @@ class cs_form extends cs_element{
 
         foreach($this->submit as $submit_function){
           if (function_exists($submit_function)) {
-            $submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
+            //$submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
+            $submit_function($this, $request);
           }
         }
       }
@@ -288,7 +301,7 @@ class cs_form extends cs_element{
     return NULL;
   }
 
-  public function add_field($name, $field) {
+  public function add_field($name, $field, $step = 0) {
     if (is_array($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
       if(!class_exists($field_type)){
@@ -310,7 +323,7 @@ class cs_form extends cs_element{
     return $this;
   }
 
-  public function &get_fields(){
+  public function &get_fields($step = 0){
     return $this->fields;
   }
 
@@ -406,14 +419,14 @@ class cs_form extends cs_element{
 
     $insertorder = array_flip($this->insert_field_order);
     $weights = array();
-    foreach ($this->get_fields() as $key => $elem) {
+    foreach ($this->get_fields($this->current_step) as $key => $elem) {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
+    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields($this->current_step));
 
     $fields_html = '';
-    foreach ($this->get_fields() as $name => $field) {
+    foreach ($this->get_fields($this->current_step) as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'render' ) ){
         $fields_html .= $field->render($this);
       }
