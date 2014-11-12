@@ -194,11 +194,11 @@ class cs_form extends cs_element{
     return $this->submitted;
   }
 
-  private function inject_values($request){
-    foreach ($this->get_fields() as $name => $field) {
-      if( $field instanceof cs_fields_container ) $this->get_field($name)->process($request);
+  private function inject_values($request, $step){
+    foreach ($this->get_fields($step) as $name => $field) {
+      if( $field instanceof cs_fields_container ) $field->process($request);
       else if ( isset($request[$name]) ) {
-        $this->get_field($name)->process($request[$name], $name);
+        $field->process($request[$name], $name);
       }
     }
   }
@@ -236,22 +236,43 @@ class cs_form extends cs_element{
       }
 
       if (isset($request['form_id']) && $request['form_id'] == $this->form_id) {
+        if(isset($request['current_step'])){
+          $this->current_step = $request['current_step'];
+        }
         // insert values into fields
-        $this->inject_values($request);
-        $this->processed = TRUE;
+        for($step = 0; $step < $this->current_step; $step++){
+          $this->inject_values($_SESSION[$this->form_id]['steps'][$step], $step);
+        }
+
+        $this->inject_values($request, $this->current_step);
+
+        if($this->current_step < count($this->fields)){
+          $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
+        }
+        $this->current_step ++;
+
+        if($this->current_step >= count($this->fields)){
+          $this->processed = TRUE;
+          unset($_SESSION[$this->form_id]);
+        }
       }
     }
 
     if($this->processed == TRUE){
-      foreach ($this->get_fields() as $name => $field) {
-        $field->preprocess();
+      for($step = 0; $step < count($this->fields); $step++){
+        foreach ($this->get_fields($step) as $name => $field) {
+          $field->preprocess();
+        }
       }
       if ((!$this->submitted) && $this->valid()) {
         $this->submitted = TRUE;
-        foreach ($this->get_fields() as $name => $field) {
-          $field->postprocess();
-        }
+        unset($_SESSION['form_token'][$_REQUEST['form_token']]);
 
+        for($step = 0; $step < count($this->fields); $step++){
+          foreach ($this->get_fields($step) as $name => $field) {
+            $field->postprocess();
+          }
+        }
         foreach($this->submit as $submit_function){
           if (function_exists($submit_function)) {
             //$submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
@@ -277,13 +298,15 @@ class cs_form extends cs_element{
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - 7200) {
             $this->valid = TRUE;
             $this->errors = array();
-            unset($_SESSION['form_token'][$_REQUEST['form_token']]);
+            //unset($_SESSION['form_token'][$_REQUEST['form_token']]);
           }
         }
       }
-      foreach ($this->get_fields() as $field) {
-        if (!$field->valid()) {
-          $this->valid = FALSE;
+      for($step = 0; $step < count($this->fields); $step++){
+        foreach ($this->get_fields($step) as $field) {
+          if (!$field->valid()) {
+            $this->valid = FALSE;
+          }
         }
       }
 
@@ -363,8 +386,8 @@ class cs_form extends cs_element{
     return $out;
   }
 
-  public function get_field($field_name){
-    return isset($this->fields[$this->current_step][$field_name]) ? $this->fields[$this->current_step][$field_name] : NULL;
+  public function get_field($field_name, $step = 0){
+    return isset($this->fields[$step][$field_name]) ? $this->fields[$this->current_step][$field_name] : NULL;
   }
 
   public function get_triggering_element(){
@@ -442,6 +465,9 @@ class cs_form extends cs_element{
     $output .= $fields_html;
     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+    if(count($this->fields) > 1) {
+      $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
+    }
     $output .= "</form>\n";
 
     $js = $this->generate_js();

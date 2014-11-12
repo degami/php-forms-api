@@ -1,6 +1,11 @@
 <?php
 
 session_start();
+if($_GET['clearsession']){
+  session_destroy();
+  session_start();
+}
+
 require '../src/form.php';
 
 $form = new cs_form(array(
@@ -126,7 +131,7 @@ function multistep_submit(&$form) {
   <?php else: ?>
     <?php print $form->render(); ?>
   <?php endif; ?>
-  <pre style="font-size:10px;"><?php // print_r($form); ?></pre>
+  <pre style="font-size:10px;"><?php print_r($_SESSION); ?></pre>
 </div>
 </body>
 </html>
