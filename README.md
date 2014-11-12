@@ -341,6 +341,7 @@ They are always valid.
       'type' => 'date',
       'start_year' => '',
       'end_year' => '',
+      'granularity' => 'day', // one of: year, month or day
       'js_selects' => FALSE,
     );
     $options['default_value'] = array(

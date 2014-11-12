@@ -1922,6 +1922,7 @@ class cs_file extends cs_field {
 }
 
 class cs_date extends cs_field {
+  protected $granularity = 'day';
   protected $start_year;
   protected $end_year;
   protected $js_selects = FALSE;
@@ -1942,9 +1943,13 @@ class cs_date extends cs_field {
   public function pre_render(cs_form $form){
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
-      $form->add_js("\$('#{$id} select[name=\"{$this->name}[day]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
-      $form->add_js("\$('#{$id} select[name=\"{$this->name}[month]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
       $form->add_js("\$('#{$id} select[name=\"{$this->name}[year]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      if($this->granularity != 'year'){
+        $form->add_js("\$('#{$id} select[name=\"{$this->name}[month]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+        if($this->granularity != 'month'){
+          $form->add_js("\$('#{$id} select[name=\"{$this->name}[day]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+        }
+      }
     }
 
     parent::pre_render($form);
@@ -1963,30 +1968,32 @@ class cs_date extends cs_field {
 
     $output .= "<div id=\"{$id}\"{$attributes}>";
 
-    $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
-    if(isset($this->attributes['day']) && is_array($this->attributes['day'])){
-      if($this->disabled == TRUE) $this->attributes['day']['disabled']='disabled';
-      $attributes = $this->get_attributes_string($this->attributes['day'],array('type','name','id','value'));
+    if($this->granularity!='year' && $this->granularity!='month'){
+      $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+      if(isset($this->attributes['day']) && is_array($this->attributes['day'])){
+        if($this->disabled == TRUE) $this->attributes['day']['disabled']='disabled';
+        $attributes = $this->get_attributes_string($this->attributes['day'],array('type','name','id','value'));
+      }
+      $output .= "<select name=\"{$this->name}[day]\"{$attributes}>";
+      for($i=1;$i<=31;$i++){
+        $selected = ($i == $this->value['day']) ? ' selected="selected"' : '';
+        $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
+      }
+      $output .= "</select>";
     }
-    $output .= "<select name=\"{$this->name}[day]\"{$attributes}>";
-    for($i=1;$i<=31;$i++){
-      $selected = ($i == $this->value['day']) ? ' selected="selected"' : '';
-      $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
+    if($this->granularity!='year'){
+      $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
+      if(isset($this->attributes['month']) && is_array($this->attributes['month'])){
+        if($this->disabled == TRUE) $this->attributes['month']['disabled']='disabled';
+        $attributes = $this->get_attributes_string($this->attributes['month'],array('type','name','id','value'));
+      }
+      $output .= "<select name=\"{$this->name}[month]\"{$attributes}>";
+      for($i=1;$i<=12;$i++){
+        $selected = ($i == $this->value['month']) ? ' selected="selected"' : '';
+        $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
+      }
+      $output .= "</select>";
     }
-    $output .= "</select>";
-
-    $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
-    if(isset($this->attributes['month']) && is_array($this->attributes['month'])){
-      if($this->disabled == TRUE) $this->attributes['month']['disabled']='disabled';
-      $attributes = $this->get_attributes_string($this->attributes['month'],array('type','name','id','value'));
-    }
-    $output .= "<select name=\"{$this->name}[month]\"{$attributes}>";
-    for($i=1;$i<=12;$i++){
-      $selected = ($i == $this->value['month']) ? ' selected="selected"' : '';
-      $output .= "<option value=\"{$i}\"{$selected}>{$i}</option>";
-    }
-    $output .= "</select>";
-
     $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
     if(isset($this->attributes['year']) && is_array($this->attributes['year'])){
       if($this->disabled == TRUE) $this->attributes['year']['disabled']='disabled';
@@ -2006,13 +2013,21 @@ class cs_date extends cs_field {
   public function process($value, $name) {
     $this->value = array(
       'year' => $value['year'],
-      'month' => $value['month'],
-      'day' => $value['day'],
     );
+    if($this->granularity!='year'){
+      $this->value['month'] = $value['month'];
+      if($this->granularity!='month'){
+        $this->value['day'] = $value['day'];
+      }
+    }
   }
 
   public function valid() {
-    if( !checkdate( $this->value['month'] , $this->value['day'] , $this->value['year'] ) ) {
+    $year = $this->value['year'];
+    $month = isset($this->value['month']) ? $this->value['month'] : 1;
+    $day = isset($this->value['day']) ? $this->value['day'] : 1;
+
+    if( !checkdate( $month , $day , $year ) ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
       $this->add_error("{$titlestr}: Invalid date", __FUNCTION__);
 
@@ -2027,10 +2042,18 @@ class cs_date extends cs_field {
   }
 
   public function ts_start(){
-    return mktime(0,0,0,$this->value['month'],$this->value['day'],$this->value['year']);
+    $year = $this->value['year'];
+    $month = isset($this->value['month']) ? $this->value['month'] : 1;
+    $day = isset($this->value['day']) ? $this->value['day'] : 1;
+
+    return mktime(0,0,0,$month,$day,$year);
   }
   public function ts_end(){
-    return mktime(23,59,59,$this->value['month'],$this->value['day'],$this->value['year']);
+    $year = $this->value['year'];
+    $month = isset($this->value['month']) ? $this->value['month'] : 1;
+    $day = isset($this->value['day']) ? $this->value['day'] : 1;
+
+    return mktime(23,59,59,$month,$day,$year);
   }
 }
 

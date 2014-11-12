@@ -113,6 +113,7 @@ $accordion->add_field('spinner', array(
 $accordion->add_field('date', array(
   'type' => 'date',
   'title' => 'select date',
+  'granularity' => 'day',
   'js_selects' => FALSE,
 ),1);
 
