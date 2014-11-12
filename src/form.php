@@ -314,7 +314,7 @@ class cs_form extends cs_element{
       throw new Exception("Error adding field. Array or cs_field subclass expected, ".gettype($field)." given", 1);
     }
 
-    $this->fields[$name] = $field;
+    $this->fields[$step][$name] = $field;
     $this->insert_field_order[] = $name;
 
     if($field instanceof cs_fields_container)
@@ -324,19 +324,21 @@ class cs_form extends cs_element{
   }
 
   public function &get_fields($step = 0){
-    return $this->fields;
+    return $this->fields[$step];
   }
 
   public function get_fields_by_type($field_types){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
 
-    foreach($this->get_fields() as $field){
-      if($field instanceof cs_fields_container){
-        $out = array_merge($out,$field->get_fields_by_type($field_types));
-      }else{
-        if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
-          $out[] = $field;
+    for($step=0;$step<count($this->fields);$step++){
+      foreach($this->get_fields($step) as $field){
+        if($field instanceof cs_fields_container){
+          $out = array_merge($out,$field->get_fields_by_type($field_types));
+        }else{
+          if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
+            $out[] = $field;
+          }
         }
       }
     }
@@ -347,12 +349,14 @@ class cs_form extends cs_element{
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
 
-    foreach($this->get_fields() as $field){
-      if($field instanceof cs_fields_container){
-        $out = array_merge($out, $field->get_fields_by_type_and_name($field_types,$name));
-      }else{
-        if($field instanceof cs_field && in_array($field->get_type(), $field_types) && $field->get_name() == $name) {
-          $out[] = $field;
+    for($step=0;$step<count($this->fields);$step++){
+      foreach($this->get_fields($step) as $field){
+        if($field instanceof cs_fields_container){
+          $out = array_merge($out, $field->get_fields_by_type_and_name($field_types,$name));
+        }else{
+          if($field instanceof cs_field && in_array($field->get_type(), $field_types) && $field->get_name() == $name) {
+            $out[] = $field;
+          }
         }
       }
     }
@@ -360,7 +364,7 @@ class cs_form extends cs_element{
   }
 
   public function get_field($field_name){
-    return isset($this->fields[$field_name]) ? $this->fields[$field_name] : NULL;
+    return isset($this->fields[$this->current_step][$field_name]) ? $this->fields[$this->current_step][$field_name] : NULL;
   }
 
   public function get_triggering_element(){
@@ -392,7 +396,7 @@ class cs_form extends cs_element{
   }
 
   public function pre_render(){
-    foreach ($this->get_fields() as $name => $field) {
+    foreach ($this->get_fields($this->current_step) as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'pre_render' ) ){
         $field->pre_render($this);
       }
@@ -406,7 +410,7 @@ class cs_form extends cs_element{
     if ( $this->valid() === FALSE) {
       $errors = $this->show_errors();
       if(!$this->errors_inline()){
-        foreach ($this->get_fields() as $field) {
+        foreach ($this->get_fields($this->current_step) as $field) {
           $errors .= $field->show_errors();
         }
       }
