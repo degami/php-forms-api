@@ -160,11 +160,13 @@ class cs_form extends cs_element{
       $this->process();
     }
     $output = array();
-    foreach ($this->get_fields() as $name => $field) {
-      if($field->is_a_value() == TRUE){
-        $output[$name] = $field->values();
-        if(is_array($output[$name]) && empty($output[$name])){
-          unset($output[$name]);
+    for($step = 0; $step <= count($this->fields) ; $step++){
+      foreach ($this->get_fields($step) as $name => $field) {
+        if($field->is_a_value() == TRUE){
+          $output[$name] = $field->values();
+          if(is_array($output[$name]) && empty($output[$name])){
+            unset($output[$name]);
+          }
         }
       }
     }
@@ -252,9 +254,10 @@ class cs_form extends cs_element{
         $this->current_step ++;
 
         if($this->current_step >= count($this->fields)){
-          $this->processed = TRUE;
           unset($_SESSION[$this->form_id]);
         }
+
+        $this->processed = TRUE;
       }
     }
 
@@ -264,7 +267,7 @@ class cs_form extends cs_element{
           $field->preprocess();
         }
       }
-      if ((!$this->submitted) && $this->valid()) {
+      if ((!$this->submitted) && $this->valid() && $this->current_step >= count($this->fields) {
         $this->submitted = TRUE;
         unset($_SESSION['form_token'][$_REQUEST['form_token']]);
 
@@ -302,7 +305,7 @@ class cs_form extends cs_element{
           }
         }
       }
-      for($step = 0; $step < count($this->fields); $step++){
+      for($step = 0; $step <= $this->current_step; $step++){
         foreach ($this->get_fields($step) as $field) {
           if (!$field->valid()) {
             $this->valid = FALSE;
@@ -310,11 +313,13 @@ class cs_form extends cs_element{
         }
       }
 
-      foreach($this->validate as $validate_function){
-        if (function_exists($validate_function)) {
-          if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
-            $this->valid = FALSE;
-            $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', $validate_function );
+      if( $this->current_step >= count($this->fields ){
+        foreach($this->validate as $validate_function){
+          if (function_exists($validate_function)) {
+            if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
+              $this->valid = FALSE;
+              $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', $validate_function );
+            }
           }
         }
       }
@@ -344,6 +349,10 @@ class cs_form extends cs_element{
       return $field;
 
     return $this;
+  }
+
+  private is_final_step(){
+    return ($this->current_step >= count($this->fields);
   }
 
   public function &get_fields($step = 0){
