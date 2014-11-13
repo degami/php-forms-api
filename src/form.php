@@ -265,7 +265,6 @@ class cs_form extends cs_element{
       if( !$this->submitted && $this->valid() && $this->is_final_step() ){
         $this->submitted = TRUE;
 
-        unset($_SESSION['form_token'][$_REQUEST['form_token']]);
         if(isset($_SESSION[$this->form_id])){
           unset($_SESSION[$this->form_id]);
         }
@@ -300,7 +299,7 @@ class cs_form extends cs_element{
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - 7200) {
             $this->valid = TRUE;
             $this->errors = array();
-            //unset($_SESSION['form_token'][$_REQUEST['form_token']]);
+            unset($_SESSION['form_token'][$_REQUEST['form_token']]);
           }
         }
       }

@@ -12,19 +12,52 @@ $form = new cs_form(array(
   'form_id' => 'multistep',
   'action' => 'multistep.php',
 ));
-for($i=0;$i<5;$i++){
-  $field = array(
-    'title' => 'Textfield '.($i+1),
-    'type' => 'textfield',
-    'validate' => array('required'),
-  );
-  $submit = array(
-    'value' => 'Submit '.($i+1),
-    'type' => 'submit',
-  );
 
-  $form->add_field('field_'.$i,$field,$i)->add_field('sumit_'.$i,$submit,$i);
-}
+$form
+->add_field('login_info',array(
+  'type'=>'fieldset'
+),0)
+->add_field('username',array(
+  'title' => 'Username',
+  'type'=>'textfield',
+  'validate' => array('required'),
+  'preprocess' => array('trim'),
+))
+->add_field('password',array(
+  'title' => 'Password',
+  'type'=>'password',
+  'validate' => array('required'),
+  'preprocess' => array('trim'),
+))
+->add_field('submit',array(
+  'type'=>'submit',
+  'value' => 'Continue',
+));
+
+$form
+->add_field('personal_info',array(
+  'type'=>'fieldset'
+),1)
+->add_field('name',array(
+  'title' => 'Name',
+  'type'=>'textfield',
+  'validate' => array('required'),
+  'preprocess' => array('trim'),
+))
+->add_field('surname',array(
+  'title' => 'Surname',
+  'type'=>'textfield',
+  'validate' => array('required'),
+  'preprocess' => array('trim'),
+))
+->add_field('birthday',array(
+  'title' => 'Birthday',
+  'type'=>'date',
+))
+->add_field('submit',array(
+  'type'=>'submit',
+  'value' => 'Save',
+));
 
 function multistep_submit(&$form) {
   $form_values = $form->values();
@@ -107,6 +140,14 @@ function multistep_submit(&$form) {
     margin: auto;
     background: #fff;
   }
+
+  .sessioninfo{
+    font-size: 10px;
+    line-height: 12px;
+    padding: 10px;
+    background: #FFDD3E;
+    border: solid 3px #5E5900;
+  }
   </style>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
@@ -133,7 +174,8 @@ function multistep_submit(&$form) {
   <?php else: ?>
     <?php print $form->render(); ?>
   <?php endif; ?>
-  <pre style="font-size:10px;"><?php print_r($_SESSION); ?></pre>
+  <h3>Session Info</h3>
+  <pre class="sessioninfo"><?php print_r($_SESSION); ?></pre>
 </div>
 </body>
 </html>
