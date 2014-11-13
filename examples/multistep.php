@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-if($_GET['clearsession']){
+if(isset($_GET['clearsession'])){
   session_destroy();
   session_start();
 }
@@ -10,11 +10,13 @@ require '../src/form.php';
 
 $form = new cs_form(array(
   'form_id' => 'multistep',
+  'action' => 'multistep.php',
 ));
 for($i=0;$i<5;$i++){
   $field = array(
     'title' => 'Textfield '.($i+1),
     'type' => 'textfield',
+    'validate' => array('required'),
   );
   $submit = array(
     'value' => 'Submit '.($i+1),
@@ -120,7 +122,7 @@ function multistep_submit(&$form) {
 </head>
 
 <body>
-<a href="multistep.php">Go back</a>
+<a href="multistep.php?clearsession=1">Go back</a>
 <div id="page">
   <h1>Example Multistep Form</h1>
 

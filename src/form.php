@@ -160,7 +160,7 @@ class cs_form extends cs_element{
       $this->process();
     }
     $output = array();
-    for($step = 0; $step <= count($this->fields) ; $step++){
+    for($step = 0; $step <= $this->get_num_steps() ; $step++){
       foreach ($this->get_fields($step) as $name => $field) {
         if($field->is_a_value() == TRUE){
           $output[$name] = $field->values();
@@ -248,13 +248,8 @@ class cs_form extends cs_element{
 
         $this->inject_values($request, $this->current_step);
 
-        if($this->current_step < count($this->fields)){
+        if( !$this->is_final_step() ){
           $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
-        }
-        $this->current_step ++;
-
-        if($this->current_step >= count($this->fields)){
-          unset($_SESSION[$this->form_id]);
         }
 
         $this->processed = TRUE;
@@ -262,22 +257,26 @@ class cs_form extends cs_element{
     }
 
     if($this->processed == TRUE){
-      for($step = 0; $step < count($this->fields); $step++){
+      for($step = 0; $step <= $this->current_step; $step++){
         foreach ($this->get_fields($step) as $name => $field) {
           $field->preprocess();
         }
       }
-      if ((!$this->submitted) && $this->valid() && $this->current_step >= count($this->fields)) {
+      if( !$this->submitted && $this->valid() && $this->is_final_step() ){
         $this->submitted = TRUE;
-        unset($_SESSION['form_token'][$_REQUEST['form_token']]);
 
-        for($step = 0; $step < count($this->fields); $step++){
-          foreach ($this->get_fields($step) as $name => $field) {
+        unset($_SESSION['form_token'][$_REQUEST['form_token']]);
+        if(isset($_SESSION[$this->form_id])){
+          unset($_SESSION[$this->form_id]);
+        }
+
+        for($step = 0; $step < $this->get_num_steps(); $step++){
+          foreach( $this->get_fields($step) as $name => $field ){
             $field->postprocess();
           }
         }
         foreach($this->submit as $submit_function){
-          if (function_exists($submit_function)) {
+          if( function_exists($submit_function) ) {
             //$submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
             $submit_function($this, $request);
           }
@@ -305,6 +304,7 @@ class cs_form extends cs_element{
           }
         }
       }
+
       for($step = 0; $step <= $this->current_step; $step++){
         foreach ($this->get_fields($step) as $field) {
           if (!$field->valid()) {
@@ -313,7 +313,11 @@ class cs_form extends cs_element{
         }
       }
 
-      if( $this->current_step >= count($this->fields) ){
+      if($this->valid){
+        $this->current_step++;
+      }
+
+      if( $this->is_final_step() ){
         foreach($this->validate as $validate_function){
           if (function_exists($validate_function)) {
             if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
@@ -351,11 +355,17 @@ class cs_form extends cs_element{
     return $this;
   }
 
+  private function get_num_steps(){
+    return count($this->fields);
+  }
+
   private function is_final_step(){
-    return ($this->current_step >= count($this->fields));
+    return ($this->current_step >= $this->get_num_steps());
   }
 
   public function &get_fields($step = 0){
+    $notfound = array();
+    if(!isset($this->fields[$step])) return $notfound;
     return $this->fields[$step];
   }
 
@@ -363,7 +373,7 @@ class cs_form extends cs_element{
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
 
-    for($step=0;$step<count($this->fields);$step++){
+    for($step=0;$step < $this->get_num_steps();$step++){
       foreach($this->get_fields($step) as $field){
         if($field instanceof cs_fields_container){
           $out = array_merge($out,$field->get_fields_by_type($field_types));
@@ -381,7 +391,7 @@ class cs_form extends cs_element{
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
 
-    for($step=0;$step<count($this->fields);$step++){
+    for($step=0;$step < $this->get_num_steps();$step++){
       foreach($this->get_fields($step) as $field){
         if($field instanceof cs_fields_container){
           $out = array_merge($out, $field->get_fields_by_type_and_name($field_types,$name));
@@ -474,7 +484,7 @@ class cs_form extends cs_element{
     $output .= $fields_html;
     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
     $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
-    if(count($this->fields) > 1) {
+    if( $this->get_num_steps() > 1) {
       $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
     }
     $output .= "</form>\n";
