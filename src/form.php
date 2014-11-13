@@ -267,7 +267,7 @@ class cs_form extends cs_element{
           $field->preprocess();
         }
       }
-      if ((!$this->submitted) && $this->valid() && $this->current_step >= count($this->fields) {
+      if ((!$this->submitted) && $this->valid() && $this->current_step >= count($this->fields)) {
         $this->submitted = TRUE;
         unset($_SESSION['form_token'][$_REQUEST['form_token']]);
 
@@ -313,7 +313,7 @@ class cs_form extends cs_element{
         }
       }
 
-      if( $this->current_step >= count($this->fields ){
+      if( $this->current_step >= count($this->fields) ){
         foreach($this->validate as $validate_function){
           if (function_exists($validate_function)) {
             if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
@@ -351,8 +351,8 @@ class cs_form extends cs_element{
     return $this;
   }
 
-  private is_final_step(){
-    return ($this->current_step >= count($this->fields);
+  private function is_final_step(){
+    return ($this->current_step >= count($this->fields));
   }
 
   public function &get_fields($step = 0){
