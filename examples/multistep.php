@@ -13,6 +13,7 @@ $form = new cs_form(array(
   'action' => 'multistep.php',
 ));
 
+// add to step 0
 $form
 ->add_field('login_info',array(
   'type'=>'fieldset'
@@ -34,6 +35,8 @@ $form
   'value' => 'Continue',
 ));
 
+
+// add to step 1
 $form
 ->add_field('personal_info',array(
   'type'=>'fieldset'
