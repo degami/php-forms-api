@@ -68,6 +68,7 @@ function contact_submit(&$form) {
   .form-item textarea{
     font-size: 12px;
     max-width: 99%;
+    width: 400px;
     border: solid 1px #cecece;
     padding: 4px;
   }
@@ -76,9 +77,13 @@ function contact_submit(&$form) {
   input[type=checkbox],
   textarea{
     border: solid 1px #cecece;
-    width: auto;
     margin: 0;
   }
+
+  input[type=submit]{
+    width: auto;
+  }
+
   input.spinner{border: 0;}
   fieldset.collapsed{
     border-top-width: 1px;
