@@ -34,6 +34,7 @@ Requirements:
  * Provide a better default theme and a methodology for defining themes.
  * ~~Implement new field types such as button, dates~~
  * ~~Add support for masked fields, possibly using a jquery plugin.~~
+ * ~~Multistep forms~~
 
 ## Introduction
 
