@@ -184,12 +184,17 @@ class cs_form extends cs_element{
       unset( $_REQUEST[$name] );
     }
     unset($_REQUEST['form_id']);
+    if(isset($_SESSION[$this->form_id])){
+      unset($_SESSION[$this->form_id]);
+    }
+
     $this->processed = FALSE;
     $this->validated = FALSE;
     $this->submitted = FALSE;
     $this->js_generated = FALSE;
     $this->errors = array();
     $this->valid = NULL;
+    $this->current_step = 0;
   }
 
   public function is_submitted() {
