@@ -30,6 +30,11 @@ $form
   'validate' => array('required'),
   'preprocess' => array('trim'),
 ))
+->add_field('image',array(
+  'title' => 'Picture',
+  'type'=>'file',
+  'destination' => dirname(__FILE__),
+))
 ->add_field('submit',array(
   'type'=>'submit',
   'value' => 'Continue',

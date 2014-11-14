@@ -173,6 +173,19 @@ class cs_form extends cs_element{
     return $output;
   }
 
+  private function get_current_step_values(){
+    $output = array();
+    foreach ($this->get_fields($this->current_step) as $name => $field) {
+      if($field->is_a_value() == TRUE){
+        $output[$name] = $field->values();
+        if(is_array($output[$name]) && empty($output[$name])){
+          unset($output[$name]);
+        }
+      }
+    }
+    return $output;
+  }
+
   public function reset() {
     foreach ($this->get_fields() as $name => $field) {
       $field->reset();
@@ -208,6 +221,18 @@ class cs_form extends cs_element{
         $field->process($request[$name], $name);
       }
     }
+  }
+
+  private function save_step_request($request){
+
+    $files = $this->get_step_fields_by_type('file',$this->current_step);
+    if( !empty($files) ){
+      foreach($files as $filefield){
+        $request[$filefield->get_name()] = $filefield->values();
+      }
+    }
+
+    $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
   }
 
   public function process( $values = array() ) {
@@ -254,7 +279,8 @@ class cs_form extends cs_element{
         $this->inject_values($request, $this->current_step);
 
         if( !$this->is_final_step() ){
-          $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
+          // $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
+          $this->save_step_request($request);
         }
 
         $this->processed = TRUE;
@@ -371,6 +397,21 @@ class cs_form extends cs_element{
     $notfound = array();
     if(!isset($this->fields[$step])) return $notfound;
     return $this->fields[$step];
+  }
+
+  private function get_step_fields_by_type($field_types, $step = 0){
+    if(!is_array($field_types)) $field_types = array($field_types);
+    $out = array();
+    foreach($this->get_fields($step) as $field){
+      if($field instanceof cs_fields_container){
+        $out = array_merge($out,$field->get_fields_by_type($field_types));
+      }else{
+        if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
+          $out[] = $field;
+        }
+      }
+    }
+    return $out;
   }
 
   public function get_fields_by_type($field_types){
@@ -1937,11 +1978,14 @@ class cs_file extends cs_field {
 
   public function process($value, $name) {
     $this->value = array(
-      'filepath' => $this->destination .'/'. basename($_FILES[$name]['name']),
-      'filename' => basename($_FILES[$name]['name']),
-      'filesize' => $_FILES[$name]['size'],
-      'mimetype' => $_FILES[$name]['type'],
+      'filepath' => (isset($value['filepath'])) ? $value['filepath'] : $this->destination .'/'. basename($_FILES[$name]['name']),
+      'filename' => (isset($value['filename'])) ? $value['filename'] : basename($_FILES[$name]['name']),
+      'filesize' => (isset($value['filesize'])) ? $value['filesize'] : $_FILES[$name]['size'],
+      'mimetype' => (isset($value['mimetype'])) ? $value['mimetype'] : $_FILES[$name]['type'],
     );
+    if(isset($value['uploaded'])){
+      $this->uploaded = $value['uploaded'];
+    }
     if ($this->valid()) {
       if( @move_uploaded_file($_FILES[$name]['tmp_name'], $this->value['filepath']) == TRUE ){
         $this->uploaded = TRUE;
