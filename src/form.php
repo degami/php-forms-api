@@ -229,6 +229,7 @@ class cs_form extends cs_element{
     if( !empty($files) ){
       foreach($files as $filefield){
         $request[$filefield->get_name()] = $filefield->values();
+        $request[$filefield->get_name()]['uploaded'] = $filefield->is_uploaded();
       }
     }
 
@@ -1991,6 +1992,10 @@ class cs_file extends cs_field {
         $this->uploaded = TRUE;
       }
     }
+  }
+
+  public function is_uploaded(){
+    return $this->uploaded;
   }
 
   public static function validate_required($value = NULL) {
