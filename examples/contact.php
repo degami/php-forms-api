@@ -32,10 +32,10 @@ $form->add_field('submit', array(
 function contact_submit(&$form) {
   $form_values = $form->values();
   print_r($form_values);
+  //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.
   // $form->reset();
 }
-
 
 ?><!DOCTYPE html>
 <html lang="en">

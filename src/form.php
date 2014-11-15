@@ -39,6 +39,10 @@ abstract class cs_element{
     return $this->errors;
   }
 
+  public function has_errors(){
+    return count($this->get_errors()) > 0;
+  }
+
   public function set_attribute($name,$value){
     $this->attributes[$name] = $value;
 
@@ -79,7 +83,7 @@ abstract class cs_element{
       if(isset($this->attributes['class']) && !empty($this->attributes['class'])){
         $class .= ' '.$this->attributes['class'].'-container';
       }
-      if (!empty($this->get_errors())) {
+      if ($this->has_errors()) {
         $class .= ' error';
       }
       $class = trim($class);
@@ -225,11 +229,19 @@ class cs_form extends cs_element{
 
   private function save_step_request($request){
 
-    $files = $this->get_step_fields_by_type('file',$this->current_step);
+    $files = $this->get_step_fields_by_type_and_name('file', NULL, $this->current_step);
     if( !empty($files) ){
       foreach($files as $filefield){
         $request[$filefield->get_name()] = $filefield->values();
         $request[$filefield->get_name()]['uploaded'] = $filefield->is_uploaded();
+      }
+    }
+
+    $recaptchas = $this->get_step_fields_by_type_and_name('recaptcha', NULL, $this->current_step);
+    if( !empty($recaptchas) ){
+      foreach($recaptchas as $recaptchafield){
+        $request[$recaptchafield->get_name()] = $recaptchafield->values();
+        $request[$recaptchafield->get_name()]['already_passed'] = $recaptchafield->is_already_passed();
       }
     }
 
@@ -254,7 +266,8 @@ class cs_form extends cs_element{
       }
 
       foreach($request as $key => $val){
-        if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && !empty($this->get_fields_by_type_and_name('image_button',$matches[1])) ){
+        //IMAGE BUTTONS HANDLE
+        if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && count($this->get_fields_by_type_and_name('image_button',$matches[1]))>0 ){
           //assume this is an input type="image"
           if( isset($request[$matches[1].'_'.(($matches[2] == 'x')?'y':'x')]) ){
             $request[$matches[1]] = array(
@@ -265,6 +278,23 @@ class cs_form extends cs_element{
             unset($request[$matches[1].'_x']);
             unset($request[$matches[1].'_y']);
           }
+        }
+      }
+
+      //RECAPTCHA HANDLE
+      if(
+        isset($request["recaptcha_challenge_field"]) &&
+        isset($request["recaptcha_response_field"])
+      ){
+        $recaptchas = $this->get_step_fields_by_type_and_name('recaptcha', NULL, $this->current_step);
+        $recaptcha_field = reset($recaptchas);
+        if( $recaptcha_field instanceof cs_recaptcha ){
+          $fieldname = $recaptcha_field->get_name();
+          $request[$fieldname]["recaptcha_challenge_field"] = $request["recaptcha_challenge_field"];
+          $request[$fieldname]["recaptcha_response_field"] = $request["recaptcha_response_field"];
+
+          unset($request["recaptcha_challenge_field"]);
+          unset($request["recaptcha_response_field"]);
         }
       }
 
@@ -344,6 +374,15 @@ class cs_form extends cs_element{
         }
       }
 
+      // save recapcha values after validation.
+      $recaptchas = $this->get_step_fields_by_type_and_name('recaptcha', NULL, $this->current_step);
+      if( !empty($recaptchas) ){
+        foreach($recaptchas as $recaptchafield){
+          $_SESSION[$this->form_id]['steps'][$this->current_step][$recaptchafield->get_name()] = $recaptchafield->values();
+          $_SESSION[$this->form_id]['steps'][$this->current_step][$recaptchafield->get_name()]['already_passed'] = $recaptchafield->is_already_passed();
+        }
+      }
+
       if($this->valid){
         $this->current_step++;
       }
@@ -400,14 +439,22 @@ class cs_form extends cs_element{
     return $this->fields[$step];
   }
 
-  private function get_step_fields_by_type($field_types, $step = 0){
+  private function get_step_fields_by_type_and_name($field_types, $name = NULL, $step = 0){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
     foreach($this->get_fields($step) as $field){
       if($field instanceof cs_fields_container){
-        $out = array_merge($out,$field->get_fields_by_type($field_types));
+        if($name != NULL ){
+          $out = array_merge($out, $field->get_fields_by_type_and_name($field_types,$name));
+        }else{
+          $out = array_merge($out,$field->get_fields_by_type($field_types));
+        }
       }else{
-        if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
+        if($name != NULL ){
+          if($field instanceof cs_field && in_array($field->get_type(), $field_types) && $field->get_name() == $name) {
+            $out[] = $field;
+          }
+        } else if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
           $out[] = $field;
         }
       }
@@ -420,39 +467,23 @@ class cs_form extends cs_element{
     $out = array();
 
     for($step=0;$step < $this->get_num_steps();$step++){
-      foreach($this->get_fields($step) as $field){
-        if($field instanceof cs_fields_container){
-          $out = array_merge($out,$field->get_fields_by_type($field_types));
-        }else{
-          if($field instanceof cs_field && in_array($field->get_type(), $field_types)) {
-            $out[] = $field;
-          }
-        }
-      }
+      $out = array_merge($out, $this->get_step_fields_by_type_and_name($field_types, NULL, $step));
     }
     return $out;
   }
 
-  public function get_fields_by_type_and_name($field_types,$name){
+  public function get_fields_by_type_and_name($field_types, $name){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
 
     for($step=0;$step < $this->get_num_steps();$step++){
-      foreach($this->get_fields($step) as $field){
-        if($field instanceof cs_fields_container){
-          $out = array_merge($out, $field->get_fields_by_type_and_name($field_types,$name));
-        }else{
-          if($field instanceof cs_field && in_array($field->get_type(), $field_types) && $field->get_name() == $name) {
-            $out[] = $field;
-          }
-        }
-      }
+      $out = array_merge($out, $this->get_step_fields_by_type_and_name($field_types, $name, $step));
     }
     return $out;
   }
 
   public function get_field($field_name, $step = 0){
-    return isset($this->fields[$step][$field_name]) ? $this->fields[$this->current_step][$field_name] : NULL;
+    return isset($this->fields[$step][$field_name]) ? $this->fields[$step][$field_name] : NULL;
   }
 
   public function get_triggering_element(){
@@ -476,7 +507,7 @@ class cs_form extends cs_element{
   }
 
   public function show_errors() {
-    return empty($this->get_errors()) ? '' : "<li>".implode('</li><li>',$this->get_errors())."</li>";
+    return (!$this->has_errors()) ? '' : "<li>".implode('</li><li>',$this->get_errors())."</li>";
   }
 
   public function errors_inline() {
@@ -1205,7 +1236,7 @@ abstract class cs_field extends cs_element{
       }
     }
 
-    if( !empty($this->get_errors()) ){
+    if( $this->has_errors() ){
       return FALSE;
     }
 
@@ -1213,7 +1244,7 @@ abstract class cs_field extends cs_element{
   }
 
   public function show_errors() {
-    return empty($this->get_errors()) ? '' : "<li>".implode("</li><li>",$this->get_errors())."</li>";
+    return (!$this->has_errors()) ? '' : "<li>".implode("</li><li>",$this->get_errors())."</li>";
   }
 
   public function pre_render(cs_form $form){
@@ -1257,7 +1288,7 @@ abstract class cs_field extends cs_element{
       }
     }
 
-    if($form->errors_inline() == TRUE && !empty($this->get_errors()) ){
+    if($form->errors_inline() == TRUE && $this->has_errors() ){
       $output.= '<div class="inline-error error">'.implode("<br />",$this->get_errors()).'</div>';
     }
 
@@ -1474,7 +1505,7 @@ class cs_textfield extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1609,7 +1640,7 @@ class cs_password extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1806,7 +1837,7 @@ class cs_select extends cs_field_multivalues {
     $output = '';
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -1966,7 +1997,7 @@ class cs_file extends cs_field {
     $form->set_attribute('enctype', 'multipart/form-data');
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2062,7 +2093,7 @@ class cs_date extends cs_field {
     $output = '';
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2173,7 +2204,7 @@ class cs_datepicker extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2226,7 +2257,7 @@ class cs_time extends cs_field {
     $output = '';
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2346,7 +2377,7 @@ class cs_spinner extends cs_field {
     }
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    if ($this->has_errors()) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2362,7 +2393,50 @@ class cs_spinner extends cs_field {
   }
 }
 
+class cs_recaptcha extends cs_field {
+  protected $publickey = '';
+  protected $privatekey = '';
+  protected $already_passed = FALSE;
 
+  public function process($values){
+    parent::process($values);
+    if(isset($values['already_passed'])) $this->already_passed = $values['already_passed'];
+  }
+
+  public function is_already_passed(){
+    return $this->already_passed;
+  }
+
+  public function render_field(cs_form $form) {
+    if(!function_exists('recaptcha_get_html')) return '';
+    return recaptcha_get_html($this->publickey);
+  }
+
+  public function valid() {
+    if($this->already_passed == TRUE) return TRUE;
+    if(isset($this->value['already_passed']) && $this->value['already_passed'] == TRUE) return TRUE;
+    if(!function_exists('recaptcha_check_answer')){
+      $this->already_passed = TRUE;
+      return TRUE;
+    }
+    $resp = recaptcha_check_answer ($this->privatekey,
+                                    $_SERVER["REMOTE_ADDR"],
+                                    $this->value["recaptcha_challenge_field"],
+                                    $this->value["recaptcha_response_field"]);
+    if(!$resp->is_valid){
+      $this->add_error("Recaptcha response is not valid", __FUNCTION__);
+    }else{
+      $this->already_passed = TRUE;
+      $this->value['already_passed'] = TRUE;
+    }
+
+    return $resp->is_valid;
+  }
+
+  public function is_a_value(){
+    return FALSE;
+  }
+}
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
    ######################################################### */

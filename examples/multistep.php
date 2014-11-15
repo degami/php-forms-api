@@ -40,7 +40,6 @@ $form
   'value' => 'Continue',
 ));
 
-
 // add to step 1
 $form
 ->add_field('personal_info',array(
@@ -66,6 +65,7 @@ $form
   'type'=>'submit',
   'value' => 'Save',
 ));
+
 
 function multistep_submit(&$form) {
   $form_values = $form->values();

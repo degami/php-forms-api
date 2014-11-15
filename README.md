@@ -371,6 +371,16 @@ They are always valid.
       'seconds'=>'',
     );
 
+#### Recapthas
+
+    be sure to have loaded recaptchalib.php ( https://code.google.com/p/recaptcha/downloads/list?q=label:phplib-Latest )
+
+    $options += array(
+      'type' => 'recapcha',
+      'publickey' => '',
+      'privatekey' => '',
+    );
+
 #### Tag containers
 
     $options += array(
