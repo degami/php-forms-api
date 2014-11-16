@@ -21,6 +21,7 @@ Requirements:
   * PHP 5.2.5+
   * jQuery UI
   * jQuery-mask-plugin ( https://github.com/igorescobar/jQuery-Mask-Plugin component is not included as a dependency in composer.json as the packagist.org package info is broken, you need do download the file by yourself )
+  * Google's reCaptcha lib in order to use recaptcha fields ( https://code.google.com/p/recaptcha/downloads/list?q=label:phplib-Latest )
 
 ## Roadmap
 
