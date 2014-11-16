@@ -435,18 +435,3 @@ processing. You can specify processors to run on a field before or after the
 field is passed for validation.
 
 Plain, Trim, LTrim, RTrim, XSS, XSS Weak, Addslashes
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
