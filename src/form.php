@@ -218,6 +218,41 @@ class cs_form extends cs_element{
     return $this->submitted;
   }
 
+  private function alter_request(&$request){
+    foreach($request as $key => $val){
+      //IMAGE BUTTONS HANDLE
+      if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && count($this->get_fields_by_type_and_name('image_button',$matches[1]))>0 ){
+        //assume this is an input type="image"
+        if( isset($request[$matches[1].'_'.(($matches[2] == 'x')?'y':'x')]) ){
+          $request[$matches[1]] = array(
+            'x'=>$request[$matches[1].'_x'],
+            'y'=>$request[$matches[1].'_y'],
+          );
+
+          unset($request[$matches[1].'_x']);
+          unset($request[$matches[1].'_y']);
+        }
+      }
+
+      //RECAPTCHA HANDLE
+      if(preg_match('/^recaptcha\_(challenge|response)\_field$/',$key,$matches) && count($this->get_fields_by_type_and_name('recaptcha',NULL, $this->current_step))>0 ){
+        $recaptchas = $this->get_step_fields_by_type_and_name('recaptcha', NULL, $this->current_step);
+        $recaptcha_field = reset($recaptchas);
+        if( $recaptcha_field instanceof cs_recaptcha ){
+          $fieldname = $recaptcha_field->get_name();
+          if(!empty($request["recaptcha_challenge_field"])){
+            $request[$fieldname]["challenge_field"] = $request["recaptcha_challenge_field"];
+            unset($request["recaptcha_challenge_field"]);
+          }
+          if(!empty($request["recaptcha_response_field"])){
+            $request[$fieldname]["response_field"] = $request["recaptcha_response_field"];
+            unset($request["recaptcha_response_field"]);
+          }
+        }
+      }
+    }
+  }
+
   private function inject_values($request, $step){
     foreach ($this->get_fields($step) as $name => $field) {
       if( $field instanceof cs_fields_container ) $field->process($request);
@@ -241,7 +276,7 @@ class cs_form extends cs_element{
     if( !empty($recaptchas) ){
       foreach($recaptchas as $recaptchafield){
         $request[$recaptchafield->get_name()] = $recaptchafield->values();
-        $request[$recaptchafield->get_name()]['already_passed'] = $recaptchafield->is_already_passed();
+        $request[$recaptchafield->get_name()]['already_validated'] = $recaptchafield->is_already_validated();
       }
     }
 
@@ -265,38 +300,8 @@ class cs_form extends cs_element{
         $request = $values;
       }
 
-      foreach($request as $key => $val){
-        //IMAGE BUTTONS HANDLE
-        if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && count($this->get_fields_by_type_and_name('image_button',$matches[1]))>0 ){
-          //assume this is an input type="image"
-          if( isset($request[$matches[1].'_'.(($matches[2] == 'x')?'y':'x')]) ){
-            $request[$matches[1]] = array(
-              'x'=>$request[$matches[1].'_x'],
-              'y'=>$request[$matches[1].'_y'],
-            );
-
-            unset($request[$matches[1].'_x']);
-            unset($request[$matches[1].'_y']);
-          }
-        }
-      }
-
-      //RECAPTCHA HANDLE
-      if(
-        isset($request["recaptcha_challenge_field"]) &&
-        isset($request["recaptcha_response_field"])
-      ){
-        $recaptchas = $this->get_step_fields_by_type_and_name('recaptcha', NULL, $this->current_step);
-        $recaptcha_field = reset($recaptchas);
-        if( $recaptcha_field instanceof cs_recaptcha ){
-          $fieldname = $recaptcha_field->get_name();
-          $request[$fieldname]["recaptcha_challenge_field"] = $request["recaptcha_challenge_field"];
-          $request[$fieldname]["recaptcha_response_field"] = $request["recaptcha_response_field"];
-
-          unset($request["recaptcha_challenge_field"]);
-          unset($request["recaptcha_response_field"]);
-        }
-      }
+      //alter request if needed
+      $this->alter_request($request);
 
       if (isset($request['form_id']) && $request['form_id'] == $this->form_id) {
         if(isset($request['current_step'])){
@@ -310,7 +315,6 @@ class cs_form extends cs_element{
         $this->inject_values($request, $this->current_step);
 
         if( !$this->is_final_step() ){
-          // $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
           $this->save_step_request($request);
         }
 
@@ -338,7 +342,6 @@ class cs_form extends cs_element{
         }
         foreach($this->submit as $submit_function){
           if( function_exists($submit_function) ) {
-            //$submit_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET);
             $submit_function($this, $request);
           }
         }
@@ -379,7 +382,7 @@ class cs_form extends cs_element{
       if( !empty($recaptchas) ){
         foreach($recaptchas as $recaptchafield){
           $_SESSION[$this->form_id]['steps'][$this->current_step][$recaptchafield->get_name()] = $recaptchafield->values();
-          $_SESSION[$this->form_id]['steps'][$this->current_step][$recaptchafield->get_name()]['already_passed'] = $recaptchafield->is_already_passed();
+          $_SESSION[$this->form_id]['steps'][$this->current_step][$recaptchafield->get_name()]['already_validated'] = $recaptchafield->is_already_validated();
         }
       }
 
@@ -1185,7 +1188,6 @@ abstract class cs_field extends cs_element{
           $this->value = call_user_func( array($this, $processor_func), $this->value );
       } else {
         if(method_exists('cs_form', $processor_func)){
-          //$this->value = cs_form::$processor_func($this->value);
           $this->value = call_user_func( array('cs_form',$processor_func), $this->value );
         }
       }
@@ -1213,12 +1215,9 @@ abstract class cs_field extends cs_element{
       if (function_exists($validator_func)) {
         $error = $validator_func($this->value, $options);
       } else if(method_exists(get_class($this), $validator_func)){
-        // $classmethod = get_class($this)."::".$validator_func;
-        // $error = call_user_func( $classmethod, $this->value, $options );
         $error = call_user_func( array(get_class($this), $validator_func), $this->value, $options );
       }else {
         if(method_exists('cs_form', $validator_func)){
-          //$error = cs_form::$validator_func($this->value, $options);
           $error = call_user_func( array('cs_form', $validator_func), $this->value, $options );
         }
       }
@@ -1260,7 +1259,6 @@ abstract class cs_field extends cs_element{
     $output.=$this->prefix;
 
     if( !($this instanceof cs_fields_container)){
-      // $required = (in_array('required', $this->validate)) ? ' <span class="required">*</span>' : '';
       $required = ($this->validate->has_value('required')) ? ' <span class="required">*</span>' : '';
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
@@ -1676,20 +1674,6 @@ abstract class cs_field_multivalues extends cs_field {
   public function &get_options(){
     return $this->options;
   }
-
-
-  // private static function has_key($needle, $haystack) {
-  //   foreach ($haystack as $key => $value) {
-  //     if ($needle == $key) {
-  //       return TRUE;
-  //     } else if(is_array($value)) {
-  //       if( cs_field_multivalues::has_key($needle, $value) == TRUE ){
-  //         return TRUE;
-  //       }
-  //     }
-  //   }
-  //   return FALSE;
-  // }
 
   public static function has_key($needle, $haystack) {
     foreach ($haystack as $key => $value) {
@@ -2396,15 +2380,15 @@ class cs_spinner extends cs_field {
 class cs_recaptcha extends cs_field {
   protected $publickey = '';
   protected $privatekey = '';
-  protected $already_passed = FALSE;
+  protected $already_validated = FALSE;
 
   public function process($values){
     parent::process($values);
-    if(isset($values['already_passed'])) $this->already_passed = $values['already_passed'];
+    if(isset($values['already_validated'])) $this->already_validated = $values['already_validated'];
   }
 
-  public function is_already_passed(){
-    return $this->already_passed;
+  public function is_already_validated(){
+    return $this->already_validated;
   }
 
   public function render_field(cs_form $form) {
@@ -2413,21 +2397,21 @@ class cs_recaptcha extends cs_field {
   }
 
   public function valid() {
-    if($this->already_passed == TRUE) return TRUE;
-    if(isset($this->value['already_passed']) && $this->value['already_passed'] == TRUE) return TRUE;
+    if($this->already_validated == TRUE) return TRUE;
+    if(isset($this->value['already_validated']) && $this->value['already_validated'] == TRUE) return TRUE;
     if(!function_exists('recaptcha_check_answer')){
-      $this->already_passed = TRUE;
+      $this->already_validated = TRUE;
       return TRUE;
     }
     $resp = recaptcha_check_answer ($this->privatekey,
                                     $_SERVER["REMOTE_ADDR"],
-                                    $this->value["recaptcha_challenge_field"],
-                                    $this->value["recaptcha_response_field"]);
+                                    $this->value["challenge_field"],
+                                    $this->value["response_field"]);
     if(!$resp->is_valid){
       $this->add_error("Recaptcha response is not valid", __FUNCTION__);
     }else{
-      $this->already_passed = TRUE;
-      $this->value['already_passed'] = TRUE;
+      $this->already_validated = TRUE;
+      $this->value['already_validated'] = TRUE;
     }
 
     return $resp->is_valid;

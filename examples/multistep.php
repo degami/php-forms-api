@@ -7,6 +7,7 @@ if(isset($_GET['clearsession'])){
 }
 
 require '../src/form.php';
+require 'recaptchalib.php';
 
 $form = new cs_form(array(
   'form_id' => 'multistep',
