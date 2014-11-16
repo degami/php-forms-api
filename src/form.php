@@ -309,7 +309,9 @@ class cs_form extends cs_element{
         }
         // insert values into fields
         for($step = 0; $step < $this->current_step; $step++){
-          $this->inject_values($_SESSION[$this->form_id]['steps'][$step], $step);
+          if(isset($_SESSION[$this->form_id]['steps'][$step])){
+            $this->inject_values($_SESSION[$this->form_id]['steps'][$step], $step);
+          }
         }
 
         $this->inject_values($request, $this->current_step);
