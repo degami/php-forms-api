@@ -146,7 +146,9 @@ default values:
       'container_class' => FORMS_DEFAULT_FORM_CONTAINER_CLASS, //set in configuration
       'prefix' => '',
       'suffix' => '',
-      'submit' => FORM_ID .'_submit',
+      'submit' => array(FORM_ID .'_submit'),
+      'validate' => array(FORM_ID .'_validate'),
+      'inline_errors' => FALSE,
     );
 
 fields get a form reference during render , so they can modify the form object
