@@ -2558,9 +2558,6 @@ class cs_tag_container extends cs_fields_container {
   protected $tag = 'div';
 
   public function __construct($options = array(),$name = NULL){
-    // $this->container_tag = NULL;
-    // $this->container_class = NULL;
-
     parent::__construct($options,$name);
 
     if($this->attributes['class'] == 'tag_container'){ // if set to the default
