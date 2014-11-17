@@ -20,9 +20,6 @@ define('FORMS_VALIDATE_EMAIL_BLOCKED_DOMAINS', 'mailinator.com|guerrillamail.com
 define('FORMS_BASE_PATH', '');
 define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 
-// Here are some prioity things I'm working on:
-// TODO: Support edit forms by allowing an array of values to be specified, not just taken from _REQUEST
-
 abstract class cs_element{
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
