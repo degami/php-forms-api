@@ -2405,6 +2405,13 @@ class cs_recaptcha extends cs_field {
       $this->already_validated = TRUE;
       return TRUE;
     }
+
+    // if something is missing...
+    $this->value += array(
+      'challenge_field' => '',
+      'response_field' => '',
+    );
+
     $resp = recaptcha_check_answer ($this->privatekey,
                                     $_SERVER["REMOTE_ADDR"],
                                     $this->value["challenge_field"],

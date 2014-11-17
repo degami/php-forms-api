@@ -8,6 +8,8 @@ if(isset($_GET['clearsession'])){
 
 require '../src/form.php';
 require 'recaptchalib.php';
+define('RECAPTCHA_PUBLIC_KEY','');
+define('RECAPTCHA_PRIVATE_KEY','');
 
 $form = new cs_form(array(
   'form_id' => 'multistep',
@@ -36,6 +38,12 @@ $form
   'type'=>'file',
   'destination' => dirname(__FILE__),
 ))
+// ->add_field('recaptcha',array(
+//   'title' => 'Recaptcha',
+//   'type'=>'recaptcha',
+//   'publickey' => RECAPTCHA_PUBLIC_KEY,
+//   'privatekey' => RECAPTCHA_PRIVATE_KEY,
+// ))
 ->add_field('submit',array(
   'type'=>'submit',
   'value' => 'Continue',
