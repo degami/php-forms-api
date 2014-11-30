@@ -1271,7 +1271,7 @@ abstract class cs_field extends cs_element{
     // implementing this function fields can change the request array
   }
   public function after_validate(cs_form $form){
-    // here field cad do things after the validation has passed
+    // here field can do things after the validation has passed
   }
 }
 
