@@ -216,37 +216,8 @@ class cs_form extends cs_element{
   }
 
   private function alter_request(&$request){
-    foreach($request as $key => $val){
-      //IMAGE BUTTONS HANDLE
-      if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && count($this->get_fields_by_type_and_name('image_button',$matches[1]))>0 ){
-        //assume this is an input type="image"
-        if( isset($request[$matches[1].'_'.(($matches[2] == 'x')?'y':'x')]) ){
-          $request[$matches[1]] = array(
-            'x'=>$request[$matches[1].'_x'],
-            'y'=>$request[$matches[1].'_y'],
-          );
-
-          unset($request[$matches[1].'_x']);
-          unset($request[$matches[1].'_y']);
-        }
-      }
-
-      //RECAPTCHA HANDLE
-      if(preg_match('/^recaptcha\_(challenge|response)\_field$/',$key,$matches) && count($this->get_fields_by_type_and_name('recaptcha',NULL, $this->current_step))>0 ){
-        $recaptchas = $this->get_step_fields_by_type_and_name('recaptcha', NULL, $this->current_step);
-        $recaptcha_field = reset($recaptchas);
-        if( $recaptcha_field instanceof cs_recaptcha ){
-          $fieldname = $recaptcha_field->get_name();
-          if(!empty($request["recaptcha_challenge_field"])){
-            $request[$fieldname]["challenge_field"] = $request["recaptcha_challenge_field"];
-            unset($request["recaptcha_challenge_field"]);
-          }
-          if(!empty($request["recaptcha_response_field"])){
-            $request[$fieldname]["response_field"] = $request["recaptcha_response_field"];
-            unset($request["recaptcha_response_field"]);
-          }
-        }
-      }
+    foreach($this->get_fields($this->current_step) as $field){
+      $field->alter_request($request);
     }
   }
 
@@ -376,16 +347,10 @@ class cs_form extends cs_element{
         }
       }
 
-      // save recapcha values after validation.
-      $recaptchas = $this->get_step_fields_by_type_and_name('recaptcha', NULL, $this->current_step);
-      if( !empty($recaptchas) ){
-        foreach($recaptchas as $recaptchafield){
-          $_SESSION[$this->form_id]['steps'][$this->current_step][$recaptchafield->get_name()] = $recaptchafield->values();
-          $_SESSION[$this->form_id]['steps'][$this->current_step][$recaptchafield->get_name()]['already_validated'] = $recaptchafield->is_already_validated();
-        }
-      }
-
       if($this->valid){
+        foreach ($this->get_fields($this->current_step) as $field) {
+          $field->after_validate($this);
+        }
         $this->current_step++;
       }
 
@@ -506,6 +471,10 @@ class cs_form extends cs_element{
 
   public function get_id(){
     return $this->form_id;
+  }
+
+  public function get_current_step(){
+    return $this->current_step;
   }
 
   public function show_errors() {
@@ -1297,6 +1266,13 @@ abstract class cs_field extends cs_element{
 
   abstract public function render_field(cs_form $form); // renders html
   abstract public function is_a_value();                // tells if component value is passed on the parent values() function call
+
+  public function alter_request(&$request){
+    // implementing this function fields can change the request array
+  }
+  public function after_validate(cs_form $form){
+    // here field cad do things after the validation has passed
+  }
 }
 
 
@@ -1408,6 +1384,24 @@ class cs_image_button extends cs_clickable {
     //  value=\"{$this->value}\"
     $output = "<input id=\"{$id}\" name=\"{$this->name}\" type=\"image\" src=\"{$this->src}\" alt=\"{$this->alt}\"{$attributes} />\n";
     return $output;
+  }
+
+  public function alter_request(&$request){
+    foreach($request as $key => $val){
+      //IMAGE BUTTONS HANDLE
+      if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && $this->get_name() == $matches[1] ){
+        //assume this is an input type="image"
+        if( isset($request[$matches[1].'_'.(($matches[2] == 'x')?'y':'x')]) ){
+          $request[$matches[1]] = array(
+            'x'=>$request[$matches[1].'_x'],
+            'y'=>$request[$matches[1].'_y'],
+          );
+
+          unset($request[$matches[1].'_x']);
+          unset($request[$matches[1].'_y']);
+        }
+      }
+    }
   }
 
 }
@@ -2403,6 +2397,8 @@ class cs_recaptcha extends cs_field {
       return TRUE;
     }
 
+    if(!is_array($this->value)) $this->value = array();
+
     // if something is missing...
     $this->value += array(
       'challenge_field' => '',
@@ -2426,6 +2422,29 @@ class cs_recaptcha extends cs_field {
   public function is_a_value(){
     return FALSE;
   }
+
+  public function alter_request(&$request){
+    foreach($request as $key => $val){
+      //RECAPTCHA HANDLE
+      if( preg_match('/^recaptcha\_(challenge|response)\_field$/',$key,$matches) ){
+        $fieldname = $this->get_name();
+        if(!empty($request["recaptcha_challenge_field"])){
+          $request[$fieldname]["challenge_field"] = $request["recaptcha_challenge_field"];
+          unset($request["recaptcha_challenge_field"]);
+        }
+        if(!empty($request["recaptcha_response_field"])){
+          $request[$fieldname]["response_field"] = $request["recaptcha_response_field"];
+          unset($request["recaptcha_response_field"]);
+        }
+      }
+    }
+  }
+
+  public function after_validate(cs_form $form){
+    $_SESSION[$form->get_id()]['steps'][$form->get_current_step()][$this->get_name()] = $this->values();
+    $_SESSION[$form->get_id()]['steps'][$form->get_current_step()][$this->get_name()]['already_validated'] = $this->is_already_validated();
+  }
+
 }
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -2557,6 +2576,17 @@ abstract class cs_fields_container extends cs_field {
 
   public function is_a_value(){
     return TRUE;
+  }
+
+  public function alter_request(&$request){
+    foreach($this->get_fields() as $field){
+      $field->alter_request($request);
+    }
+  }
+  public function after_validate(cs_form $form){
+    foreach($this->get_fields() as $field){
+      $field->after_validate($form);
+    }
   }
 }
 
