@@ -1608,7 +1608,8 @@ class cs_textarea extends cs_field {
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
-    if (!empty($this->get_errors())) {
+    $errors = $this->get_errors();
+    if (!empty($errors)) {
       $this->attributes['class'] .= ' error';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
