@@ -1226,7 +1226,8 @@ abstract class cs_field extends cs_element{
     $output = $this->get_prefix();
     $output.=$this->prefix;
 
-    if( !($this instanceof cs_fields_container)){
+    if( !($this instanceof cs_fields_container) && !($this instanceof cs_checkbox)){
+      // containers do not need label. checkbox too, as the render function prints the label itself
       $required = ($this->validate->has_value('required')) ? ' <span class="required">*</span>' : '';
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
