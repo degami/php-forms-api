@@ -1098,7 +1098,17 @@ abstract class cs_field extends cs_element{
   }
 
   public function values() {
+    return $this->get_value();
+  }
+
+  public function get_value(){
     return $this->value;
+  }
+
+  public function set_value($value){
+    $this->value = $value;
+
+    return $this;
   }
 
   public function reset() {
