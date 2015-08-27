@@ -1066,6 +1066,7 @@ abstract class cs_field extends cs_element{
   protected $default_value = NULL;
   protected $value = NULL;
   protected $pre_rendered = FALSE;
+  protected $required_position = 'after';
 
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
@@ -1238,10 +1239,14 @@ abstract class cs_field extends cs_element{
 
     if( !($this instanceof cs_fields_container) && !($this instanceof cs_checkbox)){
       // containers do not need label. checkbox too, as the render function prints the label itself
-      $required = ($this->validate->has_value('required')) ? ' <span class="required">*</span>' : '';
+      $required = ($this->validate->has_value('required')) ? '<span class="required">*</span>' : '';
+      $requiredafter = $requiredbefore = $required;
+      if($this->required_position == 'before') { $requiredafter = ''; $requiredbefore = $requiredbefore.' '; }
+      else { $requiredbefore = ''; $requiredafter = ' '.$requiredafter; }
+
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
-          $output .= "<label for=\"{$id}\">{$this->title}{$required}</label>\n";
+          $output .= "<label for=\"{$id}\">{$requiredbefore}{$this->title}{$requiredafter}</label>\n";
         } else {
           if( !in_array('title', array_keys($this->attributes)) ){
             $this->attributes['title'] = strip_tags($this->title.$required);
