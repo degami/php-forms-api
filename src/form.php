@@ -1901,7 +1901,7 @@ class cs_slider extends cs_select{
 class cs_radios extends cs_field_multivalues {
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
-    $output = '';
+    $output = '<div class="options">';
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
 
     foreach ($this->options as $key => $value) {
@@ -1916,6 +1916,7 @@ class cs_radios extends cs_field_multivalues {
       $checked = ($this->value == $key) ? ' checked="checked"' : '';
       $output .= "<label for=\"{$id}-{$key}\"><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$this->name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
+    $output .= '</div>';
     return $output;
   }
 
@@ -1928,7 +1929,7 @@ class cs_checkboxes extends cs_field_multivalues {
       $this->default_value = array($this->default_value);
     }
 
-    $output = '';
+    $output = '<div class="options">';
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
 
     foreach ($this->options as $key => $value) {
@@ -1943,6 +1944,7 @@ class cs_checkboxes extends cs_field_multivalues {
       $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked="checked"' : '';
       $output .= "<label for=\"{$id}-{$key}\"><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$this->name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
+    $output .= '</div>';
     return $output;
   }
 
@@ -2958,6 +2960,7 @@ class cs_ordered_functions implements Iterator{
     // $this->array = array_filter( array_map('trim', $this->array) );
     // $this->array = array_unique( array_map('strtolower', $this->array) );
 
+    $tmparr = array();
     foreach ($this->array as &$value) {
       if(is_string($value)){
         $value = strtolower(trim($value));
@@ -2965,7 +2968,8 @@ class cs_ordered_functions implements Iterator{
         $value[$this->type] = strtolower(trim($value[$this->type]));
       }
     }
-    $this->array = array_unique($this->array);
+
+    $this->array = array_unique($this->array,SORT_REGULAR);
 
     if(!empty($this->sort_callback) && is_callable($this->sort_callback)){
       usort($this->array, $this->sort_callback);
