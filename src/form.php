@@ -2188,10 +2188,17 @@ class cs_date extends cs_field {
 
 class cs_datepicker extends cs_field {
   protected $date_format = 'yy-mm-dd';
+  protected $change_month = FALSE;
+  protected $change_year = FALSE;
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}'});");
+
+    $dateFormat = $this->date_format;
+    $changeMonth = ($this->change_month) ? 'true'  :'false';
+    $changeYear = ($this->change_year == TRUE) ? 'true'  :'false';
+
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}',changeMonth: {$changeMonth},changeYear: {$changeYear}});");
 
     parent::pre_render($form);
   }
