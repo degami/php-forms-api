@@ -15,6 +15,7 @@ define('FORMS_DEFAULT_FORM_CONTAINER_TAG', 'div');
 define('FORMS_DEFAULT_FORM_CONTAINER_CLASS', 'form-container');
 define('FORMS_DEFAULT_FIELD_CONTAINER_TAG', 'div');
 define('FORMS_DEFAULT_FIELD_CONTAINER_CLASS', 'form-item');
+define('FORMS_DEFAULT_FIELD_LABEL_CLASS', '');
 define('FORMS_VALIDATE_EMAIL_DNS', TRUE);
 define('FORMS_VALIDATE_EMAIL_BLOCKED_DOMAINS', 'mailinator.com|guerrillamail.com');
 define('FORMS_BASE_PATH', '');
@@ -23,6 +24,7 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 abstract class cs_element{
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
+  protected $label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
   protected $errors = array();
   protected $attributes = array();
   protected $prefix = '';
@@ -1246,7 +1248,8 @@ abstract class cs_field extends cs_element{
 
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
-          $output .= "<label for=\"{$id}\">{$requiredbefore}{$this->title}{$requiredafter}</label>\n";
+          $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
+          $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}{$this->title}{$requiredafter}</label>\n";
         } else {
           if( !in_array('title', array_keys($this->attributes)) ){
             $this->attributes['title'] = strip_tags($this->title.$required);
