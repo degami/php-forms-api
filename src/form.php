@@ -2911,7 +2911,7 @@ class cs_accordion extends cs_fields_container_multiple {
 
 
 class cs_sortable extends cs_fields_container_multiple{
-
+  protected $handle_position = 'left';
   private $deltas = array();
 
   public function add_field($name, $field) {
@@ -2934,8 +2934,14 @@ class cs_sortable extends cs_fields_container_multiple{
     parent::pre_render($form);
   }
 
+  public function get_handle_position(){
+    return $this->handle_position;
+  }
+
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
+
+    $handle_position = trim(strtolower($this->get_handle_position()));
 
     $output = '';
     $attributes = $this->get_attributes();
@@ -2953,12 +2959,12 @@ class cs_sortable extends cs_fields_container_multiple{
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
-      $output .= "<div id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span><div style=\"display: inline-block;\">\n";
+      $output .= "<div id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $output .= $field->render($form);
       }
       $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
-      $output .= "</div></div>\n";
+      $output .= "</div>".(($handle_position == 'right') ? "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;float: right;\"></span>" : '')."</div>\n";
     }
     $output .= "</div>\n";
 
