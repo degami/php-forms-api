@@ -127,8 +127,10 @@ class cs_form extends cs_element{
 
   protected $insert_field_order = array();
   protected $fields = array();
+  protected $ajax_submit_url = '';
 
   private $current_step = 0;
+  private $submit_functions_results = array();
 
   public function __construct($options = array()) {
 
@@ -215,10 +217,20 @@ class cs_form extends cs_element{
     $this->errors = array();
     $this->valid = NULL;
     $this->current_step = 0;
+    $this->submit_functions_results = array();
   }
 
   public function is_submitted() {
     return $this->submitted;
+  }
+
+  public function get_submit_results( $submit_function = '' ){
+    if( !$this->is_submitted() ) return FALSE;
+    if( !empty($submit_function) ) {
+      if( !in_array($submit_function, array_keys($this->submit_functions_results)) ) return FALSE;
+      return $this->submit_functions_results[$submit_function];
+    }
+    return $this->submit_functions_results;
   }
 
   private function alter_request(&$request){
@@ -237,7 +249,6 @@ class cs_form extends cs_element{
   }
 
   private function save_step_request($request){
-
     $files = $this->get_step_fields_by_type_and_name('file', NULL, $this->current_step);
     if( !empty($files) ){
       foreach($files as $filefield){
@@ -258,7 +269,6 @@ class cs_form extends cs_element{
   }
 
   public function process( $values = array() ) {
-
     // let others alter the form
     $defined_functions = get_defined_functions();
     foreach( $defined_functions['user'] as $function_name){
@@ -318,7 +328,12 @@ class cs_form extends cs_element{
         }
         foreach($this->submit as $submit_function){
           if( function_exists($submit_function) ) {
+            $submitresult = '';
+            ob_start();
             $submit_function($this, $request);
+            $submitresult = ob_get_contents();
+            ob_end_clean();
+            $this->submit_functions_results[$submit_function] = $submitresult;
           }
         }
       }
@@ -483,6 +498,10 @@ class cs_form extends cs_element{
     return $this->current_step;
   }
 
+  public function get_ajax_url(){
+    return $this->ajax_submit_url;
+  }
+
   public function show_errors() {
     return (!$this->has_errors()) ? '' : "<li>".implode('</li><li>',$this->get_errors())."</li>";
   }
@@ -499,9 +518,15 @@ class cs_form extends cs_element{
     }
   }
 
-  public function render() {
-    $output = $this->get_prefix();
-    $output .= $this->prefix;
+  public function render( $output_type = 'html' ) {
+    $output = '';
+    $errors = '';
+    $fields_html = '';
+
+    $output_type = trim(strtolower($output_type));
+    if( $output_type == 'json' && empty($this->ajax_submit_url) ){
+      $output_type = 'html';
+    }
 
     if ( $this->valid() === FALSE) {
       $errors = $this->show_errors();
@@ -511,9 +536,7 @@ class cs_form extends cs_element{
         }
       }
       if(trim($errors)!=''){
-        $output .= "<div class=\"errors ui-state-error ui-corner-all\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>";
-        $output .= $errors;
-        $output .= "</ul></div>";
+        $errors = "<div class=\"errors ui-state-error ui-corner-all\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>" .$errors . "</ul></div>";
       }
     }
 
@@ -525,7 +548,6 @@ class cs_form extends cs_element{
     }
     array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields($this->current_step));
 
-    $fields_html = '';
     foreach ($this->get_fields($this->current_step) as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'render' ) ){
         $fields_html .= $field->render($this);
@@ -533,23 +555,53 @@ class cs_form extends cs_element{
     }
 
     $attributes = $this->get_attributes(array('action','method','id'));
-
-    $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
-    $output .= $fields_html;
-    $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
-    $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
-    if( $this->get_num_steps() > 1) {
-      $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
-    }
-    $output .= "</form>\n";
-
     $js = $this->generate_js();
-    if(!empty( $js )){
-      $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
-    }
 
-    $output .= $this->suffix;
-    $output .= $this->get_suffix();
+    switch($output_type){
+      case 'json':
+        $output = array('html'=>'','js'=>'','is_submitted'=>$this->is_submitted());
+
+        $output['html'] = $this->get_prefix();
+        $output['html'] .= $this->prefix;
+        $output['html'] .= $errors;
+        $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
+        $output['html'] .= $fields_html;
+        $output['html'].= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
+        $output['html'] .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+        if( $this->get_num_steps() > 1) {
+          $output['html'] .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
+        }
+        $output['html'] .= "</form>\n";
+        $output['html'] .= $this->suffix;
+        $output['html'] .= $this->get_suffix();
+
+        if(!empty( $js )){
+          $output['js'] = $js;
+        }
+
+        $output = json_encode($output);
+      break;
+
+      case 'html':
+      default:
+        $output = $this->get_prefix();
+        $output .= $this->prefix;
+        $output .= $errors;
+        $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
+        $output .= $fields_html;
+        $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
+        $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+        if( $this->get_num_steps() > 1) {
+          $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
+        }
+        $output .= "</form>\n";
+        if(!empty( $js )){
+          $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
+        }
+        $output .= $this->suffix;
+        $output .= $this->get_suffix();
+      break;
+    }
     return $output;
   }
 

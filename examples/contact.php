@@ -2,29 +2,8 @@
 
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
-require '../src/form.php';
-
-// Generate a simple contact form
-$form = new cs_form(array('form_id' => 'contact'));
-$form->add_field('name', array(
-  'type' => 'textfield',
-  'validate' => array('required'),
-  'preprocess' => array('trim'),
-  'title' => 'Your name',
-));
-$form->add_field('email', array(
-  'type' => 'textfield',
-  'validate' => array('required', 'email'),
-  'title' => 'Your email address',
-));
-$form->add_field('message', array(
-  'type' => 'textarea',
-  'postprocess' => array('xss'),
-  'title' => 'Your message',
-));
-$form->add_field('submit', array(
-  'type' => 'submit',
-));
+require_once '../src/form.php';
+include "forms.php";
 
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
@@ -36,6 +15,8 @@ function contact_submit(&$form) {
   // Reset the form if you want it to display again.
   // $form->reset();
 }
+
+$form = $contactform;
 
 ?><!DOCTYPE html>
 <html lang="en">

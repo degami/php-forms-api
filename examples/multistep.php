@@ -6,74 +6,11 @@ if(isset($_GET['clearsession'])){
   session_start();
 }
 
-require '../src/form.php';
+require_once '../src/form.php';
+include "forms.php";
 require 'recaptchalib.php';
 define('RECAPTCHA_PUBLIC_KEY','');
 define('RECAPTCHA_PRIVATE_KEY','');
-
-$form = new cs_form(array(
-  'form_id' => 'multistep',
-  'action' => 'multistep.php',
-));
-
-// add to step 0
-$form
-->add_field('login_info',array(
-  'type'=>'fieldset'
-),0)
-->add_field('username',array(
-  'title' => 'Username',
-  'type'=>'textfield',
-  'validate' => array('required'),
-  'preprocess' => array('trim'),
-))
-->add_field('password',array(
-  'title' => 'Password',
-  'type'=>'password',
-  'validate' => array('required'),
-  'preprocess' => array('trim'),
-))
-->add_field('image',array(
-  'title' => 'Picture',
-  'type'=>'file',
-  'destination' => dirname(__FILE__),
-))
-// ->add_field('recaptcha',array(
-//   'title' => 'Recaptcha',
-//   'type'=>'recaptcha',
-//   'publickey' => RECAPTCHA_PUBLIC_KEY,
-//   'privatekey' => RECAPTCHA_PRIVATE_KEY,
-// ))
-->add_field('submit',array(
-  'type'=>'submit',
-  'value' => 'Continue',
-));
-
-// add to step 1
-$form
-->add_field('personal_info',array(
-  'type'=>'fieldset'
-),1)
-->add_field('name',array(
-  'title' => 'Name',
-  'type'=>'textfield',
-  'validate' => array('required'),
-  'preprocess' => array('trim'),
-))
-->add_field('surname',array(
-  'title' => 'Surname',
-  'type'=>'textfield',
-  'validate' => array('required'),
-  'preprocess' => array('trim'),
-))
-->add_field('birthday',array(
-  'title' => 'Birthday',
-  'type'=>'date',
-))
-->add_field('submit',array(
-  'type'=>'submit',
-  'value' => 'Save',
-));
 
 
 function multistep_submit(&$form) {
@@ -86,6 +23,8 @@ function multistep_submit(&$form) {
   // Reset the form if you want it to display again.
   // $form->reset();
 }
+
+$form = $multistepform;
 
 ?><!DOCTYPE html>
 <html lang="en">
