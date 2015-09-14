@@ -25,6 +25,7 @@ abstract class cs_element{
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
   protected $label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
+  protected $container_inherits_classes = FALSE;
   protected $errors = array();
   protected $attributes = array();
   protected $prefix = '';
@@ -79,8 +80,11 @@ abstract class cs_element{
       }
 
       $class = $this->container_class;
-      if(isset($this->attributes['class']) && !empty($this->attributes['class'])){
+      if( $this->container_inherits_classes && isset($this->attributes['class']) && !empty($this->attributes['class']) ){
         $class .= ' '.$this->attributes['class'].'-container';
+      }else{
+        if( method_exists($this, 'get_type') )
+          $class .= ' '.$this->get_type().'-container';
       }
       if ($this->has_errors()) {
         $class .= ' error';
