@@ -149,6 +149,7 @@ default values:
       'submit' => array(FORM_ID .'_submit'),
       'validate' => array(FORM_ID .'_validate'),
       'inline_errors' => FALSE,
+      'ajax_submit_url' => '',
     );
 
 fields get a form reference during render , so they can modify the form object
@@ -172,6 +173,8 @@ Here are the available fields and their options:
       'tooltip' => FALSE,
       'container_tag' => FORMS_DEFAULT_FIELD_CONTAINER_TAG, //set in configuration
       'container_class' => FORMS_DEFAULT_FIELD_CONTAINER_CLASS, //set in configuration
+      'label_class' => FORMS_DEFAULT_FIELD_LABEL_CLASS, //set in configuration
+      'container_inherits_classes' => FALSE,
       'prefix' => '',
       'suffix' => '',
       'size' => 60,
@@ -359,6 +362,11 @@ They are always valid.
     $options += array(
       'type' => 'datepicker',
       'date_format' => 'yy-mm-dd',
+      'change_month' => FALSE,
+      'change_year' => FALSE,
+      'mindate' => '-10Y',
+      'maxdate' => '+10Y',
+      'yearrange' => '-10:+10',
     );
 
 #### Times
@@ -414,6 +422,7 @@ They are always valid.
 
     $options += array(
       'type' => 'sortable',
+      'handle_position' => 'left',
     );
 
 
