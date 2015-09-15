@@ -175,13 +175,14 @@ Here are the available fields and their options:
       'container_class' => FORMS_DEFAULT_FIELD_CONTAINER_CLASS, //set in configuration
       'label_class' => FORMS_DEFAULT_FIELD_LABEL_CLASS, //set in configuration
       'container_inherits_classes' => FALSE,
+      'required_position' => 'after',
       'prefix' => '',
       'suffix' => '',
       'size' => 60,
       'weight' => 0,
-      'validate' = array(),
-      'preprocess' = array(),
-      'postprocess' = array(),
+      'validate' => array(),
+      'preprocess' => array(),
+      'postprocess' => array(),
     );
 
 #### Text fields
