@@ -523,6 +523,9 @@ class cs_form extends cs_element{
     $errors = '';
     $fields_html = '';
 
+    // render needs the form to be processed
+    if( !$this->processed ) $this->process();
+
     $output_type = trim(strtolower($output_type));
     if( $output_type == 'json' && empty($this->ajax_submit_url) ){
       $output_type = 'html';
