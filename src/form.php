@@ -546,7 +546,8 @@ class cs_form extends cs_element{
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields($this->current_step));
+    if(!empty($this->get_fields($this->current_step)))
+      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields($this->current_step));
 
     foreach ($this->get_fields($this->current_step) as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'render' ) ){
@@ -2700,7 +2701,8 @@ class cs_tag_container extends cs_fields_container {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
+    if(!empty($this->get_fields()))
+      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
     foreach ($this->get_fields() as $name => $field) {
       $output .= $field->render($form);
     }
@@ -2764,7 +2766,8 @@ class cs_fieldset extends cs_fields_container {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
+    if(!empty($this->get_fields()))
+      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
 
     $output .= "<div class=\"fieldset-inner\">\n";
     foreach ($this->get_fields() as $name => $field) {
@@ -2854,7 +2857,8 @@ class cs_tabs extends cs_fields_container_multiple {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if(!empty($this->get_tab_fields($tabindex)))
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->tabs[$tabindex]['title']."</a></li>";
       $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
@@ -2894,7 +2898,8 @@ class cs_accordion extends cs_fields_container_multiple {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if(!empty($this->get_tab_fields($tabindex)))
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
       $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
@@ -2956,7 +2961,8 @@ class cs_sortable extends cs_fields_container_multiple{
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if(!empty($this->get_tab_fields($tabindex)))
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
       $output .= "<div id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
@@ -3111,5 +3117,151 @@ class cs_ordered_functions implements Iterator{
   public function remove_element($value){
     $this->array = array_diff($this->array, array($value));
     $this->sort();
+  }
+}
+
+class cs_plupload extends cs_field {
+  protected $filters = [];
+  protected $url     = ''; // url upload.php
+  protected $swf_url = ''; // url Moxie.swf
+  protected $xap_url = ''; // url Moxie.xap
+
+
+  public function process($value, $name) {
+    $this->value = json_decode($value);
+  }
+
+  public function render_field(cs_form $form){
+    $id = $this->get_html_id();
+    $form_id = $form->get_id();
+
+    $form->add_js("
+      var {$id}_files_remaining = 0;
+      $('#{$id}_uploader').pluploadQueue({
+        // General settings
+        runtimes : 'html5,flash,silverlight,html4',
+        chunk_size : '1mb',
+        unique_names : true,
+
+        // Resize images on client-side if we can
+        resize : {width : 320, height : 240, quality : 90},
+
+        url : '{$this->url}',
+        flash_swf_url : '{$this->swf_url}',
+        silverlight_xap_url : '{$this->xap_url}',
+        filters : ".json_encode($this->filters).",
+
+        // PreInit events, bound before any internal events
+        preinit : {
+            Init: function(up, info) {
+            },
+
+            UploadFile: function(up, file) {
+                // You can override settings before the file is uploaded
+                // up.setOption('url', 'upload.php?id=' + file.id);
+                // up.setOption('multipart_params', {param1 : 'value1', param2 : 'value2'});
+            }
+        },
+
+        // Post init events, bound after the internal events
+        init : {
+
+            FileUploaded: function(up, file, info) {
+                // Called when file has finished uploading
+                response = JSON.parse( info.response )
+
+                if(file.status == plupload.DONE && response.result == null){
+                  var value = \$.trim( \$('#{$id}_uploaded_json').val() );
+                  if(value != '') {value = JSON.parse( value );}
+                  else value = [];
+                  if(value == null) value = [];
+                  var obj = {temppath: response.temppath, name: file.name};
+                  value.push( obj );
+
+                  \$('#{$id}_uploaded_json').val( JSON.stringify(value) );
+                }
+            },
+
+            FilesRemoved: function(up, files) {
+              plupload.each(files, function(file) {
+                {$id}_files_remaining--;
+              });
+              if({$id}_files_remaining == 0){
+                \$('#{$form_id} input[type=submit]').removeAttr('disabled');
+              }
+            },
+
+            FilesAdded: function(up, files) {
+              \$('#{$form_id} input[type=submit]').attr('disabled','disabled');
+              plupload.each(files, function(file) {
+                {$id}_files_remaining++;
+              });
+            },
+
+            UploadComplete: function(up, file, info) {
+              \$('#{$form_id} input[type=submit]').removeAttr('disabled');
+              {$id}_files_remaining = 0;
+            },
+
+            Error: function(up, args) {
+                // Called when error occurs
+                log('[Error] ', args);
+            }
+        }
+    });
+
+
+    function log() {
+        var str = '';
+
+        plupload.each(arguments, function(arg) {
+            var row = '';
+
+            if (typeof(arg) != 'string') {
+                plupload.each(arg, function(value, key) {
+                    // Convert items in File objects to human readable form
+                    if (arg instanceof plupload.File) {
+                        // Convert status to human readable
+                        switch (value) {
+                            case plupload.QUEUED:
+                                value = 'QUEUED';
+                                break;
+
+                            case plupload.UPLOADING:
+                                value = 'UPLOADING';
+                                break;
+
+                            case plupload.FAILED:
+                                value = 'FAILED';
+                                break;
+
+                            case plupload.DONE:
+                                value = 'DONE';
+                                break;
+                        }
+                    }
+
+                    if (typeof(value) != 'function') {
+                        row += (row ? ', ' : '') + key + '=' + value;
+                    }
+                });
+
+                str += row + ' ';
+            } else {
+                str += arg + ' ';
+            }
+        });
+
+        var \$log = \$('#{$id}_log');
+        \$('<div>'+str+'</div>').appendTo(\$log)
+    }");
+
+    return "<div id=\"{$id}_uploader\"><p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p></div>
+    <div id=\"{$id}_log\"></div>
+    <input type=\"hidden\" id=\"{$id}_uploaded_json\" name=\"{$this->name}\" value=\"".json_encode($this->value)."\" />";
+  }
+
+  public function is_a_value(){
+    return TRUE;
   }
 }

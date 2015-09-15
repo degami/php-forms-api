@@ -396,3 +396,32 @@ $showallform->add_field('autocomplete', array(
   'value' => 'Reset',
   'js_button' => TRUE,
 ));
+
+
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+
+
+$plupload_form = new cs_form(array('form_id' => 'plupload'));
+$plupload_form->add_field('files_upload', array(
+  'type' => 'plupload',
+  'title' => 'Upload Extra Files',
+  'filters' => array(
+    'max_file_size' => '10mb',
+    'mime_types' => array(
+      array('title' => "Image files", 'extensions' => "jpg,jpeg,gif,png"),
+      array('title' => "PDF files", 'extensions' => "pdf"),
+      // array('title' => "Zip files", 'extensions' => "zip"),
+    ),
+  ),
+  'url' => 'file_plupload.php',
+  'swf_url' => 'http://www.plupload.com//plupload/js/Moxie.swf',
+  'xap_url' => 'http://www.plupload.com//plupload/js/Moxie.xap',
+));
+
+
+$plupload_form->add_field('submit', array(
+  'type' => 'submit',
+));
