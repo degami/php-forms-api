@@ -429,7 +429,7 @@ They are always valid.
     $options += array(
       'type' => 'sortable_table',
       'handle_position' => 'left',
-      'header' => array(),
+      'table_header' => array(),
     );
 
 ### Validators reference
