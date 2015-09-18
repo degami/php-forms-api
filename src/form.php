@@ -3101,7 +3101,9 @@ class cs_sortable_table extends cs_sortable_container{
       // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
       $output .= "<tr id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>")."\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
-        $output .= "<td>".$field->render($form)."</td>\n";
+        $fieldhtml = $field->render($form);
+        if( trim($fieldhtml) != '' )
+          $output .= "<td>".$fieldhtml."</td>\n";
       }
       $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
       $output .= (($handle_position == 'right') ? "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>" : '')."</tr>\n";
