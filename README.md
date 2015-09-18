@@ -426,6 +426,11 @@ They are always valid.
       'handle_position' => 'left',
     );
 
+    $options += array(
+      'type' => 'sortable_table',
+      'handle_position' => 'left',
+      'header' => array(),
+    );
 
 ### Validators reference
 
