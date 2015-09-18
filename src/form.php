@@ -241,9 +241,16 @@ class cs_form extends cs_element{
 
   private function inject_values($request, $step){
     foreach ($this->get_fields($step) as $name => $field) {
-      if( $field instanceof cs_fields_container ) $field->process($request);
-      else if ( isset($request[$name]) ) {
+      if( $field instanceof cs_fields_container ){
+        $field->process($request);
+      } else if ( isset($request[$name]) ) {
         $field->process($request[$name], $name);
+      } else if( $field instanceof cs_checkbox ){
+        // no value on request[name] && field is a checkbox - process anyway with an empty value
+        $field->process(NULL, $name);
+      } else if( $field instanceof cs_field_multivalues ){
+        // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
+        $field->process(array(), $name);
       }
     }
   }
