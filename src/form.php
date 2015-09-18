@@ -2925,7 +2925,7 @@ class cs_accordion extends cs_fields_container_multiple {
 }
 
 
-class cs_sortable extends cs_fields_container_multiple{
+abstract class cs_sortable_container extends cs_fields_container_multiple{
   protected $handle_position = 'left';
   private $deltas = array();
 
@@ -2935,57 +2935,10 @@ class cs_sortable extends cs_fields_container_multiple{
     return parent::add_field($name, $field, $this->deltas[$name]);
   }
 
-  public function pre_render(cs_form $form){
-    $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
-      placeholder: \"ui-state-highlight\",
-      stop: function( event, ui ) {
-      $(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
-        $(elem).val(index);
-      });
-      }
-    });");
-
-    parent::pre_render($form);
-  }
-
   public function get_handle_position(){
     return $this->handle_position;
   }
 
-  public function render_field(cs_form $form) {
-    $id = $this->get_html_id();
-
-    $handle_position = trim(strtolower($this->get_handle_position()));
-
-    $output = '';
-    $attributes = $this->get_attributes();
-
-    $output .= "<div id=\"{$id}\"{$attributes}>\n";
-
-    foreach($this->tabs as $tabindex => $tab){
-      $insertorder = array_flip($this->insert_field_order[$tabindex]);
-      $weights = array();
-      $order = array();
-      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
-        $weights[$key]  = $elem->get_weight();
-        $order[$key] = $insertorder[$key];
-      }
-      if(!empty($this->get_tab_fields($tabindex)))
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
-
-      // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
-      $output .= "<div id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
-      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
-        $output .= $field->render($form);
-      }
-      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
-      $output .= "</div>".(($handle_position == 'right') ? "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;float: right;\"></span>" : '')."</div>\n";
-    }
-    $output .= "</div>\n";
-
-    return $output;
-  }
 
   public function values() {
     $output = array();
@@ -3030,9 +2983,133 @@ class cs_sortable extends cs_fields_container_multiple{
     if($a['delta']==$b['delta']) return 0;
     return ($a['delta']>$b['delta']) ? 1:-1;
   }
-
 }
 
+class cs_sortable extends cs_sortable_container{
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
+      placeholder: \"ui-state-highlight\",
+      stop: function( event, ui ) {
+      \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
+        \$(elem).val(index);
+      });
+      }
+    });");
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+
+    $handle_position = trim(strtolower($this->get_handle_position()));
+
+    $output = '';
+    $attributes = $this->get_attributes();
+
+    $output .= "<div id=\"{$id}\"{$attributes}>\n";
+
+    foreach($this->tabs as $tabindex => $tab){
+      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+      $weights = array();
+      $order = array();
+      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+        $weights[$key]  = $elem->get_weight();
+        $order[$key] = $insertorder[$key];
+      }
+      if(!empty($this->get_tab_fields($tabindex)))
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+
+      // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
+      $output .= "<div id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
+      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+        $output .= $field->render($form);
+      }
+      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
+      $output .= "</div>".(($handle_position == 'right') ? "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;float: right;\"></span>" : '')."</div>\n";
+    }
+    $output .= "</div>\n";
+
+    return $output;
+  }
+}
+
+class cs_sortable_table extends cs_sortable_container{
+
+  protected $table_header = array();
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_js("
+      var fixHelper = function(e, ui) {
+        ui.children().each(function() {
+          \$(this).width($(this).width());
+        });
+        return ui;
+      };
+      \$('#{$id} tbody','#{$form->get_id()}').sortable({
+        helper: fixHelper,
+        placeholder: \"ui-state-highlight\",
+        stop: function( event, ui ) {
+        \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
+          \$(elem).val(index);
+        });
+      }
+    });");
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+
+    $handle_position = trim(strtolower($this->get_handle_position()));
+
+    $output = '';
+    $attributes = $this->get_attributes();
+
+    $output .= "<table id=\"{$id}\"{$attributes}>\n";
+
+    if(!empty($this->table_header) ){
+      if(!is_array($this->table_header)) {
+        $this->table_header = array($this->table_header);
+      }
+
+      $output .= "<thead>\n";
+      if($handle_position != 'right') $output .= "<th>&nbsp;</th>";
+      foreach($this->table_header as $th){
+        $output .= "<th>{$th}</th>";
+      }
+      if($handle_position == 'right') $output .= "<th>&nbsp;</th>";
+      $output .= "</thead>\n";
+    }
+
+    $output .= "<tbody>\n";
+    foreach($this->tabs as $tabindex => $tab){
+      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+      $weights = array();
+      $order = array();
+      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+        $weights[$key]  = $elem->get_weight();
+        $order[$key] = $insertorder[$key];
+      }
+      if(!empty($this->get_tab_fields($tabindex)))
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+
+      // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
+      $output .= "<tr id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>")."\n";
+      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+        $output .= "<td>".$field->render($form)."</td>\n";
+      }
+      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
+      $output .= (($handle_position == 'right') ? "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>" : '')."</tr>\n";
+    }
+    $output .= "</tbody>\n</table>\n";
+
+    return $output;
+  }
+}
 
 /* #########################################################
    ####                 ACCESSORIES                     ####

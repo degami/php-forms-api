@@ -314,16 +314,30 @@ $showallform->add_field('hidden1', array(
 ));
 
 
-$sortable = $showallform->add_field('sortable',array(
-  'type' => 'sortable',
-));
+// $sortable = $showallform->add_field('sortable',array(
+//   'type' => 'sortable',
+// ));
 
+// for($i=0;$i<5;$i++){
+//   $field = array(
+//     'title' => 'Textfield '.($i+1),
+//     'type' => 'textfield',
+//   );
+//   $sortable->add_field('sortable_field_'.$i,$field);
+// }
+
+$sortable_table = $showallform->add_field('sortable',array(
+  'type' => 'sortable_table',
+  'table_header' => array(
+    'Textfields',
+  ),
+));
 for($i=0;$i<5;$i++){
   $field = array(
     'title' => 'Textfield '.($i+1),
     'type' => 'textfield',
   );
-  $sortable->add_field('sortable_field_'.$i,$field);
+  $sortable_table->add_field('sortable_field_'.$i,$field);
 }
 
 $showallform->add_field('container', array(
