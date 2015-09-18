@@ -2929,12 +2929,6 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
   protected $handle_position = 'left';
   private $deltas = array();
 
-  public function add_field($name, $field) {
-    //force every field to have its own tab.
-    $this->deltas[$name] = count($this->get_fields());
-    return parent::add_field($name, $field, $this->deltas[$name]);
-  }
-
   public function get_handle_position(){
     return $this->handle_position;
   }
@@ -2944,7 +2938,7 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
     $output = array();
 
     $fields_with_delta = $this->get_fields_with_delta();
-    usort($fields_with_delta, 'cs_sortable::orderby_delta');
+    usort($fields_with_delta, 'cs_sortable_container::orderby_delta');
 
     foreach ($fields_with_delta as $name => $info) {
       $field = $info['field'];
@@ -2986,6 +2980,13 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
 }
 
 class cs_sortable extends cs_sortable_container{
+
+  public function add_field($name, $field) {
+    //force every field to have its own tab.
+    $this->deltas[$name] = count($this->get_fields());
+    return parent::add_field($name, $field, $this->deltas[$name]);
+  }
+
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $form->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
