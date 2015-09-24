@@ -392,6 +392,10 @@ class cs_form extends cs_element{
           }
         }
       }
+
+      if(!$this->valid) $this->current_step--;
+      if($this->current_step < 0) $this->current_step = 0;
+
       $this->validated = TRUE;
       return $this->valid;
     }
