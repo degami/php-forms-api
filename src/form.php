@@ -3124,101 +3124,6 @@ class cs_sortable_table extends cs_sortable_container{
   }
 }
 
-/* #########################################################
-   ####                 ACCESSORIES                     ####
-   ######################################################### */
-
-
-class cs_ordered_functions implements Iterator{
-  private $position = 0;
-  private $array = array();
-  private $sort_callback = NULL;
-
-  public function __construct(array $array, $type, $sort_callback = NULL) {
-      $this->position = 0;
-      $this->array = $array;
-      $this->type = $type;
-      $this->sort_callback = $sort_callback;
-      $this->sort();
-  }
-
-  function sort(){
-    // $this->array = array_filter( array_map('trim', $this->array) );
-    // $this->array = array_unique( array_map('strtolower', $this->array) );
-
-    $tmparr = array();
-    foreach ($this->array as &$value) {
-      if(is_string($value)){
-        $value = strtolower(trim($value));
-      }else if(is_array($value) && isset($value[$this->type])){
-        $value[$this->type] = strtolower(trim($value[$this->type]));
-      }
-    }
-
-    $this->array = array_unique($this->array,SORT_REGULAR);
-
-    if(!empty($this->sort_callback) && is_callable($this->sort_callback)){
-      usort($this->array, $this->sort_callback);
-    }
-  }
-
-  function rewind() {
-    $this->position = 0;
-    $this->sort();
-  }
-
-  function current() {
-    return $this->array[$this->position];
-  }
-
-  function key() {
-    return $this->position;
-  }
-
-  function next() {
-    ++$this->position;
-  }
-
-  function valid() {
-    return isset($this->array[$this->position]);
-  }
-
-  public function has_value($value){
-    // return in_array($value, $this->array);
-    return in_array($value, $this->values());
-  }
-
-  public function has_key($key){
-    return in_array($key, array_keys($this->array));
-  }
-
-  public function values(){
-    // return array_values($this->array);
-    $out = array();
-    foreach ($this->array as $key => $value) {
-      if(is_array($value) && isset($value[$this->type])){
-        $out[] = $value[$this->type];
-      }else{
-        $out[] = $value;
-      }
-    }
-    return $out;
-  }
-
-  public function keys(){
-    return array_keys($this->array);
-  }
-
-  public function add_element($value){
-    $this->array[] = $value;
-    $this->sort();
-  }
-
-  public function remove_element($value){
-    $this->array = array_diff($this->array, array($value));
-    $this->sort();
-  }
-}
 
 class cs_plupload extends cs_field {
   protected $filters = [];
@@ -3363,5 +3268,102 @@ class cs_plupload extends cs_field {
 
   public function is_a_value(){
     return TRUE;
+  }
+}
+
+
+/* #########################################################
+   ####                 ACCESSORIES                     ####
+   ######################################################### */
+
+
+class cs_ordered_functions implements Iterator{
+  private $position = 0;
+  private $array = array();
+  private $sort_callback = NULL;
+
+  public function __construct(array $array, $type, $sort_callback = NULL) {
+      $this->position = 0;
+      $this->array = $array;
+      $this->type = $type;
+      $this->sort_callback = $sort_callback;
+      $this->sort();
+  }
+
+  function sort(){
+    // $this->array = array_filter( array_map('trim', $this->array) );
+    // $this->array = array_unique( array_map('strtolower', $this->array) );
+
+    $tmparr = array();
+    foreach ($this->array as &$value) {
+      if(is_string($value)){
+        $value = strtolower(trim($value));
+      }else if(is_array($value) && isset($value[$this->type])){
+        $value[$this->type] = strtolower(trim($value[$this->type]));
+      }
+    }
+
+    $this->array = array_unique($this->array,SORT_REGULAR);
+
+    if(!empty($this->sort_callback) && is_callable($this->sort_callback)){
+      usort($this->array, $this->sort_callback);
+    }
+  }
+
+  function rewind() {
+    $this->position = 0;
+    $this->sort();
+  }
+
+  function current() {
+    return $this->array[$this->position];
+  }
+
+  function key() {
+    return $this->position;
+  }
+
+  function next() {
+    ++$this->position;
+  }
+
+  function valid() {
+    return isset($this->array[$this->position]);
+  }
+
+  public function has_value($value){
+    // return in_array($value, $this->array);
+    return in_array($value, $this->values());
+  }
+
+  public function has_key($key){
+    return in_array($key, array_keys($this->array));
+  }
+
+  public function values(){
+    // return array_values($this->array);
+    $out = array();
+    foreach ($this->array as $key => $value) {
+      if(is_array($value) && isset($value[$this->type])){
+        $out[] = $value[$this->type];
+      }else{
+        $out[] = $value;
+      }
+    }
+    return $out;
+  }
+
+  public function keys(){
+    return array_keys($this->array);
+  }
+
+  public function add_element($value){
+    $this->array[] = $value;
+    $this->sort();
+  }
+
+  public function remove_element($value){
+    $this->array = array_diff($this->array, array($value));
+    $this->sort();
   }
 }
