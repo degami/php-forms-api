@@ -560,7 +560,7 @@ class cs_form extends cs_element{
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    if(!empty($this->get_fields($this->current_step)))
+    if( count( $this->get_fields($this->current_step) ) > 0 )
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields($this->current_step));
 
     foreach ($this->get_fields($this->current_step) as $name => $field) {
@@ -2721,7 +2721,7 @@ class cs_tag_container extends cs_fields_container {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    if(!empty($this->get_fields()))
+    if( count( $this->get_fields() ) > 0 )
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
     foreach ($this->get_fields() as $name => $field) {
       $output .= $field->render($form);
@@ -2786,7 +2786,7 @@ class cs_fieldset extends cs_fields_container {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    if(!empty($this->get_fields()))
+    if( count( $this->get_fields() ) > 0 )
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
 
     $output .= "<div class=\"fieldset-inner\">\n";
@@ -2877,7 +2877,7 @@ class cs_tabs extends cs_fields_container_multiple {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if(!empty($this->get_tab_fields($tabindex)))
+      if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->tabs[$tabindex]['title']."</a></li>";
@@ -2918,7 +2918,7 @@ class cs_accordion extends cs_fields_container_multiple {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if(!empty($this->get_tab_fields($tabindex)))
+      if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
@@ -3029,7 +3029,7 @@ class cs_sortable extends cs_sortable_container{
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if(!empty($this->get_tab_fields($tabindex)))
+      if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
@@ -3105,7 +3105,7 @@ class cs_sortable_table extends cs_sortable_container{
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if(!empty($this->get_tab_fields($tabindex)))
+      if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
