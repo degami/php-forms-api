@@ -681,6 +681,13 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  public static function validate_regexp($value, $options) {
+    if (!preg_match( $options, $value)) {
+      return "<em>%t</em> must match the regular expression \"$options\".";
+    }
+    return TRUE;
+  }
+
   public static function validate_alpha($value) {
     // if(!is_string($value)) throw new Exception("Invalid value - alpha is meant for strings, ".gettype($value)." given");
     if (!preg_match( "/^([a-z])+$/i", $value)) {

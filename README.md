@@ -434,9 +434,9 @@ They are always valid.
 
 ### Validators reference
 
-Required, Max Length, Min Length, Exact Length, Alpha, Alpha-numeric,
-Alpha-numeric with dashes, Numeric, Integer, Field matching, Email,
-File extension, File not exists, File max size, File type.
+Required, Max Length, Min Length, Exact Length, Regular Expression, Alpha,
+Alpha-numeric, Alpha-numeric with dashes, Numeric, Integer, Field matching,
+Email, File extension, File not exists, File max size, File type.
 
 
 
