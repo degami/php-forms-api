@@ -368,7 +368,7 @@ They are always valid.
       'mindate' => '-10Y',
       'maxdate' => '+10Y',
       'yearrange' => '-10:+10',
-      'disabledDates' => array(),
+      'disabled_dates' => array(),
     );
 
 #### Times
