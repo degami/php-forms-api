@@ -2274,6 +2274,7 @@ class cs_datepicker extends cs_field {
   protected $mindate = '-10Y';
   protected $maxdate = '+10Y';
   protected $yearrange = '-10:+10';
+  protected $disabledDates = array(); // an array of date strings compliant to $date_format
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
@@ -2282,7 +2283,21 @@ class cs_datepicker extends cs_field {
     $changeMonth = ($this->change_month) ? 'true'  :'false';
     $changeYear = ($this->change_year == TRUE) ? 'true'  :'false';
 
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').datepicker({dateFormat: '{$this->date_format}',changeMonth: {$changeMonth},changeYear: {$changeYear},minDate: \"{$this->mindate}\",maxDate: \"{$this->maxdate}\",yearRange: \"{$this->yearrange}\"});");
+    $form->add_js(
+      str_replace("\n","","".
+        ((count($this->disabledDates)>0) ? "var disabledDates_array_{$form->get_id()}_{$id} = ".json_encode((array) $this->disabledDates).";" : "")."
+            \$('#{$id}','#{$form->get_id()}').datepicker({
+            dateFormat: '{$this->date_format}',
+            ".( (count($this->disabledDates)>0) ? "beforeShowDay: function(date){
+              var string = $.datepicker.formatDate('{$this->date_format}', date);
+              return [ disabledDates_array_{$form->get_id()}_{$id}.indexOf(string) == -1 ];
+            },": "")."
+            changeMonth: {$changeMonth},
+            changeYear: {$changeYear},
+            minDate: \"{$this->mindate}\",
+            maxDate: \"{$this->maxdate}\",
+            yearRange: \"{$this->yearrange}\"
+          });"));
 
     parent::pre_render($form);
   }
