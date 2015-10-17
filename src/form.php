@@ -124,6 +124,7 @@ class cs_form extends cs_element{
   protected $inline_errors = FALSE;
   protected $js = array();
   protected $js_generated = FALSE;
+  protected $css = array();
 
   protected $insert_field_order = array();
   protected $fields = array();
@@ -590,6 +591,10 @@ class cs_form extends cs_element{
         $output['html'] .= $this->suffix;
         $output['html'] .= $this->get_suffix();
 
+        if(count($this->get_css())>0){
+          $output['html'] .= "<style>".implode("\n",$this->get_css())."</style>";
+        }
+
         if(!empty( $js )){
           $output['js'] = $js;
         }
@@ -610,6 +615,10 @@ class cs_form extends cs_element{
           $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
         }
         $output .= "</form>\n";
+        if(count($this->get_css())>0){
+          $output .= "<style>".implode("\n",$this->get_css())."</style>";
+        }
+
         if(!empty( $js )){
           $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
         }
@@ -625,9 +634,17 @@ class cs_form extends cs_element{
 
     return $this;
   }
-
-  public function &get_js($js){
+  public function &get_js(){
     return $this->js;
+  }
+
+  public function add_css($css){
+    $this->css[] = $css;
+
+    return $this;
+  }
+  public function &get_css(){
+    return $this->css;
   }
 
   public function generate_js(){
@@ -2265,6 +2282,17 @@ class cs_date extends cs_field {
 
     return mktime(23,59,59,$month,$day,$year);
   }
+  public function value_string(){
+    $value = $this->values();
+    $out = (($value['year'] < 10) ? '0':'').((int) $value['year']);
+    if($this->granularity!='year'){
+      $out .= '-'.(($value['month'] < 10) ? '0':'').((int) $value['month']);
+      if($this->granularity!='month'){
+        $out .= '-'.(($value['day'] < 10) ? '0':'').((int) $value['day']);
+      }
+    }
+    return $out;
+  }
 }
 
 class cs_datepicker extends cs_field {
@@ -2444,6 +2472,87 @@ class cs_time extends cs_field {
         return FALSE;
     }
     return parent::valid();
+  }
+
+  public function is_a_value(){
+    return TRUE;
+  }
+
+  public function value_string(){
+    $value = $this->values();
+    $out = (($value['hours'] < 10) ? '0':'').((int) $value['hours']);
+
+    if($this->granularity!='hours'){
+      $out .= ':'.(($value['minutes'] < 10) ? '0':'').((int) $value['minutes']);
+      if($this->granularity!='minutes'){
+        $out .= ':'.(($value['seconds'] < 10) ? '0':'').((int) $value['seconds']);
+      }
+    }
+
+    return $out;
+  }
+}
+
+class cs_datetime extends cs_tag_container {
+  protected $date = NULL;
+  protected $time = NULL;
+
+  public function __construct($options = array(), $name = NULL) {
+    parent::__construct($options,$name);
+
+    unset($options['title']);
+    $options['container_tag'] = '';
+
+    $options['type'] = 'date';
+    $this->date = new cs_date($options,$name.'_date');
+
+    $options['type'] = 'time';
+    $this->time = new cs_time($options,$name.'_time');
+  }
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    $form->add_css("#{$id} div.date,#{$id} div.time{display: inline-block;margin-right: 5px;}");
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    $attributes = $this->get_attributes();
+
+    $this->tag = 'div';
+    $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
+
+    $required = ($this->validate->has_value('required')) ? '<span class="required">*</span>' : '';
+    $requiredafter = $requiredbefore = $required;
+    if($this->required_position == 'before') { $requiredafter = ''; $requiredbefore = $requiredbefore.' '; }
+    else { $requiredbefore = ''; $requiredafter = ' '.$requiredafter; }
+
+    if(!empty($this->title)){
+      if ( $this->tooltip == FALSE ) {
+        $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
+        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}{$this->title}{$requiredafter}</label>\n";
+      } else {
+        if( !in_array('title', array_keys($this->attributes)) ){
+          $this->attributes['title'] = strip_tags($this->title.$required);
+        }
+
+        $id = $this->get_html_id();
+        $form->add_js("\$('#{$id}','#{$form->get_id()}').tooltip();");
+      }
+    }
+    $output .= $this->date->render($form);
+    $output .= $this->time->render($form);
+    $output .= "</{$this->tag}>\n";
+    return $output;
+  }
+
+  public function values() {
+    return array(
+      'date'=> $this->date->values(),
+      'time'=> $this->time->values(),
+      'datetime' => $this->date->value_string().' '.$this->time->value_string(),
+    );
   }
 
   public function is_a_value(){

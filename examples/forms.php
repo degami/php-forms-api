@@ -266,6 +266,13 @@ $accordion->add_field('datepicker', array(
   'type' => 'datepicker',
   'title' => 'date picker',
 ),1);
+
+$accordion->add_field('datetime', array(
+  'type' => 'datetime',
+  'title' => 'date time',
+),1);
+
+
 $showallform->add_field($accordion->get_name(), $accordion);
 
 
@@ -337,7 +344,7 @@ for($i=0;$i<5;$i++){
     'title' => 'Textfield '.($i+1),
     'type' => 'textfield',
   );
-  $sortable_table->add_field('sortable_field_'.$i,$field);
+  $sortable_table->add_field('sortable_field_'.$i,$field,$i);
 }
 
 $showallform->add_field('container', array(
@@ -437,5 +444,37 @@ $plupload_form->add_field('files_upload', array(
 
 
 $plupload_form->add_field('submit', array(
+  'type' => 'submit',
+));
+
+
+$dates_form = new cs_form(array('form_id' => 'dates'));
+
+$dates_form->add_field('date', array(
+  'type' => 'date',
+  'title' => 'select date',
+  'granularity' => 'day',
+  'js_selects' => FALSE,
+));
+
+$dates_form->add_field('time', array(
+  'type' => 'time',
+  'title' => 'time',
+  'granularity' => 'minutes',
+  'default_value' => array('hours'=>10,'minutes'=>23),
+  'js_selects' => FALSE,
+));
+
+$dates_form->add_field('datepicker', array(
+  'type' => 'datepicker',
+  'title' => 'date picker',
+));
+
+$dates_form->add_field('datetime', array(
+  'type' => 'datetime',
+  'title' => 'date time',
+));
+
+$dates_form->add_field('submit', array(
   'type' => 'submit',
 ));

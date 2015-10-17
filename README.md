@@ -384,6 +384,24 @@ They are always valid.
       'seconds'=>'',
     );
 
+#### DateTimes
+
+    $options += array(
+      'type' => 'datetime',
+      'start_year' => '',
+      'end_year' => '',
+      'granularity' => 'day - seconds', // one of: year, month, day, hours, minutes or seconds
+      'js_selects' => FALSE,
+    );
+    $options['default_value'] = array(
+      'year'=>'',
+      'month'=>'',
+      'day'=>'',
+      'hours'=>'',
+      'minutes'=>'',
+      'seconds'=>'',
+    );
+
 #### Recapthas
 
     $options += array(
