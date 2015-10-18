@@ -87,7 +87,7 @@ $form = $dates_form;
 </head>
 
 <body>
-  <a href="contact.php">Go back</a>
+  <a href="dates.php">Go back</a>
   <div id="page">
   <pre style="font-size:10px;"><?php $form->process(); ?></pre>
   <h1>Dates Form</h1>
