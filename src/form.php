@@ -2514,6 +2514,30 @@ class cs_datetime extends cs_tag_container {
     $id = $this->get_html_id();
     $form->add_css("#{$id} div.date,#{$id} div.time{display: inline-block;margin-right: 5px;}");
     parent::pre_render($form);
+
+    $this->date->pre_render($form);
+    $this->time->pre_render($form);
+  }
+
+  public function preprocess($process_type = "preprocess") {
+    $this->date->preprocess($process_type);
+    $this->time->preprocess($process_type);
+  }
+  public function process($values) {
+    $this->date->process($values);
+    $this->time->process($values);
+  }
+
+  public function valid() {
+    return $this->date->valid() && $this->time->valid();
+  }
+  public function show_errors() {
+    return $this->date->show_errors() && $this->time->show_errors();
+  }
+
+  public function reset() {
+    $this->date->reset();
+    $this->time->reset();
   }
 
   public function render_field(cs_form $form) {
