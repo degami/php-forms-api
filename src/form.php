@@ -2524,8 +2524,8 @@ class cs_datetime extends cs_tag_container {
     $this->time->preprocess($process_type);
   }
   public function process($values) {
-    $this->date->process($values);
-    $this->time->process($values);
+    $this->date->process($values[$this->get_name().'_date'],$this->get_name().'_date');
+    $this->time->process($values[$this->get_name().'_time'],$this->get_name().'_time');
   }
 
   public function valid() {
