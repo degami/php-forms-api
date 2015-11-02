@@ -17,8 +17,7 @@ function multistep_submit(&$form) {
   $form_values = $form->values();
   // var_export($form);
   // get submission triggering element
-
-  // var_dump($form->get_triggering_element());
+  //var_dump($form->get_triggering_element());
   print_r($form_values);
   // Reset the form if you want it to display again.
   // $form->reset();
@@ -127,6 +126,7 @@ $form = $multistepform;
   <?php if ($form->is_submitted()): ?>
     <!-- if the form was reset during the submit handler we would never see this -->
     <p>Thanks for submitting the form.</p>
+    <pre><?php var_export($form->get_submit_results());?></pre>
   <?php else: ?>
     <?php print $form->render(); ?>
   <?php endif; ?>
