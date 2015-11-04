@@ -137,6 +137,7 @@ class cs_form extends cs_element{
   protected $valid = NULL;
   protected $validate = array();
   protected $submit = array();
+  protected $output_type = 'html';
 
   protected $inline_errors = FALSE;
   protected $js = array();
@@ -547,7 +548,11 @@ class cs_form extends cs_element{
     }
   }
 
-  public function render( $output_type = 'html' ) {
+  public function get_output_type(){
+    return $this->output_type;
+  }
+
+  public function render( $override_output_type = NULL ) {
     $output = '';
     $errors = '';
     $fields_html = '';
@@ -555,8 +560,8 @@ class cs_form extends cs_element{
     // render needs the form to be processed
     if( !$this->processed ) $this->process();
 
+    $output_type = !empty($override_output_type) ? $override_output_type : $this->get_output_type();
     if( !is_string($output_type) ) $output_type = 'html';
-
     $output_type = trim(strtolower($output_type));
     if( $output_type == 'json' && empty($this->ajax_submit_url) ){
       $output_type = 'html';
