@@ -38,8 +38,13 @@ abstract class cs_element{
 
     return $this;
   }
+
   public function get_name(){
     return $this->name;
+  }
+
+  public function get_weight() {
+    return $this->weight;
   }
 
   public function add_error($error_string,$validate_function_name){
@@ -1211,10 +1216,6 @@ abstract class cs_field extends cs_element{
 
   public function get_value(){
     return $this->value;
-  }
-
-  public function get_weight() {
-    return $this->weight;
   }
 
   public function set_value($value){
