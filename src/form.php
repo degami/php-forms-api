@@ -22,6 +22,7 @@ define('FORMS_BASE_PATH', '');
 define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 
 abstract class cs_element{
+  protected $name = NULL;
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
   protected $label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
@@ -101,6 +102,7 @@ abstract class cs_element{
     }
     return '';
   }
+
 }
 
 /* #########################################################
@@ -1155,7 +1157,6 @@ abstract class cs_field extends cs_element{
   protected $type = '';
   protected $stop_on_first_error = FALSE;
   protected $tooltip = FALSE;
-  protected $name = NULL;
   protected $id = NULL;
   protected $title = NULL;
   protected $description = NULL;
@@ -1195,6 +1196,15 @@ abstract class cs_field extends cs_element{
     $this->value = $this->default_value;
   }
 
+  public function set_name($name){
+    $this->name = $name;
+
+    return $this;
+  }
+  public function get_name(){
+    return $this->name;
+  }
+
   public function values() {
     return $this->get_value();
   }
@@ -1231,14 +1241,6 @@ abstract class cs_field extends cs_element{
     return $this->postprocess;
   }
 
-  public function set_name($name){
-    $this->name = $name;
-
-    return $this;
-  }
-  public function get_name(){
-    return $this->name;
-  }
   public function get_id(){
     return $this->id;
   }
