@@ -23,6 +23,7 @@ define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
 
 abstract class cs_element{
   protected $name = NULL;
+  protected $weight = 0;
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
   protected $label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
@@ -1162,7 +1163,6 @@ abstract class cs_field extends cs_element{
   protected $preprocess = array();
   protected $postprocess = array();
   protected $size = 20;
-  protected $weight = 0;
   protected $type = '';
   protected $stop_on_first_error = FALSE;
   protected $tooltip = FALSE;
@@ -1213,6 +1213,10 @@ abstract class cs_field extends cs_element{
     return $this->value;
   }
 
+  public function get_weight() {
+    return $this->weight;
+  }
+
   public function set_value($value){
     $this->value = $value;
 
@@ -1247,10 +1251,6 @@ abstract class cs_field extends cs_element{
 
   public function get_html_id(){
     return !empty($this->id) ? $this->get_id() : $this->get_name();
-  }
-
-  public function get_weight() {
-    return $this->weight;
   }
 
   public function process($value) {
