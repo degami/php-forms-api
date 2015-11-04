@@ -32,6 +32,15 @@ abstract class cs_element{
   protected $prefix = '';
   protected $suffix = '';
 
+  public function set_name($name){
+    $this->name = $name;
+
+    return $this;
+  }
+  public function get_name(){
+    return $this->name;
+  }
+
   public function add_error($error_string,$validate_function_name){
     $this->errors[$validate_function_name] = $error_string;
   }
@@ -1194,15 +1203,6 @@ abstract class cs_field extends cs_element{
     }
 
     $this->value = $this->default_value;
-  }
-
-  public function set_name($name){
-    $this->name = $name;
-
-    return $this;
-  }
-  public function get_name(){
-    return $this->name;
   }
 
   public function values() {
