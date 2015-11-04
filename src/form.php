@@ -3059,10 +3059,11 @@ class cs_tabs extends cs_fields_container_multiple {
 }
 
 class cs_accordion extends cs_fields_container_multiple {
+  protected $height_style = 'auto';
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion();");
+    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\"});");
 
     parent::pre_render($form);
   }
