@@ -376,7 +376,7 @@ class cs_form extends cs_element{
       $sid = session_id();
       if (!empty($sid)) {
         $this->valid = FALSE;
-        $this->add_error('Form is invalid or has expired',__FUNCTION__);
+        $this->add_error(cs_form::translate_string('Form is invalid or has expired'),__FUNCTION__);
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - 7200) {
             $this->valid = TRUE;
@@ -406,7 +406,7 @@ class cs_form extends cs_element{
           if (function_exists($validate_function)) {
             if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
               $this->valid = FALSE;
-              $this->add_error( is_string($error) ? $error : 'Error. Form is not valid', $validate_function );
+              $this->add_error( is_string($error) ? cs_form::translate_string($error) : cs_form::translate_string('Error. Form is not valid'), $validate_function );
             }
           }
         }
@@ -1160,6 +1160,11 @@ class cs_form extends cs_element{
     return 0;
 //    return $a > $b ? 1 : -1;
   }
+
+  public static function translate_string($string){
+    if(is_string($string) && function_exists('__')) return __($string);
+    return $string;
+  }
 }
 
 
@@ -1310,9 +1315,9 @@ abstract class cs_field extends cs_element{
       if (isset($error) && $error !== TRUE) {
         $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
         if(empty($error)) $error = '%t - Error.';
-        $this->add_error(str_replace('%t', $titlestr, $error), $validator_func);
+        $this->add_error(str_replace('%t', $titlestr, cs_form::translate_string($error)), $validator_func);
         if(is_array($validator) && !empty($validator['error_message'])){
-          $this->add_error(str_replace('%t', $titlestr, $validator['error_message']),$validator_func);
+          $this->add_error(str_replace('%t', $titlestr, cs_form::translate_string($validator['error_message'])),$validator_func);
         }
 
         if($this->stop_on_first_error){
@@ -1706,7 +1711,7 @@ class cs_maskedfield extends cs_textfield{
     }
     $mask = '/^'.$mask.'$/';
     if(!preg_match($mask,$this->value)){
-      $this->add_error("Value does not conform to mask",__FUNCTION__);
+      $this->add_error(cs_form::translate_string("Value does not conform to mask"),__FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
@@ -1772,7 +1777,7 @@ class cs_password extends cs_field {
   public function valid(){
     if($this->with_confirm == TRUE){
       if(!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value ) {
-        $this->add_error("The passwords do not match",__FUNCTION__);
+        $this->add_error(cs_form::translate_string("The passwords do not match"),__FUNCTION__);
 
         if($this->stop_on_first_error)
           return FALSE;
@@ -1825,7 +1830,7 @@ abstract class cs_field_multivalues extends cs_field {
       }
       if(!$check) {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-        $this->add_error("{$titlestr}: Invalid choice",__FUNCTION__);
+        $this->add_error(cs_form::translate_string("{$titlestr}: Invalid choice"),__FUNCTION__);
 
         if($this->stop_on_first_error)
           return FALSE;
@@ -2266,7 +2271,7 @@ class cs_date extends cs_field {
 
     if( !checkdate( $month , $day , $year ) ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->add_error("{$titlestr}: Invalid date", __FUNCTION__);
+      $this->add_error(cs_form::translate_string("{$titlestr}: Invalid date"), __FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
@@ -2476,7 +2481,7 @@ class cs_time extends cs_field {
 
     if( ! $check ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->add_error("{$titlestr}: Invalid time", __FUNCTION__);
+      $this->add_error(cs_form::translate_string("{$titlestr}: Invalid time"), __FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
@@ -2678,7 +2683,7 @@ class cs_recaptcha extends cs_field {
                                     $this->value["challenge_field"],
                                     $this->value["response_field"]);
     if(!$resp->is_valid){
-      $this->add_error("Recaptcha response is not valid", __FUNCTION__);
+      $this->add_error(cs_form::translate_string("Recaptcha response is not valid"), __FUNCTION__);
     }else{
       $this->already_validated = TRUE;
       $this->value['already_validated'] = TRUE;
