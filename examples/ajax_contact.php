@@ -80,38 +80,7 @@ $form = $contactform_ajax;
   <a href="ajax_contact.php">Go back</a>
   <div id="page">
   <h1>Example Form</h1>
-  <script type="text/javascript">
-  (function($){
-    $(document).ready(function(){
-
-      var attachFormBehaviours = function (){
-        $('#<?php print $form->get_id();?>').submit(function(evt){
-          evt.preventDefault();
-          $.post( "<?php print $form->get_ajax_url();?>", $('#<?php print $form->get_id();?>').serialize(), function( data ) {
-            var response = $.parseJSON(data);
-            $('#formcontainer').html('');
-
-            $(response.html).appendTo( $('#formcontainer') );
-            if( $.trim(response.js) != '' ){
-              eval( response.js );
-            };
-            attachFormBehaviours();
-          });
-          return false;
-        });
-      }
-
-      $.getJSON('<?php print $form->get_ajax_url();?>',function(response){
-        $(response.html).appendTo( $('#formcontainer') );
-        if( $.trim(response.js) != '' ){
-          eval( response.js );
-        };
-        attachFormBehaviours();
-      });
-    });
-  })(jQuery);
-  </script>
-  <div id="formcontainer"></div>
+  <?php print $form->render('html');?>
   </div>
 </body>
 </html>

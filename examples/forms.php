@@ -37,6 +37,7 @@ $contactform->add_field('submit', array(
 $contactform_ajax = new cs_form(array(
   'form_id' => 'contact',
   'ajax_submit_url' => 'ajax_url.php',
+  'output_type' => 'json',
 ));
 $contactform_ajax->add_field('name', array(
   'type' => 'textfield',

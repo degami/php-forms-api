@@ -22,5 +22,5 @@ function contact_submit(&$form) {
 if ($form->is_submitted()):
   print json_encode( array( 'html' => '<p>Thanks for submitting the form.</p> <pre>'.var_export($form->get_submit_results('contact_submit'),TRUE).'</pre>', 'js' => '' , 'is_submitted' => TRUE ) );
 else:
-  print $form->render('json');
+  print $form->render(/* 'json' */);
 endif;

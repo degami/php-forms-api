@@ -597,58 +597,94 @@ class cs_form extends cs_element{
     $attributes = $this->get_attributes(array('action','method','id'));
     $js = $this->generate_js();
 
-    switch($output_type){
-      case 'json':
-        $output = array('html'=>'','js'=>'','is_submitted'=>$this->is_submitted());
+    if(!empty($this->ajax_submit_url) && $this->get_output_type() == 'json' && $output_type == 'html'){
+      // print initial js for ajax form
 
-        $output['html'] = $this->get_prefix();
-        $output['html'] .= $this->prefix;
-        $output['html'] .= $errors;
-        $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
-        $output['html'] .= $fields_html;
-        $output['html'].= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
-        $output['html'] .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
-        if( $this->get_num_steps() > 1) {
-          $output['html'] .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
-        }
-        $output['html'] .= "</form>\n";
-        $output['html'] .= $this->suffix;
-        $output['html'] .= $this->get_suffix();
+      $output = "<script type=\"text/javascript\">
+        (function(\$){
+          \$(document).ready(function(){
+            var {$this->get_id()}_attachFormBehaviours = function (){
+              \$('#{$this->get_id()}').submit(function(evt){
+                evt.preventDefault();
+                \$.post( \"{$this->get_ajax_url()}\", \$('#{$this->get_id()}').serialize(), function( data ) {
+                  var response = \$.parseJSON(data);
+                  \$('#{$this->get_id()}-formcontainer').html('');
+                  \$(response.html).appendTo( \$('#{$this->get_id()}-formcontainer') );
+                  if( \$.trim(response.js) != '' ){
+                    eval( response.js );
+                  };
+                  {$this->get_id()}_attachFormBehaviours();
+                });
+                return false;
+              });
+            }
+            \$.getJSON('{$this->get_ajax_url()}',function(response){
+              \$(response.html).appendTo( \$('#{$this->get_id()}-formcontainer') );
+              if( \$.trim(response.js) != '' ){
+                eval( response.js );
+              };
+              {$this->get_id()}_attachFormBehaviours();
+            });
+          });
+        })(jQuery);
+        </script>
+        <div id=\"{$this->get_id()}-formcontainer\"></div>";
+    }else{
 
-        if(count($this->get_css())>0){
-          $output['html'] .= "<style>".implode("\n",$this->get_css())."</style>";
-        }
+      switch($output_type){
+        case 'json':
+          $output = array('html'=>'','js'=>'','is_submitted'=>$this->is_submitted());
 
-        if(!empty( $js )){
-          $output['js'] = $js;
-        }
+          $output['html'] = $this->get_prefix();
+          $output['html'] .= $this->prefix;
+          $output['html'] .= $errors;
+          $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
+          $output['html'] .= $fields_html;
+          $output['html'].= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
+          $output['html'] .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+          if( $this->get_num_steps() > 1) {
+            $output['html'] .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
+          }
+          $output['html'] .= "</form>\n";
+          $output['html'] .= $this->suffix;
+          $output['html'] .= $this->get_suffix();
 
-        $output = json_encode($output);
-      break;
+          if(count($this->get_css())>0){
+            $output['html'] .= "<style>".implode("\n",$this->get_css())."</style>";
+          }
 
-      case 'html':
-      default:
-        $output = $this->get_prefix();
-        $output .= $this->prefix;
-        $output .= $errors;
-        $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
-        $output .= $fields_html;
-        $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
-        $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
-        if( $this->get_num_steps() > 1) {
-          $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
-        }
-        $output .= "</form>\n";
-        if(count($this->get_css())>0){
-          $output .= "<style>".implode("\n",$this->get_css())."</style>";
-        }
+          if(!empty( $js )){
+            $output['js'] = $js;
+          }
 
-        if(!empty( $js )){
-          $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
-        }
-        $output .= $this->suffix;
-        $output .= $this->get_suffix();
-      break;
+          $output = json_encode($output);
+        break;
+
+        case 'html':
+        default:
+          $output = $this->get_prefix();
+          $output .= $this->prefix;
+          $output .= $errors;
+          $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
+          $output .= $fields_html;
+          $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
+          $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+          if( $this->get_num_steps() > 1) {
+            $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
+          }
+          $output .= "</form>\n";
+          if(count($this->get_css())>0){
+            $output .= "<style>".implode("\n",$this->get_css())."</style>";
+          }
+
+          if(!empty( $js )){
+            $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
+          }
+          $output .= $this->suffix;
+          $output .= $this->get_suffix();
+        break;
+      }
+
     }
     return $output;
   }
