@@ -607,7 +607,9 @@ class cs_form extends cs_element{
               \$('#{$this->get_id()}').submit(function(evt){
                 evt.preventDefault();
                 \$.post( \"{$this->get_ajax_url()}\", \$('#{$this->get_id()}').serialize(), function( data ) {
-                  var response = \$.parseJSON(data);
+                  var response;
+                  if(typeof data =='object') response = data;
+                  else response = \$.parseJSON(data);
                   \$('#{$this->get_id()}-formcontainer').html('');
                   \$(response.html).appendTo( \$('#{$this->get_id()}-formcontainer') );
                   if( \$.trim(response.js) != '' ){
