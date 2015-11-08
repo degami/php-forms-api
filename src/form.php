@@ -1274,6 +1274,16 @@ abstract class cs_field extends cs_element{
     return $this;
   }
 
+  public function get_default_value(){
+    return $this->default_value;
+  }
+
+  public function set_default_value($default_value){
+    $this->default_value = $default_value;
+
+    return $this;
+  }
+
   public function reset() {
     $this->value = $this->default_value;
     $this->pre_rendered = FALSE;
