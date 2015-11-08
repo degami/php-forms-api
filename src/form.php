@@ -264,8 +264,8 @@ class cs_form extends cs_element{
         $field->process($request);
       } else if ( isset($request[$name]) ) {
         $field->process($request[$name], $name);
-      } else if( $field instanceof cs_checkbox ){
-        // no value on request[name] && field is a checkbox - process anyway with an empty value
+      } else if( $field instanceof cs_checkbox || $field instanceof cs_radios ){
+        // no value on request[name] && field is a checkbox or radios group - process anyway with an empty value
         $field->process(NULL, $name);
       } else if( $field instanceof cs_field_multivalues ){
         // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
