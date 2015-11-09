@@ -224,7 +224,17 @@ class cs_form extends cs_element{
       }
       unset( $_REQUEST[$name] );
     }
-    unset($_REQUEST['form_id']);
+
+    if(strtolower($this->method) == 'post') {
+      unset( $_POST['form_id'] );
+      unset( $_POST['form_token'] );
+    } else {
+      unset( $_GET['form_id'] );
+      unset( $_GET['form_token'] );
+    }
+    unset( $_REQUEST['form_id'] );
+    unset( $_REQUEST['form_token'] );
+
     if(isset($_SESSION[$this->form_id])){
       unset($_SESSION[$this->form_id]);
     }
