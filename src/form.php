@@ -11,15 +11,41 @@ ini_set('display_startup_errors', TRUE);
  *  PHP Forms API library configuration
  */
 
-define('FORMS_DEFAULT_FORM_CONTAINER_TAG', 'div');
-define('FORMS_DEFAULT_FORM_CONTAINER_CLASS', 'form-container');
-define('FORMS_DEFAULT_FIELD_CONTAINER_TAG', 'div');
-define('FORMS_DEFAULT_FIELD_CONTAINER_CLASS', 'form-item');
-define('FORMS_DEFAULT_FIELD_LABEL_CLASS', '');
-define('FORMS_VALIDATE_EMAIL_DNS', TRUE);
-define('FORMS_VALIDATE_EMAIL_BLOCKED_DOMAINS', 'mailinator.com|guerrillamail.com');
-define('FORMS_BASE_PATH', '');
-define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
+if( !defined('FORMS_DEFAULT_FORM_CONTAINER_TAG') ){
+  define('FORMS_DEFAULT_FORM_CONTAINER_TAG', 'div');
+}
+if( !defined('FORMS_DEFAULT_FORM_CONTAINER_CLASS') ){
+  define('FORMS_DEFAULT_FORM_CONTAINER_CLASS', 'form-container');
+}
+if( !defined('FORMS_DEFAULT_FIELD_CONTAINER_TAG') ){
+  define('FORMS_DEFAULT_FIELD_CONTAINER_TAG', 'div');
+}
+if( !defined('FORMS_DEFAULT_FIELD_CONTAINER_CLASS') ){
+  define('FORMS_DEFAULT_FIELD_CONTAINER_CLASS', 'form-item');
+}
+if( !defined('FORMS_DEFAULT_FIELD_LABEL_CLASS') ){
+  define('FORMS_DEFAULT_FIELD_LABEL_CLASS', '');
+}
+if( !defined('FORMS_VALIDATE_EMAIL_DNS') ){
+  define('FORMS_VALIDATE_EMAIL_DNS', TRUE);
+}
+if( !defined('FORMS_VALIDATE_EMAIL_BLOCKED_DOMAINS') ){
+  define('FORMS_VALIDATE_EMAIL_BLOCKED_DOMAINS', 'mailinator.com|guerrillamail.com');
+}
+if( !defined('FORMS_BASE_PATH') ){
+  define('FORMS_BASE_PATH', '');
+}
+if( !defined('FORMS_XSS_ALLOWED_TAGS') ){
+  define('FORMS_XSS_ALLOWED_TAGS', 'a|em|strong|cite|code|ul|ol|li|dl|dt|dd');
+}
+if( !defined('FORMS_SESSION_TIMEOUT') ){
+  define('FORMS_SESSION_TIMEOUT',7200);
+}
+
+if( ( function_exists('session_status') && session_status() == PHP_SESSION_NONE ) || session_id() == '') {
+  ini_set('session.gc_maxlifetime',FORMS_SESSION_TIMEOUT);
+  session_set_cookie_params(FORMS_SESSION_TIMEOUT);
+}
 
 abstract class cs_element{
   protected $name = NULL;
@@ -388,7 +414,7 @@ class cs_form extends cs_element{
         $this->valid = FALSE;
         $this->add_error(cs_form::translate_string('Form is invalid or has expired'),__FUNCTION__);
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
-          if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - 7200) {
+          if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) {
             $this->valid = TRUE;
             $this->errors = array();
             unset($_SESSION['form_token'][$_REQUEST['form_token']]);
