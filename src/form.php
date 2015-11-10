@@ -42,7 +42,7 @@ if( !defined('FORMS_SESSION_TIMEOUT') ){
   define('FORMS_SESSION_TIMEOUT',7200);
 }
 
-if( ( function_exists('session_status') && session_status() == PHP_SESSION_NONE ) || session_id() == '') {
+if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE ) || session_id() != '') {
   ini_set('session.gc_maxlifetime',FORMS_SESSION_TIMEOUT);
   session_set_cookie_params(FORMS_SESSION_TIMEOUT);
 }
