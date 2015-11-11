@@ -27,7 +27,7 @@ Requirements:
 
  * **Finish the Documentation!**
  * ~~Finish implementation of options such as _disabled_, _attributes_,~~
- * Offer a wider range of examples
+ * ~~Offer a wider range of examples~~
  * Complete the javascript functionality for ~~collapsible fieldsets and~~ the
    password strength meter for password fields.
  * Complete unit tests.
@@ -36,6 +36,8 @@ Requirements:
  * ~~Implement new field types such as button, dates~~
  * ~~Add support for masked fields, possibly using a jquery plugin.~~
  * ~~Multistep forms~~
+ * ~~Form builder class (à la drupal_get_form) in order to inject form state during form definition~~
+ * Support for AJAX form updates ( eg. "add another" button, depending fields, event driven modification of the form elements )
 
 ## Introduction
 
@@ -469,3 +471,9 @@ processing. You can specify processors to run on a field before or after the
 field is passed for validation.
 
 Plain, Trim, LTrim, RTrim, XSS, XSS Weak, Addslashes
+
+
+### CS_Form_builder
+
+Will be the new way to get form objects. Like drupal_get_form, it will pass a
+form_state argument to the form definition function.
