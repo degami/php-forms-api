@@ -440,7 +440,9 @@ class cs_form extends cs_element{
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) {
             $this->valid = TRUE;
             $this->errors = array();
-            unset($_SESSION['form_token'][$_REQUEST['form_token']]);
+            if( !$this->is_partial() ){
+              unset($_SESSION['form_token'][$_REQUEST['form_token']]);
+            }
           }
         }
       }
@@ -508,6 +510,10 @@ class cs_form extends cs_element{
 
   private function is_final_step(){
     return ($this->current_step >= $this->get_num_steps());
+  }
+
+  private function is_partial(){
+    return (isset($_REQUEST['partial']) && $_REQUEST['partial'] == 'true');
   }
 
   public function &get_fields($step = 0){
@@ -656,7 +662,7 @@ class cs_form extends cs_element{
     $attributes = $this->get_attributes(array('action','method','id'));
     $js = $this->generate_js();
 
-    if( isset($_REQUEST['partial']) && $_REQUEST['partial'] == 'true' ){
+    if( $this->is_partial() ){
       // ajax request - form item event
 
 
