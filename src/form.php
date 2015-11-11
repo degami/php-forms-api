@@ -415,8 +415,10 @@ class cs_form extends cs_element{
           if( function_exists($submit_function) ) {
             $submitresult = '';
             ob_start();
-            $submit_function($this, $request);
-            $submitresult = ob_get_contents();
+            $submitresult = $submit_function($this, $request);
+            if($submitresult == NULL ){
+              $submitresult = ob_get_contents();
+            }
             ob_end_clean();
             $this->submit_functions_results[$submit_function] = $submitresult;
           }
