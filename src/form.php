@@ -56,6 +56,8 @@ abstract class cs_element{
   protected $container_inherits_classes = FALSE;
   protected $errors = array();
   protected $attributes = array();
+  protected $js = array();
+  protected $css = array();
   protected $prefix = '';
   protected $suffix = '';
 
@@ -112,6 +114,29 @@ abstract class cs_element{
     return empty($attributes) ? '' : ' ' . $attributes;
   }
 
+  public function add_js($js){
+    if( is_array($js) ){
+      $js = array_filter(array_map('trim',$js));
+      $this->js = array_merge( $js, $this->js );
+    } else if( is_string($js) && trim($js) != '' ) {
+      $this->js[] = trim($js);
+    }
+
+    return $this;
+  }
+  public function &get_js(){
+    return $this->js;
+  }
+
+  public function add_css($css){
+    $this->css[] = $css;
+
+    return $this;
+  }
+  public function &get_css(){
+    return $this->css;
+  }
+
   public function get_prefix(){
     if(!empty($this->container_tag)){
 
@@ -166,9 +191,7 @@ class cs_form extends cs_element{
   protected $output_type = 'html';
 
   protected $inline_errors = FALSE;
-  protected $js = array();
   protected $js_generated = FALSE;
-  protected $css = array();
 
   protected $insert_field_order = array();
   protected $fields = array();
@@ -633,6 +656,31 @@ class cs_form extends cs_element{
     $attributes = $this->get_attributes(array('action','method','id'));
     $js = $this->generate_js();
 
+    if( isset($_REQUEST['partial']) && $_REQUEST['partial'] == 'true' ){
+      // ajax request - form item event
+
+
+      $jsondata = json_decode($_REQUEST['jsondata']);
+      $callback = $jsondata->callback;
+      if( is_callable($callback) ){
+        $caller = $callback( $this );
+
+        $html = $caller->render($this);
+        $js = '';
+        if(count($caller->get_js()) > 0){
+          $js = "(function($){\n".
+                  "\t$(document).ready(function(){\n".
+                  "\t\t".implode( ";\n\t\t", $caller->get_js() ).";\n".
+                  "\t});\n".
+                "})(jQuery);";
+        }
+
+        return json_encode(array( 'html' => $html, 'js' => $js ));
+      }
+
+      return FALSE;
+    }
+
     if(!empty($this->ajax_submit_url) && $this->get_output_type() == 'json' && $output_type == 'html'){
       // print initial js for ajax form
 
@@ -673,12 +721,12 @@ class cs_form extends cs_element{
         case 'json':
           $output = array('html'=>'','js'=>'','is_submitted'=>$this->is_submitted());
 
-          $output['html'] = $this->get_prefix();
+          $output['html']  = $this->get_prefix();
           $output['html'] .= $this->prefix;
           $output['html'] .= $errors;
           $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
           $output['html'] .= $fields_html;
-          $output['html'].= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
+          $output['html'] .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
           $output['html'] .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
           if( $this->get_num_steps() > 1) {
             $output['html'] .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
@@ -725,24 +773,6 @@ class cs_form extends cs_element{
 
     }
     return $output;
-  }
-
-  public function add_js($js){
-    $this->js[] = $js;
-
-    return $this;
-  }
-  public function &get_js(){
-    return $this->js;
-  }
-
-  public function add_css($css){
-    $this->css[] = $css;
-
-    return $this;
-  }
-  public function &get_css(){
-    return $this->css;
   }
 
   public function generate_js(){
@@ -1253,6 +1283,7 @@ abstract class cs_field extends cs_element{
   protected $validate = array();
   protected $preprocess = array();
   protected $postprocess = array();
+  protected $event = array();
   protected $size = 20;
   protected $type = '';
   protected $stop_on_first_error = FALSE;
@@ -1265,6 +1296,8 @@ abstract class cs_field extends cs_element{
   protected $value = NULL;
   protected $pre_rendered = FALSE;
   protected $required_position = 'after';
+  protected $ajax_url = NULL;
+
 
   public function __construct($options = array(), $name = NULL) {
     $this->name = $name;
@@ -1291,6 +1324,10 @@ abstract class cs_field extends cs_element{
 
     if(!$this->postprocess instanceof cs_ordered_functions){
       $this->postprocess = new cs_ordered_functions($this->postprocess, 'postprocessor');
+    }
+
+    if(!$this->event instanceof cs_ordered_functions){
+      $this->event = new cs_ordered_functions($this->event, 'event');
     }
 
     $this->value = $this->default_value;
@@ -1348,6 +1385,10 @@ abstract class cs_field extends cs_element{
 
   public function get_html_id(){
     return !empty($this->id) ? $this->get_id() : $this->get_name();
+  }
+
+  public function get_ajax_url(){
+    return $this->ajax_url;
   }
 
   public function process($value) {
@@ -1423,6 +1464,11 @@ abstract class cs_field extends cs_element{
 
   public function pre_render(cs_form $form){
     $this->pre_rendered = TRUE;
+
+    if(count($this->get_js()) > 0) {
+      $form->add_js( $this->get_js() );
+    }
+
     // should not return value, just change element/form state
     return;
   }
@@ -1474,6 +1520,28 @@ abstract class cs_field extends cs_element{
     $output .= $this->suffix;
     $output .= $this->get_suffix();
 
+    if( count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
+      foreach($this->event as $event){
+        if(empty($event['event'])) continue;
+        $form->add_js("\$('#{$id}','#{$form->get_id()}').on('{$event['event']}',function(evt){
+          evt.preventDefault();
+          var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
+          postdata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
+          \$.post( \"{$this->get_ajax_url()}?partial=true\", {'jsondata':JSON.stringify(postdata)}, function( data ) {
+            var response;
+            if(typeof data =='object') response = data;
+            else response = \$.parseJSON(data);
+            ".((!empty($event['method']) && $event['method'] == 'replace') ? "\$target.html('');":"")."
+            ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
+            if( \$.trim(response.js) != '' ){
+              eval( response.js );
+            };
+          });
+          return false;
+        });");
+      }
+    }
+
     return $output ;
   }
 
@@ -1498,8 +1566,7 @@ abstract class cs_action extends cs_field{
   public function pre_render(cs_form $form){
     if($this->js_button == TRUE){
       $id = $this->get_html_id();
-
-      $form->add_js("\$('#{$id}','#{$form->get_id()}').button();");
+      $this->add_js("\$('#{$id}','#{$form->get_id()}').button();");
     }
     parent::pre_render($form);
   }
@@ -1740,7 +1807,7 @@ class cs_autocomplete extends cs_textfield{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
 
-    $form->add_js("
+    $this->add_js("
       \$('#{$id}','#{$form->get_id()}')
       .bind( 'keydown', function( event ) {
         if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
@@ -1783,7 +1850,7 @@ class cs_maskedfield extends cs_textfield{
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').mask('{$this->mask}');");
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').mask('{$this->mask}');");
     parent::pre_render($form);
   }
 
@@ -1812,7 +1879,7 @@ class cs_textarea extends cs_field {
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     if($this->resizable == TRUE){
-      $form->add_js("\$('#{$id}','#{$form->get_id()}').resizable({handles:\"se\"});");
+      $this->add_js("\$('#{$id}','#{$form->get_id()}').resizable({handles:\"se\"});");
     }
     parent::pre_render($form);
   }
@@ -2048,7 +2115,7 @@ class cs_select extends cs_field_multivalues {
 class cs_selectmenu extends cs_select{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').selectmenu({width: 'auto' });");
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').selectmenu({width: 'auto' });");
 
     parent::pre_render($form);
   }
@@ -2077,7 +2144,7 @@ class cs_slider extends cs_select{
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("
+    $this->add_js("
       \$('#{$id}-slider','#{$form->get_id()}').slider({
         min: 1,
         max: ".count($this->options).",
@@ -2269,11 +2336,11 @@ class cs_date extends cs_field {
   public function pre_render(cs_form $form){
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
-      $form->add_js("\$('#{$id} select[name=\"{$this->name}[year]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      $this->add_js("\$('#{$id} select[name=\"{$this->name}[year]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
       if($this->granularity != 'year'){
-        $form->add_js("\$('#{$id} select[name=\"{$this->name}[month]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+        $this->add_js("\$('#{$id} select[name=\"{$this->name}[month]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
         if($this->granularity != 'month'){
-          $form->add_js("\$('#{$id} select[name=\"{$this->name}[day]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+          $this->add_js("\$('#{$id} select[name=\"{$this->name}[day]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
         }
       }
     }
@@ -2410,7 +2477,7 @@ class cs_datepicker extends cs_field {
     $changeMonth = ($this->change_month) ? 'true'  :'false';
     $changeYear = ($this->change_year == TRUE) ? 'true'  :'false';
 
-    $form->add_js(
+    $this->add_js(
       str_replace("\n","","".
         ((count($this->disabled_dates)>0) ? "var disabled_dates_array_{$form->get_id()}_{$id} = ".json_encode((array) $this->disabled_dates).";" : "")."
             \$('#{$id}','#{$form->get_id()}').datepicker({
@@ -2468,12 +2535,12 @@ class cs_time extends cs_field {
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
 
-      $form->add_js("\$('#{$id} select[name=\"{$this->name}[hours]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+      $this->add_js("\$('#{$id} select[name=\"{$this->name}[hours]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
       if($this->granularity != 'hours'){
-        $form->add_js("\$('#{$id} select[name=\"{$this->name}[minutes]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+        $this->add_js("\$('#{$id} select[name=\"{$this->name}[minutes]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
 
         if($this->granularity != 'minutes'){
-          $form->add_js("\$('#{$id} select[name=\"{$this->name}[seconds]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
+          $this->add_js("\$('#{$id} select[name=\"{$this->name}[seconds]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
         }
       }
     }
@@ -2696,7 +2763,7 @@ class cs_spinner extends cs_field {
       $js_options = "{min: $this->min, max: $this->max, step: $this->step}";
     }
 
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').attr('type','text').spinner({$js_options});");
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').attr('type','text').spinner({$js_options});");
 
     parent::pre_render($form);
   }
@@ -3004,7 +3071,7 @@ class cs_fieldset extends cs_fields_container {
       }
 
       if( !$js_collapsible_added ){
-        $form->add_js("
+        $this->add_js("
           \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
             evt.preventDefault();
             var \$this = \$(this);
@@ -3108,7 +3175,7 @@ class cs_tabs extends cs_fields_container_multiple {
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
 
     parent::pre_render($form);
   }
@@ -3152,7 +3219,7 @@ class cs_accordion extends cs_fields_container_multiple {
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\"});");
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\"});");
 
     parent::pre_render($form);
   }
@@ -3254,7 +3321,7 @@ class cs_sortable extends cs_sortable_container{
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
       placeholder: \"ui-state-highlight\",
       stop: function( event, ui ) {
       \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
@@ -3307,7 +3374,7 @@ class cs_sortable_table extends cs_sortable_container{
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_js("
+    $this->add_js("
       var fixHelper = function(e, ui) {
         ui.children().each(function() {
           \$(this).width($(this).width());
@@ -3391,11 +3458,11 @@ class cs_plupload extends cs_field {
     $this->value = json_decode($value);
   }
 
-  public function render_field(cs_form $form){
+  public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $form_id = $form->get_id();
 
-    $form->add_js("
+    $this->add_js("
       var {$id}_files_remaining = 0;
       $('#{$id}_uploader').pluploadQueue({
         // General settings
@@ -3515,6 +3582,12 @@ class cs_plupload extends cs_field {
         var \$log = \$('#{$id}_log');
         \$('<div>'+str+'</div>').appendTo(\$log)
     }");
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form){
+    $id = $this->get_html_id();
 
     return "<div id=\"{$id}_uploader\"><p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p></div>
     <div id=\"{$id}_log\"></div>

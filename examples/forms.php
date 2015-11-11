@@ -449,6 +449,14 @@ $plupload_form->add_field('submit', array(
 ));
 
 
+
+
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+
+
 $dates_form = new cs_form(array('form_id' => 'dates'));
 
 $dates_form->add_field('date', array(
@@ -479,3 +487,43 @@ $dates_form->add_field('datetime', array(
 $dates_form->add_field('submit', array(
   'type' => 'submit',
 ));
+
+
+
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+$events_form = new cs_form(array('form_id' => 'events'));
+
+$events_form->add_field('text', array(
+  'type' => 'textfield',
+  'title' => 'text',
+  'ajax_url' => $_SERVER['REQUEST_URI'],
+  'event' => array(
+    array(
+      'event' => 'click',
+      'callback' => 'events_form_callback',
+      'target' => '',
+      'effect' => 'fade',
+    ),
+    array(
+      'event' => 'append',
+      'callback' => 'events_form_callback',
+      'target' => '',
+      'effect' => 'fade',
+    ),
+  ),
+));
+
+
+$events_form->add_field('submit', array(
+  'type' => 'submit',
+));
+
+
+function events_form_callback(cs_form $form){
+  return $form->get_field('text');
+}
+
+
