@@ -28,8 +28,7 @@ function showall_validate(&$form) {
 
   return TRUE;
 }
-
-$form = $showallform;
+$form = cs_form_builder::get_form('showallform');
 
 ?><!DOCTYPE html>
 <html lang="en">

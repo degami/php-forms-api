@@ -1526,16 +1526,16 @@ abstract class cs_field extends cs_element{
         $form->add_js("\$('#{$id}','#{$form->get_id()}').on('{$event['event']}',function(evt){
           evt.preventDefault();
           var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
-          postdata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
-          \$.post( \"{$this->get_ajax_url()}?partial=true\", {'jsondata':JSON.stringify(postdata)}, function( data ) {
+          var jsondata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
+          var postdata = { 'form_id': '{$form->get_id()}', 'jsondata':JSON.stringify(jsondata)};
+          \$.each(\$('#{$form->get_id()}').serializeArray(), function(_, kv) { postdata[kv.name] = kv.value; });
+          \$.post( \"{$this->get_ajax_url()}?partial=true\", postdata, function( data ) {
             var response;
-            if(typeof data =='object') response = data;
-            else response = \$.parseJSON(data);
+            if(typeof data =='object') { response = data; }
+            else { response = \$.parseJSON(data); }
             ".((!empty($event['method']) && $event['method'] == 'replace') ? "\$target.html('');":"")."
             ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
-            if( \$.trim(response.js) != '' ){
-              eval( response.js );
-            };
+            if( \$.trim(response.js) != '' ){ eval( response.js ); };
           });
           return false;
         });");
@@ -3693,5 +3693,60 @@ class cs_ordered_functions implements Iterator{
   public function remove_element($value){
     $this->array = array_diff($this->array, array($value));
     $this->sort();
+  }
+}
+
+
+
+
+
+class cs_form_builder {
+  static function build_form($form_id, &$form_state){
+    $function_name = $form_id;
+    $form = new cs_form(array(
+      'form_id' => $form_id,
+    ));
+
+    $form_state += cs_form_builder::get_request_values($function_name);
+
+    if(is_callable($function_name)){
+      //$form = $function_name($form, $form_state);
+      $form =  call_user_func_array($function_name , array_merge( array($form, $form_state), $form_state['build_info']['args']) );
+    }
+    return $form;
+  }
+
+  static function get_form($form_id){
+    $form_state = array();
+    $args = func_get_args();
+    // Remove $form_id from the arguments.
+    array_shift($args);
+    $form_state['build_info']['args'] = $args;
+
+    $form = cs_form_builder::build_form($form_id, $form_state);
+    return $form;
+  }
+
+  static function render_form($form_id){
+    $form_state = array();
+    $args = func_get_args();
+    // Remove $form_id from the arguments.
+    array_shift($args);
+    $form_state['build_info']['args'] = $args;
+
+    $form = cs_form_builder::build_form($form_id, $form_state);
+    return $form->render();
+  }
+
+  static function get_request_values($form_id){
+    $out = array('input_values' => array());
+    foreach(array('_POST' => $_POST,'_GET' => $_GET,'_REQUEST' => $_REQUEST) as $key => $array){
+      if(!empty($array['form_id']) && $array['form_id'] == $form_id){
+        $out['input_values'] = $array; //array_merge($out, $array);
+        $out['input_values']['__values_container'] = $key; //array_merge($out, $array);
+        break;
+      }
+    }
+    return $out;
   }
 }

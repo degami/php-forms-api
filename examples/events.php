@@ -16,7 +16,7 @@ function dates_submit(&$form) {
   // $form->reset();
 }
 
-$form = $events_form;
+$form = cs_form_builder::get_form('eventsform');
 
 if(isset($_REQUEST['partial'])){
   print $form->render();

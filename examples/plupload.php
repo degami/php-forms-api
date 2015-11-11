@@ -5,18 +5,18 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
-$form = $plupload_form;
-
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
-function plupload_submit(&$form) {
+function pluploadform_submit(&$form) {
   $form_values = $form->values();
   if(is_array($form_values['files_upload']) && count($form_values['files_upload'])>0){
     print $value->temppath . " => ".getcwd() . DIRECTORY_SEPARATOR . $value->name."\n";
     rename($value->temppath, getcwd() . DIRECTORY_SEPARATOR . $value->name);
   }
 }
+
+$form = cs_form_builder::get_form('pluploadform');
 
 
 ?><!DOCTYPE html>

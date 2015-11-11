@@ -13,7 +13,7 @@ define('RECAPTCHA_PUBLIC_KEY','');
 define('RECAPTCHA_PRIVATE_KEY','');
 
 
-function multistep_submit(&$form) {
+function multistepform_submit(&$form) {
   $form_values = $form->values();
   // var_export($form);
   // get submission triggering element
@@ -23,8 +23,7 @@ function multistep_submit(&$form) {
   // $form->reset();
 }
 
-$form = $multistepform;
-
+$form = cs_form_builder::get_form('multistepform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>

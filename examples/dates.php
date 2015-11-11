@@ -8,7 +8,7 @@ include "forms.php";
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
-function dates_submit(&$form) {
+function datesform_submit(&$form) {
   $form_values = $form->values();
   print_r($form_values);
   //var_dump($form->get_triggering_element());
@@ -16,8 +16,7 @@ function dates_submit(&$form) {
   // $form->reset();
 }
 
-$form = $dates_form;
-
+$form = cs_form_builder::get_form('datesform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
