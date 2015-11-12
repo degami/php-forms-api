@@ -2053,7 +2053,7 @@ class cs_password extends cs_field {
     $attributes = $this->get_attributes();
     $output = "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
     if($this->with_confirm == TRUE){
-      $output .= "<label for=\"{$id}-confirm\">{$this->confirm_string}</label>";
+      $output .= "<label for=\"{$id}-confirm\">".cs_form::translate_string($this->confirm_string)."</label>";
       $output .= "<input type=\"password\" id=\"{$id}-confirm\" name=\"{$this->name}_confirm\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
     }
     if($this->with_strength_check){
@@ -3393,7 +3393,6 @@ class cs_accordion extends cs_fields_container_multiple {
   }
 }
 
-
 abstract class cs_sortable_container extends cs_fields_container_multiple{
   protected $handle_position = 'left';
   private $deltas = array();
@@ -3461,9 +3460,9 @@ class cs_sortable extends cs_sortable_container{
     $this->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
       placeholder: \"ui-state-highlight\",
       stop: function( event, ui ) {
-      \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
-        \$(elem).val(index);
-      });
+        \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
+          \$(elem).val(index);
+        });
       }
     });");
 
@@ -3575,6 +3574,64 @@ class cs_sortable_table extends cs_sortable_container{
       }
       $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
       $output .= (($handle_position == 'right') ? "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>" : '')."</tr>\n";
+    }
+    $output .= "</tbody>\n</table>\n";
+
+    return $output;
+  }
+}
+
+
+
+class cs_table_container extends cs_fields_container_multiple{
+
+  protected $table_header = array();
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+
+    $output = '';
+    $attributes = $this->get_attributes();
+
+    $output .= "<table id=\"{$id}\"{$attributes}>\n";
+
+    if(!empty($this->table_header) ){
+      if(!is_array($this->table_header)) {
+        $this->table_header = array($this->table_header);
+      }
+
+      $output .= "<thead>\n";
+      foreach($this->table_header as $th){
+        $output .= "<th>{$th}</th>";
+      }
+      $output .= "</thead>\n";
+    }
+
+    $output .= "<tbody>\n";
+    foreach($this->tabs as $tabindex => $tab){
+      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+      $weights = array();
+      $order = array();
+      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+        $weights[$key]  = $elem->get_weight();
+        $order[$key] = $insertorder[$key];
+      }
+      if( count( $this->get_tab_fields($tabindex) ) > 0 )
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+
+      $output .= "<tr id=\"{$id}-row-{$tabindex}\">\n";
+      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+        $fieldhtml = $field->render($form);
+        if( trim($fieldhtml) != '' )
+          $output .= "<td>".$fieldhtml."</td>\n";
+      }
+      $output .= "</tr>\n";
     }
     $output .= "</tbody>\n</table>\n";
 

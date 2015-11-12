@@ -226,6 +226,7 @@ otherwise autocomplete_path is used
     $options += array(
       'type' => 'password',
       'with_confirm' => FALSE,
+      'with_strength_check' => FALSE,
       'confirm_string' => 'Confirm password',
     );
 
@@ -420,6 +421,12 @@ They are always valid.
     $options += array(
       'type' => 'tag_container',
       'tag' => 'div',
+    );
+
+#### Table containers
+
+    $options += array(
+      'type' => 'table_container',
     );
 
 #### Field sets
