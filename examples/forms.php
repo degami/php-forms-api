@@ -216,6 +216,7 @@ function showallform(cs_form $form, &$form_state){
       'style' => 'width: 100%',
      ),
     'with_confirm' => TRUE,
+    'with_strength_check' => TRUE,
   ));
   $form->get_field('fieldset')->add_field('markup1', array(
     'type' => 'markup',

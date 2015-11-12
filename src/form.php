@@ -130,7 +130,7 @@ abstract class cs_element{
     return $this;
   }
   public function &get_js(){
-    if( $this instanceof cs_fields_container ) {
+    if( $this instanceof cs_fields_container || $this instanceof cs_form ) {
       $js = array_filter(array_map('trim',$this->js));
       foreach($this->get_fields() as $field){
         $js = array_merge($js, $field->get_js());
@@ -191,7 +191,7 @@ abstract class cs_element{
   }
 
   private static function _toArray($key, $elem){
-    if(is_object($elem)){
+    if(is_object($elem) && $elem instanceof cs_element ){
       $elem = $elem->toArray();
     }else if(is_array($elem)){
       foreach($elem as $k => $val){
@@ -1995,6 +1995,50 @@ class cs_textarea extends cs_field {
 class cs_password extends cs_field {
   protected $with_confirm = FALSE;
   protected $confirm_string = "Confirm password";
+  protected $with_strength_check = FALSE;
+
+  function pre_render(cs_form $form){
+    if($this->with_strength_check == TRUE){
+      $id = $this->get_html_id();
+
+      $this->add_js("
+      \$('#{$id}','#{$form->get_id()}').keyup(function() {
+        \$('#{$id}_result').html(
+
+        (function(password){
+            var strength = 0
+            if (password.length < 6) {
+              \$('#{$id}_result').removeClass()
+              \$('#{$id}_result').addClass('short')
+              return '".cs_form::translate_string('Too short')."';
+            }
+
+            if (password.length > 7) strength += 1;
+            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))  strength += 1;
+            if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/))  strength += 1;
+            if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/))  strength += 1;
+            if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1;
+            if (strength < 2 ){
+              \$('#{$id}_result').removeClass()
+              \$('#{$id}_result').addClass('weak')
+              return '".cs_form::translate_string('Weak')."';
+            } else if (strength == 2 ) {
+              \$('#{$id}_result').removeClass()
+              \$('#{$id}_result').addClass('good')
+              return '".cs_form::translate_string('Good')."';
+            } else {
+              \$('#{$id}_result').removeClass()
+              \$('#{$id}_result').addClass('strong')
+              return '".cs_form::translate_string('Strong')."';
+            }
+          })(\$('#{$id}','#{$form->get_id()}').val())
+
+        );
+      });");
+    }
+
+    parent::pre_render($form);
+  }
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
@@ -2009,6 +2053,9 @@ class cs_password extends cs_field {
     if($this->with_confirm == TRUE){
       $output .= "<label for=\"{$id}-confirm\">{$this->confirm_string}</label>";
       $output .= "<input type=\"password\" id=\"{$id}-confirm\" name=\"{$this->name}_confirm\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
+    }
+    if($this->with_strength_check){
+      $output .= "<span id=\"{$id}_result\"></span>";
     }
     return $output;
   }
