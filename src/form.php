@@ -183,20 +183,19 @@ abstract class cs_element{
 
   public function toArray(){
     $values = get_object_vars($this);
-    foreach($values as &$val){
-      $val = cs_element::_toArray($val);
+    foreach($values as $key => $val){
+      $values[$key] = cs_element::_toArray($key, $val);
     }
 
     return $values;
   }
 
-  private static function _toArray($elem){
+  private static function _toArray($key, $elem){
     if(is_object($elem)){
       $elem = $elem->toArray();
-    }
-    else if(is_array($elem)){
-      foreach($elem as &$val){
-        $val = cs_element::_toArray($val);
+    }else if(is_array($elem)){
+      foreach($elem as $k => $val){
+        $elem[$k] = cs_element::_toArray($k, $val);
       }
     }
 
@@ -3770,7 +3769,7 @@ class cs_form_builder {
     if(is_callable($function_name)){
       //$form = $function_name($form, $form_state);
       $form =  call_user_func_array($function_name , array_merge( array($form, $form_state), $form_state['build_info']['args']) );
-      $_SESSION['form_definition'][$form->get_form_token()] = $form->toArray();
+      $_SESSION['form_definition'][$form->get_id()] = $form->toArray();
     }
     return $form;
   }
@@ -3798,11 +3797,17 @@ class cs_form_builder {
   }
 
   static function get_request_values($form_id){
-    $out = array('input_values' => array());
+    $out = array('input_values' => array() , 'input_form_definition'=>NULL);
     foreach(array('_POST' => $_POST,'_GET' => $_GET,'_REQUEST' => $_REQUEST) as $key => $array){
       if(!empty($array['form_id']) && $array['form_id'] == $form_id){
         $out['input_values'] = $array; //array_merge($out, $array);
         $out['input_values']['__values_container'] = $key; //array_merge($out, $array);
+
+
+        if(isset($array['form_token']) && isset($_SESSION['form_definition'][ $array['form_id'] ]) ){
+          $out['input_form_definition'] = $_SESSION['form_definition'][ $array['form_id'] ];
+        }
+
         break;
       }
     }

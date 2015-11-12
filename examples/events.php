@@ -5,6 +5,11 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
+if(isset($_GET['clearsession'])){
+  session_destroy();
+  session_start();
+}
+
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
@@ -17,6 +22,9 @@ function eventsform_submit(&$form) {
 }
 
 $form = cs_form_builder::get_form('eventsform');
+if(isset($_GET['clearsession'])){
+  var_dump($_SESSION);
+}
 
 if(isset($_REQUEST['partial'])){
   print $form->render();
@@ -94,7 +102,7 @@ if(isset($_REQUEST['partial'])){
 </head>
 
 <body>
-  <a href="events.php">Go back</a>
+  <a href="events.php?clearsession=1">Go back</a>
   <div id="page">
   <pre style="font-size:10px;"><?php $form->process(); ?></pre>
   <h1>Events Form</h1>

@@ -512,42 +512,44 @@ function datesform(cs_form $form, &$form_state){
 function eventsform(cs_form $form, &$form_state){
   // $form = new cs_form(array('form_id' => 'events'));
 
+  $step = 0;
+
   $fieldset = $form->add_field('textfields', array(
     'type' => 'fieldset',
     'id' => 'fieldset-textfields',
     'title' => 'textfields',
   ));
 
-  $num_textfields = isset( $form_state['input_values']['num_textfields'] ) ? (((int)$form_state['input_values']['num_textfields']) + 1) : 1;
-  $fieldset->add_field('num_textfields', array(
+  $num_textfields = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) ? (count($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) + 1) : 1;
+   /*$fieldset->add_field('num_textfields', array(
     'type' => 'textfield',
     'default_value' => $num_textfields,
     'size' => 3,
     'attributes' => array(  'style' => 'width: auto;' ),
-  ));
+  ));*/
 
   for($i = 0 ; $i < $num_textfields; $i++ ){
-
+/*
     $suffix = new stdClass();
-    $suffix->values = $form_state['input_values'];
-    $suffix->oldnum = isset($form_state['input_values']['num_textfields']) ? $form_state['input_values']['num_textfields'] : NULL;
+    $suffix->oldnum = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) ? count($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) : NULL;
     $suffix->i = $i;
     $suffix->num_textfields = $num_textfields;
-
+    $suffix->form_state = $form_state['input_form_definition']['fields'][$step]['textfields']['fields'];
+*/
     $fieldset->add_field('text_'.$i, array(
       'type' => 'textfield',
       'title' => 'text',
       'ajax_url' => $_SERVER['PHP_SELF'],
       'event' => array(
         array(
-          'event' => 'click',
+          'event' => 'focus',
           'callback' => 'events_form_callback',
           'target' => 'fieldset-textfields',
           'effect' => 'fade',
           'method' => 'replace',
         ),
       ),
-      'suffix' => '<pre>'.var_export($suffix, TRUE).'</pre>',
+      //'suffix' => '<pre>'.var_export($suffix, TRUE).'</pre>',
     ));
   }
 
@@ -555,18 +557,18 @@ function eventsform(cs_form $form, &$form_state){
     $jsondata = json_decode($form_state['input_values']['jsondata']);
     $callback = $jsondata->callback;
     if( is_callable($callback) ){
-      $target_elem = $callback( $form )->get_field('num_textfields');
-      $fieldset->add_js('console.log(JSON.parse(\''.json_encode( array( 'build_options' => preg_replace("/\\\"|\"|\n/","",serialize($target_elem->get_build_options())),  'id' => $target_elem->get_html_id(), 'value' => $target_elem->get_value()) ).'\'))');
+      //$target_elem = $callback( $form )->get_field('num_textfields');
+      //$fieldset->add_js('console.log(JSON.parse(\''.json_encode( array( 'build_options' => preg_replace("/\\\"|\"|\n/","",serialize($target_elem->get_build_options())),  'id' => $target_elem->get_html_id(), 'value' => $target_elem->get_value()) ).'\'))');
       $fieldset->add_js("\$('input[name=\"{$jsondata->name}\"]').focus();");
     }
     //$fieldset->add_js('alert($("#num_textfields").val())');
-    $fieldset->add_js('console.log($("#num_textfields").val())');
+    //$fieldset->add_js('console.log($("#num_textfields").val())');
   }
 
   $form->add_field('submit', array(
     'type' => 'submit',
   ));
-//var_dump($form);
+//var_dump($form->toArray());
   return $form;
 }
 
