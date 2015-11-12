@@ -60,6 +60,11 @@ abstract class cs_element{
   protected $css = array();
   protected $prefix = '';
   protected $suffix = '';
+  protected $build_options = NULL;
+
+  public function get_build_options(){
+    return $this->build_options;
+  }
 
   public function set_name($name){
     $this->name = $name;
@@ -125,6 +130,13 @@ abstract class cs_element{
     return $this;
   }
   public function &get_js(){
+    if( $this instanceof cs_fields_container ) {
+      $js = array_filter(array_map('trim',$this->js));
+      foreach($this->get_fields() as $field){
+        $js = array_merge($js, $field->get_js());
+      }
+      return $js;
+    }
     return $this->js;
   }
 
@@ -169,6 +181,28 @@ abstract class cs_element{
     return '';
   }
 
+  public function toArray(){
+    $values = get_object_vars($this);
+    foreach($values as &$val){
+      $val = cs_element::_toArray($val);
+    }
+
+    return $values;
+  }
+
+  private static function _toArray($elem){
+    if(is_object($elem)){
+      $elem = $elem->toArray();
+    }
+    else if(is_array($elem)){
+      foreach($elem as &$val){
+        $val = cs_element::_toArray($val);
+      }
+    }
+
+    return $elem;
+  }
+
 }
 
 /* #########################################################
@@ -202,6 +236,8 @@ class cs_form extends cs_element{
 
   public function __construct($options = array()) {
 
+    $this->build_options = $options;
+
     $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
     $this->container_class = FORMS_DEFAULT_FORM_CONTAINER_CLASS;
 
@@ -229,6 +265,10 @@ class cs_form extends cs_element{
       $this->form_token = sha1(mt_rand(0, 1000000));
       $_SESSION['form_token'][$this->form_token] = $_SERVER['REQUEST_TIME'];
     }
+  }
+
+  public function get_form_token(){
+    return $this->form_token;
   }
 
   // Warning: some messy logic in calling process->submit->values
@@ -362,7 +402,7 @@ class cs_form extends cs_element{
       }
     }
 
-    if (!$this->processed) {
+    if (!$this->processed) { //&& !cs_form::is_partial()
       if( empty($values) ){
         $request = (strtolower($this->method) == 'post') ? $_POST : $_GET;
       }else{
@@ -442,7 +482,7 @@ class cs_form extends cs_element{
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) {
             $this->valid = TRUE;
             $this->errors = array();
-            if( !$this->is_partial() ){
+            if( !cs_form::is_partial() ){
               unset($_SESSION['form_token'][$_REQUEST['form_token']]);
             }
           }
@@ -514,7 +554,7 @@ class cs_form extends cs_element{
     return ($this->current_step >= $this->get_num_steps());
   }
 
-  private function is_partial(){
+  static function is_partial(){
     return (isset($_REQUEST['partial']) && $_REQUEST['partial'] == 'true');
   }
 
@@ -664,21 +704,21 @@ class cs_form extends cs_element{
     $attributes = $this->get_attributes(array('action','method','id'));
     $js = $this->generate_js();
 
-    if( $this->is_partial() ){
+    if( cs_form::is_partial() ){
       // ajax request - form item event
 
 
       $jsondata = json_decode($_REQUEST['jsondata']);
       $callback = $jsondata->callback;
       if( is_callable($callback) ){
-        $caller = $callback( $this );
+        $target_elem = $callback( $this );
 
-        $html = $caller->render($this);
+        $html = $target_elem->render($this);
         $js = '';
-        if(count($caller->get_js()) > 0){
+        if(count($target_elem->get_js()) > 0){
           $js = "(function($){\n".
                   "\t$(document).ready(function(){\n".
-                  "\t\t".implode( ";\n\t\t", $caller->get_js() ).";\n".
+                  "\t\t".implode( ";\n\t\t", $target_elem->get_js() ).";\n".
                   "\t});\n".
                 "})(jQuery);";
         }
@@ -784,9 +824,9 @@ class cs_form extends cs_element{
   }
 
   public function generate_js(){
-    $this->js = array_filter(array_map('trim',$this->js));
-    if(!empty( $this->js ) && !$this->js_generated ){
-      foreach($this->js as &$js_string){
+    $js = array_filter(array_map('trim', $this->get_js() ));
+    if(!empty( $js ) && !$this->js_generated ){
+      foreach($js as &$js_string){
         if($js_string[strlen($js_string)-1] == ';'){
           $js_string = substr($js_string,0,strlen($js_string)-1);
         }
@@ -795,7 +835,7 @@ class cs_form extends cs_element{
       $this->js_generated = TRUE;
       return "(function($){\n".
         "\t$(document).ready(function(){\n".
-        "\t\t".implode(";\n\t\t",$this->js).";\n".
+        "\t\t".implode(";\n\t\t",$js).";\n".
         "\t});\n".
       "})(jQuery);";
     }
@@ -1308,6 +1348,9 @@ abstract class cs_field extends cs_element{
 
 
   public function __construct($options = array(), $name = NULL) {
+
+    $this->build_options = $options;
+
     $this->name = $name;
     foreach ($options as $name => $value) {
       if( property_exists(get_class($this), $name) )
@@ -1473,9 +1516,9 @@ abstract class cs_field extends cs_element{
   public function pre_render(cs_form $form){
     $this->pre_rendered = TRUE;
 
-    if(count($this->get_js()) > 0) {
-      $form->add_js( $this->get_js() );
-    }
+    //if(count($this->get_js()) > 0) {
+    //  $form->add_js( $this->get_js() );
+    //}
 
     // should not return value, just change element/form state
     return;
@@ -1531,7 +1574,7 @@ abstract class cs_field extends cs_element{
     if( count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
       foreach($this->event as $event){
         if(empty($event['event'])) continue;
-        $form->add_js("\$('#{$id}','#{$form->get_id()}').on('{$event['event']}',function(evt){
+        $eventjs = "\$('#{$id}','#{$form->get_id()}').on('{$event['event']}',function(evt){
           evt.preventDefault();
           var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
           var jsondata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
@@ -1546,7 +1589,9 @@ abstract class cs_field extends cs_element{
             if( \$.trim(response.js) != '' ){ eval( response.js ); };
           });
           return false;
-        });");
+        });";
+        $this->add_js($eventjs);
+        $form->add_js($eventjs);
       }
     }
 
@@ -3702,6 +3747,11 @@ class cs_ordered_functions implements Iterator{
     $this->array = array_diff($this->array, array($value));
     $this->sort();
   }
+
+
+  public function toArray(){
+    return $this->array;
+  }
 }
 
 
@@ -3720,6 +3770,7 @@ class cs_form_builder {
     if(is_callable($function_name)){
       //$form = $function_name($form, $form_state);
       $form =  call_user_func_array($function_name , array_merge( array($form, $form_state), $form_state['build_info']['args']) );
+      $_SESSION['form_definition'][$form->get_form_token()] = $form->toArray();
     }
     return $form;
   }
