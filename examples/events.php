@@ -15,15 +15,15 @@ if(isset($_GET['clearsession'])){
 // as this is not a real example I'm just outputting the values for now.
 function eventsform_submit(&$form) {
   $form_values = $form->values();
-  print_r($form_values);
   //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.
   // $form->reset();
+  return $form_values;
 }
 
 $form = cs_form_builder::get_form('eventsform');
 
-if(isset($_REQUEST['partial'])){
+if( isset($_REQUEST['partial']) ){
   print $form->render();
 }else{
 ?><!DOCTYPE html>
@@ -105,7 +105,7 @@ if(isset($_REQUEST['partial'])){
   <h1>Events Form</h1>
   <?php if ($form->is_submitted()): ?>
     <!-- if the form was reset during the submit handler we would never see this -->
-    <pre><?php var_export($form->get_submit_results());?></pre>
+    <pre><?php var_dump($form->get_submit_results());?></pre>
     <p>Thanks for submitting the form.</p>
   <?php else: ?>
     <?php print $form->render(); ?>

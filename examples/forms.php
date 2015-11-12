@@ -539,13 +539,12 @@ function eventsform(cs_form $form, &$form_state){
   ));*/
 
   for($i = 0 ; $i < $num_textfields; $i++ ){
-/*
-    $suffix = new stdClass();
-    $suffix->oldnum = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) ? count($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) : NULL;
-    $suffix->i = $i;
-    $suffix->num_textfields = $num_textfields;
-    $suffix->form_state = $form_state['input_form_definition']['fields'][$step]['textfields']['fields'];
-*/
+    // $suffix = new stdClass();
+    // $suffix->oldnum = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) ? count($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) : NULL;
+    // $suffix->i = $i;
+    // $suffix->num_textfields = $num_textfields;
+    // $suffix->form_state = (!empty($form_state['input_form_definition']['fields'][$step]['textfields']['fields'])) ? array_keys($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) : NULL;
+
     $fieldset->add_field('text_'.$i, array(
       'type' => 'textfield',
       'title' => 'text',
@@ -559,7 +558,7 @@ function eventsform(cs_form $form, &$form_state){
           'method' => 'replace',
         ),
       ),
-      //'suffix' => '<pre>'.var_export($suffix, TRUE).'</pre>',
+      // 'suffix' => '<pre>'.var_export($suffix, TRUE).'</pre>',
     ));
   }
 

@@ -28,8 +28,8 @@ Requirements:
  * **Finish the Documentation!**
  * ~~Finish implementation of options such as _disabled_, _attributes_,~~
  * ~~Offer a wider range of examples~~
- * Complete the javascript functionality for ~~collapsible fieldsets and~~ the
-   password strength meter for password fields.
+ * ~~Complete the javascript functionality for collapsible fieldsets and the
+   password strength meter for password fields.~~
  * Complete unit tests.
  * AJAX support for ~~field submission~~ and file uploads.
  * Provide a better default theme and a methodology for defining themes.

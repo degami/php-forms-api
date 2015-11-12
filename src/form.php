@@ -191,7 +191,7 @@ abstract class cs_element{
   }
 
   private static function _toArray($key, $elem){
-    if(is_object($elem) && $elem instanceof cs_element ){
+    if(is_object($elem) && ($elem instanceof cs_element ||  $elem instanceof cs_ordered_functions) ){
       $elem = $elem->toArray();
     }else if(is_array($elem)){
       foreach($elem as $k => $val){
@@ -234,7 +234,6 @@ class cs_form extends cs_element{
   private $submit_functions_results = array();
 
   public function __construct($options = array()) {
-
     $this->build_options = $options;
 
     $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
@@ -365,6 +364,9 @@ class cs_form extends cs_element{
 
     if(isset($_SESSION[$this->form_id])){
       unset($_SESSION[$this->form_id]);
+    }
+    if(isset($_SESSION['form_definition'][$this->form_id])){
+      unset($_SESSION['form_definition'][$this->form_id]);
     }
 
     $this->processed = FALSE;
@@ -1626,7 +1628,6 @@ abstract class cs_field extends cs_element{
           return false;
         });";
         $this->add_js($eventjs);
-        $form->add_js($eventjs);
       }
     }
 
@@ -2008,8 +2009,7 @@ class cs_password extends cs_field {
         (function(password){
             var strength = 0
             if (password.length < 6) {
-              \$('#{$id}_result').removeClass()
-              \$('#{$id}_result').addClass('short')
+              \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('short');
               return '".cs_form::translate_string('Too short')."';
             }
 
@@ -2019,22 +2019,24 @@ class cs_password extends cs_field {
             if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/))  strength += 1;
             if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1;
             if (strength < 2 ){
-              \$('#{$id}_result').removeClass()
-              \$('#{$id}_result').addClass('weak')
+              \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('weak');
               return '".cs_form::translate_string('Weak')."';
             } else if (strength == 2 ) {
-              \$('#{$id}_result').removeClass()
-              \$('#{$id}_result').addClass('good')
+              \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('good');
               return '".cs_form::translate_string('Good')."';
             } else {
-              \$('#{$id}_result').removeClass()
-              \$('#{$id}_result').addClass('strong')
+              \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('strong');
               return '".cs_form::translate_string('Strong')."';
             }
           })(\$('#{$id}','#{$form->get_id()}').val())
 
         );
       });");
+
+      $form->add_css("#{$form->get_id()} .password_strength_checker.short{color:#FF0000;}");
+      $form->add_css("#{$form->get_id()} .password_strength_checker.weak{color:#E66C2C;}");
+      $form->add_css("#{$form->get_id()} .password_strength_checker.good{color:#2D98F3;}");
+      $form->add_css("#{$form->get_id()} .password_strength_checker.strong{color:#006400;}");
     }
 
     parent::pre_render($form);
@@ -2055,7 +2057,7 @@ class cs_password extends cs_field {
       $output .= "<input type=\"password\" id=\"{$id}-confirm\" name=\"{$this->name}_confirm\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
     }
     if($this->with_strength_check){
-      $output .= "<span id=\"{$id}_result\"></span>";
+      $output .= "<span id=\"{$id}_result\" class=\"password_strength_checker\"></span>";
     }
     return $output;
   }
@@ -3510,21 +3512,20 @@ class cs_sortable_table extends cs_sortable_container{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js("
-      var {$form->get_id()}_fixHelper = function(e, ui) {
-        ui.children().each(function() {
-          \$(this).width($(this).width());
-        });
-        return ui;
-      };
       \$('#{$id} tbody','#{$form->get_id()}').sortable({
-        helper: {$form->get_id()}_fixHelper,
+        helper: function(e, ui) {
+          ui.children().each(function() {
+            \$(this).width($(this).width());
+          });
+          return ui;
+        },
         placeholder: \"ui-state-highlight\",
         stop: function( event, ui ) {
-        \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
-          \$(elem).val(index);
-        });
-      }
-    });");
+          \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
+            \$(elem).val(index);
+          });
+        }
+      });");
 
     parent::pre_render($form);
   }
@@ -3886,8 +3887,7 @@ class cs_form_builder {
         $out['input_values'] = $array; //array_merge($out, $array);
         $out['input_values']['__values_container'] = $key; //array_merge($out, $array);
 
-
-        if(isset($array['form_token']) && isset($_SESSION['form_definition'][ $array['form_id'] ]) ){
+        if(isset($array['form_id']) && isset($_SESSION['form_definition'][ $array['form_id'] ]) ){
           $out['input_form_definition'] = $_SESSION['form_definition'][ $array['form_id'] ];
         }
 
