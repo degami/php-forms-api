@@ -37,7 +37,7 @@ Requirements:
  * ~~Add support for masked fields, possibly using a jquery plugin.~~
  * ~~Multistep forms~~
  * ~~Form builder class (à la drupal_get_form) in order to inject form state during form definition~~
- * Support for AJAX form updates ( eg. "add another" button, depending fields, event driven modification of the form elements )
+ * ~~Support for AJAX form updates ( eg. "add another" button, depending fields, event driven modification of the form elements )~~
 
 ## Introduction
 
