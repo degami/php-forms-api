@@ -40,11 +40,16 @@ function contactform(cs_form $form, &$form_state){
 // Generate a simple contact form
 
 function contactform_ajax(cs_form $form, &$form_state){
-  $form = new cs_form(array(
-    'form_id' => __FUNCTION__,
-    'ajax_submit_url' => 'ajax_url.php',
-    'output_type' => 'json',
-  ));
+  // $form = new cs_form(array(
+  //   'form_id' => __FUNCTION__,
+  //   'ajax_submit_url' => 'ajax_url.php',
+  //   'output_type' => 'json',
+  // ));
+
+  $form->set_form_id(__FUNCTION__);
+  $form->set_ajax_submit_url('ajax_url.php');
+  $form->set_output_type('json');
+
   $form->add_field('name', array(
     'type' => 'textfield',
     'validate' => array('required'),

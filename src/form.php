@@ -266,24 +266,44 @@ class cs_form extends cs_element{
     }
   }
 
-  public function set_action($action){
-    $this->action = $action;
-
+  public function set_form_id($form_id){
+    $this->form_id = $form_id;
     return $this;
   }
+  public function get_form_id(){
+    return $this->form_id;
+  }
 
+  public function set_action($action){
+    $this->action = $action;
+    return $this;
+  }
   public function get_action(){
     return $this->action;
   }
 
   public function set_method($method){
     $this->method = strtolower(trim($method));
-
     return $this;
   }
-
   public function get_method(){
     return $this->method;
+  }
+
+  public function set_ajax_submit_url($ajax_submit_url){
+    $this->ajax_submit_url = $ajax_submit_url;
+    return $this;
+  }
+  public function get_ajax_submit_url(){
+    return $this->ajax_submit_url;
+  }
+
+  public function set_output_type($output_type){
+    $this->output_type = $output_type;
+    return $this;
+  }
+  public function get_output_type(){
+    return $this->output_type;
   }
 
   public function get_form_token(){
@@ -672,10 +692,6 @@ class cs_form extends cs_element{
         $field->pre_render($this);
       }
     }
-  }
-
-  public function get_output_type(){
-    return $this->output_type;
   }
 
   public function render( $override_output_type = NULL ) {
@@ -3447,14 +3463,14 @@ class cs_sortable_table extends cs_sortable_container{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js("
-      var fixHelper = function(e, ui) {
+      var {$form->get_id()}_fixHelper = function(e, ui) {
         ui.children().each(function() {
           \$(this).width($(this).width());
         });
         return ui;
       };
       \$('#{$id} tbody','#{$form->get_id()}').sortable({
-        helper: fixHelper,
+        helper: {$form->get_id()}_fixHelper,
         placeholder: \"ui-state-highlight\",
         stop: function( event, ui ) {
         \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
