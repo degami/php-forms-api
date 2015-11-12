@@ -22,9 +22,6 @@ function eventsform_submit(&$form) {
 }
 
 $form = cs_form_builder::get_form('eventsform');
-if(isset($_GET['clearsession'])){
-  var_dump($_SESSION);
-}
 
 if(isset($_REQUEST['partial'])){
   print $form->render();

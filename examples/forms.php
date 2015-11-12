@@ -87,6 +87,8 @@ function multistepform(cs_form $form, &$form_state){
     'action' => 'multistep.php',
   ));*/
 
+  $form->set_action('multistep.php');
+
   // add to step 0
   $form
   ->add_field('login_info',array(
@@ -513,6 +515,8 @@ function eventsform(cs_form $form, &$form_state){
   // $form = new cs_form(array('form_id' => 'events'));
 
   $step = 0;
+
+  $form->set_action($_SERVER['PHP_SELF']);
 
   $fieldset = $form->add_field('textfields', array(
     'type' => 'fieldset',

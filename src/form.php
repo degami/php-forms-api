@@ -266,6 +266,26 @@ class cs_form extends cs_element{
     }
   }
 
+  public function set_action($action){
+    $this->action = $action;
+
+    return $this;
+  }
+
+  public function get_action(){
+    return $this->action;
+  }
+
+  public function set_method($method){
+    $this->method = strtolower(trim($method));
+
+    return $this;
+  }
+
+  public function get_method(){
+    return $this->method;
+  }
+
   public function get_form_token(){
     return $this->form_token;
   }
