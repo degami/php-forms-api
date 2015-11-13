@@ -10,7 +10,7 @@ include "forms.php";
 // as this is not a real example I'm just outputting the values for now.
 function datesform_submit(&$form) {
   $form_values = $form->values();
-  print_r($form_values);
+  return $form_values;
   //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.
   // $form->reset();

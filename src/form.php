@@ -769,8 +769,9 @@ class cs_form extends cs_element{
     if(!empty($this->ajax_submit_url) && $this->get_output_type() == 'json' && $output_type == 'html'){
       // print initial js for ajax form
 
-      $output = "<script type=\"text/javascript\">
-        (function(\$){
+      $output = "<script type=\"text/javascript\">"
+          .preg_replace("/\s+/"," ",str_replace("\n","",
+          "(function(\$){
           \$(document).ready(function(){
             var {$this->get_id()}_attachFormBehaviours = function (){
               \$('#{$this->get_id()}').submit(function(evt){
@@ -788,7 +789,7 @@ class cs_form extends cs_element{
                 });
                 return false;
               });
-            }
+            };
             \$.getJSON('{$this->get_ajax_url()}',function(response){
               \$(response.html).appendTo( \$('#{$this->get_id()}-formcontainer') );
               if( \$.trim(response.js) != '' ){
@@ -797,9 +798,9 @@ class cs_form extends cs_element{
               {$this->get_id()}_attachFormBehaviours();
             });
           });
-        })(jQuery);
-        </script>
-        <div id=\"{$this->get_id()}-formcontainer\"></div>";
+        })(jQuery);")).
+        "</script>\n".
+        "<div id=\"{$this->get_id()}-formcontainer\"></div>";
     }else{
 
       switch($output_type){
@@ -1627,7 +1628,7 @@ abstract class cs_field extends cs_element{
           });
           return false;
         });";
-        $this->add_js(str_replace("\n","","".$eventjs));
+        $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".$eventjs)));
       }
     }
 
@@ -1897,7 +1898,7 @@ class cs_autocomplete extends cs_textfield{
     $id = $this->get_html_id();
 
     $this->add_js(
-      str_replace("\n","",""."
+      preg_replace("/\s+/"," ",str_replace("\n","",""."
       \$('#{$id}','#{$form->get_id()}')
       .bind( 'keydown', function( event ) {
         if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
@@ -1911,7 +1912,7 @@ class cs_autocomplete extends cs_textfield{
           return false;
         }
       });
-    "));
+    ")));
 
     parent::pre_render($form);
   }
@@ -2004,7 +2005,7 @@ class cs_password extends cs_field {
       $id = $this->get_html_id();
 
       $this->add_js(
-      str_replace("\n","",""."
+      preg_replace("/\s+/"," ",str_replace("\n","",""."
       \$('#{$id}','#{$form->get_id()}').keyup(function() {
         \$('#{$id}_result').html(
 
@@ -2033,7 +2034,7 @@ class cs_password extends cs_field {
           })(\$('#{$id}','#{$form->get_id()}').val())
 
         );
-      });"));
+      });")));
 
       $form->add_css("#{$form->get_id()} .password_strength_checker.short{color:#FF0000;}");
       $form->add_css("#{$form->get_id()} .password_strength_checker.weak{color:#E66C2C;}");
@@ -2284,7 +2285,7 @@ class cs_slider extends cs_select{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js(
-      str_replace("\n","",""."
+      preg_replace("/\s+/"," ",str_replace("\n","",""."
       \$('#{$id}-slider','#{$form->get_id()}').slider({
         min: 1,
         max: ".count($this->options).",
@@ -2295,7 +2296,7 @@ class cs_slider extends cs_select{
       });
     \$( '#{$id}' ).change(function() {
       \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
-    }).hide();"));
+    }).hide();")));
 
     parent::pre_render($form);
   }
@@ -2618,7 +2619,7 @@ class cs_datepicker extends cs_field {
     $changeYear = ($this->change_year == TRUE) ? 'true'  :'false';
 
     $this->add_js(
-      str_replace("\n","","".
+      preg_replace("/\s+/"," ",str_replace("\n","","".
         ((count($this->disabled_dates)>0) ? "var disabled_dates_array_{$form->get_id()}_{$id} = ".json_encode((array) $this->disabled_dates).";" : "")."
             \$('#{$id}','#{$form->get_id()}').datepicker({
             dateFormat: '{$this->date_format}',
@@ -2631,7 +2632,7 @@ class cs_datepicker extends cs_field {
             minDate: \"{$this->mindate}\",
             maxDate: \"{$this->maxdate}\",
             yearRange: \"{$this->yearrange}\"
-          });"));
+          });")));
 
     parent::pre_render($form);
   }
@@ -3212,7 +3213,7 @@ class cs_fieldset extends cs_fields_container {
 
       if( !$js_collapsible_added ){
         $this->add_js(
-          str_replace("\n","",""."
+          preg_replace("/\s+/"," ",str_replace("\n","",""."
           \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
             evt.preventDefault();
             var \$this = \$(this);
@@ -3224,7 +3225,7 @@ class cs_fieldset extends cs_fields_container {
               }
             });
           });
-          \$('fieldset.collapsible.collapsed .fieldset-inner').hide();"));
+          \$('fieldset.collapsible.collapsed .fieldset-inner').hide();")));
         $js_collapsible_added = TRUE;
       }
     }
@@ -3462,14 +3463,14 @@ class cs_sortable extends cs_sortable_container{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js(
-      str_replace("\n","",""."\$('#{$id}','#{$form->get_id()}').sortable({
+      preg_replace("/\s+/"," ",str_replace("\n","",""."\$('#{$id}','#{$form->get_id()}').sortable({
         placeholder: \"ui-state-highlight\",
         stop: function( event, ui ) {
           \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
             \$(elem).val(index);
           });
         }
-      });"));
+      });")));
 
     parent::pre_render($form);
   }
@@ -3516,7 +3517,7 @@ class cs_sortable_table extends cs_sortable_container{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js(
-      str_replace("\n","",""."
+      preg_replace("/\s+/"," ",str_replace("\n","",""."
       \$('#{$id} tbody','#{$form->get_id()}').sortable({
         helper: function(e, ui) {
           ui.children().each(function() {
@@ -3530,7 +3531,7 @@ class cs_sortable_table extends cs_sortable_container{
             \$(elem).val(index);
           });
         }
-      });"));
+      });")));
 
     parent::pre_render($form);
   }

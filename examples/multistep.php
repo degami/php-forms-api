@@ -18,7 +18,7 @@ function multistepform_submit(&$form) {
   // var_export($form);
   // get submission triggering element
   //var_dump($form->get_triggering_element());
-  print_r($form_values);
+  return $form_values;
   // Reset the form if you want it to display again.
   // $form->reset();
 }
@@ -130,7 +130,7 @@ $form = cs_form_builder::get_form('multistepform');
     <?php print $form->render(); ?>
   <?php endif; ?>
   <h3>Session Info</h3>
-  <pre class="sessioninfo"><?php print_r($_SESSION); ?></pre>
+  <pre class="sessioninfo"><?php print_r($_SESSION['form_token']); ?></pre>
 </div>
 </body>
 </html>

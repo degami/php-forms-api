@@ -367,6 +367,7 @@ function showallform(cs_form $form, &$form_state){
     $field = array(
       'title' => 'Textfield '.($i+1),
       'type' => 'textfield',
+      'default_value' => 'value '.($i+1),
     );
     $sortable_table->add_field('sortable_field_'.$i,$field,$i);
   }

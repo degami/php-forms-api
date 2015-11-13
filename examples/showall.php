@@ -17,7 +17,7 @@ function showall_submit(&$form) {
   // get submission triggering element
 
   // var_dump($form->get_triggering_element());
-  print_r($form_values);
+  return $form_values;
   // Reset the form if you want it to display again.
   // $form->reset();
 }
