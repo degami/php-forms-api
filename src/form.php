@@ -2118,7 +2118,7 @@ abstract class cs_field_multivalues extends cs_field {
       }
       if(!$check) {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-        $this->add_error(cs_form::translate_string("{$titlestr}: Invalid choice"),__FUNCTION__);
+        $this->add_error(str_replace("%t",$titlestr, cs_form::translate_string("%t: Invalid choice")),__FUNCTION__);
 
         if($this->stop_on_first_error)
           return FALSE;
@@ -2559,7 +2559,7 @@ class cs_date extends cs_field {
 
     if( !checkdate( $month , $day , $year ) ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->add_error(cs_form::translate_string("{$titlestr}: Invalid date"), __FUNCTION__);
+      $this->add_error(str_replace("%t",$titlestr,cs_form::translate_string("%t: Invalid date")), __FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
@@ -2769,7 +2769,7 @@ class cs_time extends cs_field {
 
     if( ! $check ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->add_error(cs_form::translate_string("{$titlestr}: Invalid time"), __FUNCTION__);
+      $this->add_error(str_replace("%t",$titlestr,cs_form::translate_string("%t: Invalid time")), __FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
