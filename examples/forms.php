@@ -1,4 +1,10 @@
 <?php
+/*
+function __($string){
+  return str_repeat($string.' ' , 2);
+}
+*/
+
 require_once '../src/form.php';
 // Generate a simple contact form
 function contactform(cs_form $form, &$form_state){
@@ -220,7 +226,7 @@ function showallform(cs_form $form, &$form_state){
   ));
   $form->get_field('fieldset')->add_field('markup1', array(
     'type' => 'markup',
-    'value' => 'aaaa',
+    'value' => 'Markup 1 before all',
     'weight' => -10,
   ));
 
@@ -304,11 +310,11 @@ function showallform(cs_form $form, &$form_state){
   ->add_tab('tab2') //index 1
   ->add_field('markup2',array(
     'type' => 'markup',
-    'value' => 'bbb',
+    'value' => 'markup bbb',
   ),0) //to tab 0
   ->add_field('markup3',array(
     'type' => 'markup',
-    'value' => 'ccc',
+    'value' => 'markup ccc',
   ),1) //to tab 1
   ->add_field('checkboxes', array(
     'type' => 'checkboxes',

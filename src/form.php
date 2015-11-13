@@ -1577,10 +1577,10 @@ abstract class cs_field extends cs_element{
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
           $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-          $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}{$this->title}{$requiredafter}</label>\n";
+          $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
         } else {
           if( !in_array('title', array_keys($this->attributes)) ){
-            $this->attributes['title'] = strip_tags($this->title.$required);
+            $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
           }
 
           $id = $this->get_html_id();
@@ -2376,7 +2376,7 @@ class cs_checkbox extends cs_field {
     $attributes = $this->get_attributes();
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
-    $output = "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> {$this->title}</label>\n";
+    $output = "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".cs_form::translate_string($this->title)."</label>\n";
     return $output;
   }
 
@@ -2861,10 +2861,10 @@ class cs_datetime extends cs_tag_container {
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}{$this->title}{$requiredafter}</label>\n";
+        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
       } else {
         if( !in_array('title', array_keys($this->attributes)) ){
-          $this->attributes['title'] = strip_tags($this->title.$required);
+          $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
         }
 
         $id = $this->get_html_id();
@@ -3342,7 +3342,7 @@ class cs_tabs extends cs_fields_container_multiple {
       if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
-      $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->tabs[$tabindex]['title']."</a></li>";
+      $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".cs_form::translate_string($this->tabs[$tabindex]['title'])."</a></li>";
       $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $tabs_html[$tabindex] .= $field->render($form);
@@ -3384,7 +3384,7 @@ class cs_accordion extends cs_fields_container_multiple {
       if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
-      $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
+      $output .= "<h3>".cs_form::translate_string($this->tabs[$tabindex]['title'])."</h3>";
       $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $output .= $field->render($form);
@@ -3553,7 +3553,7 @@ class cs_sortable_table extends cs_sortable_container{
       $output .= "<thead>\n";
       if($handle_position != 'right') $output .= "<th>&nbsp;</th>";
       foreach($this->table_header as $th){
-        $output .= "<th>{$th}</th>";
+        $output .= "<th>".cs_form::translate_string($th)."</th>";
       }
       if($handle_position == 'right') $output .= "<th>&nbsp;</th>";
       $output .= "</thead>\n";
