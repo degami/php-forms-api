@@ -1627,7 +1627,7 @@ abstract class cs_field extends cs_element{
           });
           return false;
         });";
-        $this->add_js($eventjs);
+        $this->add_js(str_replace("\n","","".$eventjs));
       }
     }
 
@@ -1896,7 +1896,8 @@ class cs_autocomplete extends cs_textfield{
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
 
-    $this->add_js("
+    $this->add_js(
+      str_replace("\n","",""."
       \$('#{$id}','#{$form->get_id()}')
       .bind( 'keydown', function( event ) {
         if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
@@ -1910,7 +1911,7 @@ class cs_autocomplete extends cs_textfield{
           return false;
         }
       });
-    ");
+    "));
 
     parent::pre_render($form);
   }
@@ -2002,12 +2003,13 @@ class cs_password extends cs_field {
     if($this->with_strength_check == TRUE){
       $id = $this->get_html_id();
 
-      $this->add_js("
+      $this->add_js(
+      str_replace("\n","",""."
       \$('#{$id}','#{$form->get_id()}').keyup(function() {
         \$('#{$id}_result').html(
 
         (function(password){
-            var strength = 0
+            var strength = 0;
             if (password.length < 6) {
               \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('short');
               return '".cs_form::translate_string('Too short')."';
@@ -2031,7 +2033,7 @@ class cs_password extends cs_field {
           })(\$('#{$id}','#{$form->get_id()}').val())
 
         );
-      });");
+      });"));
 
       $form->add_css("#{$form->get_id()} .password_strength_checker.short{color:#FF0000;}");
       $form->add_css("#{$form->get_id()} .password_strength_checker.weak{color:#E66C2C;}");
@@ -2281,7 +2283,8 @@ class cs_slider extends cs_select{
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $this->add_js("
+    $this->add_js(
+      str_replace("\n","",""."
       \$('#{$id}-slider','#{$form->get_id()}').slider({
         min: 1,
         max: ".count($this->options).",
@@ -2292,7 +2295,7 @@ class cs_slider extends cs_select{
       });
     \$( '#{$id}' ).change(function() {
       \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
-    }).hide();");
+    }).hide();"));
 
     parent::pre_render($form);
   }
@@ -3208,7 +3211,8 @@ class cs_fieldset extends cs_fields_container {
       }
 
       if( !$js_collapsible_added ){
-        $this->add_js("
+        $this->add_js(
+          str_replace("\n","",""."
           \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
             evt.preventDefault();
             var \$this = \$(this);
@@ -3220,7 +3224,7 @@ class cs_fieldset extends cs_fields_container {
               }
             });
           });
-          \$('fieldset.collapsible.collapsed .fieldset-inner').hide();");
+          \$('fieldset.collapsible.collapsed .fieldset-inner').hide();"));
         $js_collapsible_added = TRUE;
       }
     }
@@ -3457,14 +3461,15 @@ class cs_sortable extends cs_sortable_container{
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $this->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
-      placeholder: \"ui-state-highlight\",
-      stop: function( event, ui ) {
-        \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
-          \$(elem).val(index);
-        });
-      }
-    });");
+    $this->add_js(
+      str_replace("\n","",""."\$('#{$id}','#{$form->get_id()}').sortable({
+        placeholder: \"ui-state-highlight\",
+        stop: function( event, ui ) {
+          \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
+            \$(elem).val(index);
+          });
+        }
+      });"));
 
     parent::pre_render($form);
   }
@@ -3510,7 +3515,8 @@ class cs_sortable_table extends cs_sortable_container{
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $this->add_js("
+    $this->add_js(
+      str_replace("\n","",""."
       \$('#{$id} tbody','#{$form->get_id()}').sortable({
         helper: function(e, ui) {
           ui.children().each(function() {
@@ -3524,7 +3530,7 @@ class cs_sortable_table extends cs_sortable_container{
             \$(elem).val(index);
           });
         }
-      });");
+      });"));
 
     parent::pre_render($form);
   }
