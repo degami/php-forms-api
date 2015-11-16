@@ -108,7 +108,7 @@ abstract class cs_element{
       if(isset($attributes_arr[$reserved])) unset($attributes_arr[$reserved]);
     }
     foreach ($attributes_arr as $key => $value) {
-      if(!is_string($value)) continue;
+      if(!is_string($value) && !is_numeric($value)) continue;
       $value = cs_form::process_plain($value);
       if(!empty($value)){
         $value=trim($value);
@@ -3593,6 +3593,7 @@ class cs_sortable_table extends cs_sortable_container{
 class cs_table_container extends cs_fields_container_multiple{
 
   protected $table_header = array();
+  protected $col_row_attributes = array();
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
@@ -3602,6 +3603,25 @@ class cs_table_container extends cs_fields_container_multiple{
 
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
+
+    $table_matrix = array();
+    $rows = 0;
+
+    foreach($this->tabs as $tabindex => $tab){
+      $table_matrix[$rows] = array();
+      $cols = 0;
+      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+        $table_matrix[$rows][$cols] = '';
+        if(isset($this->col_row_attributes[$rows][$cols])){
+          if( is_array($this->col_row_attributes[$rows][$cols]) ){
+            $this->col_row_attributes[$rows][$cols] = $this->get_attributes_string( $this->col_row_attributes[$rows][$cols] );
+          }
+          $table_matrix[$rows][$cols] = $this->col_row_attributes[$rows][$cols];
+        }
+        $cols++;
+      }
+      $rows++;
+    }
 
     $output = '';
     $attributes = $this->get_attributes();
@@ -3621,6 +3641,7 @@ class cs_table_container extends cs_fields_container_multiple{
     }
 
     $output .= "<tbody>\n";
+    $rows = 0;
     foreach($this->tabs as $tabindex => $tab){
       $insertorder = array_flip($this->insert_field_order[$tabindex]);
       $weights = array();
@@ -3633,12 +3654,20 @@ class cs_table_container extends cs_fields_container_multiple{
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
       $output .= "<tr id=\"{$id}-row-{$tabindex}\">\n";
+      $cols = 0;
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $fieldhtml = $field->render($form);
-        if( trim($fieldhtml) != '' )
-          $output .= "<td>".$fieldhtml."</td>\n";
+        if( trim($fieldhtml) != '' ){
+          $td_attributes = '';
+          if(!empty($table_matrix[$rows][$cols])){
+            $td_attributes = $table_matrix[$rows][$cols];
+          }
+          $output .= "<td{$td_attributes}>".$fieldhtml."</td>\n";
+        }
+        $cols++;
       }
       $output .= "</tr>\n";
+      $rows++;
     }
     $output .= "</tbody>\n</table>\n";
 
