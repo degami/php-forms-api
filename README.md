@@ -427,6 +427,8 @@ They are always valid.
 
     $options += array(
       'type' => 'table_container',
+      'table_header' => array(),        // an array of column headers
+      'col_row_attributes' => array(),  // a matrix of cells attributes ( each one can be a string or an array )
     );
 
 #### Field sets
