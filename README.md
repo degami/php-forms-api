@@ -330,6 +330,14 @@ The value after submit is an array containing fields x,y
 
 Markup values are not passed to the values() function
 
+#### Progressbar
+
+    $options += array(
+      'type' => 'progressbar',
+      'show_label' => FALSE,
+      'indeterminate' => FALSE,
+    );
+
 #### Values
 
     $options += array(

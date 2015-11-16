@@ -377,6 +377,13 @@ function showallform(cs_form $form, &$form_state){
     'weight' => 1000,
   ));
 
+  $form->add_field('progressbar', array(
+    'title' => 'Progress',
+    'type' => 'progressbar',
+    'default_value' => '42',
+    'show_label' => TRUE,
+  ));
+
   $form->add_field('autocomplete', array(
     'type' => 'autocomplete',
     'title' => 'autocomplete',

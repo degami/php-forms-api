@@ -1843,6 +1843,40 @@ class cs_markup extends cs_field {
   }
 }
 
+class cs_progressbar extends cs_markup {
+  protected $indeterminate = FALSE;
+  protected $show_label = FALSE;
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    if($this->indeterminate == TRUE || !is_numeric($this->value) ){
+      $this->add_js("\$('#{$id}','#{$form->get_id()}').progressbar({ value: false });");
+    }else if( $this->show_label == TRUE ){
+      $this->add_js(
+        preg_replace("/\s+/"," ",str_replace("\n","",""."
+        \$('#{$id}','#{$form->get_id()}').progressbar({ value: parseInt({$this->value}) });
+        \$('#{$id} .progress-label','#{$form->get_id()}').text('{$this->value}%');
+      ")));
+    }else{
+      $this->add_js("\$('#{$id}','#{$form->get_id()}').progressbar({ value: parseInt({$this->value}) });");
+    }
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    $attributes = $this->get_attributes();
+
+    if($this->show_label == TRUE){
+      $form->add_css("#{$form->get_id()} #{$id}.ui-progressbar {position: relative;}");
+      $form->add_css("#{$form->get_id()} #{$id} .progress-label {position: absolute;left: 50%;top: 4px;}");
+    }
+
+    return "<div id=\"{$id}\"{$attributes}>".(($this->show_label == TRUE ) ? "<div class=\"progress-label\"></div>":"")."</div>\n";
+  }
+}
+
 class cs_hidden extends cs_field {
   public function __construct($options = array(), $name = NULL) {
     $this->container_tag = '';
