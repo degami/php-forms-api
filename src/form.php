@@ -98,6 +98,10 @@ abstract class cs_element{
     return $this;
   }
 
+  public function get_attribute($name){
+    return isset($this->attributes[$name]) ? $this->attributes[$name] : FALSE;
+  }
+
   public function get_attributes($reserved_arr = array('type','name','id','value')){
     return $this->get_attributes_string($this->attributes, $reserved_arr);
   }
@@ -141,11 +145,23 @@ abstract class cs_element{
   }
 
   public function add_css($css){
-    $this->css[] = $css;
+    if( is_array($css) ){
+      $css = array_filter(array_map('trim',$css));
+      $this->css = array_merge( $css, $this->css );
+    } else if( is_string($css) && trim($css) != '' ) {
+      $this->css[] = trim($css);
+    }
 
     return $this;
   }
   public function &get_css(){
+    if( $this instanceof cs_fields_container || $this instanceof cs_form ) {
+      $css = array_filter(array_map('trim',$this->css));
+      foreach($this->get_fields() as $field){
+        $css = array_merge($css, $field->get_css());
+      }
+      return $css;
+    }
     return $this->css;
   }
 
@@ -729,8 +745,10 @@ class cs_form extends cs_element{
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
     }
-    if( count( $this->get_fields($this->current_step) ) > 0 )
+    if( count( $this->get_fields($this->current_step) ) > 0 ){
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields($this->current_step));
+    }
+
 
     foreach ($this->get_fields($this->current_step) as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'render' ) ){
@@ -744,13 +762,17 @@ class cs_form extends cs_element{
     if( cs_form::is_partial() ){
       // ajax request - form item event
 
-
       $jsondata = json_decode($_REQUEST['jsondata']);
       $callback = $jsondata->callback;
       if( is_callable($callback) ){
         $target_elem = $callback( $this );
 
         $html = $target_elem->render($this);
+
+        if( count($target_elem->get_css()) > 0 ){
+          $html .= '<style>'.implode("\n",$target_elem->get_css())."</style>";
+        }
+
         $js = '';
         if(count($target_elem->get_js()) > 0){
           $js = "(function($){\n".
@@ -1365,7 +1387,6 @@ class cs_form extends cs_element{
 
 abstract class cs_field extends cs_element{
 
-  protected $ajax = FALSE;
   protected $validate = array();
   protected $preprocess = array();
   protected $postprocess = array();
@@ -1611,28 +1632,51 @@ abstract class cs_field extends cs_element{
 
     if( count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
       foreach($this->event as $event){
-        if(empty($event['event'])) continue;
-        $eventjs = "\$('#{$id}','#{$form->get_id()}').on('{$event['event']}',function(evt){
-          evt.preventDefault();
-          var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
-          var jsondata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
-          var postdata = { 'form_id': '{$form->get_id()}', 'jsondata':JSON.stringify(jsondata)};
-          \$.each(\$('#{$form->get_id()}').serializeArray(), function(_, kv) { postdata[kv.name] = kv.value; });
-          \$.post( \"{$this->get_ajax_url()}?partial=true\", postdata, function( data ) {
-            var response;
-            if(typeof data =='object') { response = data; }
-            else { response = \$.parseJSON(data); }
-            ".((!empty($event['method']) && $event['method'] == 'replace') ? "\$target.html('');":"")."
-            ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
-            if( \$.trim(response.js) != '' ){ eval( response.js ); };
-          });
-          return false;
-        });";
+        $eventjs = $this->generate_event_js($event, $form);
         $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".$eventjs)));
       }
     }
 
     return $output ;
+  }
+
+  public function generate_event_js($event, cs_form $form){
+    $id = $this->get_html_id();
+    if(empty($event['event'])) return FALSE;
+    $eventjs = "\$('#{$id}','#{$form->get_id()}').on('{$event['event']}',function(evt){
+      evt.preventDefault();
+      var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
+      var jsondata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
+      var postdata = new FormData();
+      postdata.append('form_id', '{$form->get_id()}');
+      postdata.append('jsondata', JSON.stringify(jsondata));
+      \$('#{$form->get_id()} input,#{$form->get_id()} select,#{$form->get_id()} textarea').each(function(index, elem){
+        var \$this = \$(this);
+        if( \$this.serialize() != '' ){
+          var elem = \$this.serialize().split('=',2);
+          postdata.append(elem[0], elem[1]);
+        }else if(\$this.attr('type').toLowerCase() == 'file'){
+          postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
+        }
+      });
+      \$.ajax({
+        type: \"POST\",
+        contentType: false,
+        processData: false,
+        url: \"{$this->get_ajax_url()}?partial=true\",
+        data: postdata,
+        success: function( data ){
+          var response;
+          if(typeof data =='object') { response = data; }
+          else { response = \$.parseJSON(data); }
+          ".((!empty($event['method']) && $event['method'] == 'replace') ? "\$target.html('');":"")."
+          ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
+          if( \$.trim(response.js) != '' ){ eval( response.js ); };
+        }
+      });
+      return false;
+    });";
+    return $eventjs;
   }
 
   abstract public function render_field(cs_form $form); // renders html
@@ -1869,8 +1913,8 @@ class cs_progressbar extends cs_markup {
     $attributes = $this->get_attributes();
 
     if($this->show_label == TRUE){
-      $form->add_css("#{$form->get_id()} #{$id}.ui-progressbar {position: relative;}");
-      $form->add_css("#{$form->get_id()} #{$id} .progress-label {position: absolute;left: 50%;top: 4px;}");
+      $this->add_css("#{$form->get_id()} #{$id}.ui-progressbar {position: relative;}");
+      $this->add_css("#{$form->get_id()} #{$id} .progress-label {position: absolute;left: 50%;top: 4px;}");
     }
 
     return "<div id=\"{$id}\"{$attributes}>".(($this->show_label == TRUE ) ? "<div class=\"progress-label\"></div>":"")."</div>\n";
@@ -2070,10 +2114,10 @@ class cs_password extends cs_field {
         );
       });")));
 
-      $form->add_css("#{$form->get_id()} .password_strength_checker.short{color:#FF0000;}");
-      $form->add_css("#{$form->get_id()} .password_strength_checker.weak{color:#E66C2C;}");
-      $form->add_css("#{$form->get_id()} .password_strength_checker.good{color:#2D98F3;}");
-      $form->add_css("#{$form->get_id()} .password_strength_checker.strong{color:#006400;}");
+      $this->add_css("#{$form->get_id()} .password_strength_checker.short{color:#FF0000;}");
+      $this->add_css("#{$form->get_id()} .password_strength_checker.weak{color:#E66C2C;}");
+      $this->add_css("#{$form->get_id()} .password_strength_checker.good{color:#2D98F3;}");
+      $this->add_css("#{$form->get_id()} .password_strength_checker.strong{color:#006400;}");
     }
 
     parent::pre_render($form);
@@ -2853,7 +2897,7 @@ class cs_datetime extends cs_tag_container {
 
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $form->add_css("#{$id} div.date,#{$id} div.time{display: inline-block;margin-right: 5px;}");
+    $this->add_css("#{$id} div.date,#{$id} div.time{display: inline-block;margin-right: 5px;}");
     parent::pre_render($form);
 
     $this->date->pre_render($form);

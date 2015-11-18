@@ -600,3 +600,86 @@ function events_form_callback(cs_form $form){
 }
 
 
+
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+function batchoperationsform(cs_form $form, &$form_state){
+  $step = 0;
+  $form->set_action($_SERVER['PHP_SELF']);
+
+  $form->add_field('progressnum', array(
+    'type' => 'value',
+    'value' => (isset( $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] ) )? $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] + 20 : 0,
+  ));
+
+  $fieldset = $form->add_field('fieldset', array(
+    'type' => 'tag_container',
+  ));
+
+  if( cs_form::is_partial() ){
+    $jsondata = json_decode($form_state['input_values']['jsondata']);
+    $callback = $jsondata->callback;
+    if( isset($form_state['input_form_definition']['fields'][$step]['progressnum']['value']) && $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] >= 100 ){
+      $fieldset->add_field('done', array(
+        'type' => 'markup',
+        'default_value' => 'finito!',
+      ));
+    }else{
+
+      if( is_callable($callback) ){
+        $fieldset->add_js("setTimeout(function(){ \$('#progress','#{$form->get_id()}').trigger('click') },1000);");
+      }
+
+      $fieldset->add_field('progress', array(
+        'type' => 'progressbar',
+          'default_value' =>  $form->get_field('progressnum')->get_value(),
+          'show_label' => TRUE,
+          'ajax_url' => $_SERVER['PHP_SELF'],
+          'event' => array(
+            array(
+              'event' => 'click',
+              'callback' => 'batch_operations_form_callback',
+              'target' => 'batchoperationsform',
+              'effect' => '',
+              'method' => 'replace',
+            ),
+          ),
+      ));
+
+    }
+
+  }
+
+  // must be outside of the fieldset in order to be processed
+  $form->add_field('file', array(
+    'type' => 'file',
+      'ajax_url' => $_SERVER['PHP_SELF'],
+      'destination' => dirname(__FILE__),
+      'event' => array(
+        array(
+          'event' => 'change',
+          'callback' => 'batch_operations_form_callback',
+          'target' => 'batchoperationsform',
+          'effect' => 'fade',
+          'method' => 'replace',
+        ),
+      ),
+  ));
+
+/*  $fieldset->add_field('submit', array(
+    'type' => 'submit',
+  ));
+*/
+  return $form;
+}
+
+function batch_operations_form_callback(cs_form $form){
+  return $form->get_field('fieldset');
+}
+
+
+function _batch_get_progress($filename, $offset = 0, $limit = 20){
+
+}
