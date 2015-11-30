@@ -5,13 +5,23 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
-$form = cs_form_builder::get_form('contactform_ajax');
+// Submit function to call when the form is submitted and passes validation.
+// This is where you would send the email (using PHP mail function)
+// as this is not a real example I'm just outputting the values for now.
+function locationsform_submit(&$form) {
+  $form_values = $form->values();
+  return $form_values;
+  //var_dump($form->get_triggering_element());
+  // Reset the form if you want it to display again.
+  // $form->reset();
+}
 
+$form = cs_form_builder::get_form('locationsform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Example contact form</title>
+  <title>Example locations form</title>
   <style>
   body {
     font-family: Arial;
@@ -38,7 +48,6 @@ $form = cs_form_builder::get_form('contactform_ajax');
   .form-item textarea{
     font-size: 12px;
     max-width: 99%;
-    width: 400px;
     border: solid 1px #cecece;
     padding: 4px;
   }
@@ -62,6 +71,10 @@ $form = cs_form_builder::get_form('contactform_ajax');
     border-left-width: 0px;
   }
 
+  .form-item select{
+    width: auto;
+  }
+
   #page{
     width: 78%;
     padding: 1%;
@@ -69,18 +82,25 @@ $form = cs_form_builder::get_form('contactform_ajax');
     background: #fff;
   }
   </style>
-
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/flick/jquery-ui.css">
-
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.css">
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false&amp;libraries=geometry"></script>
 </head>
 
 <body>
   <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   <div id="page">
-  <h1>Example Form</h1>
-  <?php print $form->render('html');?>
+  <pre style="font-size:10px;"><?php $form->process(); ?></pre>
+  <h1>Locations Form</h1>
+  <?php if ($form->is_submitted()): ?>
+    <!-- if the form was reset during the submit handler we would never see this -->
+    <pre><?php var_export($form->get_submit_results());?></pre>
+    <p>Thanks for submitting the form.</p>
+  <?php else: ?>
+    <?php print $form->render(); ?>
+  <?php endif; ?>
+  <pre style="font-size:10px;"><?php // print_r($form); ?></pre>
   </div>
 </body>
 </html>

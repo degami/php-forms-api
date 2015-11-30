@@ -99,7 +99,7 @@ if( isset($_REQUEST['partial']) ){
 </head>
 
 <body>
-  <a href="events.php?clearsession=1">Go back</a>
+  <a href="<?php print $_SERVER['PHP_SELF'];?>?clearsession=1">Go back</a>
   <div id="page">
   <pre style="font-size:10px;"><?php $form->process(); ?></pre>
   <h1>Events Form</h1>

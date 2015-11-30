@@ -117,7 +117,7 @@ $form = cs_form_builder::get_form('multistepform');
 </head>
 
 <body>
-<a href="multistep.php?clearsession=1">Go back</a>
+<a href="<?php print $_SERVER['PHP_SELF'];?>?clearsession=1">Go back</a>
 <div id="page">
   <h1>Example Multistep Form</h1>
 

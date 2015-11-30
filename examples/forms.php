@@ -683,3 +683,67 @@ function batch_operations_form_callback(cs_form $form){
 function _batch_get_progress($filename, $offset = 0, $limit = 20){
 
 }
+
+
+
+
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+function locationsform(cs_form $form, &$form_state){
+  $form->add_field('location', array(
+    'title' => 'GeoLocation',
+    'type' => 'geolocation',
+  ));
+
+  $form->add_field('map', array(
+    'title' => 'MapLocation',
+    'type' => 'gmaplocation',
+    'scrollwheel' => TRUE,
+    'zoom' => 15,
+    'mapheight' => '400px',
+    'default_value' => array(
+      'latitude' => 45.434332,
+      'longitude' => 12.338440,
+    ),
+    'maptype' => 'google.maps.MapTypeId.TERRAIN',
+  ));
+
+/*
+    google.maps.MapTypeId.HYBRID
+    google.maps.MapTypeId.ROADMAP
+    google.maps.MapTypeId.SATELLITE
+    google.maps.MapTypeId.TERRAIN
+*/
+
+  $form->add_field('decode', array(
+    'title' => 'GeoDecode',
+    'type' => 'gmaplocation',
+    'with_geocode' => TRUE,
+    'lat_lon_type' => 'textfield',
+    'zoom' => 15,
+    'default_value' => array(
+      'latitude' => 51.48257659999999,
+      'longitude' => -0.0076589,
+    ),
+  ));
+
+  $form->add_field('decode_nomap', array(
+    'title' => 'GeoDecode No Map',
+    'type' => 'gmaplocation',
+    'with_geocode' => TRUE,
+    'with_map' => FALSE,
+    'lat_lon_type' => 'textfield',
+    'default_value' => array(
+      'latitude' => 51.48257659999999,
+      'longitude' => -0.0076589,
+    ),
+  ));
+
+  $form->add_field('submit', array(
+    'type' => 'submit',
+  ));
+
+  return $form;
+}

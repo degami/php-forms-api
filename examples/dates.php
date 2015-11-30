@@ -21,7 +21,7 @@ $form = cs_form_builder::get_form('datesform');
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Example contact form</title>
+  <title>Example dates form</title>
   <style>
   body {
     font-family: Arial;
@@ -90,7 +90,7 @@ $form = cs_form_builder::get_form('datesform');
 </head>
 
 <body>
-  <a href="dates.php">Go back</a>
+  <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   <div id="page">
   <pre style="font-size:10px;"><?php $form->process(); ?></pre>
   <h1>Dates Form</h1>

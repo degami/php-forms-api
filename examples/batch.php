@@ -80,7 +80,7 @@ if( isset($_REQUEST['partial']) ){
 </head>
 
 <body>
-  <a href="batch.php">Go back</a>
+  <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   <div id="page">
   <h1>Batch Operation Form</h1>
   <?php print $form->render('html');?>

@@ -115,7 +115,7 @@ $form = cs_form_builder::get_form('showallform');
 </head>
 
 <body>
-<a href="showall.php">Go back</a>
+<a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
 <div id="page">
   <h1>Example Show them all form</h1>
 

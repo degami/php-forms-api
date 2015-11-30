@@ -62,50 +62,103 @@ abstract class cs_element{
   protected $suffix = '';
   protected $build_options = NULL;
 
+  /**
+   * returns initially build options
+   * @return array build_options
+   */
   public function get_build_options(){
     return $this->build_options;
   }
 
+  /**
+   * set name
+   * @param string $name element name
+   */
   public function set_name($name){
     $this->name = $name;
 
     return $this;
   }
 
+  /**
+   * get name
+   * @return string element name
+   */
   public function get_name(){
     return $this->name;
   }
 
+
+  /**
+   * get weight
+   * @return int element weight
+   */
   public function get_weight() {
     return $this->weight;
   }
 
+  /**
+   * add error
+   * @param string $error_string           error string
+   * @param string $validate_function_name validation function name
+   */
   public function add_error($error_string,$validate_function_name){
     $this->errors[$validate_function_name] = $error_string;
   }
 
+  /**
+   * get defined errors
+   * @return array errors
+   */
   public function get_errors(){
     return $this->errors;
   }
 
+  /**
+   * check if element has errors
+   * @return boolean there are errors
+   */
   public function has_errors(){
     return count($this->get_errors()) > 0;
   }
 
+  /**
+   * set html attributes
+   * @param string $name  attribute name
+   * @param string $value attribute value
+   */
   public function set_attribute($name,$value){
     $this->attributes[$name] = $value;
 
     return $this;
   }
 
+
+  /**
+   * get attribute value if present. FALSE on failure
+   * @param  string $name attribute name
+   * @return string       attribute description
+   */
   public function get_attribute($name){
     return isset($this->attributes[$name]) ? $this->attributes[$name] : FALSE;
   }
 
+  /**
+   * returns the element html attributes string
+   * @param  array  $reserved_arr array of attributes name that will be skipped if present in the attributes array
+   * @return string               the html attributes string
+   */
   public function get_attributes($reserved_arr = array('type','name','id','value')){
     return $this->get_attributes_string($this->attributes, $reserved_arr);
   }
 
+
+  /**
+   * returns the html attributes string
+   * @param  array $attributes_arr  attributes array
+   * @param  array  $reserved_arr   array of attributes name that will be skipped if present in the attributes array
+   * @return string                 the html attributes string
+   */
   public function get_attributes_string( $attributes_arr, $reserved_arr = array('type','name','id','value')){
     $attributes = '';
     foreach ($reserved_arr as $key => $reserved) {
@@ -123,6 +176,10 @@ abstract class cs_element{
     return empty($attributes) ? '' : ' ' . $attributes;
   }
 
+  /**
+   * add js to element
+   * @param string / array $js javascript to add
+   */
   public function add_js($js){
     if( is_array($js) ){
       $js = array_filter(array_map('trim',$js));
@@ -133,6 +190,11 @@ abstract class cs_element{
 
     return $this;
   }
+
+  /**
+   * get the element's js array
+   * @return array element's js array
+   */
   public function &get_js(){
     if( $this instanceof cs_fields_container || $this instanceof cs_form ) {
       $js = array_filter(array_map('trim',$this->js));
@@ -144,6 +206,11 @@ abstract class cs_element{
     return $this->js;
   }
 
+
+  /**
+   * add css to element
+   * @param string / array $css css to add
+   */
   public function add_css($css){
     if( is_array($css) ){
       $css = array_filter(array_map('trim',$css));
@@ -154,6 +221,11 @@ abstract class cs_element{
 
     return $this;
   }
+
+  /**
+   * get the element's css array
+   * @return array element's css array
+   */
   public function &get_css(){
     if( $this instanceof cs_fields_container || $this instanceof cs_form ) {
       $css = array_filter(array_map('trim',$this->css));
@@ -165,6 +237,11 @@ abstract class cs_element{
     return $this->css;
   }
 
+
+  /**
+   * get element html prefix
+   * @return string html for the element prefix
+   */
   public function get_prefix(){
     if(!empty($this->container_tag)){
 
@@ -190,6 +267,10 @@ abstract class cs_element{
     return '';
   }
 
+  /**
+   * get element html suffix
+   * @return string html for the element suffix
+   */
   public function get_suffix(){
     if(!empty($this->container_tag)){
       return "</{$this->container_tag}>";
@@ -197,6 +278,10 @@ abstract class cs_element{
     return '';
   }
 
+  /**
+   * to array
+   * @return array array representation for the element properties
+   */
   public function toArray(){
     $values = get_object_vars($this);
     foreach($values as $key => $val){
@@ -281,52 +366,108 @@ class cs_form extends cs_element{
     }
   }
 
+  /**
+   * set form id
+   * @param string $form_id set the form id used for getting the submit function name
+   */
   public function set_form_id($form_id){
     $this->form_id = $form_id;
     return $this;
   }
+
+  /**
+   * get the form id
+   * @return string form id
+   */
   public function get_form_id(){
     return $this->form_id;
   }
 
+
+  /**
+   * set the form action attribute
+   * @param string $action the form action url
+   */
   public function set_action($action){
     $this->action = $action;
     return $this;
   }
+
+  /**
+   * get the form action url
+   * @return string the form action
+   */
   public function get_action(){
     return $this->action;
   }
 
+  /**
+   * set the form method
+   * @param string $method form method
+   */
   public function set_method($method){
     $this->method = strtolower(trim($method));
     return $this;
   }
+
+  /**
+   * get the form method
+   * @return string form method
+   */
   public function get_method(){
     return $this->method;
   }
 
+
+  /**
+   * set the ajax submit url used for form submission
+   * @param string $ajax_submit_url ajax endpoint url
+   */
   public function set_ajax_submit_url($ajax_submit_url){
     $this->ajax_submit_url = $ajax_submit_url;
     return $this;
   }
+
+  /**
+   * get the ajax form submission url
+   * @return string the form ajax submission url
+   */
   public function get_ajax_submit_url(){
     return $this->ajax_submit_url;
   }
 
+  /**
+   * set the form render output type
+   * @param string $output_type output type ( 'html' / 'json' )
+   */
   public function set_output_type($output_type){
     $this->output_type = $output_type;
     return $this;
   }
+
+  /**
+   * get the form render output type
+   * @return string form output type
+   */
   public function get_output_type(){
     return $this->output_type;
   }
 
+
+  /**
+   * get the form token
+   * @return string the form token used in form validation and submission process
+   */
   public function get_form_token(){
     return $this->form_token;
   }
 
-  // Warning: some messy logic in calling process->submit->values
+  /**
+   * return form elements (all the steps) values
+   * @return array form values
+   */
   public function values() {
+    // Warning: some messy logic in calling process->submit->values
     if (!$this->processed) {
       $this->process();
     }
@@ -344,6 +485,10 @@ class cs_form extends cs_element{
     return $output;
   }
 
+  /**
+   * get current step elemets values
+   * @return array step values
+   */
   private function get_current_step_values(){
     $output = array();
     foreach ($this->get_fields($this->current_step) as $name => $field) {
@@ -357,6 +502,10 @@ class cs_form extends cs_element{
     return $output;
   }
 
+
+  /**
+   * resets the form
+   */
   public function reset() {
     foreach ($this->get_fields() as $name => $field) {
       $field->reset();
@@ -395,10 +544,20 @@ class cs_form extends cs_element{
     $this->submit_functions_results = array();
   }
 
+  /**
+   * check if form is submitted
+   * @return boolean form is submitted
+   */
   public function is_submitted() {
     return $this->submitted;
   }
 
+
+  /**
+   * get the form submit results optionally by submit function name
+   * @param  string $submit_function submit function name
+   * @return mixed                   function(s) return value or function(s) data sent to stdout if not returning anything
+   */
   public function get_submit_results( $submit_function = '' ){
     if( !$this->is_submitted() ) return FALSE;
     if( !empty($submit_function) ) {
@@ -408,12 +567,20 @@ class cs_form extends cs_element{
     return $this->submit_functions_results;
   }
 
+  /**
+   * alter request hook
+   */
   private function alter_request(&$request){
     foreach($this->get_fields($this->current_step) as $field){
       $field->alter_request($request);
     }
   }
 
+  /**
+   * copies the request values into the right form element
+   * @param  array $request request array
+   * @param  integer $step    step number
+   */
   private function inject_values($request, $step){
     foreach ($this->get_fields($step) as $name => $field) {
       if( $field instanceof cs_fields_container ){
@@ -430,6 +597,10 @@ class cs_form extends cs_element{
     }
   }
 
+  /**
+   * save current step request array in session
+   * @param  array $request request array
+   */
   private function save_step_request($request){
     $files = $this->get_step_fields_by_type_and_name('file', NULL, $this->current_step);
     if( !empty($files) ){
@@ -450,6 +621,10 @@ class cs_form extends cs_element{
     $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
   }
 
+  /**
+   * starts the form processing, validating and submitting
+   * @param  array  $values the request values array
+   */
   public function process( $values = array() ) {
     // let others alter the form
     $defined_functions = get_defined_functions();
@@ -524,6 +699,11 @@ class cs_form extends cs_element{
     }
   }
 
+
+  /**
+   * check if form is valid / NULL if form is on the first render
+   * @return boolean form is valid
+   */
   public function valid() {
     if ($this->validated) {
       return $this->valid;
@@ -603,24 +783,50 @@ class cs_form extends cs_element{
     return $this;
   }
 
+
+  /**
+   * get the number of form steps
+   * @return int steps number
+   */
   private function get_num_steps(){
     return count($this->fields);
   }
 
+  /**
+   * check if current is the final step
+   * @return boolean this is the final step
+   */
   private function is_final_step(){
     return ($this->current_step >= $this->get_num_steps());
   }
 
+  /**
+   * check if this request is a "partial" ( used in elements ajax requests )
+   * @return boolean [description]
+   */
   static function is_partial(){
     return (isset($_REQUEST['partial']) && $_REQUEST['partial'] == 'true');
   }
 
+  /**
+   * get the fields array by reference
+   * @param  integer $step step number
+   * @return array        the array of elements for the step specified
+   */
   public function &get_fields($step = 0){
     $notfound = array();
     if(!isset($this->fields[$step])) return $notfound;
     return $this->fields[$step];
   }
 
+
+  /**
+   * get the step fields by type and name
+   * @param  array  $field_types field types
+   * @param  string  $name       field name
+   * @param  integer $step       step number
+   * @return array               the array of fields matching the search criteria
+   */
   private function get_step_fields_by_type_and_name($field_types, $name = NULL, $step = 0){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
@@ -644,6 +850,11 @@ class cs_form extends cs_element{
     return $out;
   }
 
+  /**
+   * get the form fields by type (in all the steps)
+   * @param  array $field_types field types
+   * @return array              fields in the form
+   */
   public function get_fields_by_type($field_types){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
@@ -654,6 +865,12 @@ class cs_form extends cs_element{
     return $out;
   }
 
+  /**
+   * get the step fields by type and name (in all the steps)
+   * @param  array $field_types field types
+   * @param  string $name       field name
+   * @return array              fields in the form matching the search criteria
+   */
   public function get_fields_by_type_and_name($field_types, $name){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
@@ -664,10 +881,21 @@ class cs_form extends cs_element{
     return $out;
   }
 
+  /**
+   * get field by name
+   * @param  string  $field_name field name
+   * @param  integer $step       step number where to find the field
+   * @return cs_element subclass field object
+   */
   public function get_field($field_name, $step = 0){
     return isset($this->fields[$step][$field_name]) ? $this->fields[$step][$field_name] : NULL;
   }
 
+
+  /**
+   * get the submit element which submitted the form
+   * @return cs_action subclass the submitter
+   */
   public function get_triggering_element(){
     $fields = $this->get_fields_by_type(array('submit','button','image_button'));
     foreach($fields as $field){
@@ -676,34 +904,65 @@ class cs_form extends cs_element{
     return NULL;
   }
 
+  /**
+   * get the form submit
+   * @return cs_ordered_functions form submit function(s)
+   */
   public function get_submit(){
     return $this->submit;
   }
 
+  /**
+   * get the form validate
+   * @return cs_ordered_functions form validate function(s)
+   */
   public function get_validate(){
     return $this->validate;
   }
 
+  /**
+   * get the form id
+   * @return string the form id
+   */
   public function get_id(){
     return $this->form_id;
   }
 
+  /**
+   * get the current step number
+   * @return integer current step
+   */
   public function get_current_step(){
     return $this->current_step;
   }
 
+  /**
+   * get ajax url
+   * @return string ajax form submit url
+   */
   public function get_ajax_url(){
     return $this->ajax_submit_url;
   }
 
+  /**
+   * renders form errors
+   * @return string errors as an html <li> list
+   */
   public function show_errors() {
     return (!$this->has_errors()) ? '' : "<li>".implode('</li><li>',$this->get_errors())."</li>";
   }
 
+  /**
+   * returns inline error preference
+   * @return boolean errors should be presented inline after every elemen
+   */
   public function errors_inline() {
     return $this->inline_errors;
   }
 
+  /**
+   * pre-render hook. using this hook form elements can modify the form element
+   */
   public function pre_render(){
     foreach ($this->get_fields($this->current_step) as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'pre_render' ) ){
@@ -712,6 +971,11 @@ class cs_form extends cs_element{
     }
   }
 
+  /**
+   * renders the form
+   * @param  string $override_output_type output type
+   * @return string                       the form html
+   */
   public function render( $override_output_type = NULL ) {
     $output = '';
     $errors = '';
@@ -883,6 +1147,10 @@ class cs_form extends cs_element{
     return $output;
   }
 
+  /**
+   * generate the js string
+   * @return string the js into a jquery sandbox
+   */
   public function generate_js(){
     $js = array_filter(array_map('trim', $this->get_js() ));
     if(!empty( $js ) && !$this->js_generated ){
@@ -902,6 +1170,11 @@ class cs_form extends cs_element{
     return "";
   }
 
+  /**
+   * "required" validation function
+   * @param  mixed $value the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_required($value = NULL) {
     if (!empty($value)) {
       return TRUE;
@@ -910,6 +1183,12 @@ class cs_form extends cs_element{
     }
   }
 
+  /**
+   * "max_length" validation function
+   * @param  mixed $value   the element value
+   * @param  mixed $options max length
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_max_length($value, $options) {
     // if(!is_string($value)) throw new Exception("Invalid value - max_length is meant for strings, ".gettype($value)." given");
     if (strlen($value) > $options) {
@@ -918,6 +1197,12 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "min_length" validation function
+   * @param  mixed $value   the element value
+   * @param  mixed $options min length
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_min_length($value, $options) {
     // if(!is_string($value)) throw new Exception("Invalid value - min_length is meant for strings, ".gettype($value)." given");
     if (strlen($value) < $options) {
@@ -926,6 +1211,12 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "exact_length" validation function
+   * @param  mixed $value   the element value
+   * @param  mixed $options length
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_exact_length($value, $options) {
     // if(!is_string($value)) throw new Exception("Invalid value - exact_length is meant for strings, ".gettype($value)." given");
     if (strlen($value) != $options) {
@@ -934,6 +1225,12 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "regexp" validation function
+   * @param  mixed $value   the element value
+   * @param  mixed $options regexp string
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_regexp($value, $options) {
     if (!preg_match( $options, $value)) {
       return "<em>%t</em> must match the regular expression \"$options\".";
@@ -941,6 +1238,11 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "alpha" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_alpha($value) {
     // if(!is_string($value)) throw new Exception("Invalid value - alpha is meant for strings, ".gettype($value)." given");
     if (!preg_match( "/^([a-z])+$/i", $value)) {
@@ -949,6 +1251,11 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "alpha_numeric" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   protected function validate_alpha_numeric($value) {
     // if(!is_string($value) && !is_numeric($value)) throw new Exception("Invalid value - alpha_numeric is meant for strings or numeric values, ".gettype($value)." given");
     if (!preg_match("/^([a-z0-9])+$/i", $value)) {
@@ -957,6 +1264,11 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "alpha_dash" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   protected function validate_alpha_dash($value) {
     // if(!is_string($value)) throw new Exception("Invalid value - alpha_dash is meant for strings, ".gettype($value)." given");
     if (!preg_match("/^([-a-z0-9_-])+$/i", $value)) {
@@ -965,6 +1277,11 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "numeric" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   protected function validate_numeric($value) {
     if (!is_numeric($value)) {
       return "<em>%t</em> must be numeric.";
@@ -972,6 +1289,11 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "integer" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   protected function validate_integer($value) {
     if (!preg_match( '/^[\-+]?[0-9]+$/', $value)) {
       return "<em>%t</em> must be an integer.";
@@ -979,6 +1301,12 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "match" validation function
+   * @param  mixed $value   the element value
+   * @param  mixed $options elements to find into _REQUEST array
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_match($value, $options) {
     $other = cs_form::scan_array($options, $_REQUEST);
     if ($value != $other) {
@@ -987,6 +1315,12 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "file_extension" validation function
+   * @param  mixed $value   the element value
+   * @param  mixed $options file extension
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_file_extension($value, $options) {
     if(!isset($value['filepath'])) return "<em>%t</em> - Error. value has no filepath attribute";
     $options = explode(',', $options);
@@ -997,6 +1331,11 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "file_not_exists" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_file_not_exists($value) {
     if(!isset($value['filepath'])) return "<em>%t</em> - Error. value has no filepath attribute";
     if (file_exists($value['filepath'])) {
@@ -1005,6 +1344,12 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * "max_file_size" validation function
+   * @param  mixed $value   the element value
+   * @param  mixed $options max file size
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_max_file_size($value, $options) {
     if(!isset($value['filesize'])) return "<em>%t</em> - Error. value has no filesize attribute";
     if ($value['filesize'] > $options) {
@@ -1014,12 +1359,23 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * format byte size
+   * @param  integet $size size in bytes
+   * @return string       formatted size
+   */
   private static function format_bytes($size) {
     $units = array(' B', ' KB', ' MB', ' GB', ' TB');
     for ($i = 0; $size >= 1024 && $i < 4; $i++) $size /= 1024;
     return round($size, 2).$units[$i];
   }
 
+
+  /**
+   * "email" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_email($email) {
     if (empty($email)) return FALSE;
     $check_dns = FORMS_VALIDATE_EMAIL_DNS;
@@ -1059,16 +1415,38 @@ class cs_form extends cs_element{
     return TRUE;
   }
 
+  /**
+   * applies trim to text
+   * @param  string $text text to trim
+   * @return string       trimmed version of $text
+   */
   public static function process_trim($text) {
     return trim($text);
   }
+
+  /**
+   * applies ltrim to text
+   * @param  string $text text to ltrim
+   * @return string       ltrimmed version of $text
+   */
   public static function process_ltrim($text) {
     return ltrim($text);
   }
+
+  /**
+   * applies rtrim to text
+   * @param  string $text text to rtrim
+   * @return string       rtrimmed version of $text
+   */
   public static function process_rtrim($text) {
     return rtrim($text);
   }
 
+  /**
+   * check if $text's character encoding is utf8
+   * @param  string $text text to check
+   * @return boolean       is utf8
+   */
   private static function _validate_utf8($text) {
     if (strlen($text) == 0) {
       return TRUE;
@@ -1076,10 +1454,20 @@ class cs_form extends cs_element{
     return (preg_match('/^./us', $text) == 1);
   }
 
+  /**
+   * applies xss checks on string (weak version)
+   * @param  string $string text to check
+   * @return string         safe value
+   */
   public static function process_xss_weak($string) {
     return filter_xss($string, array('a|abbr|acronym|address|b|bdo|big|blockquote|br|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|h1|h2|h3|h4|h5|h6|hr|i|img|ins|kbd|li|ol|p|pre|q|samp|small|span|strong|sub|sup|table|tbody|td|tfoot|th|thead|tr|tt|ul|var'));
   }
 
+  /**
+   * applies xss checks on string
+   * @param  string $string text to check
+   * @return string         safe value
+   */
   public static function process_xss($string, $allowed_tags = FORMS_XSS_ALLOWED_TAGS) {
     // Only operate on valid UTF-8 strings. This is necessary to prevent cross
     // site scripting issues on Internet Explorer 6.
@@ -1304,15 +1692,31 @@ class cs_form extends cs_element{
     return $uri;
   }
 
+
+  /**
+   * applies plain_text to text
+   * @param  string $text text to encode
+   * @return string       plain version of $text
+   */
   public static function process_plain($text) {
       // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
   }
 
+  /**
+   * applies entity_decode to text
+   * @param  string $text text to decode
+   * @return string       decoded version of $text
+   */
   public static function process_entity_decode($text) {
     return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
   }
 
+  /**
+   * applies addslashes to text
+   * @param  string $text text to addslash
+   * @return string       addslashed version of $text
+   */
   public static function process_addslashes($text) {
     if(!get_magic_quotes_gpc() && !preg_match("/\\/i",$text))
       return addslashes($text);
@@ -1330,6 +1734,11 @@ class cs_form extends cs_element{
     }
   }
 
+  /**
+   * applies array_flatten to array
+   * @param  array $array array to flatten
+   * @return array        monodimensional array
+   */
   public static function array_flatten($array) {
     $return = array();
     foreach ($array as $key => $value) {
@@ -1342,6 +1751,12 @@ class cs_form extends cs_element{
     return $return;
   }
 
+  /**
+   * get array values by key
+   * @param  string $search_key key to search
+   * @param  array $array       where to search
+   * @return array              the filtered array
+   */
   public static function array_get_values($search_key, $array) {
     $return = array();
     foreach ($array as $key => $value) {
@@ -1354,6 +1769,12 @@ class cs_form extends cs_element{
     return $return;
   }
 
+  /**
+   * order elements by weight properties
+   * @param  cs_element $a first element
+   * @param  cs_element $b second element
+   * @return int    position
+   */
   public static function order_by_weight($a, $b){
     if ($a->get_weight() == $b->get_weight()) {
       return 0;
@@ -1361,6 +1782,12 @@ class cs_form extends cs_element{
     return ($a->get_weight() < $b->get_weight()) ? -1 : 1;
   }
 
+  /**
+   * order validation functions
+   * @param  array $a first element
+   * @param  array $b second element
+   * @return int    position
+   */
   public static function order_validators($a,$b){
     if(is_array($a) && isset($a['validator'])) $a = $a['validator'];
     if(is_array($b) && isset($b['validator'])) $b = $b['validator'];
@@ -1373,6 +1800,12 @@ class cs_form extends cs_element{
 //    return $a > $b ? 1 : -1;
   }
 
+  /**
+   * translate strings, using a function named "__()" if is defined.
+   * the function should take a string written in english as parameter and return the translated version
+   * @param  string $string string to translate
+   * @return string         the translated version
+   */
   public static function translate_string($string){
     if(is_string($string) && function_exists('__')) return __($string);
     return $string;
@@ -1443,68 +1876,129 @@ abstract class cs_field extends cs_element{
     $this->value = $this->default_value;
   }
 
+
+  /**
+   * return field value
+   * @return mixed field value
+   */
   public function values() {
     return $this->get_value();
   }
 
+  /**
+   * return field value
+   * @return mixed field value
+   */
   public function get_value(){
     return $this->value;
   }
 
+  /**
+   * set field value
+   * @param mixed $value value to set
+   */
   public function set_value($value){
     $this->value = $value;
 
     return $this;
   }
 
+  /**
+   * get default value
+   * @return mixed default value
+   */
   public function get_default_value(){
     return $this->default_value;
   }
 
+  /**
+   * set default value
+   * @param mixed $default_value default value
+   */
   public function set_default_value($default_value){
     $this->default_value = $default_value;
 
     return $this;
   }
 
+  /**
+   * resets the field
+   */
   public function reset() {
     $this->value = $this->default_value;
     $this->pre_rendered = FALSE;
     $this->errors = array();
   }
 
+  /**
+   * get field type
+   * @return string field type
+   */
   public function get_type(){
     return $this->type;
   }
 
+  /**
+   * get field validate
+   * @return cs_ordered_functions field validate
+   */
   public function get_validate(){
     return $this->validate;
   }
 
+  /**
+   * get field preprocess
+   * @return cs_ordered_functions field preprocess
+   */
   public function get_preprocess(){
     return $this->preprocess;
   }
 
+  /**
+   * get field postprocess
+   * @return cs_ordered_functions field postprocess
+   */
   public function get_postprocess(){
     return $this->postprocess;
   }
 
+  /**
+   * get field id
+   * @return string field id
+   */
   public function get_id(){
     return $this->id;
   }
 
+  /**
+   * get field html id
+   * @return string the html id attributes
+   */
   public function get_html_id(){
     return !empty($this->id) ? $this->get_id() : $this->get_name();
   }
 
+  /**
+   * get field ajax url
+   * @return string field ajax url
+   */
   public function get_ajax_url(){
     return $this->ajax_url;
   }
 
+
+  /**
+   * process (set) the field value
+   * @param  mixed $value value to set
+   */
   public function process($value) {
     $this->value = $value;
   }
 
+  /**
+   * execute the preprocess ( or postprocess ) list of functions
+   * @param  string $process_type which list to process
+   */
   public function preprocess($process_type = "preprocess") {
     foreach ($this->$process_type as $processor) {
       $processor_func = "process_{$processor}";
@@ -1520,10 +2014,17 @@ abstract class cs_field extends cs_element{
     }
   }
 
+  /**
+   * postprocess field
+   */
   public function postprocess() {
     $this->preprocess("postprocess");
   }
 
+  /**
+   * check if field is valid using the validate functions list
+   * @return boolean valid state
+   */
   public function valid() {
     $this->errors = array();
 
@@ -1568,10 +2069,18 @@ abstract class cs_field extends cs_element{
     return TRUE;
   }
 
+  /**
+   * renders field errors
+   * @return string errors as a <li> list
+   */
   public function show_errors() {
     return (!$this->has_errors()) ? '' : "<li>".implode("</li><li>",$this->get_errors())."</li>";
   }
 
+  /**
+   * pre_render. this function will be overloaded by subclasses where needed
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $this->pre_rendered = TRUE;
 
@@ -1583,6 +2092,11 @@ abstract class cs_field extends cs_element{
     return;
   }
 
+  /**
+   * render the field
+   * @param  cs_form $form form object
+   * @return string        the field html
+   */
   public function render(cs_form $form) {
 
     $id = $this->get_html_id();
@@ -1640,6 +2154,12 @@ abstract class cs_field extends cs_element{
     return $output ;
   }
 
+  /**
+   * generate the necessary js to handle ajax field event property
+   * @param  array  $event event element
+   * @param  cs_form $form  form object
+   * @return string         javascript code
+   */
   public function generate_event_js($event, cs_form $form){
     $id = $this->get_html_id();
     if(empty($event['event'])) return FALSE;
@@ -1679,12 +2199,30 @@ abstract class cs_field extends cs_element{
     return $eventjs;
   }
 
+  /**
+   * ABSTRACT - the function that actually renders the html field
+   * @param  cs_form $form form object
+   * @return string        the field html
+   */
   abstract public function render_field(cs_form $form); // renders html
+
+  /**
+   * ABSTRACT - this function tells to the form if this element is a value that needs to be included into parent values() function call result
+   * @return boolean include_me
+   */
   abstract public function is_a_value();                // tells if component value is passed on the parent values() function call
 
+  /**
+   * alter request hook
+   * @param  array &$request request array
+   */
   public function alter_request(&$request){
     // implementing this function fields can change the request array
   }
+  /**
+   * after validate hook
+   * @param  cs_form $form form object
+   */
   public function after_validate(cs_form $form){
     // here field can do things after the validation has passed
   }
@@ -2917,7 +3455,7 @@ class cs_datetime extends cs_tag_container {
     return $this->date->valid() && $this->time->valid();
   }
   public function show_errors() {
-    return $this->date->show_errors() && $this->time->show_errors();
+    return (trim($this->date->show_errors() . $this->time->show_errors()) == '') ? '' : trim($this->date->show_errors() . $this->time->show_errors());
   }
 
   public function reset() {
@@ -3907,6 +4445,317 @@ class cs_plupload extends cs_field {
 }
 
 
+class cs_geolocation extends cs_tag_container {
+  protected $latitude;
+  protected $longitude;
+
+  public function __construct($options = array(), $name = NULL) {
+    parent::__construct($options,$name);
+
+    $defaults = isset($options['default_value']) ? $options['default_value'] : array('latitude' => 0, 'longitude' => 0);
+
+    unset($options['title']);
+    unset($options['prefix']);
+    unset($options['suffix']);
+    $options['container_tag'] = '';
+
+    if(!isset($options['size']))
+    $options['size'] = 5;
+
+    $options['type'] = 'textfield';
+    $options['suffix'] = cs_form::translate_string('latitude').' ';
+    $options['default_value'] = (is_array($defaults) && isset($defaults['latitude'])) ? $defaults['latitude'] : 0;
+    $this->latitude = new cs_textfield($options,$name.'_latitude');
+
+    $options['type'] = 'textfield';
+    $options['suffix'] = cs_form::translate_string('longitude').' ';
+    $options['default_value'] = (is_array($defaults) && isset($defaults['longitude'])) ? $defaults['longitude'] : 0;
+    $this->longitude = new cs_textfield($options,$name.'_longitude');
+  }
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+    parent::pre_render($form);
+
+    $this->latitude->pre_render($form);
+    $this->longitude->pre_render($form);
+  }
+
+  public function preprocess($process_type = "preprocess") {
+    $this->latitude->preprocess($process_type);
+    $this->longitude->preprocess($process_type);
+  }
+  public function process($values) {
+    $this->latitude->process($values[$this->get_name().'_latitude'],$this->get_name().'_latitude');
+    $this->longitude->process($values[$this->get_name().'_longitude'],$this->get_name().'_longitude');
+  }
+
+  public function valid() {
+    return $this->latitude->valid() && $this->longitude->valid();
+  }
+  public function show_errors() {
+    return (trim($this->latitude->show_errors() . $this->longitude->show_errors()) == '') ? '' : trim($this->latitude->show_errors() . $this->longitude->show_errors());
+  }
+
+  public function reset() {
+    $this->latitude->reset();
+    $this->longitude->reset();
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    $attributes = $this->get_attributes();
+
+    $this->tag = 'div';
+    $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
+
+    $required = ($this->validate->has_value('required')) ? '<span class="required">*</span>' : '';
+    $requiredafter = $requiredbefore = $required;
+    if($this->required_position == 'before') { $requiredafter = ''; $requiredbefore = $requiredbefore.' '; }
+    else { $requiredbefore = ''; $requiredafter = ' '.$requiredafter; }
+
+    if(!empty($this->title)){
+      if ( $this->tooltip == FALSE ) {
+        $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
+        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
+      } else {
+        if( !in_array('title', array_keys($this->attributes)) ){
+          $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
+        }
+
+        $id = $this->get_html_id();
+        $form->add_js("\$('#{$id}','#{$form->get_id()}').tooltip();");
+      }
+    }
+    $output .= $this->latitude->render($form);
+    $output .= $this->longitude->render($form);
+    $output .= "</{$this->tag}>\n";
+    return $output;
+  }
+
+  public function values() {
+    return array(
+      'latitude'=> $this->latitude->values(),
+      'longitude'=> $this->longitude->values(),
+    );
+  }
+
+  public function is_a_value(){
+    return TRUE;
+  }
+}
+
+class cs_gmaplocation extends cs_geolocation {
+  protected $zoom = 8;
+  protected $scrollwheel = FALSE;
+  protected $mapwidth = '100%';
+  protected $mapheight = '500px';
+  protected $markertitle = NULL;
+  protected $maptype = 'google.maps.MapTypeId.ROADMAP';
+  protected $with_geocode = FALSE;
+  protected $lat_lon_type = 'hidden';
+  protected $geocode_box = NULL;
+  protected $with_map = TRUE;
+
+  /*
+    google.maps.MapTypeId.HYBRID
+    google.maps.MapTypeId.ROADMAP
+    google.maps.MapTypeId.SATELLITE
+    google.maps.MapTypeId.TERRAIN
+  */
+
+  public function __construct($options = array(), $name = NULL) {
+    parent::__construct($options,$name);
+    $defaults = isset($options['default_value']) ? $options['default_value'] : array('latitude' => 0, 'longitude' => 0);
+
+    unset($options['title']);
+    unset($options['prefix']);
+    unset($options['suffix']);
+    $options['container_tag'] = '';
+
+    $options['type'] = 'hidden';
+    if($this->lat_lon_type == 'textfield') $options['type'] = 'textfield';
+    $options['default_value'] = (is_array($defaults) && isset($defaults['latitude'])) ? $defaults['latitude'] : 0;
+    if($this->lat_lon_type == 'textfield') $this->latitude = new cs_textfield($options,$name.'_latitude');
+    else $this->latitude = new cs_hidden($options,$name.'_latitude');
+
+
+    $options['type'] = 'hidden';
+    if($this->lat_lon_type == 'textfield') $options['type'] = 'textfield';
+    $options['default_value'] = (is_array($defaults) && isset($defaults['longitude'])) ? $defaults['longitude'] : 0;
+    if($this->lat_lon_type == 'textfield') $this->longitude = new cs_textfield($options,$name.'_longitude');
+    else $this->longitude = new cs_hidden($options,$name.'_longitude');
+
+    if($this->with_geocode == TRUE){
+      $options['type'] = 'textfield';
+      $options['size'] = 50;
+      $options['default_value'] = (is_array($defaults) && isset($defaults['geocodebox'])) ? $defaults['geocodebox'] : '';
+      $this->geocode_box = new cs_textfield($options,$name.'_geocodebox');
+    }
+  }
+
+  public function preprocess($process_type = "preprocess") {
+    parent::preprocess($process_type);
+    if($this->with_geocode == TRUE){
+      $this->geocode_box->preprocess($process_type);
+    }
+  }
+  public function process($values) {
+    parent::process($values);
+    if($this->with_geocode == TRUE){
+      $this->geocode_box->process($values[$this->get_name().'_geocodebox'],$this->get_name().'_geocodebox');
+    }
+  }
+
+  public function values() {
+    $out = parent::values();
+    if($this->with_geocode == TRUE){
+      $out += array( 'geocodebox' => $this->geocode_box->values() );
+    }
+    return $out;
+  }
+
+  public function pre_render(cs_form $form){
+    $id = $this->get_html_id();
+
+    if($this->with_geocode == TRUE){
+      $update_map_func = "";
+      if($this->with_map == TRUE){
+        $update_map_func = "
+        var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
+        var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
+        marker.setPosition( new google.maps.LatLng( lat, lng ) );
+        map.panTo( new google.maps.LatLng( lat, lng ) );
+        ";
+      }
+
+      $this->add_js(
+        preg_replace("/\s+/"," ",str_replace("\n","",""."
+          var {$id}_api_endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
+          \$('#{$id}_geocodebox').autocomplete({
+            source: function (request, response) {
+                jQuery.get({$id}_api_endpoint+\$('#{$id}_geocodebox').val(), {
+                    query: request.term
+                }, function (data) {
+                  response($.map( data.results, function( item ) {
+                      return {
+                          label: item.formatted_address,
+                          id: item.geometry.location.lat+'|'+item.geometry.location.lng
+                      }
+                  }));
+                });
+            },
+            minLength: 5,
+            select: function( event, ui ) {
+              var tmp = ui.item.id.split('|');
+              var lat = tmp[0];
+              var lng = tmp[1];
+
+              \$('input[name=\"{$id}_latitude\"]','#{$id}').val( lat );
+              \$('input[name=\"{$id}_longitude\"]','#{$id}').val( lng );
+
+              {$update_map_func}
+            }
+          });
+      ")));
+    }
+
+    if($this->with_map == TRUE){
+      $this->add_css("#{$form->get_id()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
+      $this->add_js(
+        preg_replace("/\s+/"," ",str_replace("\n","",""."
+        var {$id}_latlng = {lat: ".$this->latitude->values().", lng: ".$this->longitude->values()."};
+
+        var {$id}_map = new google.maps.Map(document.getElementById('{$id}-map'), {
+          center: {$id}_latlng,
+          mapTypeId: {$this->maptype},
+          scrollwheel: ".($this->scrollwheel ? 'true' : 'false').",
+          zoom: {$this->zoom}
+        });
+        var {$id}_marker = new google.maps.Marker({
+          map: {$id}_map,
+          draggable: true,
+          animation: google.maps.Animation.DROP,
+          position: {$id}_latlng,
+          title: '".(($this->markertitle == NULL) ? "lat: ".$this->latitude->values().", lng: ".$this->longitude->values() : $this->markertitle)."'
+        });
+        \$.data( \$('#{$id}-map')[0] , 'map_obj', {$id}_map);
+        \$.data( \$('#{$id}-map')[0] , 'marker_obj', {$id}_marker);
+
+        google.maps.event.addListener({$id}_marker, 'dragend', function() {
+          var mapdiv = {$id}_marker.map.getDiv();
+          \$('input[name=\"{$id}_latitude\"]','#'+\$(mapdiv).parent().attr('id')).val( {$id}_marker.getPosition().lat() );
+          \$('input[name=\"{$id}_longitude\"]','#'+\$(mapdiv).parent().attr('id')).val( {$id}_marker.getPosition().lng() );
+        });
+
+      ")));
+
+      if($this->lat_lon_type == 'textfield'){
+        $this->add_js(
+          preg_replace("/\s+/"," ",str_replace("\n","",""."
+            \$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}').change(function(evt){
+              var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
+              var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
+              var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
+              var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
+              marker.setPosition( new google.maps.LatLng( lat, lng ) );
+              map.panTo( new google.maps.LatLng( lat, lng ) );
+            });
+        ")));
+      }
+
+    }
+
+    parent::pre_render($form);
+  }
+
+  public function render_field(cs_form $form) {
+    $id = $this->get_html_id();
+    $attributes = $this->get_attributes();
+
+    $this->tag = 'div';
+    $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
+
+    $required = ($this->validate->has_value('required')) ? '<span class="required">*</span>' : '';
+    $requiredafter = $requiredbefore = $required;
+    if($this->required_position == 'before') { $requiredafter = ''; $requiredbefore = $requiredbefore.' '; }
+    else { $requiredbefore = ''; $requiredafter = ' '.$requiredafter; }
+
+    if(!empty($this->title)){
+      if ( $this->tooltip == FALSE ) {
+        $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
+        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
+      } else {
+        if( !in_array('title', array_keys($this->attributes)) ){
+          $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
+        }
+
+        $id = $this->get_html_id();
+        $form->add_js("\$('#{$id}','#{$form->get_id()}').tooltip();");
+      }
+    }
+
+    if($this->with_geocode == TRUE){
+      $output .= $this->geocode_box->render($form); // ."<button id=\"{$id}_searchbox_btn\">".cs_form::translate_string('search')."</button>";
+    }
+
+    if($this->with_map == TRUE){
+      $mapattributes = '';
+      $output .= "<div id=\"{$id}-map\"{$mapattributes}></div>\n";
+    }
+
+    $output .= $this->latitude->render($form);
+    $output .= $this->longitude->render($form);
+    $output .= "</{$this->tag}>\n";
+    return $output;
+  }
+}
+
+// campo per trasformare indirizzo in lat lon
+//
+// https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA
+//
+
 /* #########################################################
    ####                 ACCESSORIES                     ####
    ######################################################### */
@@ -4023,7 +4872,12 @@ class cs_form_builder {
 
     if(is_callable($function_name)){
       //$form = $function_name($form, $form_state);
-      $form =  call_user_func_array($function_name , array_merge( array($form, $form_state), $form_state['build_info']['args']) );
+      $form_obj = call_user_func_array($function_name , array_merge( array($form, $form_state), $form_state['build_info']['args']) );
+      if( ! $form_obj instanceof cs_form ){
+        throw new Exception("Error. function {$function_name} does not return a valid cs_form object", 1);
+      }
+
+      $form =  $form_obj;
       $_SESSION['form_definition'][$form->get_id()] = $form->toArray();
     }
     return $form;

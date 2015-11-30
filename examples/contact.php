@@ -83,7 +83,7 @@ $form = cs_form_builder::get_form('contactform');
 </head>
 
 <body>
-  <a href="contact.php">Go back</a>
+  <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   <div id="page">
   <pre style="font-size:10px;"><?php $form->process(); ?></pre>
   <h1>Example Form</h1>

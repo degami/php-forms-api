@@ -470,6 +470,35 @@ They are always valid.
       'table_header' => array(),
     );
 
+#### Geolocation (latitude, longitude)
+
+    $options += array(
+      'type' => 'geolocation',
+    );
+    $options['default_value'] = array(
+      'latitude' => NULL,
+      'longitude' => NULL,
+    );
+
+    $options += array(
+      'type' => 'gmaplocation',
+      'zoom' => 8,
+      'scrollwheel' => FALSE,
+      'mapwidth' => '100%',
+      'mapheight' => '500px',
+      'markertitle' => NULL,
+      'maptype' => 'google.maps.MapTypeId.ROADMAP',
+      'with_geocode' => FALSE,
+      'lat_lon_type' => 'hidden',
+      'geocode_box' => NULL,
+      'with_map' => TRUE,
+    );
+    $options['default_value'] = array(
+      'latitude' => NULL,
+      'longitude' => NULL,
+      'geocodebox' => NULL,
+    );
+
 ### Validators reference
 
 Required, Max Length, Min Length, Exact Length, Regular Expression, Alpha,
