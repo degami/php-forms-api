@@ -2235,6 +2235,11 @@ abstract class cs_field extends cs_element{
 abstract class cs_action extends cs_field{
   protected $js_button = FALSE;
 
+
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     if($this->js_button == TRUE){
       $id = $this->get_html_id();
@@ -2243,10 +2248,18 @@ abstract class cs_action extends cs_field{
     parent::pre_render($form);
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is not a value
+   */
   public function is_a_value(){
     return FALSE;
   }
 
+  /**
+   * validate function
+   * @return boolean this field is always valid
+   */
   public function valid() {
     return TRUE;
   }
@@ -2264,26 +2277,46 @@ abstract class cs_clickable extends cs_action{
     $this->clicked = FALSE;
   }
 
+  /**
+   * check if this button was clicked
+   * @return boolean if this element was clicked
+   */
   public function get_clicked(){
     return $this->clicked;
   }
 
+  /**
+   * process hook
+   * @param  mixed $value value to set
+   */
   public function process($value){
     parent::process($value);
     $this->clicked = TRUE;
   }
 
+  /**
+   * reset this element
+   */
   public function reset(){
     $this->clicked = FALSE;
     parent::reset();
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
 }
 
 class cs_submit extends cs_clickable {
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if (empty($this->value)) {
@@ -2306,6 +2339,11 @@ class cs_button extends cs_clickable {
     if(empty($this->label)) $this->label = $this->value;
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2329,6 +2367,11 @@ class cs_image_button extends cs_clickable {
     parent::__construct($options, $name);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
@@ -2338,6 +2381,10 @@ class cs_image_button extends cs_clickable {
     return $output;
   }
 
+  /**
+   * alter_request hook
+   * @param  array $request request array
+   */
   public function alter_request(&$request){
     foreach($request as $key => $val){
       //IMAGE BUTTONS HANDLE
@@ -2367,6 +2414,11 @@ class cs_reset extends cs_action {
     }
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if (empty($this->value)) {
@@ -2390,14 +2442,27 @@ class cs_value extends cs_field {
     }
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        an empty string
+   */
   public function render_field(cs_form $form) {
     return '';
   }
 
+  /**
+   * validate function
+   * @return boolean this field is always valid
+   */
   public function valid() {
     return TRUE;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -2411,15 +2476,28 @@ class cs_markup extends cs_field {
     }
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element value
+   */
   public function render_field(cs_form $form) {
     $output = $this->value;
     return $output;
   }
 
+  /**
+   * validate function
+   * @return boolean this field is always valid
+   */
   public function valid() {
     return TRUE;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is not a value
+   */
   public function is_a_value(){
     return FALSE;
   }
@@ -2429,6 +2507,10 @@ class cs_progressbar extends cs_markup {
   protected $indeterminate = FALSE;
   protected $show_label = FALSE;
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     if($this->indeterminate == TRUE || !is_numeric($this->value) ){
@@ -2446,6 +2528,11 @@ class cs_progressbar extends cs_markup {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
@@ -2466,18 +2553,32 @@ class cs_hidden extends cs_field {
     parent::__construct($options,$name);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
     return "<input type=\"hidden\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
 }
 
 class cs_textfield extends cs_field {
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -2491,6 +2592,10 @@ class cs_textfield extends cs_field {
     return $output;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -2510,6 +2615,10 @@ class cs_autocomplete extends cs_textfield{
     parent::__construct($options, $name);
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
 
@@ -2555,12 +2664,20 @@ class cs_maskedfield extends cs_textfield{
     parent::__construct($options, $name);
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').mask('{$this->mask}');");
     parent::pre_render($form);
   }
 
+  /**
+   * validate hook
+   * @return boolean this TRUE if this element conforms to mask
+   */
   public function valid() {
     $mask = $this->mask;
     $mask = preg_replace("(\[|\]|\(|\))","\\\1",$mask);
@@ -2583,6 +2700,10 @@ class cs_textarea extends cs_field {
   protected $rows = 5;
   protected $resizable = FALSE;
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     if($this->resizable == TRUE){
@@ -2591,6 +2712,11 @@ class cs_textarea extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -2605,6 +2731,10 @@ class cs_textarea extends cs_field {
     return $output;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -2616,6 +2746,10 @@ class cs_password extends cs_field {
   protected $confirm_string = "Confirm password";
   protected $with_strength_check = FALSE;
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   function pre_render(cs_form $form){
     if($this->with_strength_check == TRUE){
       $id = $this->get_html_id();
@@ -2661,6 +2795,11 @@ class cs_password extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -2681,6 +2820,10 @@ class cs_password extends cs_field {
     return $output;
   }
 
+  /**
+   * validate hook
+   * @return boolean check if element is valid
+   */
   public function valid(){
     if($this->with_confirm == TRUE){
       if(!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value ) {
@@ -2693,6 +2836,10 @@ class cs_password extends cs_field {
     return parent::valid();
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -2701,10 +2848,20 @@ class cs_password extends cs_field {
 abstract class cs_field_multivalues extends cs_field {
   protected $options = array();
 
+  /**
+   * get elements options array by reference
+   * @return array element options
+   */
   public function &get_options(){
     return $this->options;
   }
 
+  /**
+   * check if key is present into haystack
+   * @param  mixed  $needle   element to find
+   * @param  array  $haystack where to find it
+   * @return boolean           TRUE if element is found
+   */
   public static function has_key($needle, $haystack) {
     foreach ($haystack as $key => $value) {
       if($value instanceof cs_option){
@@ -2722,10 +2879,19 @@ abstract class cs_field_multivalues extends cs_field {
     return FALSE;
   }
 
+  /**
+   * check if key is present into element options
+   * @param  mixed $needle element to find
+   * @return bookean         TRUE if element is found
+   */
   public function options_has_key($needle){
     return cs_field_multivalues::has_key($needle,$this->options);
   }
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
   public function valid(){
     if(!is_array($this->value) && !empty($this->value)){
       $check = $this->options_has_key($this->value);
@@ -2746,6 +2912,10 @@ abstract class cs_field_multivalues extends cs_field {
     return parent::valid();
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -2766,6 +2936,11 @@ class cs_option extends cs_element{
     }
   }
 
+  /**
+   * render the option
+   * @param  cs_select $form_field select field
+   * @return string        the option html
+   */
   public function render(cs_select $form_field){
     $selected = ($this->key == $form_field->get_value()) ? ' selected="selected"' : '';
     $attributes = $this->get_attributes(array('value','selected'));
@@ -2773,6 +2948,10 @@ class cs_option extends cs_element{
     return $output;
   }
 
+  /**
+   * get the element key
+   * @return mixed the element key
+   */
   public function get_key(){
     return $this->key;
   }
@@ -2802,14 +2981,28 @@ class cs_optgroup extends cs_element{
     }
   }
 
+  /**
+   * check if key is present into element options array
+   * @param  mixed $needle element to find
+   * @return boolean         TRUE if element is present
+   */
   public function options_has_key($needle){
     return cs_field_multivalues::has_key($needle,$this->options);
   }
 
+  /**
+   * add option
+   * @param cs_option $option option to add
+   */
   public function add_option(cs_option $option){
     $this->options[] = $option;
   }
 
+  /**
+   * render the optgroup
+   * @param  cs_select $form_field select field
+   * @return string        the optgroup html
+   */
   public function render(cs_select $form_field){
     $attributes = $this->get_attributes(array('label'));
     $output = "<optgroup label=\"{$this->label}\"{$attributes}>\n";
@@ -2842,10 +3035,19 @@ class cs_select extends cs_field_multivalues {
     parent::__construct($options,$name);
   }
 
+  /**
+   * return field value
+   * @return mixed field value
+   */
   public function get_value(){
     return $this->value;
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '';
@@ -2869,6 +3071,10 @@ class cs_select extends cs_field_multivalues {
 }
 
 class cs_selectmenu extends cs_select{
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').selectmenu({width: 'auto' });");
@@ -2898,6 +3104,10 @@ class cs_slider extends cs_select{
     parent::__construct($options, $name);
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js(
@@ -2917,6 +3127,11 @@ class cs_slider extends cs_select{
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form){
     $id = $this->get_html_id();
     $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
@@ -2925,6 +3140,11 @@ class cs_slider extends cs_select{
 }
 
 class cs_radios extends cs_field_multivalues {
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '<div class="options">';
@@ -2945,10 +3165,14 @@ class cs_radios extends cs_field_multivalues {
     $output .= '</div>';
     return $output;
   }
-
 }
 
 class cs_checkboxes extends cs_field_multivalues {
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     if(!is_array($this->default_value)) {
@@ -2973,7 +3197,6 @@ class cs_checkboxes extends cs_field_multivalues {
     $output .= '</div>';
     return $output;
   }
-
 }
 
 
@@ -2986,6 +3209,11 @@ class cs_checkbox extends cs_field {
     }
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -2997,6 +3225,10 @@ class cs_checkbox extends cs_field {
     return $output;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -3007,6 +3239,11 @@ class cs_file extends cs_field {
   protected $uploaded = FALSE;
   protected $destination;
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '';
@@ -3025,6 +3262,11 @@ class cs_file extends cs_field {
     return $output;
   }
 
+  /**
+   * process hook
+   * @param  mixed $value value to set
+   * @param  string $name file input name
+   */
   public function process($value, $name) {
     $this->value = array(
       'filepath' => (isset($value['filepath'])) ? $value['filepath'] : $this->destination .'/'. basename($_FILES[$name]['name']),
@@ -3042,10 +3284,19 @@ class cs_file extends cs_field {
     }
   }
 
+  /**
+   * check if file was uploaded
+   * @return boolean TRUE if file was uploaded
+   */
   public function is_uploaded(){
     return $this->uploaded;
   }
 
+  /**
+   * "required" validation function
+   * @param  mixed $value the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
   public static function validate_required($value = NULL) {
     if (!empty($value) &&
       (isset($value['filepath']) && !empty($value['filepath'])) &&
@@ -3059,6 +3310,10 @@ class cs_file extends cs_field {
     }
   }
 
+  /**
+   * validate function
+   * @return boolean this field is always valid
+   */
   public function valid() {
     if ($this->uploaded) {
       return TRUE;
@@ -3066,6 +3321,10 @@ class cs_file extends cs_field {
     return parent::valid();
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
