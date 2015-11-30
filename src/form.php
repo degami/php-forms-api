@@ -4751,11 +4751,6 @@ class cs_gmaplocation extends cs_geolocation {
   }
 }
 
-// campo per trasformare indirizzo in lat lon
-//
-// https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA
-//
-
 /* #########################################################
    ####                 ACCESSORIES                     ####
    ######################################################### */
