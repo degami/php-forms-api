@@ -3349,6 +3349,10 @@ class cs_date extends cs_field {
     parent::__construct($options, $name);
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
@@ -3364,6 +3368,11 @@ class cs_date extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '';
@@ -3419,6 +3428,10 @@ class cs_date extends cs_field {
     return $output;
   }
 
+  /**
+   * process hook
+   * @param  array $value value to set
+   */
   public function process($value, $name) {
     $this->value = array(
       'year' => $value['year'],
@@ -3431,6 +3444,10 @@ class cs_date extends cs_field {
     }
   }
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
   public function valid() {
     $year = $this->value['year'];
     $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -3446,10 +3463,18 @@ class cs_date extends cs_field {
     return parent::valid();
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
 
+  /**
+   * get start timestamp
+   * @return int start timestamp
+   */
   public function ts_start(){
     $year = $this->value['year'];
     $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -3457,6 +3482,11 @@ class cs_date extends cs_field {
 
     return mktime(0,0,0,$month,$day,$year);
   }
+
+  /**
+   * get end timestamp
+   * @return int end timestamp
+   */
   public function ts_end(){
     $year = $this->value['year'];
     $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -3464,6 +3494,11 @@ class cs_date extends cs_field {
 
     return mktime(23,59,59,$month,$day,$year);
   }
+
+  /**
+   * get value as a date string
+   * @return string date value
+   */
   public function value_string(){
     $value = $this->values();
     $out = (($value['year'] < 10) ? '0':'').((int) $value['year']);
@@ -3486,6 +3521,10 @@ class cs_datepicker extends cs_field {
   protected $yearrange = '-10:+10';
   protected $disabled_dates = array(); // an array of date strings compliant to $date_format
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
 
@@ -3512,6 +3551,11 @@ class cs_datepicker extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -3527,6 +3571,10 @@ class cs_datepicker extends cs_field {
     return $output;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -3547,6 +3595,10 @@ class cs_time extends cs_field {
     parent::__construct($options, $name);
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
@@ -3564,6 +3616,11 @@ class cs_time extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '';
@@ -3621,6 +3678,10 @@ class cs_time extends cs_field {
     return $output;
   }
 
+  /**
+   * process hook
+   * @param  array $value value to set
+   */
   public function process($value, $name) {
     $this->value = array(
       'hours' => $value['hours'],
@@ -3633,6 +3694,10 @@ class cs_time extends cs_field {
     }
   }
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
   public function valid() {
 
     $check = TRUE;
@@ -3656,10 +3721,18 @@ class cs_time extends cs_field {
     return parent::valid();
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
 
+  /**
+   * get value as a date string
+   * @return string date value
+   */
   public function value_string(){
     $value = $this->values();
     $out = (($value['hours'] < 10) ? '0':'').((int) $value['hours']);
@@ -3692,6 +3765,10 @@ class cs_datetime extends cs_tag_container {
     $this->time = new cs_time($options,$name.'_time');
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_css("#{$id} div.date,#{$id} div.time{display: inline-block;margin-right: 5px;}");
@@ -3701,27 +3778,53 @@ class cs_datetime extends cs_tag_container {
     $this->time->pre_render($form);
   }
 
+  /**
+   * preprocess hook . it simply calls the sub elements preprocess
+   * @param  string $process_type preprocess type
+   */
   public function preprocess($process_type = "preprocess") {
     $this->date->preprocess($process_type);
     $this->time->preprocess($process_type);
   }
+
+  /**
+   * process hook . it simply calls the sub elements process
+   * @param  array $value value to set
+   */
   public function process($values) {
     $this->date->process($values[$this->get_name().'_date'],$this->get_name().'_date');
     $this->time->process($values[$this->get_name().'_time'],$this->get_name().'_time');
   }
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
   public function valid() {
     return $this->date->valid() && $this->time->valid();
   }
+
+  /**
+   * renders form errors
+   * @return string errors as an html <li> list
+   */
   public function show_errors() {
     return (trim($this->date->show_errors() . $this->time->show_errors()) == '') ? '' : trim($this->date->show_errors() . $this->time->show_errors());
   }
 
+  /**
+   * resets the sub elements
+   */
   public function reset() {
     $this->date->reset();
     $this->time->reset();
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
@@ -3753,6 +3856,10 @@ class cs_datetime extends cs_tag_container {
     return $output;
   }
 
+  /**
+   * return field value
+   * @return array field value
+   */
   public function values() {
     return array(
       'date'=> $this->date->values(),
@@ -3761,6 +3868,10 @@ class cs_datetime extends cs_tag_container {
     );
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
@@ -3771,6 +3882,10 @@ class cs_spinner extends cs_field {
   protected $max = NULL;
   protected $step = 1;
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
 
@@ -3784,6 +3899,11 @@ class cs_spinner extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '';
@@ -3805,6 +3925,10 @@ class cs_spinner extends cs_field {
     return $output;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
