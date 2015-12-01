@@ -47,6 +47,11 @@ if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE 
   session_set_cookie_params(FORMS_SESSION_TIMEOUT);
 }
 
+/**
+ * base element class
+ * every form element classes inherits from this class
+ * @abstract
+ */
 abstract class cs_element{
   protected $name = NULL;
   protected $weight = 0;
@@ -309,7 +314,9 @@ abstract class cs_element{
    ####                      FORM                       ####
    ######################################################### */
 
-
+/**
+ * the form object class
+ */
 class cs_form extends cs_element{
 
   protected $form_id = 'cs_form';
@@ -334,6 +341,10 @@ class cs_form extends cs_element{
   private $current_step = 0;
   private $submit_functions_results = array();
 
+  /**
+   * class constructor
+   * @param array $options build options
+   */
   public function __construct($options = array()) {
     $this->build_options = $options;
 
@@ -764,7 +775,7 @@ class cs_form extends cs_element{
   /**
    * add field to form
    * @param string  $name  field name
-   * @param mixed  $field field to add, can be an array or a cs_field subclass
+   * @param mixed   $field field to add, can be an array or a cs_field subclass
    * @param integer $step  step to add the field to
    */
   public function add_field($name, $field, $step = 0) {
@@ -1823,7 +1834,10 @@ class cs_form extends cs_element{
    ####                  FIELD BASE                     ####
    ######################################################### */
 
-
+/**
+ * the field element class.
+ * @abstract
+ */
 abstract class cs_field extends cs_element{
 
   protected $validate = array();
@@ -1844,7 +1858,11 @@ abstract class cs_field extends cs_element{
   protected $required_position = 'after';
   protected $ajax_url = NULL;
 
-
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
 
     $this->build_options = $options;
@@ -2238,6 +2256,11 @@ abstract class cs_field extends cs_element{
 /* #########################################################
    ####                    FIELDS                       ####
    ######################################################### */
+
+/**
+ * the "actionable" field element class (a button, a submit or a reset)
+ * @abstract
+ */
 abstract class cs_action extends cs_field{
   protected $js_button = FALSE;
 
@@ -2272,9 +2295,18 @@ abstract class cs_action extends cs_field{
 
 }
 
+/**
+ * the "clickable" field element (a button or a submit )
+ * @abstract
+ */
 abstract class cs_clickable extends cs_action{
   protected $clicked = FALSE;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     if(isset($options['value'])){
@@ -2317,6 +2349,9 @@ abstract class cs_clickable extends cs_action{
   }
 }
 
+/**
+ * the submit input type field class
+ */
 class cs_submit extends cs_clickable {
   /**
    * render_field hook
@@ -2336,10 +2371,17 @@ class cs_submit extends cs_clickable {
 
 }
 
-
+/**
+ * the button field class
+ */
 class cs_button extends cs_clickable {
   protected $label;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL){
     parent::__construct($options,$name);
     if(empty($this->label)) $this->label = $this->value;
@@ -2360,10 +2402,18 @@ class cs_button extends cs_clickable {
 
 }
 
+/**
+ * the image submit input type field class
+ */
 class cs_image_button extends cs_clickable {
   protected $src;
   protected $alt;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     $this->default_value = array(
       'x'=>-1,
@@ -2411,8 +2461,16 @@ class cs_image_button extends cs_clickable {
 
 }
 
+/**
+ * the reset button field class
+ */
 class cs_reset extends cs_action {
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     if(isset($options['value'])){
@@ -2438,7 +2496,17 @@ class cs_reset extends cs_action {
 
 }
 
+/**
+ * the value field class
+ * this field is not rendered as part of the form, but the value is passed on form submission
+ */
 class cs_value extends cs_field {
+
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     $this->container_tag = '';
     $this->container_class = '';
@@ -2474,7 +2542,17 @@ class cs_value extends cs_field {
   }
 }
 
+/**
+ * the markup field class
+ * this is not a value
+ */
 class cs_markup extends cs_field {
+
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     if(isset($options['value'])){
@@ -2509,6 +2587,10 @@ class cs_markup extends cs_field {
   }
 }
 
+
+/**
+ * the progressbar field class
+ */
 class cs_progressbar extends cs_markup {
   protected $indeterminate = FALSE;
   protected $show_label = FALSE;
@@ -2552,7 +2634,16 @@ class cs_progressbar extends cs_markup {
   }
 }
 
+/**
+ * the hidden input field class
+ */
 class cs_hidden extends cs_field {
+
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     $this->container_tag = '';
     $this->container_class = '';
@@ -2579,6 +2670,9 @@ class cs_hidden extends cs_field {
   }
 }
 
+/**
+ * the text input field class
+ */
 class cs_textfield extends cs_field {
   /**
    * render_field hook
@@ -2607,11 +2701,19 @@ class cs_textfield extends cs_field {
   }
 }
 
+/**
+ * the "autocomplete" text input field class
+ */
 class cs_autocomplete extends cs_textfield{
   protected $autocomplete_path = FALSE;
   protected $options = array();
   protected $min_length = 3;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options, $name = NULL){
     if(!isset($options['attributes']['class'])){
       $options['attributes']['class'] = '';
@@ -2649,6 +2751,9 @@ class cs_autocomplete extends cs_textfield{
   }
 }
 
+/**
+ * the "masked" text input field class
+ */
 class cs_maskedfield extends cs_textfield{
   protected $mask;
 
@@ -2661,6 +2766,11 @@ class cs_maskedfield extends cs_textfield{
     'S'  =>  "[a-zA-Z]",
   );
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options, $name = NULL){
     if(!isset($options['attributes']['class'])){
       $options['attributes']['class'] = '';
@@ -2702,6 +2812,9 @@ class cs_maskedfield extends cs_textfield{
   }
 }
 
+/**
+ * the textarea field class
+ */
 class cs_textarea extends cs_field {
   protected $rows = 5;
   protected $resizable = FALSE;
@@ -2746,7 +2859,9 @@ class cs_textarea extends cs_field {
   }
 }
 
-
+/**
+ * the password input field class
+ */
 class cs_password extends cs_field {
   protected $with_confirm = FALSE;
   protected $confirm_string = "Confirm password";
@@ -2851,6 +2966,10 @@ class cs_password extends cs_field {
   }
 }
 
+/**
+ * the multivalues field class (a select, a radios or a checkboxes group)
+ * @abstract
+ */
 abstract class cs_field_multivalues extends cs_field {
   protected $options = array();
 
@@ -2927,11 +3046,19 @@ abstract class cs_field_multivalues extends cs_field {
   }
 }
 
-
+/**
+ * the option element class
+ */
 class cs_option extends cs_element{
   protected $label;
   protected $key;
 
+  /**
+   * class constructor
+   * @param string $key     key
+   * @param string $label   label
+   * @param array  $options build options
+   */
   function __construct($key, $label, $options = array()) {
     $this->key = $key;
     $this->label = $label;
@@ -2963,10 +3090,19 @@ class cs_option extends cs_element{
   }
 }
 
+
+/**
+ * the optgroup element class
+ */
 class cs_optgroup extends cs_element{
   protected $options;
   protected $label;
 
+  /**
+   * class constructor
+   * @param string $label   label
+   * @param array  $options build options
+   */
   function __construct($label, $options) {
     $this->label = $label;
 
@@ -3020,9 +3156,17 @@ class cs_optgroup extends cs_element{
   }
 }
 
+/**
+ * the select field class
+ */
 class cs_select extends cs_field_multivalues {
   protected $multiple = FALSE;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options,$name) {
 
     if(isset($options['options'])){
@@ -3076,6 +3220,9 @@ class cs_select extends cs_field_multivalues {
   }
 }
 
+/**
+ * the "selectmenu" select field class
+ */
 class cs_selectmenu extends cs_select{
   /**
    * pre_render hook
@@ -3089,7 +3236,16 @@ class cs_selectmenu extends cs_select{
   }
 }
 
+/**
+ * the "slider" select field class
+ */
 class cs_slider extends cs_select{
+
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options, $name = NULL){
     // get the "default_value" index value
     $values = cs_form::array_get_values($this->default_value,$this->options);
@@ -3145,6 +3301,9 @@ class cs_slider extends cs_select{
   }
 }
 
+/**
+ * the radios group field class
+ */
 class cs_radios extends cs_field_multivalues {
   /**
    * render_field hook
@@ -3173,6 +3332,9 @@ class cs_radios extends cs_field_multivalues {
   }
 }
 
+/**
+ * the checkboxes group field class
+ */
 class cs_checkboxes extends cs_field_multivalues {
   /**
    * render_field hook
@@ -3205,8 +3367,16 @@ class cs_checkboxes extends cs_field_multivalues {
   }
 }
 
-
+/**
+ * the single checkbox input field class
+ */
 class cs_checkbox extends cs_field {
+
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     $this->value = NULL;
@@ -3240,7 +3410,9 @@ class cs_checkbox extends cs_field {
   }
 }
 
-
+/**
+ * the file input field class
+ */
 class cs_file extends cs_field {
   protected $uploaded = FALSE;
   protected $destination;
@@ -3336,12 +3508,20 @@ class cs_file extends cs_field {
   }
 }
 
+/**
+ * the date select group field class
+ */
 class cs_date extends cs_field {
   protected $granularity = 'day';
   protected $start_year;
   protected $end_year;
   protected $js_selects = FALSE;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
 
     $this->start_year = date('Y')-100;
@@ -3518,6 +3698,9 @@ class cs_date extends cs_field {
   }
 }
 
+/**
+ * the datepicker text input field class
+ */
 class cs_datepicker extends cs_field {
   protected $date_format = 'yy-mm-dd';
   protected $change_month = FALSE;
@@ -3586,10 +3769,18 @@ class cs_datepicker extends cs_field {
   }
 }
 
+/**
+ * the time select group field class
+ */
 class cs_time extends cs_field {
   protected $granularity = 'seconds';
   protected $js_selects = FALSE;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
 
     $this->default_value = array(
@@ -3754,10 +3945,18 @@ class cs_time extends cs_field {
   }
 }
 
+/**
+ * the datetime select group field class
+ */
 class cs_datetime extends cs_tag_container {
   protected $date = NULL;
   protected $time = NULL;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
 
@@ -3883,6 +4082,9 @@ class cs_datetime extends cs_tag_container {
   }
 }
 
+/**
+ * the spinner number input field class
+ */
 class cs_spinner extends cs_field {
   protected $min = NULL;
   protected $max = NULL;
@@ -3940,6 +4142,9 @@ class cs_spinner extends cs_field {
   }
 }
 
+/**
+ * the recaptcha field class
+ */
 class cs_recaptcha extends cs_field {
   protected $publickey = '';
   protected $privatekey = '';
@@ -4049,7 +4254,10 @@ class cs_recaptcha extends cs_field {
    ####              FIELD CONTAINERS                   ####
    ######################################################### */
 
-
+/**
+ * a field that contains other fields class
+ * @abstract
+ */
 abstract class cs_fields_container extends cs_field {
   protected $insert_field_order = array();
   protected $fields = array();
@@ -4117,7 +4325,7 @@ abstract class cs_fields_container extends cs_field {
   /**
    * add field to form
    * @param string  $name  field name
-   * @param mixed  $field field to add, can be an array or a cs_field subclass
+   * @param mixed   $field field to add, can be an array or a cs_field subclass
    */
   public function add_field($name, $field) {
     if (!is_object($field)) {
@@ -4156,7 +4364,7 @@ abstract class cs_fields_container extends cs_field {
   }
 
   /**
-   * preprocess hook . it simply calls the sub elements preprocess
+   * preprocess hook
    * @param  string $process_type preprocess type
    */
   public function preprocess($process_type = "preprocess") {
@@ -4262,9 +4470,17 @@ abstract class cs_fields_container extends cs_field {
   }
 }
 
+/**
+ * a field container that can specify container's html tag
+ */
 class cs_tag_container extends cs_fields_container {
   protected $tag = 'div';
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(),$name = NULL){
     parent::__construct($options,$name);
 
@@ -4300,6 +4516,9 @@ class cs_tag_container extends cs_fields_container {
   }
 }
 
+/**
+ * a fieldset field container
+ */
 class cs_fieldset extends cs_fields_container {
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
@@ -4376,19 +4595,37 @@ class cs_fieldset extends cs_fields_container {
   }
 }
 
+/**
+ * a field container subdivided in groups
+ * @abstract
+ */
 abstract class cs_fields_container_multiple extends cs_fields_container{
   protected $tabs = array();
 
+  /**
+   * get element tabs
+   * @return array tabs
+   */
   public function &get_tabs(){
     return $this->tabs;
   }
 
+  /**
+   * add a new tab
+   * @param string $title tab title
+   */
   public function add_tab($title){
     $this->tabs[] = array('title'=>$title,'fieldnames'=>array());
 
     return $this;
   }
 
+  /**
+   * add field to element
+   * @param string  $name     field name
+   * @param mixed   $field    field to add, can be an array or a cs_field subclass
+   * @param integer $tabindex index of tab to add field to
+   */
   public function add_field($name, $field, $tabindex = 0) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
@@ -4410,6 +4647,11 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     return $this;
   }
 
+  /**
+   * get tab fields array
+   * @param  integer $tabindex tab index
+   * @return array             tab fields array
+   */
   public function get_tab_fields($tabindex){
     $out = array();
     $fieldsnames = $this->tabs[$tabindex]['fieldnames'];
@@ -4419,6 +4661,11 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     return $out;
   }
 
+  /**
+   * get tab index containint specified field name
+   * @param  string $field_name field name
+   * @return integer            tab index, -1 on failure
+   */
   public function get_tabindex($field_name){
     foreach($this->tabs as $tabindex => $tab){
       if(in_array($field_name, $tab['fieldnames'])) return $tabindex;
@@ -4428,8 +4675,15 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
 
 }
 
+/**
+ * a "tabbed" field container
+ */
 class cs_tabs extends cs_fields_container_multiple {
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
@@ -4437,6 +4691,11 @@ class cs_tabs extends cs_fields_container_multiple {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -4471,9 +4730,16 @@ class cs_tabs extends cs_fields_container_multiple {
   }
 }
 
+/**
+ * an accordion field container
+ */
 class cs_accordion extends cs_fields_container_multiple {
   protected $height_style = 'auto';
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\"});");
@@ -4481,6 +4747,11 @@ class cs_accordion extends cs_fields_container_multiple {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -4513,15 +4784,26 @@ class cs_accordion extends cs_fields_container_multiple {
   }
 }
 
+/**
+ * an abstract sortable field container
+ * @abstract
+ */
 abstract class cs_sortable_container extends cs_fields_container_multiple{
   protected $handle_position = 'left';
   private $deltas = array();
 
+  /**
+   * get handle position (left/right)
+   * @return string handle position
+   */
   public function get_handle_position(){
     return $this->handle_position;
   }
 
-
+  /**
+   * return form elements values into this element
+   * @return array form values
+   */
   public function values() {
     $output = array();
 
@@ -4540,6 +4822,10 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
     return $output;
   }
 
+  /**
+   * process (set) the fields value
+   * @param  mixed $values value to set
+   */
   public function process($values) {
     foreach ($this->get_fields() as $name => $field) {
       $tabindex = $this->get_tabindex($field->get_name());
@@ -4553,6 +4839,10 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
     }
   }
 
+  /**
+   * get an array of fields with the relative delta (ordering) information
+   * @return array fields with delta
+   */
   private function get_fields_with_delta(){
     $out = array();
     foreach($this->get_fields() as $key => $field){
@@ -4561,20 +4851,37 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
     return $out;
   }
 
+  /**
+   * order elements by delta property
+   * @param  array $a first element
+   * @param  array $b second element
+   * @return integer  order
+   */
   private static function orderby_delta($a,$b){
     if($a['delta']==$b['delta']) return 0;
     return ($a['delta']>$b['delta']) ? 1:-1;
   }
 }
 
+/**
+ * a sortable field container
+ */
 class cs_sortable extends cs_sortable_container{
-
+  /**
+   * add field to element
+   * @param string  $name     field name
+   * @param mixed   $field    field to add, can be an array or a cs_field subclass
+   */
   public function add_field($name, $field) {
     //force every field to have its own tab.
     $this->deltas[$name] = count($this->get_fields());
     return parent::add_field($name, $field, $this->deltas[$name]);
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js(
@@ -4590,6 +4897,11 @@ class cs_sortable extends cs_sortable_container{
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -4625,10 +4937,17 @@ class cs_sortable extends cs_sortable_container{
   }
 }
 
+/**
+ * a sortable table rows field container
+ */
 class cs_sortable_table extends cs_sortable_container{
 
   protected $table_header = array();
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $this->add_js(
@@ -4651,6 +4970,11 @@ class cs_sortable_table extends cs_sortable_container{
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -4703,19 +5027,29 @@ class cs_sortable_table extends cs_sortable_container{
   }
 }
 
-
-
+/**
+ * a table field container
+ */
 class cs_table_container extends cs_fields_container_multiple{
 
   protected $table_header = array();
   protected $col_row_attributes = array();
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
 
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
 
@@ -4790,18 +5124,27 @@ class cs_table_container extends cs_fields_container_multiple{
   }
 }
 
-
+/**
+ * the pupload field class
+ */
 class cs_plupload extends cs_field {
   protected $filters = [];
   protected $url     = ''; // url upload.php
   protected $swf_url = ''; // url Moxie.swf
   protected $xap_url = ''; // url Moxie.xap
 
-
+  /**
+   * process hook
+   * @param  mixed $value value to set
+   */
   public function process($value, $name) {
     $this->value = json_decode($value);
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     $form_id = $form->get_id();
@@ -4930,6 +5273,11 @@ class cs_plupload extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form){
     $id = $this->get_html_id();
 
@@ -4938,16 +5286,27 @@ class cs_plupload extends cs_field {
     <input type=\"hidden\" id=\"{$id}_uploaded_json\" name=\"{$this->name}\" value=\"".json_encode($this->value)."\" />";
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
 }
 
-
+/**
+ * the geolocation field class
+ */
 class cs_geolocation extends cs_tag_container {
   protected $latitude;
   protected $longitude;
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
 
@@ -4972,6 +5331,10 @@ class cs_geolocation extends cs_tag_container {
     $this->longitude = new cs_textfield($options,$name.'_longitude');
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
     parent::pre_render($form);
@@ -4980,27 +5343,55 @@ class cs_geolocation extends cs_tag_container {
     $this->longitude->pre_render($form);
   }
 
+  /**
+   * preprocess hook . it simply calls the sub elements preprocess
+   * @param  string $process_type preprocess type
+   */
   public function preprocess($process_type = "preprocess") {
     $this->latitude->preprocess($process_type);
     $this->longitude->preprocess($process_type);
   }
+
+  /**
+   * process hook . it simply calls the sub elements process
+   * @param  array $values value to set
+   */
   public function process($values) {
     $this->latitude->process($values[$this->get_name().'_latitude'],$this->get_name().'_latitude');
     $this->longitude->process($values[$this->get_name().'_longitude'],$this->get_name().'_longitude');
   }
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
   public function valid() {
     return $this->latitude->valid() && $this->longitude->valid();
   }
+
+
+  /**
+   * renders form errors
+   * @return string errors as an html <li> list
+   */
   public function show_errors() {
     return (trim($this->latitude->show_errors() . $this->longitude->show_errors()) == '') ? '' : trim($this->latitude->show_errors() . $this->longitude->show_errors());
   }
 
+
+  /**
+   * resets the sub elements
+   */
   public function reset() {
     $this->latitude->reset();
     $this->longitude->reset();
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
@@ -5032,6 +5423,10 @@ class cs_geolocation extends cs_tag_container {
     return $output;
   }
 
+  /**
+   * return field value
+   * @return array field value
+   */
   public function values() {
     return array(
       'latitude'=> $this->latitude->values(),
@@ -5039,11 +5434,18 @@ class cs_geolocation extends cs_tag_container {
     );
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
 }
 
+/**
+ * the google maps geolocation field class
+ */
 class cs_gmaplocation extends cs_geolocation {
   protected $zoom = 8;
   protected $scrollwheel = FALSE;
@@ -5063,6 +5465,11 @@ class cs_gmaplocation extends cs_geolocation {
     google.maps.MapTypeId.TERRAIN
   */
 
+  /**
+   * class constructor
+   * @param array  $options build options
+   * @param string $name    field name
+   */
   public function __construct($options = array(), $name = NULL) {
     parent::__construct($options,$name);
     $defaults = isset($options['default_value']) ? $options['default_value'] : array('latitude' => 0, 'longitude' => 0);
@@ -5093,12 +5500,23 @@ class cs_gmaplocation extends cs_geolocation {
     }
   }
 
+
+  /**
+   * preprocess hook . it simply calls the sub elements preprocess
+   * @param  string $process_type preprocess type
+   */
   public function preprocess($process_type = "preprocess") {
     parent::preprocess($process_type);
     if($this->with_geocode == TRUE){
       $this->geocode_box->preprocess($process_type);
     }
   }
+
+
+  /**
+   * process hook . it simply calls the sub elements process
+   * @param  array $values value to set
+   */
   public function process($values) {
     parent::process($values);
     if($this->with_geocode == TRUE){
@@ -5106,6 +5524,10 @@ class cs_gmaplocation extends cs_geolocation {
     }
   }
 
+  /**
+   * return field value
+   * @return array field value
+   */
   public function values() {
     $out = parent::values();
     if($this->with_geocode == TRUE){
@@ -5114,6 +5536,10 @@ class cs_gmaplocation extends cs_geolocation {
     return $out;
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
 
@@ -5208,6 +5634,11 @@ class cs_gmaplocation extends cs_geolocation {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
@@ -5254,12 +5685,20 @@ class cs_gmaplocation extends cs_geolocation {
    ####                 ACCESSORIES                     ####
    ######################################################### */
 
-
+/**
+ * class for maintaining ordered list of functions
+ */
 class cs_ordered_functions implements Iterator{
   private $position = 0;
   private $array = array();
   private $sort_callback = NULL;
 
+  /**
+   * [class constructor
+   * @param array  $array         initially contained elements
+   * @param string $type          type of elements
+   * @param string $sort_callback sort callback name
+   */
   public function __construct(array $array, $type, $sort_callback = NULL) {
       $this->position = 0;
       $this->array = $array;
@@ -5268,6 +5707,9 @@ class cs_ordered_functions implements Iterator{
       $this->sort();
   }
 
+  /**
+   * sort elements
+   */
   function sort(){
     // $this->array = array_filter( array_map('trim', $this->array) );
     // $this->array = array_unique( array_map('strtolower', $this->array) );
@@ -5288,36 +5730,68 @@ class cs_ordered_functions implements Iterator{
     }
   }
 
+  /**
+   * rewind pointer position
+   */
   function rewind() {
     $this->position = 0;
     $this->sort();
   }
 
+  /**
+   * get current element
+   * @return mixed current element
+   */
   function current() {
     return $this->array[$this->position];
   }
 
+  /**
+   * get current position
+   * @return integer position
+   */
   function key() {
     return $this->position;
   }
 
+  /**
+   * increment current position
+   */
   function next() {
     ++$this->position;
   }
 
+  /**
+   * check if current position is valud
+   * @return boolean current position is valid
+   */
   function valid() {
     return isset($this->array[$this->position]);
   }
 
+  /**
+   * check if element is present
+   * @param  mixed  $value value to search
+   * @return boolean       TRUE if $value was found
+   */
   public function has_value($value){
     // return in_array($value, $this->array);
     return in_array($value, $this->values());
   }
 
+  /**
+   * check if key is in the array keys
+   * @param  integer  $key key to search
+   * @return boolean       TRUE if key was found
+   */
   public function has_key($key){
     return in_array($key, array_keys($this->array));
   }
 
+  /**
+   * return element values
+   * @return array element values
+   */
   public function values(){
     // return array_values($this->array);
     $out = array();
@@ -5331,21 +5805,36 @@ class cs_ordered_functions implements Iterator{
     return $out;
   }
 
+  /**
+   * return element keys
+   * @return array element keys
+   */
   public function keys(){
     return array_keys($this->array);
   }
 
+  /**
+   * adds a new element to array elements
+   * @param mixed $value element to add
+   */
   public function add_element($value){
     $this->array[] = $value;
     $this->sort();
   }
 
+  /**
+   * removes an element from array elements
+   * @param  mixed $value element to remove
+   */
   public function remove_element($value){
     $this->array = array_diff($this->array, array($value));
     $this->sort();
   }
 
-
+  /**
+   * element to array
+   * @return array element to array
+   */
   public function toArray(){
     return $this->array;
   }
@@ -5353,9 +5842,17 @@ class cs_ordered_functions implements Iterator{
 
 
 
-
-
+/**
+ * the form builder class
+ */
 class cs_form_builder {
+  /**
+   * returns a form object.
+   * this function calls the form definitor function passing an initial empty form object and the form state
+   * @param  string $form_id     form_id (and also form definitor function name)
+   * @param  array &$form_state  form state by reference
+   * @return cs_form             a new cs_form object
+   */
   static function build_form($form_id, &$form_state){
     $function_name = $form_id;
     $form = new cs_form(array(
@@ -5377,6 +5874,11 @@ class cs_form_builder {
     return $form;
   }
 
+  /**
+   * get a new cs_form object
+   * @param  string $form_id form_id (and also form definitor function name)
+   * @return cs_form         a new cs_form object
+   */
   static function get_form($form_id){
     $form_state = array();
     $args = func_get_args();
@@ -5388,6 +5890,11 @@ class cs_form_builder {
     return $form;
   }
 
+  /**
+   * returns rendered form's html string
+   * @param  string $form_id form_id (and also form definitor function name)
+   * @return string          form html
+   */
   static function render_form($form_id){
     $form_state = array();
     $args = func_get_args();
@@ -5399,6 +5906,11 @@ class cs_form_builder {
     return $form->render();
   }
 
+  /**
+   * prepares the form_state array
+   * @param  string $form_id the form_id
+   * @return array           the form_state array
+   */
   static function get_request_values($form_id){
     $out = array('input_values' => array() , 'input_form_definition'=>NULL);
     foreach(array('_POST' => $_POST,'_GET' => $_GET,'_REQUEST' => $_REQUEST) as $key => $array){
