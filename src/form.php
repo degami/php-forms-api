@@ -761,6 +761,12 @@ class cs_form extends cs_element{
     return NULL;
   }
 
+  /**
+   * add field to form
+   * @param string  $name  field name
+   * @param mixed  $field field to add, can be an array or a cs_field subclass
+   * @param integer $step  step to add the field to
+   */
   public function add_field($name, $field, $step = 0) {
     if (is_array($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
@@ -3789,7 +3795,7 @@ class cs_datetime extends cs_tag_container {
 
   /**
    * process hook . it simply calls the sub elements process
-   * @param  array $value value to set
+   * @param  array $values value to set
    */
   public function process($values) {
     $this->date->process($values[$this->get_name().'_date'],$this->get_name().'_date');
@@ -3939,20 +3945,37 @@ class cs_recaptcha extends cs_field {
   protected $privatekey = '';
   protected $already_validated = FALSE;
 
+  /**
+   * process hook
+   * @param  mixed $values value to set
+   */
   public function process($values){
     parent::process($values);
     if(isset($values['already_validated'])) $this->already_validated = $values['already_validated'];
   }
 
+  /**
+   * check if element is already validated
+   * @return boolean TRUE if element has already been validated
+   */
   public function is_already_validated(){
     return $this->already_validated;
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     if(!function_exists('recaptcha_get_html')) return '';
     return recaptcha_get_html($this->publickey);
   }
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
   public function valid() {
     if($this->already_validated == TRUE) return TRUE;
     if(isset($this->value['already_validated']) && $this->value['already_validated'] == TRUE) return TRUE;
@@ -3983,10 +4006,18 @@ class cs_recaptcha extends cs_field {
     return $resp->is_valid;
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is not a value
+   */
   public function is_a_value(){
     return FALSE;
   }
 
+  /**
+   * alter_request hook
+   * @param array $request request array
+   */
   public function alter_request(&$request){
     foreach($request as $key => $val){
       //RECAPTCHA HANDLE
@@ -4004,6 +4035,10 @@ class cs_recaptcha extends cs_field {
     }
   }
 
+  /**
+   * after_validate hook
+   * @param  cs_form $form form object
+   */
   public function after_validate(cs_form $form){
     $_SESSION[$form->get_id()]['steps'][$form->get_current_step()][$this->get_name()] = $this->values();
     $_SESSION[$form->get_id()]['steps'][$form->get_current_step()][$this->get_name()]['already_validated'] = $this->is_already_validated();
@@ -4019,10 +4054,19 @@ abstract class cs_fields_container extends cs_field {
   protected $insert_field_order = array();
   protected $fields = array();
 
+  /**
+   * get the fields array by reference
+   * @return array        the array of field elements
+   */
   public function &get_fields(){
     return $this->fields;
   }
 
+  /**
+   * get the form fields by type
+   * @param  array $field_types field types
+   * @return array              fields in the element
+   */
   public function get_fields_by_type($field_types){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
@@ -4039,6 +4083,12 @@ abstract class cs_fields_container extends cs_field {
     return $out;
   }
 
+  /**
+   * get the step fields by type and name
+   * @param  array $field_types field types
+   * @param  string $name       field name
+   * @return array              fields in the element matching the search criteria
+   */
   public function get_fields_by_type_and_name($field_types,$name){
     if(!is_array($field_types)) $field_types = array($field_types);
     $out = array();
@@ -4055,10 +4105,20 @@ abstract class cs_fields_container extends cs_field {
     return $out;
   }
 
+  /**
+   * get field by name
+   * @param  string  $field_name field name
+   * @return cs_element subclass field object
+   */
   public function get_field($field_name){
     return isset($this->fields[$field_name]) ? $this->fields[$field_name] : NULL;
   }
 
+  /**
+   * add field to form
+   * @param string  $name  field name
+   * @param mixed  $field field to add, can be an array or a cs_field subclass
+   */
   public function add_field($name, $field) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
@@ -4078,6 +4138,10 @@ abstract class cs_fields_container extends cs_field {
     return $this;
   }
 
+  /**
+   * return form elements values into this element
+   * @return array form values
+   */
   public function values() {
     $output = array();
     foreach ($this->get_fields() as $name => $field) {
@@ -4091,11 +4155,20 @@ abstract class cs_fields_container extends cs_field {
     return $output;
   }
 
+  /**
+   * preprocess hook . it simply calls the sub elements preprocess
+   * @param  string $process_type preprocess type
+   */
   public function preprocess($process_type = "preprocess") {
     foreach ($this->get_fields() as $field) {
       $field->preprocess($process_type);
     }
   }
+
+  /**
+   * process (set) the fields value
+   * @param  mixed $values value to set
+   */
   public function process($values) {
     foreach ($this->get_fields() as $name => $field) {
       if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
@@ -4111,6 +4184,10 @@ abstract class cs_fields_container extends cs_field {
     }
   }
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     foreach ($this->get_fields() as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'pre_render' ) ){
@@ -4120,6 +4197,10 @@ abstract class cs_fields_container extends cs_field {
     parent::pre_render($form);
   }
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
   public function valid() {
     $valid = TRUE;
     foreach ($this->get_fields() as $field) {
@@ -4130,6 +4211,11 @@ abstract class cs_fields_container extends cs_field {
     }
     return $valid;
   }
+
+  /**
+   * renders form errors
+   * @return string errors as an html <li> list
+   */
   public function show_errors() {
     $output = "";
     foreach ($this->get_fields() as $field) {
@@ -4138,21 +4224,37 @@ abstract class cs_fields_container extends cs_field {
     return $output;
   }
 
+  /**
+   * resets the fields
+   */
   public function reset() {
     foreach ($this->get_fields() as $field) {
       $field->reset();
     }
   }
 
+  /**
+   * is_a_value hook
+   * @return boolean this is a value
+   */
   public function is_a_value(){
     return TRUE;
   }
 
+  /**
+   * alter_request hook
+   * @param array $request request array
+   */
   public function alter_request(&$request){
     foreach($this->get_fields() as $field){
       $field->alter_request($request);
     }
   }
+
+  /**
+   * after_validate hook
+   * @param  cs_form $form form object
+   */
   public function after_validate(cs_form $form){
     foreach($this->get_fields() as $field){
       $field->after_validate($form);
@@ -4171,6 +4273,11 @@ class cs_tag_container extends cs_fields_container {
     }
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
@@ -4197,6 +4304,10 @@ class cs_fieldset extends cs_fields_container {
   protected $collapsible = FALSE;
   protected $collapsed = FALSE;
 
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
   public function pre_render(cs_form $form){
     static $js_collapsible_added = FALSE;
     $id = $this->get_html_id();
@@ -4232,6 +4343,11 @@ class cs_fieldset extends cs_fields_container {
     parent::pre_render($form);
   }
 
+  /**
+   * render_field hook
+   * @param  cs_form $form form object
+   * @return string        the element html
+   */
   public function render_field(cs_form $form) {
     $id = $this->get_html_id();
     $output = '';
