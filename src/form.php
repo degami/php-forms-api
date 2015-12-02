@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * PHP FORMS API
+ * @package degami/php-forms-api
+ */
 /*
  *  Turn on error reporting during development
  */
@@ -53,18 +56,83 @@ if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE 
  * @abstract
  */
 abstract class cs_element{
+
+  /**
+   * element name
+   * @var string
+   */
   protected $name = NULL;
+
+  /**
+   * element weight
+   * @var integer
+   */
   protected $weight = 0;
+
+  /**
+   * element container tag
+   * @var string
+   */
   protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
+
+  /**
+   * element container html class
+   * @var string
+   */
   protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
+
+  /**
+   * element label class
+   * @var string
+   */
   protected $label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
+
+  /**
+   * element container inherits classes
+   * @var boolean
+   */
   protected $container_inherits_classes = FALSE;
+
+  /**
+   * element errors array
+   * @var array
+   */
   protected $errors = array();
+
+  /**
+   * element attributes array
+   * @var array
+   */
   protected $attributes = array();
+
+  /**
+   * element js array
+   * @var array
+   */
   protected $js = array();
+
+  /**
+   * element css array
+   * @var array
+   */
   protected $css = array();
+
+  /**
+   * element prefix
+   * @var string
+   */
   protected $prefix = '';
+
+  /**
+   * element suffix
+   * @var string
+   */
   protected $suffix = '';
+
+  /**
+   * element build options
+   * @var null
+   */
   protected $build_options = NULL;
 
   /**
@@ -316,6 +384,12 @@ abstract class cs_element{
     return $values;
   }
 
+  /**
+   * _toArray private method
+   * @param  mixed  $key  key
+   * @param  mixed  $elem element
+   * @return array        element as an array
+   */
   private static function _toArray($key, $elem){
     if(is_object($elem) && ($elem instanceof cs_element ||  $elem instanceof cs_ordered_functions) ){
       $elem = $elem->toArray();
@@ -339,26 +413,112 @@ abstract class cs_element{
  */
 class cs_form extends cs_element{
 
+  /**
+   * form id
+   * @var string
+   */
   protected $form_id = 'cs_form';
+
+  /**
+   * form token
+   * @var string
+   */
   protected $form_token = '';
+
+  /**
+   * form action
+   * @var string
+   */
   protected $action = '';
+
+  /**
+   * form method
+   * @var string
+   */
   protected $method = 'post';
+
+  /**
+   * "form is already processsd" flag
+   * @var boolean
+   */
   protected $processed = FALSE;
+
+  /**
+   * "form is already validated" flag
+   * @var boolean
+   */
   protected $validated = FALSE;
+
+  /**
+   * "form is already submitted" flag
+   * @var boolean
+   */
   protected $submitted = FALSE;
+
+  /**
+   * "form is valid" flag
+   * @var null
+   */
   protected $valid = NULL;
+
+  /**
+   * validate functions list
+   * @var array
+   */
   protected $validate = array();
+
+  /**
+   * submit functions list
+   * @var array
+   */
   protected $submit = array();
+
+  /**
+   * form output type (html/json)
+   * @var string
+   */
   protected $output_type = 'html';
 
+  /**
+   * show inline errors
+   * @var boolean
+   */
   protected $inline_errors = FALSE;
+
+  /**
+   * "js was aleready generated" flag
+   * @var boolean
+   */
   protected $js_generated = FALSE;
 
+  /**
+   * keeps fields insert order
+   * @var array
+   */
   protected $insert_field_order = array();
+
+  /**
+   * form fields
+   * @var array
+   */
   protected $fields = array();
+
+  /**
+   * ajax submit url
+   * @var string
+   */
   protected $ajax_submit_url = '';
 
+  /**
+   * current step
+   * @var integer
+   */
   private $current_step = 0;
+
+  /**
+   * array of submit functions results
+   * @var array
+   */
   private $submit_functions_results = array();
 
   /**
@@ -600,6 +760,7 @@ class cs_form extends cs_element{
 
   /**
    * alter request hook
+   * @param array $request request array
    */
   private function alter_request(&$request){
     foreach($this->get_fields($this->current_step) as $field){
@@ -1503,6 +1664,7 @@ class cs_form extends cs_element{
   /**
    * applies xss checks on string
    * @param  string $string text to check
+   * @param  string $allowed_tags allowed tags
    * @return string         safe value
    */
   public static function process_xss($string, $allowed_tags = FORMS_XSS_ALLOWED_TAGS) {
@@ -1538,6 +1700,12 @@ class cs_form extends cs_element{
       )%x', 'cs_form::_filter_xss_split', $string);
   }
 
+  /**
+   * _filter_xss_split private method
+   * @param  string  $m     string to split
+   * @param  boolean $store store elemnts into static $allowed html
+   * @return string         string
+   */
   private static function _filter_xss_split($m, $store = FALSE) {
     static $allowed_html;
 
@@ -1589,6 +1757,11 @@ class cs_form extends cs_element{
     return "<$elem$attr2$xhtml_slash>";
   }
 
+  /**
+   * _filter_xss_attributes private method
+   * @param  string $attr attributes string
+   * @return array        filtered attributes array
+   */
   private static function _filter_xss_attributes($attr) {
     $attrarr = array();
     $mode = 0;
@@ -1691,6 +1864,12 @@ class cs_form extends cs_element{
     return $attrarr;
   }
 
+  /**
+   *[_filter_xss_bad_protocol private method
+   * @param  string  $string string
+   * @param  boolean $decode process entity decode on string
+   * @return string          safe value
+   */
   private static function _filter_xss_bad_protocol($string, $decode = TRUE) {
     if ($decode) {
       $string = process_entity_decode($string);
@@ -1698,6 +1877,11 @@ class cs_form extends cs_element{
     return process_plain(cs_form::_strip_dangerous_protocols($string));
   }
 
+  /**
+   * _strip_dangerous_protocols private method
+   * @param  string $uri uri
+   * @return string      safe value
+   */
   private static function _strip_dangerous_protocols($uri) {
     static $allowed_protocols;
 
@@ -1760,6 +1944,12 @@ class cs_form extends cs_element{
     else return $text;
   }
 
+  /**
+   * scan_array private method
+   * @param  string $string string to search
+   * @param  array $array   array to check
+   * @return mixed          found element / FALSE on failure
+   */
   private static function scan_array($string, $array) {
     list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
     if ( $key && $rest ) {
@@ -1868,22 +2058,106 @@ class cs_form extends cs_element{
  */
 abstract class cs_field extends cs_element{
 
+  /**
+   * validate functions list
+   * @var array
+   */
   protected $validate = array();
+
+  /**
+   * preprocess functions list
+   * @var array
+   */
   protected $preprocess = array();
+
+  /**
+   * postprocess functions list
+   * @var array
+   */
   protected $postprocess = array();
+
+  /**
+   * element js events list
+   * @var array
+   */
   protected $event = array();
+
+  /**
+   * element size
+   * @var integer
+   */
   protected $size = 20;
+
+  /**
+   * element type
+   * @var string
+   */
   protected $type = '';
+
+  /**
+   * "stop on first validation error" flag
+   * @var boolean
+   */
   protected $stop_on_first_error = FALSE;
+
+  /**
+   * "show tooltip instead of label" flag
+   * @var boolean
+   */
   protected $tooltip = FALSE;
+
+  /**
+   * element id
+   * @var null
+   */
   protected $id = NULL;
+
+  /**
+   * element title
+   * @var null
+   */
   protected $title = NULL;
+
+  /**
+   * element description
+   * @var null
+   */
   protected $description = NULL;
+
+  /**
+   * element disabled
+   * @var boolean
+   */
   protected $disabled = FALSE;
+
+  /**
+   * element default value
+   * @var null
+   */
   protected $default_value = NULL;
+
+  /**
+   * element value
+   * @var null
+   */
   protected $value = NULL;
+
+  /**
+   * "element already pre-rendered" flag
+   * @var boolean
+   */
   protected $pre_rendered = FALSE;
+
+  /**
+   * "this is a required field" position
+   * @var string
+   */
   protected $required_position = 'after';
+
+  /**
+   * element ajax url
+   * @var null
+   */
   protected $ajax_url = NULL;
 
   /**
@@ -2290,8 +2564,12 @@ abstract class cs_field extends cs_element{
  * @abstract
  */
 abstract class cs_action extends cs_field{
-  protected $js_button = FALSE;
 
+  /**
+   * "use jqueryui button method on this element" flag
+   * @var boolean
+   */
+  protected $js_button = FALSE;
 
   /**
    * pre_render hook
@@ -2328,6 +2606,11 @@ abstract class cs_action extends cs_field{
  * @abstract
  */
 abstract class cs_clickable extends cs_action{
+
+  /**
+   * "this element was clicked" flag
+   * @var boolean
+   */
   protected $clicked = FALSE;
 
   /**
@@ -2381,6 +2664,7 @@ abstract class cs_clickable extends cs_action{
  * the submit input type field class
  */
 class cs_submit extends cs_clickable {
+
   /**
    * render_field hook
    * @param  cs_form $form form object
@@ -2403,6 +2687,11 @@ class cs_submit extends cs_clickable {
  * the button field class
  */
 class cs_button extends cs_clickable {
+
+  /**
+   * element label
+   * @var string
+   */
   protected $label;
 
   /**
@@ -2434,7 +2723,17 @@ class cs_button extends cs_clickable {
  * the image submit input type field class
  */
 class cs_image_button extends cs_clickable {
+
+  /**
+   * image source
+   * @var string
+   */
   protected $src;
+
+  /**
+   * image alternate
+   * @var string
+   */
   protected $alt;
 
   /**
@@ -2571,7 +2870,7 @@ class cs_value extends cs_field {
 }
 
 /**
- * the markup field class
+ * the markup field class.
  * this is not a value
  */
 class cs_markup extends cs_field {
@@ -2620,7 +2919,17 @@ class cs_markup extends cs_field {
  * the progressbar field class
  */
 class cs_progressbar extends cs_markup {
+
+  /**
+   * "indeterminate progressbar" flag
+   * @var boolean
+   */
   protected $indeterminate = FALSE;
+
+  /**
+   * "show label" flag
+   * @var boolean
+   */
   protected $show_label = FALSE;
 
   /**
@@ -2702,6 +3011,7 @@ class cs_hidden extends cs_field {
  * the text input field class
  */
 class cs_textfield extends cs_field {
+
   /**
    * render_field hook
    * @param  cs_form $form form object
@@ -2733,8 +3043,23 @@ class cs_textfield extends cs_field {
  * the "autocomplete" text input field class
  */
 class cs_autocomplete extends cs_textfield{
+
+  /**
+   * autocomplete path
+   * @var mixed
+   */
   protected $autocomplete_path = FALSE;
+
+  /**
+   * options for autocomplete (if autocomplete path was not provided)
+   * @var array
+   */
   protected $options = array();
+
+  /**
+   * minimum string length for autocomplete
+   * @var integer
+   */
   protected $min_length = 3;
 
   /**
@@ -2783,9 +3108,17 @@ class cs_autocomplete extends cs_textfield{
  * the "masked" text input field class
  */
 class cs_maskedfield extends cs_textfield{
+
+  /**
+   * input mask string
+   * @var string
+   */
   protected $mask;
 
-  /* jQuery Mask Plugin patterns */
+  /**
+   * jQuery Mask Plugin patterns
+   * @var array
+   */
   private $translation = array(
     '0'  =>  "\d",
     '9'  =>  "\d?",
@@ -2844,7 +3177,17 @@ class cs_maskedfield extends cs_textfield{
  * the textarea field class
  */
 class cs_textarea extends cs_field {
+
+  /**
+   * rows
+   * @var integer
+   */
   protected $rows = 5;
+
+  /**
+   * resizable flag
+   * @var boolean
+   */
   protected $resizable = FALSE;
 
   /**
@@ -2891,8 +3234,23 @@ class cs_textarea extends cs_field {
  * the password input field class
  */
 class cs_password extends cs_field {
+
+  /**
+   * "with confirmation" flag
+   * @var boolean
+   */
   protected $with_confirm = FALSE;
+
+  /**
+   * confirmation input label
+   * @var string
+   */
   protected $confirm_string = "Confirm password";
+
+  /**
+   * "include javascript strength check" flag
+   * @var boolean
+   */
   protected $with_strength_check = FALSE;
 
   /**
@@ -2999,6 +3357,11 @@ class cs_password extends cs_field {
  * @abstract
  */
 abstract class cs_field_multivalues extends cs_field {
+
+  /**
+   * options array
+   * @var array
+   */
   protected $options = array();
 
   /**
@@ -3078,7 +3441,17 @@ abstract class cs_field_multivalues extends cs_field {
  * the option element class
  */
 class cs_option extends cs_element{
+
+  /**
+   * option label
+   * @var string
+   */
   protected $label;
+
+  /**
+   * option key
+   * @var string
+   */
   protected $key;
 
   /**
@@ -3123,13 +3496,23 @@ class cs_option extends cs_element{
  * the optgroup element class
  */
 class cs_optgroup extends cs_element{
+
+  /**
+   * options array
+   * @var array
+   */
   protected $options;
+
+  /**
+   * element label
+   * @var string
+   */
   protected $label;
 
   /**
    * class constructor
    * @param string $label   label
-   * @param array  $options build options
+   * @param array  $options options array
    */
   function __construct($label, $options) {
     $this->label = $label;
@@ -3188,6 +3571,11 @@ class cs_optgroup extends cs_element{
  * the select field class
  */
 class cs_select extends cs_field_multivalues {
+
+  /**
+   * multiple attribute
+   * @var boolean
+   */
   protected $multiple = FALSE;
 
   /**
@@ -3252,6 +3640,7 @@ class cs_select extends cs_field_multivalues {
  * the "selectmenu" select field class
  */
 class cs_selectmenu extends cs_select{
+
   /**
    * pre_render hook
    * @param  cs_form $form form object
@@ -3333,6 +3722,7 @@ class cs_slider extends cs_select{
  * the radios group field class
  */
 class cs_radios extends cs_field_multivalues {
+
   /**
    * render_field hook
    * @param  cs_form $form form object
@@ -3364,6 +3754,7 @@ class cs_radios extends cs_field_multivalues {
  * the checkboxes group field class
  */
 class cs_checkboxes extends cs_field_multivalues {
+
   /**
    * render_field hook
    * @param  cs_form $form form object
@@ -3442,7 +3833,17 @@ class cs_checkbox extends cs_field {
  * the file input field class
  */
 class cs_file extends cs_field {
+
+  /**
+   * "file already uploaded" flag
+   * @var boolean
+   */
   protected $uploaded = FALSE;
+
+  /**
+   * file destination directory
+   * @var string
+   */
   protected $destination;
 
   /**
@@ -3540,9 +3941,29 @@ class cs_file extends cs_field {
  * the date select group field class
  */
 class cs_date extends cs_field {
+
+  /**
+   * granularity (day / month / year)
+   * @var string
+   */
   protected $granularity = 'day';
+
+  /**
+   * start year
+   * @var integer
+   */
   protected $start_year;
+
+  /**
+   * end year
+   * @var integer
+   */
   protected $end_year;
+
+  /**
+   * "use js selects" flag
+   * @var boolean
+   */
   protected $js_selects = FALSE;
 
   /**
@@ -3645,6 +4066,7 @@ class cs_date extends cs_field {
   /**
    * process hook
    * @param  array $value value to set
+   * @param  string $name !this parameter is not used
    */
   public function process($value, $name) {
     $this->value = array(
@@ -3730,12 +4152,47 @@ class cs_date extends cs_field {
  * the datepicker text input field class
  */
 class cs_datepicker extends cs_field {
+
+  /**
+   * date format
+   * @var string
+   */
   protected $date_format = 'yy-mm-dd';
+
+  /**
+   * change month flag
+   * @var boolean
+   */
   protected $change_month = FALSE;
+
+  /**
+   * change year flag
+   * @var boolean
+   */
   protected $change_year = FALSE;
+
+  /**
+   * min date
+   * @var string
+   */
   protected $mindate = '-10Y';
+
+  /**
+   * max date
+   * @var string
+   */
   protected $maxdate = '+10Y';
+
+  /**
+   * year range
+   * @var string
+   */
   protected $yearrange = '-10:+10';
+
+  /**
+   * disabled dates array
+   * @var array
+   */
   protected $disabled_dates = array(); // an array of date strings compliant to $date_format
 
   /**
@@ -3801,7 +4258,17 @@ class cs_datepicker extends cs_field {
  * the time select group field class
  */
 class cs_time extends cs_field {
+
+  /**
+   * granularity (seconds / minutes / hours)
+   * @var string
+   */
   protected $granularity = 'seconds';
+
+  /**
+   * "use js selects" flag
+   * @var boolean
+   */
   protected $js_selects = FALSE;
 
   /**
@@ -3906,6 +4373,7 @@ class cs_time extends cs_field {
   /**
    * process hook
    * @param  array $value value to set
+   * @param  string $name !this parameter is not used
    */
   public function process($value, $name) {
     $this->value = array(
@@ -3977,7 +4445,17 @@ class cs_time extends cs_field {
  * the datetime select group field class
  */
 class cs_datetime extends cs_tag_container {
+
+  /**
+   * cs_date sub element
+   * @var cs_date
+   */
   protected $date = NULL;
+
+  /**
+   * cs_time sub_element
+   * @var cs_time
+   */
   protected $time = NULL;
 
   /**
@@ -4114,8 +4592,23 @@ class cs_datetime extends cs_tag_container {
  * the spinner number input field class
  */
 class cs_spinner extends cs_field {
+
+  /**
+   * minimum value
+   * @var null
+   */
   protected $min = NULL;
+
+  /**
+   * maximum value
+   * @var null
+   */
   protected $max = NULL;
+
+  /**
+   * step value
+   * @var integer
+   */
   protected $step = 1;
 
   /**
@@ -4174,8 +4667,23 @@ class cs_spinner extends cs_field {
  * the recaptcha field class
  */
 class cs_recaptcha extends cs_field {
+
+  /**
+   * public key
+   * @var string
+   */
   protected $publickey = '';
+
+  /**
+   * private key
+   * @var string
+   */
   protected $privatekey = '';
+
+  /**
+   * "already validated" flag
+   * @var boolean
+   */
   protected $already_validated = FALSE;
 
   /**
@@ -4287,7 +4795,17 @@ class cs_recaptcha extends cs_field {
  * @abstract
  */
 abstract class cs_fields_container extends cs_field {
+
+  /**
+   * keeps fields insert order
+   * @var array
+   */
   protected $insert_field_order = array();
+
+  /**
+   * element fields
+   * @var array
+   */
   protected $fields = array();
 
   /**
@@ -4502,6 +5020,10 @@ abstract class cs_fields_container extends cs_field {
  * a field container that can specify container's html tag
  */
 class cs_tag_container extends cs_fields_container {
+  /**
+   * container html tag
+   * @var string
+   */
   protected $tag = 'div';
 
   /**
@@ -4548,7 +5070,17 @@ class cs_tag_container extends cs_fields_container {
  * a fieldset field container
  */
 class cs_fieldset extends cs_fields_container {
+
+  /**
+   * collapsible flag
+   * @var boolean
+   */
   protected $collapsible = FALSE;
+
+  /**
+   * collapsed flag
+   * @var boolean
+   */
   protected $collapsed = FALSE;
 
   /**
@@ -4628,6 +5160,11 @@ class cs_fieldset extends cs_fields_container {
  * @abstract
  */
 abstract class cs_fields_container_multiple extends cs_fields_container{
+
+  /**
+   * element tabs
+   * @var array
+   */
   protected $tabs = array();
 
   /**
@@ -4762,6 +5299,11 @@ class cs_tabs extends cs_fields_container_multiple {
  * an accordion field container
  */
 class cs_accordion extends cs_fields_container_multiple {
+
+  /**
+   * height style
+   * @var string
+   */
   protected $height_style = 'auto';
 
   /**
@@ -4817,7 +5359,17 @@ class cs_accordion extends cs_fields_container_multiple {
  * @abstract
  */
 abstract class cs_sortable_container extends cs_fields_container_multiple{
+
+  /**
+   * sort handle position (left/right)
+   * @var string
+   */
   protected $handle_position = 'left';
+
+  /**
+   * deltas array ( used for sorting )
+   * @var array
+   */
   private $deltas = array();
 
   /**
@@ -4895,6 +5447,7 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
  * a sortable field container
  */
 class cs_sortable extends cs_sortable_container{
+
   /**
    * add field to element
    * @param string  $name     field name
@@ -4970,6 +5523,10 @@ class cs_sortable extends cs_sortable_container{
  */
 class cs_sortable_table extends cs_sortable_container{
 
+  /**
+   * table header
+   * @var array
+   */
   protected $table_header = array();
 
   /**
@@ -5060,7 +5617,16 @@ class cs_sortable_table extends cs_sortable_container{
  */
 class cs_table_container extends cs_fields_container_multiple{
 
+  /**
+   * table header
+   * @var array
+   */
   protected $table_header = array();
+
+  /**
+   * attributes for TRs or TDs
+   * @var array
+   */
   protected $col_row_attributes = array();
 
   /**
@@ -5156,14 +5722,35 @@ class cs_table_container extends cs_fields_container_multiple{
  * the pupload field class
  */
 class cs_plupload extends cs_field {
+
+  /**
+   * filters
+   * @var array
+   */
   protected $filters = [];
+
+  /**
+   * upload.php url
+   * @var string
+   */
   protected $url     = ''; // url upload.php
+
+  /**
+   * Moxie.swf url
+   * @var string
+   */
   protected $swf_url = ''; // url Moxie.swf
+
+  /**
+   * Moxie.xap url
+   * @var string
+   */
   protected $xap_url = ''; // url Moxie.xap
 
   /**
    * process hook
    * @param  mixed $value value to set
+   * @param  string $name !this parameter is not used
    */
   public function process($value, $name) {
     $this->value = json_decode($value);
@@ -5327,7 +5914,17 @@ class cs_plupload extends cs_field {
  * the geolocation field class
  */
 class cs_geolocation extends cs_tag_container {
+
+  /**
+   * latitude
+   * @var float
+   */
   protected $latitude;
+
+  /**
+   * longitude
+   * @var float
+   */
   protected $longitude;
 
   /**
@@ -5475,23 +6072,70 @@ class cs_geolocation extends cs_tag_container {
  * the google maps geolocation field class
  */
 class cs_gmaplocation extends cs_geolocation {
-  protected $zoom = 8;
-  protected $scrollwheel = FALSE;
-  protected $mapwidth = '100%';
-  protected $mapheight = '500px';
-  protected $markertitle = NULL;
-  protected $maptype = 'google.maps.MapTypeId.ROADMAP';
-  protected $with_geocode = FALSE;
-  protected $lat_lon_type = 'hidden';
-  protected $geocode_box = NULL;
-  protected $with_map = TRUE;
 
-  /*
-    google.maps.MapTypeId.HYBRID
-    google.maps.MapTypeId.ROADMAP
-    google.maps.MapTypeId.SATELLITE
-    google.maps.MapTypeId.TERRAIN
-  */
+  /**
+   * zoom
+   * @var integer
+   */
+  protected $zoom = 8;
+
+  /**
+   * scrollwheel
+   * @var boolean
+   */
+  protected $scrollwheel = FALSE;
+
+  /**
+   * map width
+   * @var string
+   */
+  protected $mapwidth = '100%';
+
+  /**
+   * map height
+   * @var string
+   */
+  protected $mapheight = '500px';
+
+  /**
+   * marker title
+   * @var null
+   */
+  protected $markertitle = NULL;
+
+  /**
+   * map type - one of:
+   * google.maps.MapTypeId.HYBRID,
+   * google.maps.MapTypeId.ROADMAP,
+   * google.maps.MapTypeId.SATELLITE,
+   * google.maps.MapTypeId.TERRAIN
+   * @var string
+   */
+  protected $maptype = 'google.maps.MapTypeId.ROADMAP';
+
+  /**
+   * enable geocode box
+   * @var boolean
+   */
+  protected $with_geocode = FALSE;
+
+  /**
+   * input type where latitude and longitude are stored (hidden / textfield)
+   * @var string
+   */
+  protected $lat_lon_type = 'hidden';
+
+  /**
+   * cs_textfield subelement for geocode box
+   * @var null
+   */
+  protected $geocode_box = NULL;
+
+  /**
+   * "show map" flag
+   * @var boolean
+   */
+  protected $with_map = TRUE;
 
   /**
    * class constructor
@@ -5717,8 +6361,23 @@ class cs_gmaplocation extends cs_geolocation {
  * class for maintaining ordered list of functions
  */
 class cs_ordered_functions implements Iterator{
+
+  /**
+   * current position
+   * @var integer
+   */
   private $position = 0;
+
+  /**
+   * iterable elements
+   * @var array
+   */
   private $array = array();
+
+  /**
+   * sort function name
+   * @var null
+   */
   private $sort_callback = NULL;
 
   /**
@@ -5874,6 +6533,7 @@ class cs_ordered_functions implements Iterator{
  * the form builder class
  */
 class cs_form_builder {
+
   /**
    * returns a form object.
    * this function calls the form definitor function passing an initial empty form object and the form state
@@ -5924,13 +6584,7 @@ class cs_form_builder {
    * @return string          form html
    */
   static function render_form($form_id){
-    $form_state = array();
-    $args = func_get_args();
-    // Remove $form_id from the arguments.
-    array_shift($args);
-    $form_state['build_info']['args'] = $args;
-
-    $form = cs_form_builder::build_form($form_id, $form_state);
+    $form = cs_form_builder::get_form($form_id);
     return $form->render();
   }
 
