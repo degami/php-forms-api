@@ -107,7 +107,6 @@ $form = cs_form_builder::get_form('showallform');
   <script type="text/javascript"><?php
 
     // if you wish to have form's js scripts here rather than after the form....
-    $form->pre_render(); // call all elements pre_render, so they can attach js to the form element
     print $form->generate_js();
 
   ?></script>

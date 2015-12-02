@@ -486,6 +486,12 @@ class cs_form extends cs_element{
   protected $inline_errors = FALSE;
 
   /**
+   * "form already pre-rendered" flag
+   * @var boolean
+   */
+  protected $pre_rendered = FALSE;
+
+  /**
    * "js was aleready generated" flag
    * @var boolean
    */
@@ -1167,6 +1173,7 @@ class cs_form extends cs_element{
         $field->pre_render($this);
       }
     }
+    $this->pre_rendered = TRUE;
   }
 
   /**
@@ -1350,6 +1357,8 @@ class cs_form extends cs_element{
    * @return string the js into a jquery sandbox
    */
   public function generate_js(){
+    if( !$this->pre_rendered ) $this->pre_render(); // call all elements pre_render, so they can attach js to the form element;
+
     $js = array_filter(array_map('trim', $this->get_js() ));
     if(!empty( $js ) && !$this->js_generated ){
       foreach($js as &$js_string){
