@@ -105,11 +105,11 @@ $form = cs_form_builder::get_form('showallform');
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
   <script type="text/javascript" src="http://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
   <script type="text/javascript"><?php
-/*
+
     // if you wish to have form's js scripts here rather than after the form....
     $form->pre_render(); // call all elements pre_render, so they can attach js to the form element
     print $form->generate_js();
-*/
+
   ?></script>
   <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/flick/jquery-ui.css">
 </head>
