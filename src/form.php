@@ -1828,6 +1828,10 @@ class cs_form extends cs_element{
     return $string;
   }
 
+  /**
+   * toString magic method
+   * @return string the form html
+   */
   public function __toString(){
     return $this->render();
   }
