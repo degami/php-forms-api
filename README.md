@@ -31,7 +31,7 @@ Requirements:
  * ~~Complete the javascript functionality for collapsible fieldsets and the
    password strength meter for password fields.~~
  * Complete unit tests.
- * AJAX support for ~~field submission~~ and file uploads.
+ * ~~AJAX support for field submission and file uploads.~~
  * Provide a better default theme and a methodology for defining themes.
  * ~~Implement new field types such as button, dates~~
  * ~~Add support for masked fields, possibly using a jquery plugin.~~
