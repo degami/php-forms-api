@@ -98,7 +98,7 @@ $form = cs_form_builder::get_form('locationsform');
     <pre><?php var_export($form->get_submit_results());?></pre>
     <p>Thanks for submitting the form.</p>
   <?php else: ?>
-    <?php print $form->render(); ?>
+    <?php print $form; ?>
   <?php endif; ?>
   <pre style="font-size:10px;"><?php // print_r($form); ?></pre>
   </div>
