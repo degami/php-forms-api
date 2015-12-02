@@ -244,6 +244,26 @@ abstract class cs_element{
 
 
   /**
+   * set element prefix
+   * @param string $prefix element prefix
+   */
+  public function set_prefix($prefix){
+    $this->prefix = $prefix;
+
+    return $this;
+  }
+
+  /**
+   * set element suffix
+   * @param string $prefix element prefix
+   */
+  public function set_suffix($suffix){
+    $this->suffix = $suffix;
+
+    return $this;
+  }
+
+  /**
    * get element html prefix
    * @return string html for the element prefix
    */
