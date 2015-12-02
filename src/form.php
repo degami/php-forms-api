@@ -1827,6 +1827,10 @@ class cs_form extends cs_element{
     if(is_string($string) && function_exists('__')) return __($string);
     return $string;
   }
+
+  public function __toString(){
+    return $this->render();
+  }
 }
 
 
