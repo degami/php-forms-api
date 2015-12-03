@@ -2686,7 +2686,7 @@ class cs_submit extends cs_clickable {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output = "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"".cs_form::translate_string($this->value)."\"{$attributes} />\n";
     return $output;
   }
 
@@ -2722,7 +2722,7 @@ class cs_button extends cs_clickable {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes} value=\"{$this->value}\">{$this->label}</button>\n";
+    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes} value=\"{$this->value}\">".cs_form::translate_string($this->label)."</button>\n";
     return $output;
   }
 
@@ -2826,7 +2826,7 @@ class cs_reset extends cs_action {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+    $output = "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"".cs_form::translate_string($this->value)."\"{$attributes} />\n";
     return $output;
   }
 
