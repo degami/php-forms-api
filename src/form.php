@@ -5143,7 +5143,7 @@ class cs_fieldset extends cs_fields_container {
     $attributes = $this->get_attributes();
     $output .= "<fieldset id=\"{$id}\"{$attributes}>\n";
     if (!empty($this->title)) {
-      $output .= "<legend>{$this->title}</legend>\n";
+      $output .= "<legend>".cs_form::translate_string($this->title)."</legend>\n";
     }
 
     $insertorder = array_flip($this->insert_field_order);
