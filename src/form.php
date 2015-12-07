@@ -5639,6 +5639,41 @@ class cs_table_container extends cs_fields_container_multiple{
   protected $col_row_attributes = array();
 
   /**
+   * set table header array
+   * @param array $table_header table header elements array
+   */
+  public function set_table_header(array $table_header){
+    $this->table_header = $table_header;
+    return $this;
+  }
+
+  /**
+   * get table header array
+   * @return array table header array
+   */
+  public function get_table_header(){
+    return $this->table_header;
+  }
+
+  /**
+   * set rows / cols attributes array
+   * @param array $col_row_attributes attributes array
+   */
+  public function set_col_row_attributes(array $col_row_attributes){
+    $this->col_row_attributes = $col_row_attributes;
+    return $this;
+  }
+
+  /**
+   * get rows / cols attributes array
+   * @return array attributes array
+   */
+  public function get_col_row_attributes(){
+    return $this->col_row_attributes;
+  }
+
+
+  /**
    * pre_render hook
    * @param  cs_form $form form object
    */
