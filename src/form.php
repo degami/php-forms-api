@@ -5723,7 +5723,12 @@ class cs_table_container extends cs_fields_container_multiple{
       $output .= "<thead>\n";
       foreach($this->table_header as $th){
         if(is_array($th)){
-          $output .= "<th ".$this->get_attributes_string($th['attributes']).">".$th['value']."</th>";
+          $th_attributes = '';
+          if(!empty($th['attributes'])){
+            $th_attributes = $this->get_attributes_string($th['attributes']);
+            if(trim($th_attributes) != '') $th_attributes = ' '.$th_attributes;
+          }
+          $output .= "<th{$th_attributes}>".$th['value']."</th>";
         }else{
           $output .= "<th>{$th}</th>";
         }
