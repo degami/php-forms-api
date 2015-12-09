@@ -527,6 +527,13 @@ class cs_form extends cs_element{
    */
   private $submit_functions_results = array();
 
+
+  /**
+   * "do not process form token" flag
+   * @var boolean
+   */
+  private $no_token = FALSE;
+
   /**
    * class constructor
    * @param array $options build options
@@ -910,7 +917,7 @@ class cs_form extends cs_element{
       return NULL;
     } else if ($_REQUEST['form_id'] == $this->form_id) {
       $sid = session_id();
-      if (!empty($sid)) {
+      if (!empty($sid) && !$this->no_token) {
         $this->valid = FALSE;
         $this->add_error(cs_form::translate_string('Form is invalid or has expired'),__FUNCTION__);
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
@@ -1304,7 +1311,7 @@ class cs_form extends cs_element{
           $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
           $output['html'] .= $fields_html;
           $output['html'] .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
-          $output['html'] .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+          if( !$this->no_token ) $output['html'] .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
           if( $this->get_num_steps() > 1) {
             $output['html'] .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
           }
@@ -1331,7 +1338,7 @@ class cs_form extends cs_element{
           $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
           $output .= $fields_html;
           $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
-          $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+          if( !$this->no_token ) $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
           if( $this->get_num_steps() > 1) {
             $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
           }
