@@ -5726,7 +5726,6 @@ class cs_table_container extends cs_fields_container_multiple{
           $th_attributes = '';
           if(!empty($th['attributes'])){
             $th_attributes = $this->get_attributes_string($th['attributes']);
-            if(trim($th_attributes) != '') $th_attributes = ' '.$th_attributes;
           }
           $output .= "<th{$th_attributes}>".$th['value']."</th>";
         }else{
