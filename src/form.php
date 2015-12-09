@@ -240,7 +240,7 @@ abstract class cs_element{
     foreach ($attributes_arr as $key => $value) {
       if(!is_string($value) && !is_numeric($value)) continue;
       $value = cs_form::process_plain($value);
-      if(!empty($value)){
+      if(trim($value) != ''){
         $value=trim($value);
         $attributes .= " {$key}=\"{$value}\"";
       }
