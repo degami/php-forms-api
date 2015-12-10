@@ -659,6 +659,23 @@ class cs_form extends cs_element{
 
 
   /**
+   * set no_token flag
+   * @param boolean $no_token no token flag
+   */
+  public function set_no_token($no_token){
+    $this->no_token = $no_token;
+    return $this;
+  }
+
+  /**
+   * get no_token flag
+   * @return boolean no token flag
+   */
+  public function get_no_token(){
+    return $this->no_token;
+  }
+
+  /**
    * get the form token
    * @return string the form token used in form validation and submission process
    */
