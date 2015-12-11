@@ -3849,7 +3849,8 @@ class cs_checkbox extends cs_field {
     $attributes = $this->get_attributes();
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
-    $output = "<label for=\"{$id}\"><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".cs_form::translate_string($this->title)."</label>\n";
+    $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
+    $output = "<label for=\"{$id}\"{$label_class}><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".cs_form::translate_string($this->title)."</label>\n";
     return $output;
   }
 
