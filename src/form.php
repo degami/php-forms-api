@@ -3593,7 +3593,7 @@ class cs_optgroup extends cs_element{
     $attributes = $this->get_attributes(array('label'));
     $output = "<optgroup label=\"{$this->label}\"{$attributes}>\n";
     foreach ($this->options as $option) {
-      $output .= $option-> ($form_field);
+      $output .= $option->render($form_field);
     }
     $output .= "</optgroup>\n";
     return $output;
