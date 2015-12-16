@@ -2609,6 +2609,7 @@ abstract class cs_action extends cs_field{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     if($this->js_button == TRUE){
       $id = $this->get_html_id();
       $this->add_js("\$('#{$id}','#{$form->get_id()}').button();");
@@ -2970,6 +2971,7 @@ class cs_progressbar extends cs_markup {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     if($this->indeterminate == TRUE || !is_numeric($this->value) ){
       $this->add_js("\$('#{$id}','#{$form->get_id()}').progressbar({ value: false });");
@@ -3114,6 +3116,7 @@ class cs_autocomplete extends cs_textfield{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
 
     $this->add_js(
@@ -3179,6 +3182,7 @@ class cs_maskedfield extends cs_textfield{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').mask('{$this->mask}');");
     parent::pre_render($form);
@@ -3228,6 +3232,7 @@ class cs_textarea extends cs_field {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     if($this->resizable == TRUE){
       $this->add_js("\$('#{$id}','#{$form->get_id()}').resizable({handles:\"se\"});");
@@ -3291,6 +3296,7 @@ class cs_password extends cs_field {
    * @param  cs_form $form form object
    */
   function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     if($this->with_strength_check == TRUE){
       $id = $this->get_html_id();
 
@@ -3679,6 +3685,7 @@ class cs_selectmenu extends cs_select{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').selectmenu({width: 'auto' });");
 
@@ -3721,6 +3728,7 @@ class cs_slider extends cs_select{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_js(
       preg_replace("/\s+/"," ",str_replace("\n","",""."
@@ -4023,6 +4031,7 @@ class cs_date extends cs_field {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
       $this->add_js("\$('#{$id} select[name=\"{$this->name}[year]\"]','#{$form->get_id()}').selectmenu({width: 'auto' });");
@@ -4234,6 +4243,7 @@ class cs_datepicker extends cs_field {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
 
     $dateFormat = $this->date_format;
@@ -4326,6 +4336,7 @@ class cs_time extends cs_field {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     if($this->js_selects == TRUE){
       $id = $this->get_html_id();
 
@@ -4515,6 +4526,7 @@ class cs_datetime extends cs_tag_container {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_css("#{$id} div.date,#{$id} div.time{display: inline-block;margin-right: 5px;}");
     parent::pre_render($form);
@@ -4650,6 +4662,7 @@ class cs_spinner extends cs_field {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
 
     $js_options = '';
@@ -4977,6 +4990,7 @@ abstract class cs_fields_container extends cs_field {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     foreach ($this->get_fields() as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'pre_render' ) ){
         $field->pre_render($form);
@@ -5123,6 +5137,7 @@ class cs_fieldset extends cs_fields_container {
    */
   public function pre_render(cs_form $form){
     static $js_collapsible_added = FALSE;
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
@@ -5284,6 +5299,7 @@ class cs_tabs extends cs_fields_container_multiple {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').tabs();");
 
@@ -5346,6 +5362,7 @@ class cs_accordion extends cs_fields_container_multiple {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\", active: {$this->active} });");
 
@@ -5499,6 +5516,7 @@ class cs_sortable extends cs_sortable_container{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_js(
       preg_replace("/\s+/"," ",str_replace("\n","",""."\$('#{$id}','#{$form->get_id()}').sortable({
@@ -5569,6 +5587,7 @@ class cs_sortable_table extends cs_sortable_container{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_js(
       preg_replace("/\s+/"," ",str_replace("\n","",""."
@@ -5704,6 +5723,7 @@ class cs_table_container extends cs_fields_container_multiple{
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
 
     parent::pre_render($form);
@@ -5839,6 +5859,7 @@ class cs_plupload extends cs_field {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $form_id = $form->get_id();
 
@@ -6039,6 +6060,7 @@ class cs_geolocation extends cs_tag_container {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     parent::pre_render($form);
 
@@ -6291,6 +6313,7 @@ class cs_gmaplocation extends cs_geolocation {
    * @param  cs_form $form form object
    */
   public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
 
     if($this->with_geocode == TRUE){
