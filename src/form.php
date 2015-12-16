@@ -5773,9 +5773,9 @@ class cs_table_container extends cs_fields_container_multiple{
           if(!empty($th['attributes'])){
             $th_attributes = $this->get_attributes_string($th['attributes']);
           }
-          $output .= "<th{$th_attributes}>".$th['value']."</th>";
+          $output .= "<th{$th_attributes}>".cs_form::translate_string($th['value'])."</th>";
         }else{
-          $output .= "<th>{$th}</th>";
+          $output .= "<th>".cs_form::translate_string($th)."</th>";
         }
       }
       $output .= "</thead>\n";
