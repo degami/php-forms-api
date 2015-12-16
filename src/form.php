@@ -545,6 +545,7 @@ class cs_form extends cs_element{
     $this->container_class = FORMS_DEFAULT_FORM_CONTAINER_CLASS;
 
     foreach ($options as $name => $value) {
+      $name = trim($name);
       if( property_exists(get_class($this), $name) )
         $this->$name = $value;
     }
@@ -2204,6 +2205,7 @@ abstract class cs_field extends cs_element{
 
     $this->name = $name;
     foreach ($options as $name => $value) {
+      $name = trim($name);
       if( property_exists(get_class($this), $name) )
         $this->$name = $value;
     }
@@ -3504,6 +3506,7 @@ class cs_option extends cs_element{
     $this->label = $label;
 
     foreach ($options as $key => $value) {
+      $key = trim($key);
       if( property_exists(get_class($this), $key) )
         $this->$key = $value;
     }
@@ -3568,6 +3571,7 @@ class cs_optgroup extends cs_element{
     }
 
     foreach ($options as $key => $value) {
+      $key = trim($key);
       if( property_exists(get_class($this), $key) )
         $this->$key = $value;
     }
