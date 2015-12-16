@@ -5339,6 +5339,7 @@ class cs_accordion extends cs_fields_container_multiple {
    * @var string
    */
   protected $height_style = 'auto';
+  protected $active = '0';
 
   /**
    * pre_render hook
@@ -5346,7 +5347,7 @@ class cs_accordion extends cs_fields_container_multiple {
    */
   public function pre_render(cs_form $form){
     $id = $this->get_html_id();
-    $this->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\"});");
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\", active: {$this->active} });");
 
     parent::pre_render($form);
   }
