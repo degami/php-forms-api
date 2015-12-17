@@ -2524,6 +2524,9 @@ abstract class cs_field extends cs_element{
   public function generate_event_js($event, cs_form $form){
     $id = $this->get_html_id();
     if(empty($event['event'])) return FALSE;
+    $question_ampersand = '?';
+    if(preg_match("/\?/i", $this->get_ajax_url())) $question_ampersand = '&';
+
     $eventjs = "\$('#{$id}','#{$form->get_id()}').on('{$event['event']}',function(evt){
       evt.preventDefault();
       var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
@@ -2544,7 +2547,7 @@ abstract class cs_field extends cs_element{
         type: \"POST\",
         contentType: false,
         processData: false,
-        url: \"{$this->get_ajax_url()}?partial=true\",
+        url: \"{$this->get_ajax_url()}{$question_ampersand}partial=true\",
         data: postdata,
         success: function( data ){
           var response;
