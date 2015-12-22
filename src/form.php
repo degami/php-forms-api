@@ -3541,6 +3541,37 @@ class cs_option extends cs_element{
   public function get_key(){
     return $this->key;
   }
+
+   /**
+   * set the element key
+   * @param  mixed $label element key
+   */
+  public function set_key($key){
+    $this->key = $key;
+
+    return $this;
+  }
+
+  /**
+   * get the element label
+   * @return mixed the element label
+   */
+  public function get_label(){
+    return $this->label;
+  }
+
+   /**
+   * set the element label
+   * @param  mixed $label element label
+   */
+  public function set_label($label){
+    $this->label = $label;
+
+    return $this;
+  }
+
+
+
 }
 
 
