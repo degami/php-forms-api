@@ -3521,7 +3521,14 @@ class cs_option extends cs_element{
    * @return string        the option html
    */
   public function render(cs_select $form_field){
-    $selected = ($this->key === $form_field->get_value()) ? ' selected="selected"' : '';
+    $selected = '';
+    $field_value = $form_field->get_value();
+    if($form_field->is_multiple() == TRUE){
+      if( !is_array($field_value) ) $field_value = array($field_value);
+      $selected = in_array($this->key, array_values($field_value)) ? ' selected="selected"' : '';
+    }else{
+      $selected = ($this->key === $field_value) ? ' selected="selected"' : '';
+    }
     $attributes = $this->get_attributes(array('value','selected'));
     $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>{$this->label}</option>\n";
     return $output;
@@ -3645,6 +3652,14 @@ class cs_select extends cs_field_multivalues {
     }
 
     parent::__construct($options,$name);
+  }
+
+  /**
+   * return field multiple attribute
+   * @return boolean field is multiple
+   */
+  public function is_multiple(){
+    return $this->multiple;
   }
 
   /**
