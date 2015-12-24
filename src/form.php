@@ -3530,7 +3530,7 @@ class cs_option extends cs_element{
       $selected = ($this->key === $field_value) ? ' selected="selected"' : '';
     }
     $attributes = $this->get_attributes(array('value','selected'));
-    $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>{$this->label}</option>\n";
+    $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>".cs_form::translate_string($this->label)."</option>\n";
     return $output;
   }
 
@@ -3642,7 +3642,7 @@ class cs_optgroup extends cs_element{
    */
   public function render(cs_select $form_field){
     $attributes = $this->get_attributes(array('label'));
-    $output = "<optgroup label=\"{$this->label}\"{$attributes}>\n";
+    $output = "<optgroup label=\"".cs_form::translate_string($this->label)."\"{$attributes}>\n";
     foreach ($this->options as $option) {
       $output .= $option->render($form_field);
     }
