@@ -2543,6 +2543,11 @@ abstract class cs_field extends cs_element{
           postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
         }
       });
+      var \$loading = \$('<div id=\"{$id}-event-loading\"></div>')
+                      .appendTo(\$target)
+                      .css({'font-size':'0.5em'})
+                      .progressbar({value: false});
+      \$.data(\$target[0],'loading', \$loading.attr('id'));
       \$.ajax({
         type: \"POST\",
         contentType: false,
@@ -2556,6 +2561,9 @@ abstract class cs_field extends cs_element{
           ".((!empty($event['method']) && $event['method'] == 'replace') ? "\$target.html('');":"")."
           ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
           if( \$.trim(response.js) != '' ){ eval( response.js ); };
+
+          var loading = \$.data(\$target[0],'loading');
+          \$('#'+loading).remove();
         }
       });
       return false;
