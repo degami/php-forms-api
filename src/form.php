@@ -1006,6 +1006,9 @@ class cs_form extends cs_element{
     $this->fields[$step][$name] = $field;
     $this->insert_field_order[] = $name;
 
+    if($field instanceof cs_datetime || $field instanceof cs_geolocation)
+      return $this;
+
     if($field instanceof cs_fields_container)
       return $field;
 
@@ -4994,6 +4997,9 @@ abstract class cs_fields_container extends cs_field {
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
 
+    if($field instanceof cs_datetime || $field instanceof cs_geolocation)
+      return $this;
+
     if($field instanceof cs_fields_container)
       return $field;
 
@@ -5314,6 +5320,9 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     $this->fields[$name] = $field;
     $this->insert_field_order[$tabindex][] = $name;
     $this->tabs[$tabindex]['fieldnames'][] = $name;
+
+    if($field instanceof cs_datetime || $field instanceof cs_geolocation)
+      return $this;
 
     if($field instanceof cs_fields_container){
       return $field;
