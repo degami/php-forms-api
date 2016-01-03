@@ -238,6 +238,11 @@ otherwise autocomplete_path is used
       'resizable' => FALSE,
     );
 
+    $options += array(
+      'type' => 'tinymce',
+      'tinymce_options' => array(),
+    );
+
 #### Submit buttons
 
     $options += array(

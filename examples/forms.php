@@ -252,6 +252,11 @@ function showallform(cs_form $form, &$form_state){
       'style' => 'width: 100%',
      ),
   ))
+  ->add_field('message2', array(
+    'type' => 'tinymce',
+    'title' => 'Your beautiful message',
+    'rows' => 10,
+  ))
   ->add_field('masked',array(
     'title' => 'Phone',
     'type' => 'maskedfield',
@@ -692,12 +697,18 @@ function _batch_get_progress($filename, $offset = 0, $limit = 20){
 //############################################################################//
 
 function locationsform(cs_form $form, &$form_state){
+/*
+    google.maps.MapTypeId.HYBRID
+    google.maps.MapTypeId.ROADMAP
+    google.maps.MapTypeId.SATELLITE
+    google.maps.MapTypeId.TERRAIN
+*/
+
   $form->add_field('location', array(
     'title' => 'GeoLocation',
     'type' => 'geolocation',
-  ));
-
-  $form->add_field('map', array(
+  ))
+  ->add_field('map', array(
     'title' => 'MapLocation',
     'type' => 'gmaplocation',
     'scrollwheel' => TRUE,
@@ -708,16 +719,8 @@ function locationsform(cs_form $form, &$form_state){
       'longitude' => 12.338440,
     ),
     'maptype' => 'google.maps.MapTypeId.TERRAIN',
-  ));
-
-/*
-    google.maps.MapTypeId.HYBRID
-    google.maps.MapTypeId.ROADMAP
-    google.maps.MapTypeId.SATELLITE
-    google.maps.MapTypeId.TERRAIN
-*/
-
-  $form->add_field('decode', array(
+  ))
+  ->add_field('decode', array(
     'title' => 'GeoDecode',
     'type' => 'gmaplocation',
     'with_geocode' => TRUE,
@@ -727,9 +730,8 @@ function locationsform(cs_form $form, &$form_state){
       'latitude' => 51.48257659999999,
       'longitude' => -0.0076589,
     ),
-  ));
-
-  $form->add_field('decode_nomap', array(
+  ))
+  ->add_field('decode_nomap', array(
     'title' => 'GeoDecode No Map',
     'type' => 'gmaplocation',
     'with_geocode' => TRUE,
@@ -739,9 +741,8 @@ function locationsform(cs_form $form, &$form_state){
       'latitude' => 51.48257659999999,
       'longitude' => -0.0076589,
     ),
-  ));
-
-  $form->add_field('submit', array(
+  ))
+  ->add_field('submit', array(
     'type' => 'submit',
   ));
 

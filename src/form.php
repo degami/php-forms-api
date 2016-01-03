@@ -402,6 +402,13 @@ abstract class cs_element{
     return $elem;
   }
 
+  /**
+   * which element should return the add_field() function
+   * @return string one of 'parent' or 'this'
+   */
+  protected function on_add_return(){
+    return 'parent';
+  }
 }
 
 /* #########################################################
@@ -1006,12 +1013,7 @@ class cs_form extends cs_element{
     $this->fields[$step][$name] = $field;
     $this->insert_field_order[] = $name;
 
-    if($field instanceof cs_datetime || $field instanceof cs_geolocation)
-      return $this;
-
-    if($field instanceof cs_fields_container)
-      return $field;
-
+    if($field->on_add_return() == 'this') return $field;
     return $this;
   }
 
@@ -3285,6 +3287,65 @@ class cs_textarea extends cs_field {
 }
 
 /**
+ * tinymce beautified textarea
+ */
+class cs_tinymce extends cs_textarea {
+  /**
+   * tinymce options
+   * @var array
+   */
+  private $tinymce_options = array();
+
+  /**
+   * get tinymce options array
+   * @return array tinymce options
+   */
+  public function &get_tinymce_options(){
+    return $this->tinymce_options;
+  }
+
+  /**
+   * set tinymce options array
+   * @param array $options array of valid tinymce options
+   */
+  public function set_tinymce_options($options){
+    $options = (array) $options;
+    $options = array_filter($options, array($this,'is_valid_tinymce_option'));
+    $this->tinymce_options = $options;
+
+    return $this;
+  }
+
+  /**
+   * pre_render hook
+   * @param  cs_form $form form object
+   */
+  public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
+    $id = $this->get_html_id();
+    $this->tinymce_options['selector'] = "#{$id}";
+    $tinymce_options = new stdClass;
+    foreach ($this->tinymce_options as $key => $value) {
+      if( ! $this->is_valid_tinymce_option($key) ) continue;
+      $tinymce_options->$key = $value;
+    }
+    $this->add_js("tinymce.init(".json_encode($tinymce_options).");");
+    parent::pre_render($form);
+  }
+
+  /**
+   * filters valid tinymce options
+   * @param  string  $propertyname property name
+   * @return boolean               TRUE if is a valid tinymce option
+   */
+  private function is_valid_tinymce_option($propertyname){
+    // could be used to filter elements
+    return TRUE;
+  }
+}
+
+
+/**
  * the password input field class
  */
 class cs_password extends cs_field {
@@ -4696,6 +4757,14 @@ class cs_datetime extends cs_tag_container {
   public function is_a_value(){
     return TRUE;
   }
+
+  /**
+   * on_add_return overload
+   * @return string 'parent'
+   */
+  protected function on_add_return(){
+    return 'parent';
+  }
 }
 
 /**
@@ -4997,12 +5066,7 @@ abstract class cs_fields_container extends cs_field {
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
 
-    if($field instanceof cs_datetime || $field instanceof cs_geolocation)
-      return $this;
-
-    if($field instanceof cs_fields_container)
-      return $field;
-
+    if($field->on_add_return() == 'this') return $field;
     return $this;
   }
 
@@ -5128,6 +5192,14 @@ abstract class cs_fields_container extends cs_field {
     foreach($this->get_fields() as $field){
       $field->after_validate($form);
     }
+  }
+
+  /**
+   * on_add_return overload
+   * @return string 'this'
+   */
+  protected function on_add_return(){
+    return 'this';
   }
 }
 
@@ -5321,13 +5393,7 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     $this->insert_field_order[$tabindex][] = $name;
     $this->tabs[$tabindex]['fieldnames'][] = $name;
 
-    if($field instanceof cs_datetime || $field instanceof cs_geolocation)
-      return $this;
-
-    if($field instanceof cs_fields_container){
-      return $field;
-    }
-
+    if($field->on_add_return() == 'this') return $field;
     return $this;
   }
 
@@ -5425,6 +5491,11 @@ class cs_accordion extends cs_fields_container_multiple {
    * @var string
    */
   protected $height_style = 'auto';
+
+  /**
+   * active tab
+   * @var numeric
+   */
   protected $active = '0';
 
   /**
@@ -6235,6 +6306,14 @@ class cs_geolocation extends cs_tag_container {
    */
   public function is_a_value(){
     return TRUE;
+  }
+
+  /**
+   * on_add_return overload
+   * @return string 'parent'
+   */
+  protected function on_add_return(){
+    return 'parent';
   }
 }
 
