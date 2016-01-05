@@ -1013,7 +1013,11 @@ class cs_form extends cs_element{
     $this->fields[$step][$name] = $field;
     $this->insert_field_order[] = $name;
 
-    if( !method_exists($field, 'on_add_return') ) return $this;
+    if( !method_exists($field, 'on_add_return') ) {
+      if(  $field instanceof cs_fields_container && !( $field instanceof cs_datetime || $field instanceof cs_geolocation ) ) {
+        return $field;
+      return $this;
+    }
     if($field->on_add_return() == 'this') return $field;
     return $this;
   }
@@ -5076,7 +5080,11 @@ abstract class cs_fields_container extends cs_field {
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
 
-    if( !method_exists($field, 'on_add_return') ) return $this;
+    if( !method_exists($field, 'on_add_return') ) {
+      if(  $field instanceof cs_fields_container && !( $field instanceof cs_datetime || $field instanceof cs_geolocation ) ) {
+        return $field;
+      return $this;
+    }
     if($field->on_add_return() == 'this') return $field;
     return $this;
   }
@@ -5404,7 +5412,11 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     $this->insert_field_order[$tabindex][] = $name;
     $this->tabs[$tabindex]['fieldnames'][] = $name;
 
-    if( !method_exists($field, 'on_add_return') ) return $this;
+    if( !method_exists($field, 'on_add_return') ) {
+      if(  $field instanceof cs_fields_container && !( $field instanceof cs_datetime || $field instanceof cs_geolocation ) ) {
+        return $field;
+      return $this;
+    }
     if($field->on_add_return() == 'this') return $field;
     return $this;
   }
