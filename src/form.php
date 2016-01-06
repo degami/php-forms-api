@@ -3611,7 +3611,7 @@ class cs_option extends cs_element{
     $field_value = $form_field->get_value();
     if($form_field->is_multiple() == TRUE){
       if( !is_array($field_value) ) $field_value = array($field_value);
-      $selected = in_array($this->key, array_values($field_value)) ? ' selected="selected"' : '';
+      $selected = in_array($this->key, array_values($field_value), TRUE) ? ' selected="selected"' : '';
     }else{
       $selected = ($this->key === $field_value) ? ' selected="selected"' : '';
     }
