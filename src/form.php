@@ -6347,6 +6347,13 @@ class cs_geolocation extends cs_tag_container {
 class cs_gmaplocation extends cs_geolocation {
 
   /**
+   * "current location" button
+   * @var cs_button
+   */
+  protected $current_location_btn;
+
+
+  /**
    * zoom
    * @var integer
    */
@@ -6391,6 +6398,12 @@ class cs_gmaplocation extends cs_geolocation {
    * @var boolean
    */
   protected $with_geocode = FALSE;
+
+  /**
+   * enable current location button
+   * @var boolean
+   */
+  protected $with_current_location = FALSE;
 
   /**
    * input type where latitude and longitude are stored (hidden / textfield)
@@ -6443,6 +6456,13 @@ class cs_gmaplocation extends cs_geolocation {
       $options['default_value'] = (is_array($defaults) && isset($defaults['geocodebox'])) ? $defaults['geocodebox'] : '';
       $this->geocode_box = new cs_textfield($options,$name.'_geocodebox');
     }
+
+    if($this->with_current_location == TRUE){
+      $options['type'] = 'button';
+      $options['size'] = 50;
+      $options['default_value'] = cs_form::translate_string('Current Location');
+      $this->current_location_btn = new cs_button($options,$name.'_current_location_btn');
+    }
   }
 
 
@@ -6455,6 +6475,9 @@ class cs_gmaplocation extends cs_geolocation {
     if($this->with_geocode == TRUE){
       $this->geocode_box->preprocess($process_type);
     }
+    if($this->with_current_location == TRUE){
+      $this->current_location_btn->preprocess($process_type);
+    }
   }
 
 
@@ -6466,6 +6489,9 @@ class cs_gmaplocation extends cs_geolocation {
     parent::process($values);
     if($this->with_geocode == TRUE){
       $this->geocode_box->process($values[$this->get_name().'_geocodebox'],$this->get_name().'_geocodebox');
+    }
+    if($this->with_current_location == TRUE){
+      $this->current_location_btn->process($values[$this->get_name().'_current_location_btn'],$this->get_name().'_current_location_btn');
     }
   }
 
@@ -6577,6 +6603,32 @@ class cs_gmaplocation extends cs_geolocation {
 
     }
 
+    if($this->with_current_location == TRUE){
+        $this->add_js(
+          preg_replace("/\s+/"," ",str_replace("\n","",""."
+            \$('#{$id}_current_location_btn').click(function(evt){
+              evt.preventDefault();
+              var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
+              var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
+              var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
+              var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
+
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                  lat = position.coords.latitude;
+                  lng = position.coords.longitude;
+                  marker.setPosition( new google.maps.LatLng( lat, lng ) );
+                  map.panTo( new google.maps.LatLng( lat, lng ) );
+                  \$('input[name=\"{$id}_latitude\"]','#{$id}').val(lat);
+                  \$('input[name=\"{$id}_longitude\"]','#{$id}').val(lng);
+                }, function() {
+                  /*handleLocationError();*/
+                });
+              }
+            });
+        ")));
+    }
+
     parent::pre_render($form);
   }
 
@@ -6618,6 +6670,9 @@ class cs_gmaplocation extends cs_geolocation {
     if($this->with_map == TRUE){
       $mapattributes = '';
       $output .= "<div id=\"{$id}-map\"{$mapattributes}></div>\n";
+    }
+    if($this->with_current_location == TRUE){
+      $output .= $this->current_location_btn->render($form);
     }
 
     $output .= $this->latitude->render($form);

@@ -719,6 +719,7 @@ function locationsform(cs_form $form, &$form_state){
       'longitude' => 12.338440,
     ),
     'maptype' => 'google.maps.MapTypeId.TERRAIN',
+    'with_current_location' => TRUE,
   ))
   ->add_field('decode', array(
     'title' => 'GeoDecode',
