@@ -6475,9 +6475,6 @@ class cs_gmaplocation extends cs_geolocation {
     if($this->with_geocode == TRUE){
       $this->geocode_box->preprocess($process_type);
     }
-    if($this->with_current_location == TRUE){
-      $this->current_location_btn->preprocess($process_type);
-    }
   }
 
 
@@ -6489,9 +6486,6 @@ class cs_gmaplocation extends cs_geolocation {
     parent::process($values);
     if($this->with_geocode == TRUE){
       $this->geocode_box->process($values[$this->get_name().'_geocodebox'],$this->get_name().'_geocodebox');
-    }
-    if($this->with_current_location == TRUE){
-      $this->current_location_btn->process($values[$this->get_name().'_current_location_btn'],$this->get_name().'_current_location_btn');
     }
   }
 
