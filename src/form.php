@@ -1349,7 +1349,7 @@ class cs_form extends cs_element{
           $output = array('html'=>'','js'=>'','is_submitted'=>$this->is_submitted());
 
           $output['html']  = $this->get_element_prefix();
-          $output['html'] .= $this->prefix;
+          $output['html'] .= $this->get_prefix();
           $output['html'] .= $errors;
           $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
           $output['html'] .= $fields_html;
@@ -1359,7 +1359,7 @@ class cs_form extends cs_element{
             $output['html'] .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
           }
           $output['html'] .= "</form>\n";
-          $output['html'] .= $this->suffix;
+          $output['html'] .= $this->get_suffix();
           $output['html'] .= $this->get_element_suffix();
 
           if(count($this->get_css())>0){
@@ -1376,7 +1376,7 @@ class cs_form extends cs_element{
         case 'html':
         default:
           $output = $this->get_element_prefix();
-          $output .= $this->prefix;
+          $output .= $this->get_prefix();
           $output .= $errors;
           $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
           $output .= $fields_html;
@@ -1393,7 +1393,7 @@ class cs_form extends cs_element{
           if(!empty( $js )){
             $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
           }
-          $output .= $this->suffix;
+          $output .= $this->get_suffix();
           $output .= $this->get_element_suffix();
         break;
       }
@@ -2496,7 +2496,7 @@ abstract class cs_field extends cs_element{
 
     $id = $this->get_html_id();
     $output = $this->get_element_prefix();
-    $output.=$this->prefix;
+    $output.=$this->get_prefix();
 
     if( !($this instanceof cs_fields_container) && !($this instanceof cs_checkbox)){
       // containers do not need label. checkbox too, as the render function prints the label itself
@@ -2536,7 +2536,7 @@ abstract class cs_field extends cs_element{
       $output.= '<div class="inline-error error">'.implode("<br />",$this->get_errors()).'</div>';
     }
 
-    $output .= $this->suffix;
+    $output .= $this->get_suffix();
     $output .= $this->get_element_suffix();
 
     if( count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
