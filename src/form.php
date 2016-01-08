@@ -310,6 +310,13 @@ abstract class cs_element{
     return $this->css;
   }
 
+  /**
+   * get element prefix
+   * @return string element prefix
+   */
+  public function get_prefix(){
+    return $this->prefix;
+  }
 
   /**
    * set element prefix
@@ -322,8 +329,16 @@ abstract class cs_element{
   }
 
   /**
+   * get element suffix
+   * @return string element suffix
+   */
+  public function get_suffix(){
+    return $this->suffix;
+  }
+
+  /**
    * set element suffix
-   * @param string $prefix element prefix
+   * @param string $suffix element suffix
    */
   public function set_suffix($suffix){
     $this->suffix = $suffix;
@@ -335,7 +350,7 @@ abstract class cs_element{
    * get element html prefix
    * @return string html for the element prefix
    */
-  public function get_prefix(){
+  public function get_element_prefix(){
     if(!empty($this->container_tag)){
 
       if(preg_match("/<\/?(.*?)\s.*?(class=\"(.*?)\")?.*?>/i",$this->container_tag,$matches)){
@@ -364,7 +379,7 @@ abstract class cs_element{
    * get element html suffix
    * @return string html for the element suffix
    */
-  public function get_suffix(){
+  public function get_element_suffix(){
     if(!empty($this->container_tag)){
       return "</{$this->container_tag}>";
     }
@@ -1333,7 +1348,7 @@ class cs_form extends cs_element{
         case 'json':
           $output = array('html'=>'','js'=>'','is_submitted'=>$this->is_submitted());
 
-          $output['html']  = $this->get_prefix();
+          $output['html']  = $this->get_element_prefix();
           $output['html'] .= $this->prefix;
           $output['html'] .= $errors;
           $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
@@ -1345,7 +1360,7 @@ class cs_form extends cs_element{
           }
           $output['html'] .= "</form>\n";
           $output['html'] .= $this->suffix;
-          $output['html'] .= $this->get_suffix();
+          $output['html'] .= $this->get_element_suffix();
 
           if(count($this->get_css())>0){
             $output['html'] .= "<style>".implode("\n",$this->get_css())."</style>";
@@ -1360,7 +1375,7 @@ class cs_form extends cs_element{
 
         case 'html':
         default:
-          $output = $this->get_prefix();
+          $output = $this->get_element_prefix();
           $output .= $this->prefix;
           $output .= $errors;
           $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
@@ -1379,7 +1394,7 @@ class cs_form extends cs_element{
             $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
           }
           $output .= $this->suffix;
-          $output .= $this->get_suffix();
+          $output .= $this->get_element_suffix();
         break;
       }
 
@@ -2480,7 +2495,7 @@ abstract class cs_field extends cs_element{
   public function render(cs_form $form) {
 
     $id = $this->get_html_id();
-    $output = $this->get_prefix();
+    $output = $this->get_element_prefix();
     $output.=$this->prefix;
 
     if( !($this instanceof cs_fields_container) && !($this instanceof cs_checkbox)){
@@ -2522,7 +2537,7 @@ abstract class cs_field extends cs_element{
     }
 
     $output .= $this->suffix;
-    $output .= $this->get_suffix();
+    $output .= $this->get_element_suffix();
 
     if( count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
       foreach($this->event as $event){
