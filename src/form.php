@@ -2366,6 +2366,15 @@ abstract class cs_field extends cs_element{
   }
 
   /**
+   * set field id
+   * @param string $id field id
+   */
+  public function set_id($id){
+    $this->id = $id;
+    return $this;
+  }
+
+  /**
    * get field html id
    * @return string the html id attributes
    */
@@ -3966,15 +3975,21 @@ class cs_checkboxes extends cs_field_multivalues {
 
     foreach ($this->options as $key => $value) {
       $attributes = $this->get_attributes();
-      if(is_array($value) && isset($value['attributes'])){
-        $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
-      }
-      if(is_array($value)){
-        $value = $value['value'];
-      }
+      if( $value instanceof cs_checkbox ){
+        $value->set_name("{$this->name}".(count($this->options)>1 ? "[]":""));
+        $value->set_id("{$this->name}-{$key}");
+        $output .= $value->render($form);
+      }else{
+        if(is_array($value) && isset($value['attributes'])){
+          $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
+        }
+        if(is_array($value)){
+          $value = $value['value'];
+        }
 
-      $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked="checked"' : '';
-      $output .= "<label for=\"{$id}-{$key}\"><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$this->name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+        $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked="checked"' : '';
+        $output .= "<label for=\"{$id}-{$key}\"><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$this->name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+      }
     }
     $output .= '</div>';
     return $output;
