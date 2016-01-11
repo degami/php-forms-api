@@ -2582,7 +2582,7 @@ abstract class cs_field extends cs_element{
         if( \$this.serialize() != '' ){
           var elem = \$this.serialize().split('=',2);
           postdata.append(elem[0], elem[1]);
-        }else if(\$this.attr('type').toLowerCase() == 'file'){
+        }else if( \$this.prop('tagName').toLowerCase() == 'input' && \$this.attr('type').toLowerCase() == 'file' ){
           postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
         }
       });
