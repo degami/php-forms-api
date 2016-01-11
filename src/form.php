@@ -2607,6 +2607,19 @@ abstract class cs_field extends cs_element{
 
           var loading = \$.data(\$target[0],'loading');
           \$('#'+loading).remove();
+
+          var element_onsuccess = \$.data( \$('#{$id}','#{$form->get_id()}')[0], 'element_onsuccess' );
+          if( !!(element_onsuccess && element_onsuccess.constructor && element_onsuccess.call && element_onsuccess.apply) ){
+            element_onsuccess();
+          }
+        },
+        error: function ( jqXHR, textStatus, errorThrown ){
+          alert(errorThrown);
+
+          var element_onerror = \$.data( \$('#{$id}','#{$form->get_id()}')[0], 'element_onerror' );
+          if( !!(element_onerror && element_onerror.constructor && element_onerror.call && element_onerror.apply) ){
+            element_onerror();
+          }
         }
       });
       return false;
