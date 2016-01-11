@@ -830,6 +830,12 @@ class cs_form extends cs_element{
     foreach ($this->get_fields($step) as $name => $field) {
       if( $field instanceof cs_fields_container ){
         $field->process($request);
+      } else if ( preg_match_all('/(.*?)(\[(.*?)\])+/i',$name, $matches, PREG_SET_ORDER) ) {
+        $value = $request[ $matches[0][1] ];
+        foreach($matches as $match){
+          $value = $value[ $match[3] ];
+        }
+        $field->process($value, $name);
       } else if ( isset($request[$name]) ) {
         $field->process($request[$name], $name);
       } else if( $field instanceof cs_checkbox || $field instanceof cs_radios ){
@@ -3647,7 +3653,7 @@ class cs_option extends cs_element{
   public function render(cs_select $form_field){
     $selected = '';
     $field_value = $form_field->get_value();
-    if($form_field->is_multiple() == TRUE){
+    if(is_array($field_value) || $form_field->is_multiple() == TRUE){
       if( !is_array($field_value) ) $field_value = array($field_value);
       $selected = in_array($this->key, array_values($field_value), TRUE) ? ' selected="selected"' : '';
     }else{
