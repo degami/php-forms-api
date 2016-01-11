@@ -3635,7 +3635,7 @@ class cs_option extends cs_element{
    * @param array  $options build options
    */
   function __construct($key, $label, $options = array()) {
-    $this->key = $key;
+    $this->key = trim($key);
     $this->label = $label;
 
     foreach ($options as $key => $value) {
