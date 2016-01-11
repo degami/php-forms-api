@@ -3812,6 +3812,16 @@ class cs_select extends cs_field_multivalues {
       unset($options['options']);
     }
 
+    if(isset($options['default_value'])){
+      if( !$this->is_multiple() && !(isset($options['multiple']) && $options['multiple']==TRUE) ){
+        $options['default_value'] = "".$options['default_value'];
+      }else{
+        foreach( $options['default_value'] as $k => $v) {
+          $options['default_value'][$k] = "".$v;
+        }
+      }
+    }
+
     parent::__construct($options,$name);
   }
 
