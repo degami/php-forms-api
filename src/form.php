@@ -2605,9 +2605,6 @@ abstract class cs_field extends cs_element{
           ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
           if( \$.trim(response.js) != '' ){ eval( response.js ); };
 
-          var loading = \$.data(\$target[0],'loading');
-          \$('#'+loading).remove();
-
           var element_onsuccess = \$.data( \$('#{$id}','#{$form->get_id()}')[0], 'element_onsuccess' );
           if( !!(element_onsuccess && element_onsuccess.constructor && element_onsuccess.call && element_onsuccess.apply) ){
             element_onsuccess();
@@ -2620,6 +2617,10 @@ abstract class cs_field extends cs_element{
           if( !!(element_onerror && element_onerror.constructor && element_onerror.call && element_onerror.apply) ){
             element_onerror();
           }
+        },
+        complete: function( jqXHR, textStatus ){
+          var loading = \$.data(\$target[0],'loading');
+          \$('#'+loading).remove();
         }
       });
       return false;
