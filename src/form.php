@@ -916,7 +916,7 @@ class cs_form extends cs_element{
           $field->preprocess();
         }
       }
-      if( !$this->submitted && $this->valid() && $this->is_final_step() ){
+      if( !cs_form::is_partial() && !$this->submitted && $this->valid() && $this->is_final_step() ){
         $this->submitted = TRUE;
 
         if(isset($_SESSION[$this->form_id])){
