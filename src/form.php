@@ -2611,12 +2611,12 @@ abstract class cs_field extends cs_element{
           }
         },
         error: function ( jqXHR, textStatus, errorThrown ){
-          alert(errorThrown);
-
           var element_onerror = \$.data( \$('#{$id}','#{$form->get_id()}')[0], 'element_onerror' );
           if( !!(element_onerror && element_onerror.constructor && element_onerror.call && element_onerror.apply) ){
             element_onerror();
           }
+
+          if($.trim(errorThrown) != '') alert(textStatus+': '+errorThrown);
         },
         complete: function( jqXHR, textStatus ){
           var loading = \$.data(\$target[0],'loading');
