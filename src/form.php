@@ -271,7 +271,9 @@ abstract class cs_element{
   public function &get_js(){
     if( $this instanceof cs_fields_container || $this instanceof cs_form ) {
       $js = array_filter(array_map('trim',$this->js));
-      foreach($this->get_fields() as $field){
+      $fields = $this->get_fields();
+      if( $this instanceof cs_form ) $fields = $this->get_fields( $this->get_current_step() );
+      foreach($fields as $field){
         $js = array_merge($js, $field->get_js());
       }
       return $js;
