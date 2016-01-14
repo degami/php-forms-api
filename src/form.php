@@ -1521,7 +1521,7 @@ class cs_form extends cs_element{
    * @param  mixed $value   the element value
    * @return mixed        TRUE if valid or a string containing the error message
    */
-  protected function validate_alpha_numeric($value) {
+  public static function validate_alpha_numeric($value) {
     // if(!is_string($value) && !is_numeric($value)) throw new Exception("Invalid value - alpha_numeric is meant for strings or numeric values, ".gettype($value)." given");
     if (!preg_match("/^([a-z0-9])+$/i", $value)) {
       return "<em>%t</em> must only contain alpha numeric characters.";
@@ -1534,7 +1534,7 @@ class cs_form extends cs_element{
    * @param  mixed $value   the element value
    * @return mixed        TRUE if valid or a string containing the error message
    */
-  protected function validate_alpha_dash($value) {
+  public static function validate_alpha_dash($value) {
     // if(!is_string($value)) throw new Exception("Invalid value - alpha_dash is meant for strings, ".gettype($value)." given");
     if (!preg_match("/^([-a-z0-9_-])+$/i", $value)) {
       return "<em>%t</em> must contain only alpha numeric characters, underscore, or dashes";
@@ -1547,7 +1547,7 @@ class cs_form extends cs_element{
    * @param  mixed $value   the element value
    * @return mixed        TRUE if valid or a string containing the error message
    */
-  protected function validate_numeric($value) {
+  public static function validate_numeric($value) {
     if (!is_numeric($value)) {
       return "<em>%t</em> must be numeric.";
     }
@@ -1559,7 +1559,7 @@ class cs_form extends cs_element{
    * @param  mixed $value   the element value
    * @return mixed        TRUE if valid or a string containing the error message
    */
-  protected function validate_integer($value) {
+  public static function validate_integer($value) {
     if (!preg_match( '/^[\-+]?[0-9]+$/', $value)) {
       return "<em>%t</em> must be an integer.";
     }
