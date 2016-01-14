@@ -3818,6 +3818,7 @@ class cs_select extends cs_field_multivalues {
       if( !$this->is_multiple() && !(isset($options['multiple']) && $options['multiple']==TRUE) ){
         $options['default_value'] = "".$options['default_value'];
       }else{
+        if(!is_array($options['default_value'])) $options['default_value'] = array($options['default_value']);
         foreach( $options['default_value'] as $k => $v) {
           $options['default_value'][$k] = "".$v;
         }
