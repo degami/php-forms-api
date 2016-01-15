@@ -2524,6 +2524,8 @@ abstract class cs_field extends cs_element{
 
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
+          $this->label_class .= " " .preg_replace("/cs_/i", "label-", get_class($this));
+          $this->label_class = trim($this->label_class);
           $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
           $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
         } else {
