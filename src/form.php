@@ -3982,7 +3982,7 @@ class cs_radios extends cs_field_multivalues {
       }
 
       $checked = ($this->value == $key) ? ' checked="checked"' : '';
-      $output .= "<label for=\"{$id}-{$key}\"><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$this->name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+      $output .= "<label class=\"label-radio\" for=\"{$id}-{$key}\"><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$this->name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
     }
     $output .= '</div>';
     return $output;
@@ -4023,7 +4023,7 @@ class cs_checkboxes extends cs_field_multivalues {
         }
 
         $checked = (is_array($this->default_value) && in_array($key, $this->default_value)) ? ' checked="checked"' : '';
-        $output .= "<label for=\"{$id}-{$key}\"><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$this->name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+        $output .= "<label class=\"label-checkbox\" for=\"{$id}-{$key}\"><input type=\"checkbox\" id=\"{$id}-{$key}\" name=\"{$this->name}".(count($this->options)>1 ? "[]" : "")."\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
       }
     }
     $output .= '</div>';
@@ -4061,6 +4061,9 @@ class cs_checkbox extends cs_field {
     $attributes = $this->get_attributes();
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
+
+    $this->label_class .= " " .preg_replace("/cs_/i", "label-", get_class($this));
+    $this->label_class = trim($this->label_class);
     $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
     $output = "<label for=\"{$id}\"{$label_class}><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".cs_form::translate_string($this->title)."</label>\n";
     return $output;
