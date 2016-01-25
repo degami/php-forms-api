@@ -136,6 +136,12 @@ abstract class cs_element{
   protected $build_options = NULL;
 
   /**
+   * element no translation flag. if true cs_form::translate_string won't be applied
+   * @var FALSE
+   */
+  protected $no_translation = FALSE;
+
+  /**
    * returns initially build options
    * @return array build_options
    */
@@ -425,6 +431,16 @@ abstract class cs_element{
    */
   protected function on_add_return(){
     return 'parent';
+  }
+
+  /**
+   * returns the translated version of the input text ( when available ) depending on current element configuration
+   * @param  string $text input text
+   * @return string       text to return (translated or not)
+   */
+  protected function get_text($text){
+    if( $this->no_translation == TRUE ) return $text;
+    return cs_form::translate_string($text);
   }
 }
 
@@ -967,7 +983,7 @@ class cs_form extends cs_element{
       $sid = session_id();
       if (!empty($sid) && !$this->no_token) {
         $this->valid = FALSE;
-        $this->add_error(cs_form::translate_string('Form is invalid or has expired'),__FUNCTION__);
+        $this->add_error($this->get_text('Form is invalid or has expired'),__FUNCTION__);
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) {
             $this->valid = TRUE;
@@ -999,7 +1015,7 @@ class cs_form extends cs_element{
           if (function_exists($validate_function)) {
             if ( ($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== TRUE ){
               $this->valid = FALSE;
-              $this->add_error( is_string($error) ? cs_form::translate_string($error) : cs_form::translate_string('Error. Form is not valid'), $validate_function );
+              $this->add_error( is_string($error) ? $this->get_text($error) : $this->get_text('Error. Form is not valid'), $validate_function );
             }
           }
         }
@@ -2463,9 +2479,9 @@ abstract class cs_field extends cs_element{
       if (isset($error) && $error !== TRUE) {
         $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
         if(empty($error)) $error = '%t - Error.';
-        $this->add_error(str_replace('%t', $titlestr, cs_form::translate_string($error)), $validator_func);
+        $this->add_error(str_replace('%t', $titlestr, $this->get_text($error)), $validator_func);
         if(is_array($validator) && !empty($validator['error_message'])){
-          $this->add_error(str_replace('%t', $titlestr, cs_form::translate_string($validator['error_message'])),$validator_func);
+          $this->add_error(str_replace('%t', $titlestr, $this->get_text($validator['error_message'])),$validator_func);
         }
 
         if($this->stop_on_first_error){
@@ -2527,10 +2543,10 @@ abstract class cs_field extends cs_element{
           $this->label_class .= " " .preg_replace("/cs_/i", "label-", get_class($this));
           $this->label_class = trim($this->label_class);
           $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-          $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
+          $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
         } else {
           if( !in_array('title', array_keys($this->attributes)) ){
-            $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
+            $this->attributes['title'] = strip_tags($this->get_text($this->title).$required);
           }
 
           $id = $this->get_html_id();
@@ -2791,7 +2807,7 @@ class cs_submit extends cs_clickable {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"".cs_form::translate_string($this->value)."\"{$attributes} />\n";
+    $output = "<input type=\"submit\" id=\"{$id}\" name=\"{$this->name}\" value=\"".$this->get_text($this->value)."\"{$attributes} />\n";
     return $output;
   }
 
@@ -2827,7 +2843,7 @@ class cs_button extends cs_clickable {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes} value=\"{$this->value}\">".cs_form::translate_string($this->label)."</button>\n";
+    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes} value=\"{$this->value}\">".$this->get_text($this->label)."</button>\n";
     return $output;
   }
 
@@ -2931,7 +2947,7 @@ class cs_reset extends cs_action {
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
-    $output = "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"".cs_form::translate_string($this->value)."\"{$attributes} />\n";
+    $output = "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"".$this->get_text($this->value)."\"{$attributes} />\n";
     return $output;
   }
 
@@ -3280,7 +3296,7 @@ class cs_maskedfield extends cs_textfield{
     }
     $mask = '/^'.$mask.'$/';
     if(!preg_match($mask,$this->value)){
-      $this->add_error(cs_form::translate_string("Value does not conform to mask"),__FUNCTION__);
+      $this->add_error($this->get_text("Value does not conform to mask"),__FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
@@ -3448,7 +3464,7 @@ class cs_password extends cs_field {
             var strength = 0;
             if (password.length < 6) {
               \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('short');
-              return '".cs_form::translate_string('Too short')."';
+              return '".$this->get_text('Too short')."';
             }
 
             if (password.length > 7) strength += 1;
@@ -3458,13 +3474,13 @@ class cs_password extends cs_field {
             if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1;
             if (strength < 2 ){
               \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('weak');
-              return '".cs_form::translate_string('Weak')."';
+              return '".$this->get_text('Weak')."';
             } else if (strength == 2 ) {
               \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('good');
-              return '".cs_form::translate_string('Good')."';
+              return '".$this->get_text('Good')."';
             } else {
               \$('#{$id}_result').removeClass().addClass('password_strength_checker').addClass('strong');
-              return '".cs_form::translate_string('Strong')."';
+              return '".$this->get_text('Strong')."';
             }
           })(\$('#{$id}','#{$form->get_id()}').val())
 
@@ -3496,7 +3512,7 @@ class cs_password extends cs_field {
     $attributes = $this->get_attributes();
     $output = "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
     if($this->with_confirm == TRUE){
-      $output .= "<label for=\"{$id}-confirm\">".cs_form::translate_string($this->confirm_string)."</label>";
+      $output .= "<label for=\"{$id}-confirm\">".$this->get_text($this->confirm_string)."</label>";
       $output .= "<input type=\"password\" id=\"{$id}-confirm\" name=\"{$this->name}_confirm\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
     }
     if($this->with_strength_check){
@@ -3512,7 +3528,7 @@ class cs_password extends cs_field {
   public function valid(){
     if($this->with_confirm == TRUE){
       if(!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value ) {
-        $this->add_error(cs_form::translate_string("The passwords do not match"),__FUNCTION__);
+        $this->add_error($this->get_text("The passwords do not match"),__FUNCTION__);
 
         if($this->stop_on_first_error)
           return FALSE;
@@ -3597,7 +3613,7 @@ abstract class cs_field_multivalues extends cs_field {
       }
       if(!$check) {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-        $this->add_error(str_replace("%t",$titlestr, cs_form::translate_string("%t: Invalid choice")),__FUNCTION__);
+        $this->add_error(str_replace("%t",$titlestr, $this->get_text("%t: Invalid choice")),__FUNCTION__);
 
         if($this->stop_on_first_error)
           return FALSE;
@@ -3664,7 +3680,7 @@ class cs_option extends cs_element{
       $selected = ($this->key === $field_value) ? ' selected="selected"' : '';
     }
     $attributes = $this->get_attributes(array('value','selected'));
-    $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>".cs_form::translate_string($this->label)."</option>\n";
+    $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>".$this->get_text($this->label)."</option>\n";
     return $output;
   }
 
@@ -3776,7 +3792,7 @@ class cs_optgroup extends cs_element{
    */
   public function render(cs_select $form_field){
     $attributes = $this->get_attributes(array('label'));
-    $output = "<optgroup label=\"".cs_form::translate_string($this->label)."\"{$attributes}>\n";
+    $output = "<optgroup label=\"".$this->get_text($this->label)."\"{$attributes}>\n";
     foreach ($this->options as $option) {
       $output .= $option->render($form_field);
     }
@@ -4066,7 +4082,7 @@ class cs_checkbox extends cs_field {
     $this->label_class .= " " .preg_replace("/cs_/i", "label-", get_class($this));
     $this->label_class = trim($this->label_class);
     $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-    $output = "<label for=\"{$id}\"{$label_class}><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".cs_form::translate_string($this->title)."</label>\n";
+    $output = "<label for=\"{$id}\"{$label_class}><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".$this->get_text($this->title)."</label>\n";
     return $output;
   }
 
@@ -4342,7 +4358,7 @@ class cs_date extends cs_field {
 
     if( !checkdate( $month , $day , $year ) ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->add_error(str_replace("%t",$titlestr,cs_form::translate_string("%t: Invalid date")), __FUNCTION__);
+      $this->add_error(str_replace("%t",$titlestr,$this->get_text("%t: Invalid date")), __FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
@@ -4659,7 +4675,7 @@ class cs_time extends cs_field {
 
     if( ! $check ) {
       $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
-      $this->add_error(str_replace("%t",$titlestr,cs_form::translate_string("%t: Invalid time")), __FUNCTION__);
+      $this->add_error(str_replace("%t",$titlestr,$this->get_text("%t: Invalid time")), __FUNCTION__);
 
       if($this->stop_on_first_error)
         return FALSE;
@@ -4805,10 +4821,10 @@ class cs_datetime extends cs_tag_container {
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
+        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
       } else {
         if( !in_array('title', array_keys($this->attributes)) ){
-          $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
+          $this->attributes['title'] = strip_tags($this->get_text($this->title).$required);
         }
 
         $id = $this->get_html_id();
@@ -5001,7 +5017,7 @@ class cs_recaptcha extends cs_field {
                                     $this->value["challenge_field"],
                                     $this->value["response_field"]);
     if(!$resp->is_valid){
-      $this->add_error(cs_form::translate_string("Recaptcha response is not valid"), __FUNCTION__);
+      $this->add_error($this->get_text("Recaptcha response is not valid"), __FUNCTION__);
     }else{
       $this->already_validated = TRUE;
       $this->value['already_validated'] = TRUE;
@@ -5410,7 +5426,7 @@ class cs_fieldset extends cs_fields_container {
     $attributes = $this->get_attributes();
     $output .= "<fieldset id=\"{$id}\"{$attributes}>\n";
     if (!empty($this->title)) {
-      $output .= "<legend>".cs_form::translate_string($this->title)."</legend>\n";
+      $output .= "<legend>".$this->get_text($this->title)."</legend>\n";
     }
 
     $insertorder = array_flip($this->insert_field_order);
@@ -5561,7 +5577,7 @@ class cs_tabs extends cs_fields_container_multiple {
       if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
-      $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".cs_form::translate_string($this->tabs[$tabindex]['title'])."</a></li>";
+      $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->tabs[$tabindex]['title'])."</a></li>";
       $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $tabs_html[$tabindex] .= $field->render($form);
@@ -5627,7 +5643,7 @@ class cs_accordion extends cs_fields_container_multiple {
       if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
-      $output .= "<h3>".cs_form::translate_string($this->tabs[$tabindex]['title'])."</h3>";
+      $output .= "<h3>".$this->get_text($this->tabs[$tabindex]['title'])."</h3>";
       $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $output .= $field->render($form);
@@ -5866,7 +5882,7 @@ class cs_sortable_table extends cs_sortable_container{
       $output .= "<thead>\n";
       if($handle_position != 'right') $output .= "<th>&nbsp;</th>";
       foreach($this->table_header as $th){
-        $output .= "<th>".cs_form::translate_string($th)."</th>";
+        $output .= "<th>".$this->get_text($th)."</th>";
       }
       if($handle_position == 'right') $output .= "<th>&nbsp;</th>";
       $output .= "</thead>\n";
@@ -6007,9 +6023,9 @@ class cs_table_container extends cs_fields_container_multiple{
           if(!empty($th['attributes'])){
             $th_attributes = $this->get_attributes_string($th['attributes']);
           }
-          $output .= "<th{$th_attributes}>".cs_form::translate_string($th['value'])."</th>";
+          $output .= "<th{$th_attributes}>".$this->get_text($th['value'])."</th>";
         }else{
-          $output .= "<th>".cs_form::translate_string($th)."</th>";
+          $output .= "<th>".$this->get_text($th)."</th>";
         }
       }
       $output .= "</thead>\n";
@@ -6279,12 +6295,12 @@ class cs_geolocation extends cs_tag_container {
     $options['size'] = 5;
 
     $options['type'] = 'textfield';
-    $options['suffix'] = cs_form::translate_string('latitude').' ';
+    $options['suffix'] = $this->get_text('latitude').' ';
     $options['default_value'] = (is_array($defaults) && isset($defaults['latitude'])) ? $defaults['latitude'] : 0;
     $this->latitude = new cs_textfield($options,$name.'_latitude');
 
     $options['type'] = 'textfield';
-    $options['suffix'] = cs_form::translate_string('longitude').' ';
+    $options['suffix'] = $this->get_text('longitude').' ';
     $options['default_value'] = (is_array($defaults) && isset($defaults['longitude'])) ? $defaults['longitude'] : 0;
     $this->longitude = new cs_textfield($options,$name.'_longitude');
   }
@@ -6366,10 +6382,10 @@ class cs_geolocation extends cs_tag_container {
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
+        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
       } else {
         if( !in_array('title', array_keys($this->attributes)) ){
-          $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
+          $this->attributes['title'] = strip_tags($this->get_text($this->title).$required);
         }
 
         $id = $this->get_html_id();
@@ -6529,7 +6545,7 @@ class cs_gmaplocation extends cs_geolocation {
     if($this->with_current_location == TRUE){
       $options['type'] = 'button';
       $options['size'] = 50;
-      $options['default_value'] = cs_form::translate_string('Current Location');
+      $options['default_value'] = $this->get_text('Current Location');
       $this->current_location_btn = new cs_button($options,$name.'_current_location_btn');
     }
   }
@@ -6715,10 +6731,10 @@ class cs_gmaplocation extends cs_geolocation {
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".cs_form::translate_string($this->title)."{$requiredafter}</label>\n";
+        $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
       } else {
         if( !in_array('title', array_keys($this->attributes)) ){
-          $this->attributes['title'] = strip_tags(cs_form::translate_string($this->title).$required);
+          $this->attributes['title'] = strip_tags($this->get_text($this->title).$required);
         }
 
         $id = $this->get_html_id();
@@ -6727,7 +6743,7 @@ class cs_gmaplocation extends cs_geolocation {
     }
 
     if($this->with_geocode == TRUE){
-      $output .= $this->geocode_box->render($form); // ."<button id=\"{$id}_searchbox_btn\">".cs_form::translate_string('search')."</button>";
+      $output .= $this->geocode_box->render($form); // ."<button id=\"{$id}_searchbox_btn\">".$this->get_text('search')."</button>";
     }
 
     if($this->with_map == TRUE){
