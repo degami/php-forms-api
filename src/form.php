@@ -2568,7 +2568,7 @@ abstract class cs_field extends cs_element{
     }
 
     if($form->errors_inline() == TRUE && $this->has_errors() ){
-      $output.= '<div class="inline-error error">'.implode("<br />",$this->get_errors()).'</div>';
+      $output.= '<div class="inline-error has-errors">'.implode("<br />",$this->get_errors()).'</div>';
     }
 
     $output .= $this->get_suffix();
@@ -3153,7 +3153,7 @@ class cs_textfield extends cs_field {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
@@ -3347,7 +3347,7 @@ class cs_textarea extends cs_field {
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     $errors = $this->get_errors();
     if (!empty($errors)) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('name','id','value','rows','cols'));
@@ -3506,7 +3506,7 @@ class cs_password extends cs_field {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
@@ -3874,7 +3874,7 @@ class cs_select extends cs_field_multivalues {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
@@ -4125,7 +4125,7 @@ class cs_file extends cs_field {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size'));
@@ -4281,7 +4281,7 @@ class cs_date extends cs_field {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size','day','month','year'));
@@ -4503,7 +4503,7 @@ class cs_datepicker extends cs_field {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes();
@@ -4588,7 +4588,7 @@ class cs_time extends cs_field {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','size','hours','minutes','seconds'));
@@ -4925,7 +4925,7 @@ class cs_spinner extends cs_field {
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
-      $this->attributes['class'] .= ' error';
+      $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
     $attributes = $this->get_attributes(array('type','name','id','value','min','max','step'));
