@@ -43,13 +43,13 @@ $form = cs_form_builder::get_form('showallform');
   }
   label { display: block; }
   span.required { color: red; }
-  .form-item.error input,
-  .form-item.error select,
-  .form-item.error textarea {
+  .form-item.has-errors input,
+  .form-item.has-errors select,
+  .form-item.has-errors textarea {
     background-color: #FFA07A;
   }
 
-  .form-item.error label {
+  .form-item.has-errors label {
     color: #ff4f64;
     font-weight: bold;
   }

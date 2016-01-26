@@ -375,7 +375,7 @@ abstract class cs_element{
           $class .= ' '.$this->get_type().'-container';
       }
       if ($this->has_errors()) {
-        $class .= ' error';
+        $class .= ' has-errors';
       }
       $class = trim($class);
       return "<{$this->container_tag} class=\"{$class}\">";
