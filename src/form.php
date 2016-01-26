@@ -1278,7 +1278,7 @@ class cs_form extends cs_element{
         }
       }
       if(trim($errors)!=''){
-        $errors = "<div class=\"errorsbox ui-state-error ui-corner-all\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>" .$errors . "</ul></div>";
+        $errors = "<div class=\"ui-state-error ui-corner-all errorsbox\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>" .$errors . "</ul></div>";
       }
     }
 
