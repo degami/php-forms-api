@@ -1457,7 +1457,7 @@ class cs_form extends cs_element{
    * @return mixed        TRUE if valid or a string containing the error message
    */
   public static function validate_required($value = NULL) {
-    if (!empty($value) || trim($value) != '') {
+    if (!empty($value) || (!is_array($value) && trim($value) != '') ) {
       return TRUE;
     } else {
       return "<em>%t</em> is required";
