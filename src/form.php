@@ -3671,6 +3671,7 @@ class cs_option extends cs_element{
    * @return string        the option html
    */
   public function render(cs_select $form_field){
+    $this->no_translation = $form_field->no_translation;
     $selected = '';
     $field_value = $form_field->get_value();
     if(is_array($field_value) || $form_field->is_multiple() == TRUE){
@@ -3791,6 +3792,7 @@ class cs_optgroup extends cs_element{
    * @return string        the optgroup html
    */
   public function render(cs_select $form_field){
+    $this->no_translation = $form_field->no_translation;
     $attributes = $this->get_attributes(array('label'));
     $output = "<optgroup label=\"".$this->get_text($this->label)."\"{$attributes}>\n";
     foreach ($this->options as $option) {
