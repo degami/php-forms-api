@@ -3858,6 +3858,15 @@ class cs_select extends cs_field_multivalues {
   }
 
   /**
+   * set field multiple attribute
+   * @param  boolean $multiple multiple attribute
+   */
+  public function set_multiple($multiple = TRUE){
+    $this->multiple = ($multiple == TRUE);
+    return $this;
+  }
+
+  /**
    * return field value
    * @return mixed field value
    */
