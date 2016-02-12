@@ -64,6 +64,12 @@ abstract class cs_element{
   protected $name = NULL;
 
   /**
+   * element parent
+   * @var cs_element subclass
+   */
+  protected $parent = NULL;
+
+  /**
    * element weight
    * @var integer
    */
@@ -167,6 +173,23 @@ abstract class cs_element{
     return $this->name;
   }
 
+  /**
+   * set parent
+   * @param cs_element $parent element parent
+   */
+  public function set_parent(cs_element $parent){
+    $this->parent = $parent;
+
+    return $this;
+  }
+
+  /**
+   * get parent
+   * @return cs_element element parent
+   */
+  public function get_parent(){
+    return $this->parent;
+  }
 
   /**
    * get weight
@@ -414,6 +437,9 @@ abstract class cs_element{
    * @return array        element as an array
    */
   private static function _toArray($key, $elem){
+    if($key == 'parent'){
+      return "";
+    }
     if(is_object($elem) && ($elem instanceof cs_element ||  $elem instanceof cs_ordered_functions) ){
       $elem = $elem->toArray();
     }else if(is_array($elem)){
@@ -1048,6 +1074,8 @@ class cs_form extends cs_element{
     }else{
       throw new Exception("Error adding field. Array or cs_field subclass expected, ".gettype($field)." given", 1);
     }
+
+    $field->set_parent($this);
 
     $this->fields[$step][$name] = $field;
     $this->insert_field_order[] = $name;
@@ -3755,6 +3783,7 @@ class cs_optgroup extends cs_element{
       foreach ($options['options'] as $key => $value) {
         if($value instanceof cs_option) {
           $this->add_option($value);
+          $value->set_parent($this);
         } else {
           $this->add_option( new cs_option($key , $value) );
         }
@@ -3783,6 +3812,7 @@ class cs_optgroup extends cs_element{
    * @param cs_option $option option to add
    */
   public function add_option(cs_option $option){
+    $option->set_parent($this);
     $this->options[] = $option;
   }
 
@@ -3824,11 +3854,16 @@ class cs_select extends cs_field_multivalues {
     if(isset($options['options'])){
       foreach($options['options'] as $k => $o){
         if( $o instanceof cs_option || $o instanceof cs_optgroup ){
+          $o->set_parent($this);
           $this->options[] = $o;
         }else if(is_array($o)){
-          $this->options[] = new cs_optgroup( $k , array('options' => $o) );
+          $option = new cs_optgroup( $k , array('options' => $o) );
+          $option->set_parent($this);
+          $this->options[] = $option;
         }else{
-          $this->options[] = new cs_option( $k , $o );
+          $option = new cs_option( $k , $o );
+          $option->set_parent($this);
+          $this->options[] = $option;
         }
       }
       unset($options['options']);
@@ -5175,6 +5210,9 @@ abstract class cs_fields_container extends cs_field {
     }else{
       $field->set_name($name);
     }
+
+    $field->set_parent($this);
+
     $this->fields[$name] = $field;
     $this->insert_field_order[] = $name;
 
@@ -5506,6 +5544,9 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     }else{
       $field->set_name($name);
     }
+
+    $field->set_parent($this);
+
     $this->fields[$name] = $field;
     $this->insert_field_order[$tabindex][] = $name;
     $this->tabs[$tabindex]['fieldnames'][] = $name;
