@@ -842,6 +842,15 @@ class cs_form extends cs_element{
 
 
   /**
+   * check if form is processed
+   * @return boolean form is processed
+   */
+  public function is_processed() {
+    return $this->processed;
+  }
+
+
+  /**
    * get the form submit results optionally by submit function name
    * @param  string $submit_function submit function name
    * @return mixed                   function(s) return value or function(s) data sent to stdout if not returning anything
@@ -5575,6 +5584,21 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
   }
 
   /**
+   * check if tab has errors
+   * @param  integer $tabindex tab index
+   * @return boolean           tab has errors
+   */
+  public function tab_has_errors($tabindex, cs_form $form){
+    if( !$form->is_processed() ) return FALSE;
+    $out = FALSE;
+    foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+      if( $out == TRUE ) continue;
+      $out |= !$field->valid();
+    }
+    return $out;
+  }
+
+  /**
    * get tab index containint specified field name
    * @param  string $field_name field name
    * @return integer            tab index, -1 on failure
@@ -5631,8 +5655,9 @@ class cs_tabs extends cs_fields_container_multiple {
       if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
-      $tab_links[$tabindex] = "<li><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->tabs[$tabindex]['title'])."</a></li>";
-      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
+      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has_errors' : '' ).'"';
+      $tab_links[$tabindex] = "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->tabs[$tabindex]['title'])."</a></li>";
+      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has_errors' : '' )."\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $tabs_html[$tabindex] .= $field->render($form);
       }
@@ -5697,8 +5722,10 @@ class cs_accordion extends cs_fields_container_multiple {
       if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
+
+      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has_errors' : '' ).'"';
       $output .= "<h3>".$this->get_text($this->tabs[$tabindex]['title'])."</h3>";
-      $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner\">\n";
+      $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has_errors' : '' )."\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $output .= $field->render($form);
       }

@@ -326,6 +326,12 @@ function showallform(cs_form $form, &$form_state){
     'options' => array(0=>'zero',1=>'one',2=>'two'),
     'default_value' => 1,
   )) //to tab 0
+  ->add_field('reqtextfield', array(
+    'title' => 'Required Textfield',
+    'type' => 'textfield',
+    'default_value' => '',
+    'validate' => array('required'),
+  )) //to tab 0
   ->add_field('file', array(
     'type' => 'file',
     'destination' => dirname(__FILE__),
