@@ -45,8 +45,12 @@ if( !defined('FORMS_SESSION_TIMEOUT') ){
   define('FORMS_SESSION_TIMEOUT',7200);
 }
 if( !defined('FORMS_ERRORS_ICON') ){
-  define('FORMS_ERRORS_ICON','<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span>');
+  define('FORMS_ERRORS_ICON','<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>');
 }
+if( !defined('FORMS_ERRORS_TEMPLATE') ){
+  define('FORMS_ERRORS_TEMPLATE','<div class="ui-state-error ui-corner-all errorsbox">'.FORMS_ERRORS_ICON.'<ul>%s</ul></div>');
+}
+
 
 if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE ) || session_id() != '') {
   ini_set('session.gc_maxlifetime',FORMS_SESSION_TIMEOUT);
@@ -1318,7 +1322,7 @@ class cs_form extends cs_element{
         }
       }
       if(trim($errors)!=''){
-        $errors = "<div class=\"ui-state-error ui-corner-all errorsbox\">".FORMS_ERRORS_ICON."<ul>" .$errors . "</ul></div>";
+        $errors =  sprintf(FORMS_ERRORS_TEMPLATE, $errors);
       }
     }
 
