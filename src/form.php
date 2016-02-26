@@ -3969,6 +3969,13 @@ class cs_selectmenu extends cs_select{
 class cs_slider extends cs_select{
 
   /**
+   * show value on change
+   * @var boolean
+   */
+  protected $with_val = FALSE;
+
+
+  /**
    * class constructor
    * @param array  $options build options
    * @param string $name    field name
@@ -4000,6 +4007,12 @@ class cs_slider extends cs_select{
   public function pre_render(cs_form $form){
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
+    $add_js = '';
+    if($this->with_val == TRUE){
+      $add_js .= "
+      var text = \$( '#{$id}' )[ 0 ].options[ \$( '#{$id}' )[ 0 ].selectedIndex ].label;
+      \$('#{$id}-show_val','#{$form->get_id()}').text( text );";
+    }
     $this->add_js(
       preg_replace("/\s+/"," ",str_replace("\n","",""."
       \$('#{$id}-slider','#{$form->get_id()}').slider({
@@ -4008,6 +4021,7 @@ class cs_slider extends cs_select{
         value: \$( '#{$id}' )[ 0 ].selectedIndex + 1,
         slide: function( event, ui ) {
           \$( '#{$id}' )[ 0 ].selectedIndex = ui.value - 1;
+          ".$add_js."
         }
       });
     \$( '#{$id}' ).change(function() {
@@ -4024,7 +4038,7 @@ class cs_slider extends cs_select{
    */
   public function render_field(cs_form $form){
     $id = $this->get_html_id();
-    $this->suffix = "<div id=\"{$id}-slider\"></div>".$this->suffix;
+    $this->suffix = "<div id=\"{$id}-slider\"></div>" . (( $this->with_val == TRUE ) ? "<div id=\"{$id}-show_val\">{$this->options[ $this->value ]->get_label()}</div>" : '') . $this->suffix;
     return parent::render_field($form);
   }
 }
@@ -5686,6 +5700,14 @@ class cs_accordion extends cs_fields_container_multiple {
    */
   protected $active = '0';
 
+
+  /**
+   * collapsible
+   * @var boolean
+   */
+  protected $collapsible = FALSE;
+
+
   /**
    * pre_render hook
    * @param  cs_form $form form object
@@ -5693,7 +5715,8 @@ class cs_accordion extends cs_fields_container_multiple {
   public function pre_render(cs_form $form){
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
-    $this->add_js("\$('#{$id}','#{$form->get_id()}').accordion({heightStyle: \"{$this->height_style}\", active: {$this->active} });");
+    $collapsible = ($this->collapsible) ? 'true':'false';
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').accordion({  heightStyle: \"{$this->height_style}\", active: {$this->active}, collapsible: {$collapsible} });");
 
     parent::pre_render($form);
   }

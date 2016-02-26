@@ -264,7 +264,9 @@ function showallform(cs_form $form, &$form_state){
   ));
 
 
-  $accordion = new cs_accordion(array('attributes'=>array(
+  $accordion = new cs_accordion(array(
+    'collapsible' => TRUE,
+    'attributes'=>array(
     // 'style' => 'width: 500px',
   )),'accordion');
 
@@ -347,6 +349,7 @@ function showallform(cs_form $form, &$form_state){
     'type' => 'slider',
     'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
     'default_value' => '2',
+    'with_val' => TRUE,
   ),1); //to tab 1
 
 
