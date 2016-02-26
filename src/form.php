@@ -5655,9 +5655,9 @@ class cs_tabs extends cs_fields_container_multiple {
       if( count( $this->get_tab_fields($tabindex) ) > 0 )
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
-      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has_errors' : '' ).'"';
+      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has-errors' : '' ).'"';
       $tab_links[$tabindex] = "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->tabs[$tabindex]['title'])."</a></li>";
-      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has_errors' : '' )."\">\n";
+      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has-errors' : '' )."\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $tabs_html[$tabindex] .= $field->render($form);
       }
@@ -5723,9 +5723,9 @@ class cs_accordion extends cs_fields_container_multiple {
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
 
 
-      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has_errors' : '' ).'"';
-      $output .= "<h3>".$this->get_text($this->tabs[$tabindex]['title'])."</h3>";
-      $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has_errors' : '' )."\">\n";
+      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has-errors' : '' ).'"';
+      $output .= "<h3{$addclass_tab}>".$this->get_text($this->tabs[$tabindex]['title'])."</h3>";
+      $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has-errors' : '' )."\">\n";
       foreach ($this->get_tab_fields($tabindex) as $name => $field) {
         $output .= $field->render($form);
       }
