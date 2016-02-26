@@ -44,6 +44,9 @@ if( !defined('FORMS_XSS_ALLOWED_TAGS') ){
 if( !defined('FORMS_SESSION_TIMEOUT') ){
   define('FORMS_SESSION_TIMEOUT',7200);
 }
+if( !defined('FORMS_ERRORS_ICON') ){
+  define('FORMS_ERRORS_ICON','<span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span>');
+}
 
 if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE ) || session_id() != '') {
   ini_set('session.gc_maxlifetime',FORMS_SESSION_TIMEOUT);
@@ -1315,7 +1318,7 @@ class cs_form extends cs_element{
         }
       }
       if(trim($errors)!=''){
-        $errors = "<div class=\"ui-state-error ui-corner-all errorsbox\"><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span><ul>" .$errors . "</ul></div>";
+        $errors = "<div class=\"ui-state-error ui-corner-all errorsbox\">".FORMS_ERRORS_ICON."<ul>" .$errors . "</ul></div>";
       }
     }
 
@@ -3997,6 +4000,8 @@ class cs_slider extends cs_select{
     }
     $options['attributes']['class'].=' slider';
 
+    if( isset($options['multiple']) ) $options['multiple'] = FALSE;
+
     parent::__construct($options, $name);
   }
 
@@ -4038,7 +4043,14 @@ class cs_slider extends cs_select{
    */
   public function render_field(cs_form $form){
     $id = $this->get_html_id();
-    $this->suffix = "<div id=\"{$id}-slider\"></div>" . (( $this->with_val == TRUE ) ? "<div id=\"{$id}-show_val\">{$this->options[ $this->value ]->get_label()}</div>" : '') . $this->suffix;
+    $text =  isset($this->default_value) && $this->options_has_key($this->default_value) ? $this->options[ $this->default_value ]->get_label() : '';
+    if(trim($text) == '' && count($this->options) > 0){
+      $option = reset($this->options);
+      $text = $option->get_label();
+    }
+    if(!preg_match( "/<div id=\"{$id}-slider\"><\/div>/i", $this->suffix )){
+      $this->suffix = "<div id=\"{$id}-slider\"></div>" . (( $this->with_val == TRUE ) ? "<div id=\"{$id}-show_val\">{$text}</div>" : '') . $this->suffix;
+    }
     return parent::render_field($form);
   }
 }
