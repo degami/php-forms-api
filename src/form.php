@@ -895,15 +895,15 @@ class cs_form extends cs_element{
         foreach($matches as $match){
           $value = $value[ $match[3] ];
         }
-        $field->process($value, $name);
+        $field->process($value);
       } else if ( isset($request[$name]) ) {
-        $field->process($request[$name], $name);
+        $field->process($request[$name]);
       } else if( $field instanceof cs_checkbox || $field instanceof cs_radios ){
         // no value on request[name] && field is a checkbox or radios group - process anyway with an empty value
-        $field->process(NULL, $name);
+        $field->process(NULL);
       } else if( $field instanceof cs_field_multivalues ){
         // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
-        $field->process(array(), $name);
+        $field->process(array());
       }
     }
   }
@@ -4225,18 +4225,18 @@ class cs_file extends cs_field {
    * @param  mixed $value value to set
    * @param  string $name file input name
    */
-  public function process($value, $name) {
+  public function process($value) {
     $this->value = array(
-      'filepath' => (isset($value['filepath'])) ? $value['filepath'] : $this->destination .'/'. basename($_FILES[$name]['name']),
-      'filename' => (isset($value['filename'])) ? $value['filename'] : basename($_FILES[$name]['name']),
-      'filesize' => (isset($value['filesize'])) ? $value['filesize'] : $_FILES[$name]['size'],
-      'mimetype' => (isset($value['mimetype'])) ? $value['mimetype'] : $_FILES[$name]['type'],
+      'filepath' => (isset($value['filepath'])) ? $value['filepath'] : $this->destination .'/'. basename($_FILES[$this->get_name()]['name']),
+      'filename' => (isset($value['filename'])) ? $value['filename'] : basename($_FILES[$this->get_name()]['name']),
+      'filesize' => (isset($value['filesize'])) ? $value['filesize'] : $_FILES[$this->get_name()]['size'],
+      'mimetype' => (isset($value['mimetype'])) ? $value['mimetype'] : $_FILES[$this->get_name()]['type'],
     );
     if(isset($value['uploaded'])){
       $this->uploaded = $value['uploaded'];
     }
     if ($this->valid()) {
-      if( @move_uploaded_file($_FILES[$name]['tmp_name'], $this->value['filepath']) == TRUE ){
+      if( @move_uploaded_file($_FILES[$this->get_name()]['tmp_name'], $this->value['filepath']) == TRUE ){
         $this->uploaded = TRUE;
       }
     }
@@ -4418,9 +4418,8 @@ class cs_date extends cs_field {
   /**
    * process hook
    * @param  array $value value to set
-   * @param  string $name !this parameter is not used
    */
-  public function process($value, $name) {
+  public function process($value) {
     $this->value = array(
       'year' => $value['year'],
     );
@@ -4727,9 +4726,8 @@ class cs_time extends cs_field {
   /**
    * process hook
    * @param  array $value value to set
-   * @param  string $name !this parameter is not used
    */
-  public function process($value, $name) {
+  public function process($value) {
     $this->value = array(
       'hours' => $value['hours'],
     );
@@ -4858,8 +4856,8 @@ class cs_datetime extends cs_tag_container {
    * @param  array $values value to set
    */
   public function process($values) {
-    $this->date->process($values[$this->get_name().'_date'],$this->get_name().'_date');
-    $this->time->process($values[$this->get_name().'_time'],$this->get_name().'_time');
+    $this->date->process($values[$this->get_name().'_date']);
+    $this->time->process($values[$this->get_name().'_time']);
   }
 
   /**
@@ -5299,13 +5297,13 @@ abstract class cs_fields_container extends cs_field {
     foreach ($this->get_fields() as $name => $field) {
       if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
       else if(isset($values[$name])){
-        $this->get_field($name)->process($values[$name], $name);
+        $this->get_field($name)->process($values[$name]);
       } else if( $field instanceof cs_checkbox ){
         // no value on request[name] && field is a checkbox - process anyway with an empty value
-        $this->get_field($name)->process(NULL, $name);
+        $this->get_field($name)->process(NULL);
       } else if( $field instanceof cs_field_multivalues ){
         // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
-        $this->get_field($name)->process(array(), $name);
+        $this->get_field($name)->process(array());
       }
     }
   }
@@ -5616,6 +5614,7 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
   /**
    * check if tab has errors
    * @param  integer $tabindex tab index
+   * @param  cs_form $form form object
    * @return boolean           tab has errors
    */
   public function tab_has_errors($tabindex, cs_form $form){
@@ -5834,7 +5833,7 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
 
       if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
       else if(isset($values[$name])){
-        $this->get_field($name)->process($values[$name], $name);
+        $this->get_field($name)->process($values[$name]);
       }
 
       $this->deltas[$name]=isset($values[$this->get_html_id().'-delta-'.$tabindex]) ? $values[$this->get_html_id().'-delta-'.$tabindex] : 0;
@@ -6218,9 +6217,8 @@ class cs_plupload extends cs_field {
   /**
    * process hook
    * @param  mixed $value value to set
-   * @param  string $name !this parameter is not used
    */
-  public function process($value, $name) {
+  public function process($value) {
     $this->value = json_decode($value);
   }
 
@@ -6452,8 +6450,8 @@ class cs_geolocation extends cs_tag_container {
    * @param  array $values value to set
    */
   public function process($values) {
-    $this->latitude->process($values[$this->get_name().'_latitude'],$this->get_name().'_latitude');
-    $this->longitude->process($values[$this->get_name().'_longitude'],$this->get_name().'_longitude');
+    $this->latitude->process($values[$this->get_name().'_latitude']);
+    $this->longitude->process($values[$this->get_name().'_longitude']);
   }
 
   /**
@@ -6692,7 +6690,7 @@ class cs_gmaplocation extends cs_geolocation {
   public function process($values) {
     parent::process($values);
     if($this->with_geocode == TRUE){
-      $this->geocode_box->process($values[$this->get_name().'_geocodebox'],$this->get_name().'_geocodebox');
+      $this->geocode_box->process($values[$this->get_name().'_geocodebox']);
     }
   }
 
