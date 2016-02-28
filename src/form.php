@@ -891,9 +891,13 @@ class cs_form extends cs_element{
       if( $field instanceof cs_fields_container ){
         $field->process($request);
       } else if ( preg_match_all('/(.*?)(\[(.*?)\])+/i',$name, $matches, PREG_SET_ORDER) ) {
-        $value = $request[ $matches[0][1] ];
-        foreach($matches as $match){
-          $value = $value[ $match[3] ];
+        if(isset($request[ $matches[0][1] ])){
+          $value = $request[ $matches[0][1] ];
+          foreach($matches as $match){
+            if(isset($value[ $match[3] ])){
+              $value = $value[ $match[3] ];
+            }
+          }
         }
         $field->process($value);
       } else if ( isset($request[$name]) ) {
@@ -5301,9 +5305,13 @@ abstract class cs_fields_container extends cs_field {
       if( $field instanceof cs_fields_container ) {
         $this->get_field($name)->process($values);
       } else if ( preg_match_all('/(.*?)(\[(.*?)\])+/i',$name, $matches, PREG_SET_ORDER) ) {
-        $value = $values[ $matches[0][1] ];
-        foreach($matches as $match){
-          $value = $value[ $match[3] ];
+        if(isset($values[ $matches[0][1] ])){
+          $value = $values[ $matches[0][1] ];
+          foreach($matches as $match){
+            if(isset($value[ $match[3] ])){
+              $value = $value[ $match[3] ];
+            }
+          }
         }
         $field->process($value);
       }else if(isset($values[$name])){
