@@ -901,6 +901,9 @@ class cs_form extends cs_element{
       } else if( $field instanceof cs_checkbox || $field instanceof cs_radios ){
         // no value on request[name] && field is a checkbox or radios group - process anyway with an empty value
         $field->process(NULL);
+      } else if( $field instanceof cs_select ){
+        if($field->is_multiple()) $field->process(array());
+        else $field->process(NULL);
       } else if( $field instanceof cs_field_multivalues ){
         // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
         $field->process(array());
@@ -5295,12 +5298,22 @@ abstract class cs_fields_container extends cs_field {
    */
   public function process($values) {
     foreach ($this->get_fields() as $name => $field) {
-      if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
-      else if(isset($values[$name])){
+      if( $field instanceof cs_fields_container ) {
+        $this->get_field($name)->process($values);
+      } else if ( preg_match_all('/(.*?)(\[(.*?)\])+/i',$name, $matches, PREG_SET_ORDER) ) {
+        $value = $values[ $matches[0][1] ];
+        foreach($matches as $match){
+          $value = $value[ $match[3] ];
+        }
+        $field->process($value);
+      }else if(isset($values[$name])){
         $this->get_field($name)->process($values[$name]);
       } else if( $field instanceof cs_checkbox ){
         // no value on request[name] && field is a checkbox - process anyway with an empty value
         $this->get_field($name)->process(NULL);
+      } else if( $field instanceof cs_select ){
+        if($field->is_multiple()) $this->get_field($name)->process(array());
+        else $this->get_field($name)->process(NULL);
       } else if( $field instanceof cs_field_multivalues ){
         // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
         $this->get_field($name)->process(array());
