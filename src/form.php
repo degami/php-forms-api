@@ -2693,7 +2693,7 @@ abstract class cs_field extends cs_element{
             element_onerror();
           }
 
-          if($.trim(errorThrown) != '') alert(textStatus+': '+errorThrown);
+          if(\$.trim(errorThrown) != '') alert(textStatus+': '+errorThrown);
         },
         complete: function( jqXHR, textStatus ){
           var loading = \$.data(\$target[0],'loading');
