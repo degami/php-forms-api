@@ -7103,7 +7103,7 @@ class cs_form_builder {
 
     if(is_callable($function_name)){
       //$form = $function_name($form, $form_state);
-      $form_obj = call_user_func_array($function_name , array_merge( array($form, $form_state), $form_state['build_info']['args']) );
+      $form_obj = call_user_func_array($function_name , array_merge( array($form, &$form_state), $form_state['build_info']['args']) );
       if( ! $form_obj instanceof cs_form ){
         throw new Exception("Error. function {$function_name} does not return a valid cs_form object", 1);
       }
