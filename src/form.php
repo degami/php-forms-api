@@ -6216,7 +6216,7 @@ class cs_plupload extends cs_field {
    * filters
    * @var array
    */
-  protected $filters = [];
+  protected $filters = array();
 
   /**
    * upload.php url
