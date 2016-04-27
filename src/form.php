@@ -50,7 +50,12 @@ if( !defined('FORMS_ERRORS_ICON') ){
 if( !defined('FORMS_ERRORS_TEMPLATE') ){
   define('FORMS_ERRORS_TEMPLATE','<div class="ui-state-error ui-corner-all errorsbox">'.FORMS_ERRORS_ICON.'<ul>%s</ul></div>');
 }
-
+if( !defined('FORMS_HIGHLIGHTS_ICON') ){
+  define('FORMS_HIGHLIGHTS_ICON','<span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>');
+}
+if( !defined('FORMS_HIGHLIGHTS_TEMPLATE') ){
+  define('FORMS_HIGHLIGHTS_TEMPLATE','<div class="ui-state-highlight ui-corner-all highlightsbox">'.FORMS_HIGHLIGHTS_ICON.'<ul>%s</ul></div>');
+}
 
 if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE ) || session_id() != '') {
   ini_set('session.gc_maxlifetime',FORMS_SESSION_TIMEOUT);
@@ -110,7 +115,7 @@ abstract class cs_element{
    * element errors array
    * @var array
    */
-  protected $errors = array();
+  protected $notifications = array( 'error' => array(), 'highlight'=>array() );
 
   /**
    * element attributes array
@@ -212,7 +217,7 @@ abstract class cs_element{
    * @param string $validate_function_name validation function name
    */
   public function add_error($error_string,$validate_function_name){
-    $this->errors[$validate_function_name] = $error_string;
+    $this->notifications['error'][$validate_function_name] = $error_string;
   }
 
   /**
@@ -220,7 +225,7 @@ abstract class cs_element{
    * @return array errors
    */
   public function get_errors(){
-    return $this->errors;
+    return $this->notifications['error'];
   }
 
   /**
@@ -230,6 +235,54 @@ abstract class cs_element{
   public function has_errors(){
     return count($this->get_errors()) > 0;
   }
+
+  /**
+   * set element errors
+   * @param array $errors           errors array
+   */
+  public function set_errors($errors){
+    $this->notifications['error'] = $errors;
+
+    return $this;
+  }
+
+
+
+  /**
+   * add highlight
+   * @param string $highlight_string           highlight string
+   * @param string $validate_function_name validation function name
+   */
+  public function add_highlight($highlight_string){
+    $this->notifications['highlight'][] = $highlight_string;
+  }
+
+  /**
+   * get defined highlights
+   * @return array errors
+   */
+  public function get_highlights(){
+    return $this->notifications['highlight'];
+  }
+
+  /**
+   * check if element has highlights
+   * @return boolean there are highlights
+   */
+  public function has_highlights(){
+    return count($this->get_highlights()) > 0;
+  }
+
+  /**
+   * set element highlights
+   * @param array $highlights           highlights array
+   */
+  public function set_highlights($highlights){
+    $this->notifications['highlight'] = $highlights;
+
+    return $this;
+  }
+
 
   /**
    * set html attributes
@@ -833,7 +886,7 @@ class cs_form extends cs_element{
     $this->validated = FALSE;
     $this->submitted = FALSE;
     $this->js_generated = FALSE;
-    $this->errors = array();
+    $this->set_errors( array() );
     $this->valid = NULL;
     $this->current_step = 0;
     $this->submit_functions_results = array();
@@ -1036,7 +1089,7 @@ class cs_form extends cs_element{
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) {
             $this->valid = TRUE;
-            $this->errors = array();
+            $this->set_errors( array() );
             if( !cs_form::is_partial() ){
               unset($_SESSION['form_token'][$_REQUEST['form_token']]);
             }
@@ -1282,6 +1335,14 @@ class cs_form extends cs_element{
   }
 
   /**
+   * renders form highlights
+   * @return string highlights as an html <li> list
+   */
+  public function show_highlights() {
+    return (!$this->has_highlights()) ? '' : "<li>".implode('</li><li>',$this->get_highlights())."</li>";
+  }
+
+  /**
    * returns inline error preference
    * @return boolean errors should be presented inline after every elemen
    */
@@ -1309,6 +1370,7 @@ class cs_form extends cs_element{
   public function render( $override_output_type = NULL ) {
     $output = '';
     $errors = '';
+    $highlights = '';
     $fields_html = '';
 
     // render needs the form to be processed
@@ -1330,6 +1392,13 @@ class cs_form extends cs_element{
       }
       if(trim($errors)!=''){
         $errors =  sprintf(FORMS_ERRORS_TEMPLATE, $errors);
+      }
+    }
+
+    if( $this->has_highlights() ){
+      $highlights = $this->show_highlights();
+      if(trim($highlights)!=''){
+        $highlights =  sprintf(FORMS_HIGHLIGHTS_TEMPLATE, $highlights);
       }
     }
 
@@ -1425,6 +1494,7 @@ class cs_form extends cs_element{
 
           $output['html']  = $this->get_element_prefix();
           $output['html'] .= $this->get_prefix();
+          $output['html'] .= $highlights;
           $output['html'] .= $errors;
           $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
           $output['html'] .= $fields_html;
@@ -1452,6 +1522,7 @@ class cs_form extends cs_element{
         default:
           $output = $this->get_element_prefix();
           $output .= $this->get_prefix();
+          $output .= $highlights;
           $output .= $errors;
           $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
           $output .= $fields_html;
@@ -2397,7 +2468,7 @@ abstract class cs_field extends cs_element{
   public function reset() {
     $this->value = $this->default_value;
     $this->pre_rendered = FALSE;
-    $this->errors = array();
+    $this->set_errors( array() );
   }
 
   /**
@@ -2505,7 +2576,7 @@ abstract class cs_field extends cs_element{
    * @return boolean valid state
    */
   public function valid() {
-    $this->errors = array();
+    $this->set_errors( array() );
 
     foreach ($this->validate as $validator) {
       $matches = array();

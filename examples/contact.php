@@ -10,10 +10,11 @@ include "forms.php";
 // as this is not a real example I'm just outputting the values for now.
 function contactform_submit(&$form) {
   $form_values = $form->values();
+  $form->add_highlight('Message sent!');
   print_r($form_values);
   //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.
-  // $form->reset();
+  $form->reset();
 }
 
 $form = cs_form_builder::get_form('contactform');
@@ -59,6 +60,7 @@ $form = cs_form_builder::get_form('contactform');
   textarea{
     border: solid 1px #cecece;
     margin: 0;
+    padding: 5px;
   }
 
   input[type=submit]{
@@ -79,7 +81,13 @@ $form = cs_form_builder::get_form('contactform');
     margin: auto;
     background: #fff;
   }
+  .highlightsbox,
+  .errorsbox{ padding: 10px; margin: 20px 0; }
+
+  .highlightsbox ul,
+  .errorsbox ul{ display: inline-block; list-style-type: none; padding: 0;margin: 0;}
   </style>
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 </head>
 
 <body>
