@@ -218,6 +218,8 @@ abstract class cs_element{
    */
   public function add_error($error_string,$validate_function_name){
     $this->notifications['error'][$validate_function_name] = $error_string;
+
+    return $this;
   }
 
   /**
@@ -246,8 +248,6 @@ abstract class cs_element{
     return $this;
   }
 
-
-
   /**
    * add highlight
    * @param string $highlight_string           highlight string
@@ -255,6 +255,8 @@ abstract class cs_element{
    */
   public function add_highlight($highlight_string){
     $this->notifications['highlight'][] = $highlight_string;
+
+    return $this;
   }
 
   /**
@@ -5649,6 +5651,14 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
   }
 
   /**
+   * get number of defined tabs
+   * @return integer tabs number
+   */
+  public function num_tabs(){
+    return count($this->tabs);
+  }
+
+  /**
    * add a new tab
    * @param string $title tab title
    */
@@ -6179,6 +6189,13 @@ class cs_table_container extends cs_fields_container_multiple{
     return $this->col_row_attributes;
   }
 
+  /**
+   * add a new table row
+   */
+  public function add_row(){
+    $this->add_tab('table_row_'.$this->num_tabs());
+    return $this;
+  }
 
   /**
    * pre_render hook
