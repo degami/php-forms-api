@@ -1581,7 +1581,20 @@ class cs_form extends cs_element{
    * @return mixed        TRUE if valid or a string containing the error message
    */
   public static function validate_required($value = NULL) {
-    if ( (!empty($value) || (!is_array($value) && trim($value) != '') ) && $value != "0" ) {
+    if ( !empty($value) || (!is_array($value) && trim($value) != '') ) {
+      return TRUE;
+    } else {
+      return "<em>%t</em> is required";
+    }
+  }
+
+  /**
+   * "notZero" required validation function - useful for radios
+   * @param  mixed $value the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
+  public static function validate_notzero($value = NULL) {
+    if ( (!empty($value) && (!is_array($value) && trim($value) != '0')) ) {
       return TRUE;
     } else {
       return "<em>%t</em> is required";
