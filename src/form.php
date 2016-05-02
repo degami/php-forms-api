@@ -2263,7 +2263,11 @@ class cs_form extends cs_element{
    * @return string the form html
    */
   public function __toString(){
-    return $this->render();
+    try{
+      return $this->render();
+    }catch(Exception $e){
+      return $e->getMessage()."\n".$e->getTraceAsString();
+    }
   }
 
 
