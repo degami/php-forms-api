@@ -1348,9 +1348,28 @@ class cs_form extends cs_element{
    * returns inline error preference
    * @return boolean errors should be presented inline after every elemen
    */
-  public function errors_inline() {
+  public function set_inline_errors($inline_errors) {
+    $this->inline_errors = $inline_errors;
+
+    return $this;
+  }
+
+  /**
+   * returns inline error preference
+   * @return boolean errors should be presented inline after every elemen
+   */
+  public function get_inline_errors() {
     return $this->inline_errors;
   }
+
+  /**
+   * returns inline error preference
+   * @return boolean errors should be presented inline after every elemen
+   */
+  public function errors_inline() {
+    return $this->get_inline_errors();
+  }
+
 
   /**
    * pre-render hook. using this hook form elements can modify the form element
