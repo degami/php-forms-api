@@ -6242,6 +6242,15 @@ class cs_table_container extends cs_fields_container_multiple{
   }
 
   /**
+   * return number of table rows
+   * @return integer number of table rows
+   */
+  public function num_rows(){
+    return $this->num_partitions();
+  }
+
+
+  /**
    * pre_render hook
    * @param  cs_form $form form object
    */
