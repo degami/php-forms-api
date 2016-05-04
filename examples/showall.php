@@ -105,6 +105,7 @@ $form = cs_form_builder::get_form('showallform');
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
   <script src='//cdn.tinymce.com/4/tinymce.min.js'></script>
   <script type="text/javascript" src="http://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
+  <script type="text/javascript" src="http://dbushell.github.io/Nestable/jquery.nestable.js"></script>
   <script type="text/javascript"><?php
 
     // if you wish to have form's js scripts here rather than after the form....

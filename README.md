@@ -475,6 +475,12 @@ They are always valid.
       'table_header' => array(),
     );
 
+#### Nestables
+
+    $options += array(
+      'type' => 'nestable',
+    );
+
 #### Geolocation (latitude, longitude)
 
     $options += array(

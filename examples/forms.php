@@ -9,26 +9,34 @@ require_once '../src/form.php';
 // Generate a simple contact form
 function contactform(cs_form $form, &$form_state){
 
+  $form->set_inline_errors(TRUE);
+
   // $form = new cs_form(array(
   //   'form_id' => 'contact',
   // ));
-  $form->add_field('name', array(
+
+  $form
+  ->add_field('fieldset', array(
+    'type' => 'tabs',
+    'title' => 'Contact',
+  ))->add_tab('Contact')
+  ->add_field('name', array(
     'type' => 'textfield',
     'validate' => array('required'),
     'preprocess' => array('trim'),
     'title' => 'Your name',
-  ));
-  $form->add_field('email', array(
+  ))
+  ->add_field('email', array(
     'type' => 'textfield',
     'validate' => array('required', 'email'),
     'title' => 'Your email address',
-  ));
-  $form->add_field('message', array(
+  ))
+  ->add_field('message', array(
     'type' => 'textarea',
     'postprocess' => array('xss'),
     'title' => 'Your message',
-  ));
-  $form->add_field('submit', array(
+  ))
+  ->add_field('submit', array(
     'type' => 'submit',
   ));
 
@@ -270,8 +278,8 @@ function showallform(cs_form $form, &$form_state){
     // 'style' => 'width: 500px',
   )),'accordion');
 
-  $accordion->add_tab('accordion1');
-  $accordion->add_tab('accordion2');
+  $accordion->add_accordion('accordion1');
+  $accordion->add_accordion('accordion2');
 
   $accordion->add_field('spinner', array(
     'type' => 'spinner',
@@ -386,10 +394,25 @@ function showallform(cs_form $form, &$form_state){
     $sortable_table->add_field('sortable_field_'.$i,$field,$i);
   }
 
-  $form->add_field('container', array(
+  $nestable = $form->add_field('container', array(
     'type' => 'tag_container',
     'weight' => 1000,
+  ))->add_field('nestable', array(
+    'type' => 'nestable',
+    'prefix' => '<br /><br />',
+    'suffix' => '<br /><br />',
   ));
+
+  for($i = 0; $i < 5; $i++){
+    $nestable->add_field('nested_val_'.$i,array(
+      'type' => 'textfield',
+      'default_value' => 'nested '.$i,
+    ))->add_child()->add_field('nested_child_val_'.$i,array(
+      'type' => 'textfield',
+      'default_value' => 'nestedchild '.$i,
+    ));
+  }
+  //echo '<pre>';var_dump($nestable);echo '</pre>';
 
   $form->add_field('progressbar', array(
     'title' => 'Progress',
@@ -467,6 +490,35 @@ function showallform(cs_form $form, &$form_state){
   return $form;
 }
 
+
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+function nestableform(cs_form $form, &$form_state){
+  $nestable = $form
+  ->add_field('nestable', array(
+    'type' => 'nestable',
+    'prefix' => '<br /><br />',
+    'suffix' => '<br /><br />',
+  ));
+
+  for($i = 0; $i < 5; $i++){
+    $nestable->add_field('nested_val_'.$i,array(
+      'type' => 'textfield',
+      'default_value' => 'nested '.$i,
+    ))->add_child()->add_field('nested_child_val_'.$i,array(
+      'type' => 'textfield',
+      'default_value' => 'nestedchild '.$i,
+    ));
+  }
+
+  $form->add_field('submit', array(
+    'type' => 'submit',
+    'value' => 'Send',
+  ));
+  return $form;
+}
 
 //############################################################################//
 //############################################################################//

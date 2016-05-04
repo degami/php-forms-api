@@ -87,6 +87,10 @@ $form = cs_form_builder::get_form('contactform');
   .highlightsbox ul,
   .errorsbox ul{ display: inline-block; list-style-type: none; padding: 0;margin: 0;}
   </style>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+
   <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
 </head>
 

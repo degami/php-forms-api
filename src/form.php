@@ -2726,7 +2726,6 @@ abstract class cs_field extends cs_element{
         $output .= "<div class=\"description\">{$this->description}</div>";
       }
     }
-
     if($form->errors_inline() == TRUE && $this->has_errors() ){
       $output.= '<div class="inline-error has-errors">'.implode("<br />",$this->get_errors()).'</div>';
     }
@@ -5673,33 +5672,33 @@ class cs_fieldset extends cs_fields_container {
 abstract class cs_fields_container_multiple extends cs_fields_container{
 
   /**
-   * element tabs
+   * element subelements
    * @var array
    */
-  protected $tabs = array();
+  protected $partitions = array();
 
   /**
-   * get element tabs
-   * @return array tabs
+   * get element partitions
+   * @return array partitions
    */
-  public function &get_tabs(){
-    return $this->tabs;
+  public function &get_partitions(){
+    return $this->partitions;
   }
 
   /**
-   * get number of defined tabs
-   * @return integer tabs number
+   * get number of defined partitions
+   * @return integer partitions number
    */
-  public function num_tabs(){
-    return count($this->tabs);
+  public function num_partitions(){
+    return count($this->partitions);
   }
 
   /**
-   * add a new tab
-   * @param string $title tab title
+   * add a new partition
+   * @param string $title partition title
    */
-  public function add_tab($title){
-    $this->tabs[] = array('title'=>$title,'fieldnames'=>array());
+  public function add_partition($title){
+    $this->partitions[] = array('title'=>$title,'fieldnames'=>array());
 
     return $this;
   }
@@ -5708,9 +5707,9 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
    * add field to element
    * @param string  $name     field name
    * @param mixed   $field    field to add, can be an array or a cs_field subclass
-   * @param integer $tabindex index of tab to add field to
+   * @param integer $partitions_index index of partition to add field to
    */
-  public function add_field($name, $field, $tabindex = 0) {
+  public function add_field($name, $field, $partitions_index = 0) {
     if (!is_object($field)) {
       $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
       if(!class_exists($field_type)){
@@ -5724,8 +5723,11 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
     $field->set_parent($this);
 
     $this->fields[$name] = $field;
-    $this->insert_field_order[$tabindex][] = $name;
-    $this->tabs[$tabindex]['fieldnames'][] = $name;
+    $this->insert_field_order[$partitions_index][] = $name;
+    if(!isset($this->partitions[$partitions_index])){
+      $this->partitions[$partitions_index] = array('title'=>'','fieldnames'=>array());
+    }
+    $this->partitions[$partitions_index]['fieldnames'][] = $name;
 
     if( !method_exists($field, 'on_add_return') ) {
       if(  $field instanceof cs_fields_container && !( $field instanceof cs_datetime || $field instanceof cs_geolocation ) )
@@ -5737,13 +5739,13 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
   }
 
   /**
-   * get tab fields array
-   * @param  integer $tabindex tab index
-   * @return array             tab fields array
+   * get partition fields array
+   * @param  integer $partitions_index partition index
+   * @return array             partition fields array
    */
-  public function get_tab_fields($tabindex){
+  public function get_partition_fields($partitions_index){
     $out = array();
-    $fieldsnames = $this->tabs[$tabindex]['fieldnames'];
+    $fieldsnames = $this->partitions[$partitions_index]['fieldnames'];
     foreach($fieldsnames as $name){
       $out[$name] = $this->get_field($name);
     }
@@ -5751,15 +5753,15 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
   }
 
   /**
-   * check if tab has errors
-   * @param  integer $tabindex tab index
+   * check if partition has errors
+   * @param  integer $partitions_index partition index
    * @param  cs_form $form form object
-   * @return boolean           tab has errors
+   * @return boolean           partition has errors
    */
-  public function tab_has_errors($tabindex, cs_form $form){
+  public function partition_has_errors($partitions_index, cs_form $form){
     if( !$form->is_processed() ) return FALSE;
     $out = FALSE;
-    foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+    foreach ($this->get_partition_fields($partitions_index) as $name => $field) {
       if( $out == TRUE ) continue;
       $out |= !$field->valid();
     }
@@ -5767,13 +5769,13 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
   }
 
   /**
-   * get tab index containint specified field name
+   * get partition index containint specified field name
    * @param  string $field_name field name
-   * @return integer            tab index, -1 on failure
+   * @return integer            partition index, -1 on failure
    */
-  public function get_tabindex($field_name){
-    foreach($this->tabs as $tabindex => $tab){
-      if(in_array($field_name, $tab['fieldnames'])) return $tabindex;
+  public function get_partitionindex($field_name){
+    foreach($this->partitions as $partitions_index => $partition){
+      if(in_array($field_name, $partition['fieldnames'])) return $partitions_index;
     }
     return -1;
   }
@@ -5812,21 +5814,21 @@ class cs_tabs extends cs_fields_container_multiple {
 
     $tabs_html = array();
     $tab_links = array();
-    foreach($this->tabs as $tabindex => $tab){
+    foreach($this->partitions as $tabindex => $tab){
       $insertorder = array_flip($this->insert_field_order[$tabindex]);
       $weights = array();
       $order = array();
-      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+      foreach ($this->get_partition_fields($tabindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_tab_fields($tabindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if( count( $this->get_partition_fields($tabindex) ) > 0 )
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($tabindex));
 
-      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has-errors' : '' ).'"';
-      $tab_links[$tabindex] = "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->tabs[$tabindex]['title'])."</a></li>";
-      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has-errors' : '' )."\">\n";
-      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+      $addclass_tab = ' class="tabel '.( $this->partition_has_errors($tabindex, $form) ? 'has-errors' : '' ).'"';
+      $tab_links[$tabindex] = "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->partitions[$tabindex]['title'])."</a></li>";
+      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->partition_has_errors($tabindex, $form) ? ' has-errors' : '' )."\">\n";
+      foreach ($this->get_partition_fields($tabindex) as $name => $field) {
         $tabs_html[$tabindex] .= $field->render($form);
       }
       $tabs_html[$tabindex] .= "</div>\n";
@@ -5834,6 +5836,10 @@ class cs_tabs extends cs_fields_container_multiple {
     $output .= "<ul>".implode("",$tab_links)."</ul>".implode("",$tabs_html). "</div>\n";
 
     return $output;
+  }
+
+  public function add_tab($title){
+    return $this->add_partition($title);
   }
 }
 
@@ -5888,22 +5894,22 @@ class cs_accordion extends cs_fields_container_multiple {
 
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
-    foreach($this->tabs as $tabindex => $tab){
-      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+    foreach($this->partitions as $accordionindex => $accordion){
+      $insertorder = array_flip($this->insert_field_order[$accordionindex]);
       $weights = array();
       $order = array();
-      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+      foreach ($this->get_partition_fields($accordionindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_tab_fields($tabindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if( count( $this->get_partition_fields($accordionindex) ) > 0 )
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($accordionindex));
 
 
-      $addclass_tab = ' class="tabel '.( $this->tab_has_errors($tabindex, $form) ? 'has-errors' : '' ).'"';
-      $output .= "<h3{$addclass_tab}>".$this->get_text($this->tabs[$tabindex]['title'])."</h3>";
-      $output .= "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->tab_has_errors($tabindex, $form) ? ' has-errors' : '' )."\">\n";
-      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+      $addclass_tab = ' class="tabel '.( $this->partition_has_errors($accordionindex, $form) ? 'has-errors' : '' ).'"';
+      $output .= "<h3{$addclass_tab}>".$this->get_text($this->partitions[$accordionindex]['title'])."</h3>";
+      $output .= "<div id=\"{$id}-tab-inner-{$accordionindex}\" class=\"tab-inner".( $this->partition_has_errors($accordionindex, $form) ? ' has-errors' : '' )."\">\n";
+      foreach ($this->get_partition_fields($accordionindex) as $name => $field) {
         $output .= $field->render($form);
       }
       $output .= "</div>\n";
@@ -5911,6 +5917,10 @@ class cs_accordion extends cs_fields_container_multiple {
     $output .= "</div>\n";
 
     return $output;
+  }
+
+  public function add_accordion($title){
+    return $this->add_partition($title);
   }
 }
 
@@ -5968,14 +5978,14 @@ abstract class cs_sortable_container extends cs_fields_container_multiple{
    */
   public function process($values) {
     foreach ($this->get_fields() as $name => $field) {
-      $tabindex = $this->get_tabindex($field->get_name());
+      $partitionindex = $this->get_partitionindex($field->get_name());
 
       if( $field instanceof cs_fields_container ) $this->get_field($name)->process($values);
       else if(isset($values[$name])){
         $this->get_field($name)->process($values[$name]);
       }
 
-      $this->deltas[$name]=isset($values[$this->get_html_id().'-delta-'.$tabindex]) ? $values[$this->get_html_id().'-delta-'.$tabindex] : 0;
+      $this->deltas[$name]=isset($values[$this->get_html_id().'-delta-'.$partitionindex]) ? $values[$this->get_html_id().'-delta-'.$partitionindex] : 0;
     }
   }
 
@@ -6054,23 +6064,22 @@ class cs_sortable extends cs_sortable_container{
 
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
-    foreach($this->tabs as $tabindex => $tab){
-      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+    foreach($this->partitions as $partitionindex => $tab){
+      $insertorder = array_flip($this->insert_field_order[$partitionindex]);
       $weights = array();
       $order = array();
-      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+      foreach ($this->get_partition_fields($partitionindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_tab_fields($tabindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if( count( $this->get_partition_fields($partitionindex) ) > 0 )
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($partitionindex));
 
-      // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
-      $output .= "<div id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
-      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+      $output .= "<div id=\"{$id}-sortable-{$partitionindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
+      foreach ($this->get_partition_fields($partitionindex) as $name => $field) {
         $output .= $field->render($form);
       }
-      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
+      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$partitionindex}\" value=\"{$partitionindex}\" />\n";
       $output .= "</div>".(($handle_position == 'right') ? "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;float: right;\"></span>" : '')."</div>\n";
     }
     $output .= "</div>\n";
@@ -6147,25 +6156,24 @@ class cs_sortable_table extends cs_sortable_container{
     }
 
     $output .= "<tbody>\n";
-    foreach($this->tabs as $tabindex => $tab){
-      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+    foreach($this->partitions as $trindex => $tr){
+      $insertorder = array_flip($this->insert_field_order[$trindex]);
       $weights = array();
       $order = array();
-      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+      foreach ($this->get_partition_fields($trindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_tab_fields($tabindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if( count( $this->get_partition_fields($trindex) ) > 0 )
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($trindex));
 
-      // $output .= "<h3>".$this->tabs[$tabindex]['title']."</h3>";
-      $output .= "<tr id=\"{$id}-sortable-{$tabindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>")."\n";
-      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+      $output .= "<tr id=\"{$id}-sortable-{$trindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>")."\n";
+      foreach ($this->get_partition_fields($trindex) as $name => $field) {
         $fieldhtml = $field->render($form);
         if( trim($fieldhtml) != '' )
           $output .= "<td>".$fieldhtml."</td>\n";
       }
-      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$tabindex}\" value=\"{$tabindex}\" />\n";
+      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$trindex}\" value=\"{$trindex}\" />\n";
       $output .= (($handle_position == 'right') ? "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>" : '')."</tr>\n";
     }
     $output .= "</tbody>\n</table>\n";
@@ -6229,7 +6237,7 @@ class cs_table_container extends cs_fields_container_multiple{
    * add a new table row
    */
   public function add_row(){
-    $this->add_tab('table_row_'.$this->num_tabs());
+    $this->add_partition('table_row_'.$this->num_partitions());
     return $this;
   }
 
@@ -6255,10 +6263,10 @@ class cs_table_container extends cs_fields_container_multiple{
     $table_matrix = array();
     $rows = 0;
 
-    foreach($this->tabs as $tabindex => $tab){
+    foreach($this->partitions as $trindex => $tr){
       $table_matrix[$rows] = array();
       $cols = 0;
-      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+      foreach ($this->get_partition_fields($trindex) as $name => $field) {
         $table_matrix[$rows][$cols] = '';
         if(isset($this->col_row_attributes[$rows][$cols])){
           if( is_array($this->col_row_attributes[$rows][$cols]) ){
@@ -6298,20 +6306,20 @@ class cs_table_container extends cs_fields_container_multiple{
 
     $output .= "<tbody>\n";
     $rows = 0;
-    foreach($this->tabs as $tabindex => $tab){
-      $insertorder = array_flip($this->insert_field_order[$tabindex]);
+    foreach($this->partitions as $trindex => $tr){
+      $insertorder = array_flip($this->insert_field_order[$trindex]);
       $weights = array();
       $order = array();
-      foreach ($this->get_tab_fields($tabindex) as $key => $elem) {
+      foreach ($this->get_partition_fields($trindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_tab_fields($tabindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_tab_fields($tabindex));
+      if( count( $this->get_partition_fields($trindex) ) > 0 )
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($trindex));
 
-      $output .= "<tr id=\"{$id}-row-{$tabindex}\">\n";
+      $output .= "<tr id=\"{$id}-row-{$trindex}\">\n";
       $cols = 0;
-      foreach ($this->get_tab_fields($tabindex) as $name => $field) {
+      foreach ($this->get_partition_fields($trindex) as $name => $field) {
         $fieldhtml = $field->render($form);
         if( trim($fieldhtml) != '' ){
           $td_attributes = '';
@@ -7028,6 +7036,227 @@ class cs_gmaplocation extends cs_geolocation {
     return $output;
   }
 }
+
+class cs_nestable extends cs_fields_container {
+  public $level = 0;
+  public $tag = 'ol';
+  public $tagclass = 'dd-list';
+  public $children = array();
+  public $fields_panel = NULL;
+
+  public function __construct($options = array(), $name = NULL){
+    parent::__construct($options, $name);
+    $this->fields_panel = new cs_tag_container(array(
+      'type' => 'tag_container',
+      'tag' => 'div',
+      'container_class' => '',
+      'container_tag' => '',
+      'prefix' => '<div class="dd-handle"><span class="ui-icon ui-icon-arrow-4" style="vertical-align: top;display: inline-block;"></span>',
+      'suffix' => '</div>',
+      'attributes' => array('style' => 'display: inline-block'),
+    ),'panel-'.$this->get_level().'-'.$this->get_name());
+
+    parent::add_field($this->fields_panel->get_name(), $this->fields_panel);
+  }
+
+  public function get_level(){
+    return $this->level;
+  }
+
+  public function add_child($tag = NULL, $tagclass = NULL){
+    if($tag == NULL) $tag = $this->tag;
+    if($tagclass == NULL) $tagclass = $this->tagclass;
+
+    $nextchild = new cs_nestable(array(
+      'type' => 'nestable',
+      'level' => $this->level+1,
+      'tag' => $tag,
+      'container_class' => '',
+      'container_tag' => '',
+      'attributes' => array('class' => $tagclass),
+    ),'leaf-'.$this->get_level().'-'.$this->num_children());
+
+    $this->children[] = $nextchild;
+    parent::add_field($nextchild->get_name(), $nextchild);
+
+    return $this->children[$this->num_children()-1];
+  }
+
+  public function num_children() {
+    return count($this->get_children());
+  }
+
+  public function has_children(){
+    return $this->num_children() > 0;
+  }
+
+  public function &get_child($numchild){
+    return isset($this->children[$numchild]) ? $this->children[$numchild] : FALSE;
+  }
+
+  public function &get_children(){
+    return $this->children;
+  }
+
+  public function add_field($name, $field){
+    $field_type = NULL;
+    if (!is_object($field)) {
+      $field_type = isset($field['type']) ? "cs_{$field['type']}" : 'cs_textfield';
+    }else{
+      $field_type = get_class($field);
+    }
+
+    if(!class_exists($field_type)){
+      throw new Exception("Error adding field. Class $field_type not found", 1);
+    }
+
+    $fakefield = new $field_type($field, 'fake_'.$name);
+    if($fakefield instanceof cs_fields_container && !( $fakefield instanceof cs_geolocation || $fakefield instanceof cs_datetime ) ){
+      throw new Exception("Can't add a fields_container to a tree_container.", 1);
+    }
+
+    $this->fields_panel->add_field($name, $field);
+    return $this;
+  }
+
+  public function process($values){
+    parent::process( $values );
+    if(isset($values[$this->get_name()])){
+      $this->value = json_decode($values[$this->get_name()], TRUE);
+      //$this->value[0]['values'] = cs_nestable::find_by_id($this->value[0]['id']);
+    }
+  }
+
+  private function get_panel_by_id($nestableid){
+    if($this->get_html_id() == $nestableid) return $this->fields_panel;
+    foreach ($this->get_children() as $key => $child) {
+      $return = $child->get_panel_by_id($nestableid);
+      if( $return != FALSE ) return $return;
+    }
+    return FALSE;
+  }
+
+  private static function create_values_array( $tree, cs_nestable $nestablefield ){
+    $out = array();
+    $panel = $nestablefield->get_panel_by_id($tree['id']);
+    if( $panel instanceof cs_fields_container ){
+      //$out[$tree['id']]['value'] = $panel->values();
+      $out['value']= $panel->values();
+
+      if(isset($tree['children'])){
+        foreach($tree['children'] as $child){
+          //$out[$tree['id']]['children'][] = cs_nestable::create_values_array($child, $nestablefield);
+          $out['children'][] = cs_nestable::create_values_array($child, $nestablefield);
+        }
+      }
+    }
+    return $out;
+  }
+
+  public function values(){
+    if($this->value) {
+      //return $this->value;
+      $out = array();
+      foreach($this->value as $tree){
+        $out = array_merge($out, cs_nestable::create_values_array($tree, $this) );
+      }
+      return $out;
+    }
+    return parent::values();
+  }
+
+  public function render_field(cs_form $form){
+    if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
+    $this->attributes['class'] .= ' '.$this->tagclass;
+    $id = $this->get_html_id();
+
+    $attributes = $this->get_attributes();
+    $out = "";
+    if($this->get_level() == 0) $out .= "<div class=\"dd\" id=\"{$id}\"><{$this->tag} {$attributes}>";
+    $out .= '<li class="dd-item" data-id="'.$id.'">'.$this->fields_panel->render($form);
+    if( $this->has_children() ) {
+      $out .= "<{$this->tag} {$attributes}>";
+      foreach ($this->get_children() as $key => &$child) {
+        $out .= $child->render($form);
+      }
+      $out .= "</{$this->tag}>";
+    }
+    $out .= '</li>';
+    if($this->get_level() == 0) $out .= "</{$this->tag}></div><textarea name=\"{$this->get_name()}\" id=\"{$id}-output\" style=\"display: none\"></textarea>";
+
+    return $out;
+  }
+
+  public function pre_render(cs_form $form){
+    if( $this->pre_rendered == TRUE ) return;
+    $id = $this->get_html_id();
+    if($this->get_level() == 0){
+
+    $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".
+      "\$('#{$id}','#{$form->get_id()}').data('output', \$('#{$id}-output')).nestable({group: 1}).on('change', function(e){
+        var list   = e.length ? e : $(e.target),
+        output = list.data('output');
+        if (window.JSON) {
+            output.val(window.JSON.stringify(list.nestable('serialize')));
+        } else {
+            output.val('JSON browser support required for this.');
+        }
+      }).trigger('change');"
+    )));
+
+    $this->add_css('
+.dd { position: relative; display: block; margin: 0; padding: 0; /*max-width: 600px;*/ list-style: none; font-size: 13px; line-height: 20px; }
+
+.dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
+.dd-list .dd-list { padding-left: 30px; }
+.dd-collapsed .dd-list { display: none; }
+
+.dd-item,
+.dd-empty,
+.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
+
+.dd-handle { display: block; /*height: 30px;*/ margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
+    background: #fafafa;
+    background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:         linear-gradient(top, #fafafa 0%, #eee 100%);
+    -webkit-border-radius: 3px;
+            border-radius: 3px;
+    box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.dd-handle:hover { color: #2ea8e5; background: #fff; }
+
+.dd-item > button { display: block; position: relative; cursor: pointer; float: left; width: 25px; height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center; font-weight: bold; }
+.dd-item > button:before { content: \'+\'; display: block; position: absolute; width: 100%; text-align: center; text-indent: 0; }
+.dd-item > button[data-action="collapse"]:before { content: \'-\'; }
+
+.dd-placeholder,
+.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #f2fbff; border: 1px dashed #b6bcbf; box-sizing: border-box; -moz-box-sizing: border-box; }
+.dd-empty { border: 1px dashed #bbb; min-height: 100px; background-color: #e5e5e5;
+    background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+                      -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image:    -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+                         -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-image:         linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
+                              linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
+}
+
+.dd-dragel { position: absolute; pointer-events: none; z-index: 9999; }
+.dd-dragel > .dd-item .dd-handle { margin-top: 0; }
+.dd-dragel .dd-handle {
+    -webkit-box-shadow: 2px 4px 6px 0 rgba(0,0,0,.1);
+            box-shadow: 2px 4px 6px 0 rgba(0,0,0,.1);
+}
+');
+    }
+
+    parent::pre_render($form);
+  }
+
+}
+
 
 /* #########################################################
    ####                 ACCESSORIES                     ####
