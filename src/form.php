@@ -7185,7 +7185,8 @@ class cs_nestable extends cs_fields_container {
     $out .= '<li class="dd-item" data-id="'.$id.'">'.$this->fields_panel->render($form);
     if( $this->has_children() ) {
       $out .= "<{$this->tag} {$attributes}>";
-      foreach ($this->get_children() as $key => &$child) {
+      $children = $this->get_children();
+      foreach ($children as $key => &$child) {
         $out .= $child->render($form);
       }
       $out .= "</{$this->tag}>";
