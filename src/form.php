@@ -4060,6 +4060,9 @@ class cs_select extends cs_field_multivalues {
     $extra = ($this->multiple) ? ' multiple="multiple" size="'.$this->size.'" ' : '';
     $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
     $output .= "<select name=\"{$field_name}\" id=\"{$id}\"{$extra}{$attributes}>\n";
+    if(isset($this->attributes['placeholder']) && !empty($this->attributes['placeholder'])){
+      $output .= '<option disabled '.( isset($this->default_value) ? '' : 'selected').'>'.$this->attributes['placeholder'].'</option>';
+    }
     foreach ($this->options as $key => $value) {
       $output .= $value->render($this);
     }

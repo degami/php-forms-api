@@ -220,6 +220,7 @@ function showallform(cs_form $form, &$form_state){
     'title' => 'Your email address',
     'attributes' => array(
       'style' => 'width: 100%',
+      'placeholder' => 'yourmail@yourdomain',
      ),
   ));
   $form->get_field('fieldset')->add_field('password', array(
@@ -347,14 +348,24 @@ function showallform(cs_form $form, &$form_state){
     'destination' => dirname(__FILE__),
     // 'validate' => array('required'),
   ),1) //to tab 1
+  ->add_field('select', array(
+    'type' => 'select',
+    'title' => 'select a number - select',
+    'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
+    'attributes' => array(
+      'placeholder' => 'select placeholder',
+    ),
+    'validate' => array('required'),
+  ),1) //to tab 1
   ->add_field('selectmenu', array(
     'type' => 'selectmenu',
-    'title' => 'select a number',
+    'title' => 'select a number - selectmenu',
     'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
     'default_value' => '2',
   ),1) //to tab 1
   ->add_field('slider', array(
     'type' => 'slider',
+    'title' => 'select a number - slider',
     'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
     'default_value' => '2',
     'with_val' => TRUE,
