@@ -28,7 +28,7 @@ $form = cs_form_builder::get_form('nestableform');
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Example Show them all form</title>
+  <title>Example Nestable form</title>
   <style>
   body {
     font-family: Arial;

@@ -6,9 +6,9 @@
 /*
  *  Turn on error reporting during development
  */
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);
+// error_reporting(E_ALL);
+// ini_set('display_errors', TRUE);
+// ini_set('display_startup_errors', TRUE);
 
 /*
  *  PHP Forms API library configuration
@@ -530,6 +530,25 @@ abstract class cs_element{
     if( $this->no_translation == TRUE ) return $text;
     return cs_form::translate_string($text);
   }
+
+  protected static function search_field_by_id( $container, $fieldid ){
+    if( $container instanceof cs_fields_container || $container instanceof cs_form ){
+      $fields = ($container instanceof cs_form) ? $container->get_fields( $container->get_current_step() ) : $container->get_fields();
+      foreach ($fields as $key => $field) {
+        if( $field->get_html_id() == $fieldid ) {
+          return $field;
+        } elseif( $field instanceof cs_fields_container ) {
+          $out = cs_element::search_field_by_id( $field, $fieldid );
+          if( $out != NULL ) return $out;
+        }
+      }
+    }elseif( $container->get_html_id() == $field_id ){
+      // not a conteiner
+      return $container;
+    }
+    return NULL;
+  }
+
 }
 
 /* #########################################################
@@ -832,6 +851,7 @@ class cs_form extends cs_element{
         }
       }
     }
+
     return $output;
   }
 
@@ -1275,7 +1295,6 @@ class cs_form extends cs_element{
     return isset($this->fields[$step][$field_name]) ? $this->fields[$step][$field_name] : NULL;
   }
 
-
   /**
    * get the submit element which submitted the form
    * @return cs_action subclass the submitter
@@ -1285,6 +1304,12 @@ class cs_form extends cs_element{
     foreach($fields as $field){
       if($field->get_clicked() == TRUE) return $field;
     }
+
+    if( cs_form::is_partial() ){
+      $triggering_id = $_REQUEST['triggering_element'];
+      return cs_element::search_field_by_id($this, $triggering_id);
+    }
+
     return NULL;
   }
 
@@ -2780,7 +2805,7 @@ abstract class cs_field extends cs_element{
         type: \"POST\",
         contentType: false,
         processData: false,
-        url: \"{$this->get_ajax_url()}{$question_ampersand}partial=true\",
+        url: \"{$this->get_ajax_url()}{$question_ampersand}partial=true&triggering_element={$this->get_html_id()}\",
         data: postdata,
         success: function( data ){
           var response;
@@ -7055,6 +7080,8 @@ class cs_nestable extends cs_fields_container {
   public $tagclass = 'dd-list';
   public $children = array();
   public $fields_panel = NULL;
+  public $maxDepth = 5;
+  public $group = 0;
 
   public function __construct($options = array(), $name = NULL){
     parent::__construct($options, $name);
@@ -7086,7 +7113,10 @@ class cs_nestable extends cs_fields_container {
       'container_class' => '',
       'container_tag' => '',
       'attributes' => array('class' => $tagclass),
-    ),'leaf-'.$this->get_level().'-'.$this->num_children());
+    ),
+    //'leaf-'.$this->get_level().'-'.$this->num_children()
+    $this->get_name().'-leaf-'. $this->num_children()
+    );
 
     $this->children[] = $nextchild;
     parent::add_field($nextchild->get_name(), $nextchild);
@@ -7153,8 +7183,7 @@ class cs_nestable extends cs_fields_container {
     $panel = $nestablefield->get_panel_by_id($tree['id']);
     if( $panel instanceof cs_fields_container ){
       //$out[$tree['id']]['value'] = $panel->values();
-      $out['value']= $panel->values();
-
+      $out['value'] = $panel->values();
       if(isset($tree['children'])){
         foreach($tree['children'] as $child){
           //$out[$tree['id']]['children'][] = cs_nestable::create_values_array($child, $nestablefield);
@@ -7167,10 +7196,12 @@ class cs_nestable extends cs_fields_container {
 
   public function values(){
     if($this->value) {
-      //return $this->value;
+      // return $this->value;
+      // var_dump($this->value);die();
       $out = array();
       foreach($this->value as $tree){
-        $out = array_merge($out, cs_nestable::create_values_array($tree, $this) );
+        // $out = array_merge($out, cs_nestable::create_values_array($tree, $this) );
+        $out[] = cs_nestable::create_values_array($tree, $this);
       }
       return $out;
     }
@@ -7195,7 +7226,7 @@ class cs_nestable extends cs_fields_container {
       $out .= "</{$this->tag}>";
     }
     $out .= '</li>';
-    if($this->get_level() == 0) $out .= "</{$this->tag}></div><textarea name=\"{$this->get_name()}\" id=\"{$id}-output\" style=\"display: none\"></textarea>";
+    if($this->get_level() == 0) $out .= "</{$this->tag}></div><textarea name=\"{$this->get_name()}\" id=\"{$id}-output\" style=\"display: none; width: 100%; height: 200px;\"></textarea>";
 
     return $out;
   }
@@ -7206,7 +7237,7 @@ class cs_nestable extends cs_fields_container {
     if($this->get_level() == 0){
 
     $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".
-      "\$('#{$id}','#{$form->get_id()}').data('output', \$('#{$id}-output')).nestable({group: 1}).on('change', function(e){
+      "\$('#{$id}','#{$form->get_id()}').data('output', \$('#{$id}-output')).nestable({group: {$this->group}, maxDepth: {$this->maxDepth} }).on('change', function(e){
         var list   = e.length ? e : $(e.target),
         output = list.data('output');
         if (window.JSON) {
@@ -7527,4 +7558,30 @@ class cs_form_builder {
     }
     return $out;
   }
+}
+
+
+class cs_form_values implements IteratorAggregate{
+
+    private $values = array();
+
+    public function __get($key){
+      return isset($this->values[$key]) ? $this->values[$key] : NULL;
+    }
+
+    public function __set($key, $value){
+      $this->values[$key] = $value;
+      return $this;
+    }
+
+    public function __construct($values) {
+      foreach( $values as $k => $v ){
+        if( is_numeric($k) ) $k = '_value'.$k;
+        $this->{$k} = (is_array($v)) ? new cs_form_values($v) : $v;
+      }
+    }
+
+    public function getIterator() {
+        return new ArrayIterator($this);
+    }
 }

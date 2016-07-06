@@ -510,17 +510,23 @@ function nestableform(cs_form $form, &$form_state){
   $nestable = $form
   ->add_field('nestable', array(
     'type' => 'nestable',
+    'maxDepth' => 100,
     'prefix' => '<br /><br />',
     'suffix' => '<br /><br />',
+  ))->add_field('nested_val_0',array(
+    'type' => 'textfield',
+    'default_value' => 'nested 0',
   ));
 
-  for($i = 0; $i < 5; $i++){
-    $nestable->add_field('nested_val_'.$i,array(
-      'type' => 'textfield',
+  for($i = 1; $i <=    5; $i++){
+    $nestable->add_child()->add_field('nested_val_'.$i,array(
+      'type' => 'value',
       'default_value' => 'nested '.$i,
+      'prefix' => 'nested '.$i,
     ))->add_child()->add_field('nested_child_val_'.$i,array(
-      'type' => 'textfield',
+      'type' => 'value',
       'default_value' => 'nestedchild '.$i,
+      'prefix' => 'nestedchild '.$i,
     ));
   }
 
