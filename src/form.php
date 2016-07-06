@@ -7090,9 +7090,8 @@ class cs_nestable extends cs_fields_container {
       'tag' => 'div',
       'container_class' => '',
       'container_tag' => '',
-      'prefix' => '<div class="dd-handle"><span class="ui-icon ui-icon-arrow-4" style="vertical-align: top;display: inline-block;"></span>',
-      'suffix' => '</div>',
-      'attributes' => array('style' => 'display: inline-block'),
+      'prefix' => '<div class="dd-panel"><div class="dd-handle" style="vertical-align: top;display: inline-block;">&nbsp;</div><div class="dd-content">',
+      'suffix' => '</div></div>',
     ),'panel-'.$this->get_level().'-'.$this->get_name());
 
     parent::add_field($this->fields_panel->get_name(), $this->fields_panel);
@@ -7249,15 +7248,12 @@ class cs_nestable extends cs_fields_container {
     )));
 
     $this->add_css('
-.dd { position: relative; display: block; margin: 0; padding: 0; /*max-width: 600px;*/ list-style: none; font-size: 13px; line-height: 20px; }
+.dd { position: relative; display: block; margin: 0; padding: 0; list-style: none; font-size: 13px; line-height: 20px; }
 
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
 .dd-list .dd-list { padding-left: 30px; }
 .dd-collapsed .dd-list { display: none; }
-
-.dd-item,
-.dd-empty,
-.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
+.dd-item,.dd-empty,.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
 
 .dd-handle { display: block; /*height: 30px;*/ margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
     background: #fafafa;
@@ -7270,7 +7266,7 @@ class cs_nestable extends cs_fields_container {
 }
 .dd-handle:hover { color: #2ea8e5; background: #fff; }
 
-.dd-item > button { display: block; position: relative; cursor: pointer; float: left; width: 25px; height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center; font-weight: bold; }
+.dd-item > button { display: block; position: relative; cursor: pointer; z-index: 20; float: left; width: 25px; height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center; font-weight: bold; }
 .dd-item > button:before { content: \'+\'; display: block; position: absolute; width: 100%; text-align: center; text-indent: 0; }
 .dd-item > button[data-action="collapse"]:before { content: \'-\'; }
 
@@ -7288,11 +7284,38 @@ class cs_nestable extends cs_fields_container {
 }
 
 .dd-dragel { position: absolute; pointer-events: none; z-index: 9999; }
-.dd-dragel > .dd-item .dd-handle { margin-top: 0; }
+.dd-dragel  > .dd-panel > .dd-item .dd-handle { margin-top: 0; }
 .dd-dragel .dd-handle {
     -webkit-box-shadow: 2px 4px 6px 0 rgba(0,0,0,.1);
             box-shadow: 2px 4px 6px 0 rgba(0,0,0,.1);
 }
+
+.dd-panel{ position: relative; }
+.dd-content { display: block; min-height: 30px; margin: 5px 0; padding: 5px 10px 5px 40px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
+    background: #fafafa;
+    background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:         linear-gradient(top, #fafafa 0%, #eee 100%);
+    -webkit-border-radius: 3px;
+            border-radius: 3px;
+    box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.dd-content:hover { color: #2ea8e5; background: #fff; }
+.dd-dragel > .dd-item > .dd-panel > .dd-content { margin: 0; }
+.dd-item > button { margin-left: 30px; }
+
+.dd-handle { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%; white-space: nowrap; overflow: hidden;
+  border: 1px solid #aaa;
+  background: #ddd;
+  background: -webkit-linear-gradient(top, #ddd 0%, #bbb 100%);
+  background:    -moz-linear-gradient(top, #ddd 0%, #bbb 100%);
+  background:         linear-gradient(top, #ddd 0%, #bbb 100%);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  height: 100%;
+}
+.dd-handle:before { content: \'≡\'; display: block; position: absolute; left: 0; top: 3px; width: 100%; text-align: center; text-indent: 0; color: #fff; font-size: 20px; font-weight: normal; }
+.dd-handle:hover { background: #ddd; }
 ');
     }
 

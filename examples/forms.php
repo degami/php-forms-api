@@ -527,6 +527,7 @@ function nestableform(cs_form $form, &$form_state){
       'type' => 'value',
       'default_value' => 'nestedchild '.$i,
       'prefix' => 'nestedchild '.$i,
+      'suffix' => '<a href="#" style="float:right;" onClick="javascript:{alert(\'ciao\'); return false;}">ciao</a>',
     ));
   }
 
