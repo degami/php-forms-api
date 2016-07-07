@@ -518,7 +518,18 @@ function nestableform(cs_form $form, &$form_state){
     'default_value' => 'nested 0',
   ));
 
-  for($i = 1; $i <=    5; $i++){
+  $nestable2 = $form
+  ->add_field('nestable2', array(
+    'type' => 'nestable',
+    'maxDepth' => 100,
+    'prefix' => '<br /><br />',
+    'suffix' => '<br /><br />',
+  ))->add_field('nested2_val_0',array(
+    'type' => 'textfield',
+    'default_value' => 'nested2 0',
+  ));
+
+  for($i = 1; $i <= 5; $i++){
     $nestable->add_child()->add_field('nested_val_'.$i,array(
       'type' => 'value',
       'default_value' => 'nested '.$i,
@@ -529,6 +540,18 @@ function nestableform(cs_form $form, &$form_state){
       'prefix' => 'nestedchild '.$i,
       'suffix' => '<a href="#" style="float:right;" onClick="javascript:{alert(\'ciao\'); return false;}">ciao</a>',
     ));
+
+    $nestable2->add_child()->add_field('nested2_val_'.$i,array(
+      'type' => 'value',
+      'default_value' => 'nested2 '.$i,
+      'prefix' => 'nested2 '.$i,
+    ))->add_child()->add_field('nested2_child_val_'.$i,array(
+      'type' => 'value',
+      'default_value' => 'nestedchild2 '.$i,
+      'prefix' => 'nestedchild2 '.$i,
+      'suffix' => '<a href="#" style="float:right;" onClick="javascript:{alert(\'ciao\'); return false;}">ciao</a>',
+    ));
+
   }
 
   $form->add_field('submit', array(

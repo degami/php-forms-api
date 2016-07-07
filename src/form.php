@@ -7081,6 +7081,8 @@ class cs_nestable extends cs_fields_container {
   public $children = array();
   public $fields_panel = NULL;
   public $maxDepth = 5;
+  public static $_groupcounter = 0;
+  public static $_css_rendered = FALSE;
   public $group = 0;
 
   public function __construct($options = array(), $name = NULL){
@@ -7095,6 +7097,8 @@ class cs_nestable extends cs_fields_container {
     ),'panel-'.$this->get_level().'-'.$this->get_name());
 
     parent::add_field($this->fields_panel->get_name(), $this->fields_panel);
+
+    $this->group = cs_nestable::$_groupcounter++;
   }
 
   public function get_level(){
@@ -7214,8 +7218,9 @@ class cs_nestable extends cs_fields_container {
 
     $attributes = $this->get_attributes();
     $out = "";
-    if($this->get_level() == 0) $out .= "<div class=\"dd\" id=\"{$id}\"><{$this->tag} {$attributes}>";
-    $out .= '<li class="dd-item" data-id="'.$id.'">'.$this->fields_panel->render($form);
+    if($this->get_level() == 0) $out .= "<div class=\"dd\" id=\"{$id}\"><{$this->tag}{$attributes}>";
+    $out .= '<li class="dd-item" data-id="'.$id.'">';
+    $out .= $this->fields_panel->render($form);
     if( $this->has_children() ) {
       $out .= "<{$this->tag} {$attributes}>";
       $children = $this->get_children();
@@ -7225,6 +7230,7 @@ class cs_nestable extends cs_fields_container {
       $out .= "</{$this->tag}>";
     }
     $out .= '</li>';
+
     if($this->get_level() == 0) $out .= "</{$this->tag}></div><textarea name=\"{$this->get_name()}\" id=\"{$id}-output\" style=\"display: none; width: 100%; height: 200px;\"></textarea>";
 
     return $out;
@@ -7236,7 +7242,8 @@ class cs_nestable extends cs_fields_container {
     if($this->get_level() == 0){
 
     $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".
-      "\$('#{$id}','#{$form->get_id()}').data('output', \$('#{$id}-output')).nestable({group: {$this->group}, maxDepth: {$this->maxDepth} }).on('change', function(e){
+      "\$('#{$id}','#{$form->get_id()}').data('output', \$('#{$id}-output'));
+       \$('#{$id}','#{$form->get_id()}').nestable({group: {$this->group}, maxDepth: {$this->maxDepth} }).on('change', function(e){
         var list   = e.length ? e : $(e.target),
         output = list.data('output');
         if (window.JSON) {
@@ -7247,6 +7254,8 @@ class cs_nestable extends cs_fields_container {
       }).trigger('change');"
     )));
 
+      if(!cs_nestable::$_css_rendered){
+
     $this->add_css('
 .dd { position: relative; display: block; margin: 0; padding: 0; list-style: none; font-size: 13px; line-height: 20px; }
 
@@ -7255,7 +7264,7 @@ class cs_nestable extends cs_fields_container {
 .dd-collapsed .dd-list { display: none; }
 .dd-item,.dd-empty,.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
 
-.dd-handle { display: block; /*height: 30px;*/ margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
+.dd-handle { display: block; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
     background: #fafafa;
     background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
     background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
@@ -7317,6 +7326,9 @@ class cs_nestable extends cs_fields_container {
 .dd-handle:before { content: \'≡\'; display: block; position: absolute; left: 0; top: 3px; width: 100%; text-align: center; text-indent: 0; color: #fff; font-size: 20px; font-weight: normal; }
 .dd-handle:hover { background: #ddd; }
 ');
+        cs_nestable::$_css_rendered = TRUE;
+      }
+
     }
 
     parent::pre_render($form);
