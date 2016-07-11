@@ -7076,6 +7076,7 @@ class cs_gmaplocation extends cs_geolocation {
 
 class cs_nestable extends cs_fields_container {
   public $level = 0;
+  public $childnum = 0;
   public $tag = 'ol';
   public $tagclass = 'dd-list';
   public $children = array();
@@ -7094,6 +7095,7 @@ class cs_nestable extends cs_fields_container {
       'container_tag' => '',
       'prefix' => '<div class="dd-panel"><div class="dd-handle" style="vertical-align: top;display: inline-block;">&nbsp;</div><div class="dd-content">',
       'suffix' => '</div></div>',
+      'attributes' => array('class' => 'level-'.$this->level),
     ),'panel-'.$this->get_level().'-'.$this->get_name());
 
     parent::add_field($this->fields_panel->get_name(), $this->fields_panel);
@@ -7116,6 +7118,7 @@ class cs_nestable extends cs_fields_container {
       'container_class' => '',
       'container_tag' => '',
       'attributes' => array('class' => $tagclass),
+      'childnum' => $this->num_children(),
     ),
     //'leaf-'.$this->get_level().'-'.$this->num_children()
     $this->get_name().'-leaf-'. $this->num_children()
@@ -7219,7 +7222,7 @@ class cs_nestable extends cs_fields_container {
     $attributes = $this->get_attributes();
     $out = "";
     if($this->get_level() == 0) $out .= "<div class=\"dd\" id=\"{$id}\"><{$this->tag}{$attributes}>";
-    $out .= '<li class="dd-item" data-id="'.$id.'">';
+    $out .= '<li class="dd-item level-'.$this->level.' child-'.$this->childnum.'" data-id="'.$id.'">';
     $out .= $this->fields_panel->render($form);
     if( $this->has_children() ) {
       $out .= "<{$this->tag} {$attributes}>";
