@@ -4282,6 +4282,8 @@ class cs_checkboxes extends cs_field_multivalues {
  */
 class cs_checkbox extends cs_field {
 
+  protected $text_position = 'after';
+
   /**
    * class constructor
    * @param array  $options build options
@@ -4311,7 +4313,7 @@ class cs_checkbox extends cs_field {
     $this->label_class .= " " .preg_replace("/cs_/i", "label-", get_class($this));
     $this->label_class = trim($this->label_class);
     $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-    $output = "<label for=\"{$id}\"{$label_class}><input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".$this->get_text($this->title)."</label>\n";
+    $output = "<label for=\"{$id}\"{$label_class}>".(($this->text_position == 'before') ? $this->get_text($this->title) : '')."<input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".(($this->text_position != 'before') ? $this->get_text($this->title) : '')."</label>\n";
     return $output;
   }
 
