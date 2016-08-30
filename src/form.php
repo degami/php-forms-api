@@ -1431,6 +1431,7 @@ class cs_form extends cs_element{
 
     if ( $this->valid() === FALSE) {
       $errors = $this->show_errors();
+      $this->set_attribute('class',trim($this->get_attribute('class').' with-errors'));
       if(!$this->errors_inline()){
         foreach ($this->get_fields($this->current_step) as $field) {
           $errors .= $field->show_errors();
