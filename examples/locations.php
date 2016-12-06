@@ -1,5 +1,5 @@
 <?php
-define('GOOGLE_API_KEY', 'AIzaSyCBBG3XQlPhURNUBswi4klmqlNeBALfevY');
+define('GOOGLE_API_KEY', 'YOUR_API_KEY_HERE');
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
 require_once '../src/form.php';
