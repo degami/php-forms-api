@@ -346,13 +346,25 @@ abstract class cs_element{
    */
   public function add_js($js){
     if( is_array($js) ){
-      $js = array_filter(array_map('trim',$js));
+      $js = array_filter(array_map( array('minify_js', $this), $js));
       $this->js = array_merge( $js, $this->js );
     } else if( is_string($js) && trim($js) != '' ) {
-      $this->js[] = trim($js);
+      $this->js[] = $this->minify_js($js);
     }
 
     return $this;
+  }
+
+  /**
+   * minify js string
+   * @param string $js javascript minify
+   */
+  public function minify_js($js){
+    if( is_string($js) && trim($js) != '' ) {
+      $js = trim(preg_replace("/\s+/"," ",str_replace("\n","","". $js )));
+    }
+
+    return $js;
   }
 
   /**
@@ -565,6 +577,13 @@ class cs_form extends cs_element{
    * @var string
    */
   protected $form_id = 'cs_form';
+
+  /**
+   * form definition function name
+   * @var string
+   */
+  protected $definition_function = '';
+
 
   /**
    * form token
@@ -2323,6 +2342,36 @@ class cs_form extends cs_element{
   protected function on_add_return(){
     return 'this';
   }
+
+ /**
+   * set the form definition function name
+   * @param string $function_name form definition function name
+   */
+  public function set_definition_function($function_name){
+    $this->definition_function = $function_name;
+    return $this;
+  }
+
+ /**
+   * get the form definition function body
+   * @return string form definition function body
+   */
+  public function get_definition_body(){
+    $body = FALSE;
+    try{
+      $func = new ReflectionFunction( !empty($this->definition_function) ? $this->definition_function : $this->get_form_id());
+      $filename = $func->getFileName();
+      $start_line = $func->getStartLine() - 1; // it's actually - 1, otherwise you wont get the function() block
+      $end_line = $func->getEndLine();
+      $length = $end_line - $start_line;
+
+      $source = file($filename);
+      $body = implode("", array_slice($source, $start_line, $length));
+      $body = str_replace('<', '&lt;', $body);
+      $body = str_replace('>', '&gt;', $body);
+    }catch(Exception $e){}
+    return $body;
+  }
 }
 
 
@@ -3257,11 +3306,10 @@ class cs_progressbar extends cs_markup {
     if($this->indeterminate == TRUE || !is_numeric($this->value) ){
       $this->add_js("\$('#{$id}','#{$form->get_id()}').progressbar({ value: false });");
     }else if( $this->show_label == TRUE ){
-      $this->add_js(
-        preg_replace("/\s+/"," ",str_replace("\n","",""."
+      $this->add_js("
         \$('#{$id}','#{$form->get_id()}').progressbar({ value: parseInt({$this->value}) });
         \$('#{$id} .progress-label','#{$form->get_id()}').text('{$this->value}%');
-      ")));
+      ");
     }else{
       $this->add_js("\$('#{$id}','#{$form->get_id()}').progressbar({ value: parseInt({$this->value}) });");
     }
@@ -3401,8 +3449,7 @@ class cs_autocomplete extends cs_textfield{
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
 
-    $this->add_js(
-      preg_replace("/\s+/"," ",str_replace("\n","",""."
+    $this->add_js("
       \$('#{$id}','#{$form->get_id()}')
       .bind( 'keydown', function( event ) {
         if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
@@ -3416,7 +3463,7 @@ class cs_autocomplete extends cs_textfield{
           return false;
         }
       });
-    ")));
+    ");
 
     parent::pre_render($form);
   }
@@ -3641,8 +3688,7 @@ class cs_password extends cs_field {
     if($this->with_strength_check == TRUE){
       $id = $this->get_html_id();
 
-      $this->add_js(
-      preg_replace("/\s+/"," ",str_replace("\n","",""."
+      $this->add_js("
       \$('#{$id}','#{$form->get_id()}').keyup(function() {
         \$('#{$id}_result').html(
 
@@ -3671,7 +3717,7 @@ class cs_password extends cs_field {
           })(\$('#{$id}','#{$form->get_id()}').val())
 
         );
-      });")));
+      });");
 
       $this->add_css("#{$form->get_id()} .password_strength_checker.short{color:#FF0000;}");
       $this->add_css("#{$form->get_id()} .password_strength_checker.weak{color:#E66C2C;}");
@@ -4167,8 +4213,7 @@ class cs_slider extends cs_select{
       var text = \$( '#{$id}' )[ 0 ].options[ \$( '#{$id}' )[ 0 ].selectedIndex ].label;
       \$('#{$id}-show_val','#{$form->get_id()}').text( text );";
     }
-    $this->add_js(
-      preg_replace("/\s+/"," ",str_replace("\n","",""."
+    $this->add_js("
       \$('#{$id}-slider','#{$form->get_id()}').slider({
         min: 1,
         max: ".count($this->options).",
@@ -4180,7 +4225,7 @@ class cs_slider extends cs_select{
       });
     \$( '#{$id}' ).change(function() {
       \$('#{$id}-slider').slider('value', this.selectedIndex + 1 );
-    }).hide();")));
+    }).hide();");
 
     parent::pre_render($form);
   }
@@ -5642,8 +5687,7 @@ class cs_fieldset extends cs_fields_container {
       }
 
       if( !$js_collapsible_added ){
-        $this->add_js(
-          preg_replace("/\s+/"," ",str_replace("\n","",""."
+        $this->add_js("
           \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
             evt.preventDefault();
             var \$this = \$(this);
@@ -5655,7 +5699,7 @@ class cs_fieldset extends cs_fields_container {
               }
             });
           });
-          \$('fieldset.collapsible.collapsed .fieldset-inner').hide();")));
+          \$('fieldset.collapsible.collapsed .fieldset-inner').hide();");
         $js_collapsible_added = TRUE;
       }
     }
@@ -6067,15 +6111,14 @@ class cs_sortable extends cs_sortable_container{
   public function pre_render(cs_form $form){
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
-    $this->add_js(
-      preg_replace("/\s+/"," ",str_replace("\n","",""."\$('#{$id}','#{$form->get_id()}').sortable({
+    $this->add_js("\$('#{$id}','#{$form->get_id()}').sortable({
         placeholder: \"ui-state-highlight\",
         stop: function( event, ui ) {
           \$(this).find('input[type=hidden][name*=\"sortable-delta-\"]').each(function(index,elem){
             \$(elem).val(index);
           });
         }
-      });")));
+      });");
 
     parent::pre_render($form);
   }
@@ -6137,8 +6180,7 @@ class cs_sortable_table extends cs_sortable_container{
   public function pre_render(cs_form $form){
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
-    $this->add_js(
-      preg_replace("/\s+/"," ",str_replace("\n","",""."
+    $this->add_js("
       \$('#{$id} tbody','#{$form->get_id()}').sortable({
         helper: function(e, ui) {
           ui.children().each(function() {
@@ -6152,7 +6194,7 @@ class cs_sortable_table extends cs_sortable_container{
             \$(elem).val(index);
           });
         }
-      });")));
+      });");
 
     parent::pre_render($form);
   }
@@ -6817,10 +6859,22 @@ class cs_gmaplocation extends cs_geolocation {
   protected $geocode_box = NULL;
 
   /**
+   * cs_textarea subelement for reverse geocoding informations
+   * @var null
+   */
+  protected $reverse_geocode_box = NULL;
+
+  /**
    * "show map" flag
    * @var boolean
    */
   protected $with_map = TRUE;
+
+  /**
+   * enable reverse geociding information box
+   * @var boolean
+   */
+  protected $with_reverse = FALSE;
 
   /**
    * class constructor
@@ -6836,31 +6890,46 @@ class cs_gmaplocation extends cs_geolocation {
     unset($options['suffix']);
     $options['container_tag'] = '';
 
-    $options['type'] = 'hidden';
-    if($this->lat_lon_type == 'textfield') $options['type'] = 'textfield';
-    $options['default_value'] = (is_array($defaults) && isset($defaults['latitude'])) ? $defaults['latitude'] : 0;
-    if($this->lat_lon_type == 'textfield') $this->latitude = new cs_textfield($options,$name.'_latitude');
-    else $this->latitude = new cs_hidden($options,$name.'_latitude');
+    $opt = $options;
+    $opt['type'] = 'hidden';
+    $opt['attributes']['class'] = 'latitude';
+    if($this->lat_lon_type == 'textfield') $opt['type'] = 'textfield';
+    $opt['default_value'] = (is_array($defaults) && isset($defaults['latitude'])) ? $defaults['latitude'] : 0;
+    if($this->lat_lon_type == 'textfield') $this->latitude = new cs_textfield($opt,$name.'_latitude');
+    else $this->latitude = new cs_hidden($opt,$name.'_latitude');
 
-
-    $options['type'] = 'hidden';
-    if($this->lat_lon_type == 'textfield') $options['type'] = 'textfield';
-    $options['default_value'] = (is_array($defaults) && isset($defaults['longitude'])) ? $defaults['longitude'] : 0;
-    if($this->lat_lon_type == 'textfield') $this->longitude = new cs_textfield($options,$name.'_longitude');
-    else $this->longitude = new cs_hidden($options,$name.'_longitude');
+    $opt = $options;
+    $opt['type'] = 'hidden';
+    $opt['attributes']['class'] = 'longitude';
+    if($this->lat_lon_type == 'textfield') $opt['type'] = 'textfield';
+    $opt['default_value'] = (is_array($defaults) && isset($defaults['longitude'])) ? $defaults['longitude'] : 0;
+    if($this->lat_lon_type == 'textfield') $this->longitude = new cs_textfield($opt,$name.'_longitude');
+    else $this->longitude = new cs_hidden($opt,$name.'_longitude');
 
     if($this->with_geocode == TRUE){
-      $options['type'] = 'textfield';
-      $options['size'] = 50;
-      $options['default_value'] = (is_array($defaults) && isset($defaults['geocodebox'])) ? $defaults['geocodebox'] : '';
-      $this->geocode_box = new cs_textfield($options,$name.'_geocodebox');
+      $opt = $options;
+      $opt['type'] = 'textfield';
+      $opt['size'] = 50;
+      $opt['attributes']['class'] = 'geocode';
+      $opt['default_value'] = (is_array($defaults) && isset($defaults['geocodebox'])) ? $defaults['geocodebox'] : '';
+      $this->geocode_box = new cs_textfield($opt,$name.'_geocodebox');
+    }
+
+    if( $this->with_reverse == TRUE ){
+      $opt = $options;
+      $opt['type'] = 'textarea';
+      $opt['attributes']['class'] = 'reverse';
+      $opt['default_value'] = (is_array($defaults) && isset($defaults['reverse_geocodebox'])) ? $defaults['reverse_geocodebox'] : '';
+      $this->reverse_geocode_box = new cs_textarea($opt,$name.'_reverse_geocodebox');
     }
 
     if($this->with_current_location == TRUE){
-      $options['type'] = 'button';
-      $options['size'] = 50;
-      $options['default_value'] = $this->get_text('Current Location');
-      $this->current_location_btn = new cs_button($options,$name.'_current_location_btn');
+      $opt = $options;
+      $opt['type'] = 'button';
+      $opt['size'] = 50;
+      $opt['attributes']['class'] = 'current_location';
+      $opt['default_value'] = $this->get_text('Current Location');
+      $this->current_location_btn = new cs_button($opt,$name.'_current_location_btn');
     }
   }
 
@@ -6874,6 +6943,9 @@ class cs_gmaplocation extends cs_geolocation {
     if($this->with_geocode == TRUE){
       $this->geocode_box->preprocess($process_type);
     }
+    if($this->with_reverse == TRUE){
+      $this->reverse_geocode_box->preprocess($process_type);
+    }
   }
 
 
@@ -6886,6 +6958,9 @@ class cs_gmaplocation extends cs_geolocation {
     if($this->with_geocode == TRUE){
       $this->geocode_box->process($values[$this->get_name().'_geocodebox']);
     }
+    if($this->with_reverse == TRUE){
+      $this->reverse_geocode_box->process($values[$this->get_name().'_reverse_geocodebox']);
+    }
   }
 
   /**
@@ -6896,6 +6971,9 @@ class cs_gmaplocation extends cs_geolocation {
     $out = parent::values();
     if($this->with_geocode == TRUE){
       $out += array( 'geocodebox' => $this->geocode_box->values() );
+    }
+    if($this->with_reverse == TRUE){
+      $out += array( 'reverse_geocodebox' => $this->reverse_geocode_box->values() );
     }
     return $out;
   }
@@ -6919,8 +6997,7 @@ class cs_gmaplocation extends cs_geolocation {
         ";
       }
 
-      $this->add_js(
-        preg_replace("/\s+/"," ",str_replace("\n","",""."
+      $this->add_js("
           var {$id}_api_endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
           \$('#{$id}_geocodebox').autocomplete({
             source: function (request, response) {
@@ -6943,17 +7020,18 @@ class cs_gmaplocation extends cs_geolocation {
 
               \$('input[name=\"{$id}_latitude\"]','#{$id}').val( lat );
               \$('input[name=\"{$id}_longitude\"]','#{$id}').val( lng );
+              ".(($this->with_reverse == TRUE) ? "\$('#{$id}').trigger('lat_lon_updated');":"")."
 
               {$update_map_func}
+
             }
           });
-      ")));
+      ");
     }
 
     if($this->with_map == TRUE){
       $this->add_css("#{$form->get_id()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
-      $this->add_js(
-        preg_replace("/\s+/"," ",str_replace("\n","",""."
+      $this->add_js("
         var {$id}_latlng = {lat: ".$this->latitude->values().", lng: ".$this->longitude->values()."};
 
         var {$id}_map = new google.maps.Map(document.getElementById('{$id}-map'), {
@@ -6976,13 +7054,12 @@ class cs_gmaplocation extends cs_geolocation {
           var mapdiv = {$id}_marker.map.getDiv();
           \$('input[name=\"{$id}_latitude\"]','#'+\$(mapdiv).parent().attr('id')).val( {$id}_marker.getPosition().lat() );
           \$('input[name=\"{$id}_longitude\"]','#'+\$(mapdiv).parent().attr('id')).val( {$id}_marker.getPosition().lng() );
+          ".(($this->with_reverse == TRUE) ? "\$('#{$id}').trigger('lat_lon_updated');":"")."
         });
-
-      ")));
+      ");
 
       if($this->lat_lon_type == 'textfield'){
-        $this->add_js(
-          preg_replace("/\s+/"," ",str_replace("\n","",""."
+        $this->add_js("
             \$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}').change(function(evt){
               var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
               var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
@@ -6991,18 +7068,48 @@ class cs_gmaplocation extends cs_geolocation {
               marker.setPosition( new google.maps.LatLng( lat, lng ) );
               map.panTo( new google.maps.LatLng( lat, lng ) );
             });
-        ")));
+        ");
       }
 
     }
 
+    if( $this->with_reverse == TRUE ){
+        $this->add_js("
+            var {$id}_geocoder = new google.maps.Geocoder;
+            \$('#{$id}').bind('lat_lon_updated',function(evt){
+              var latlng = {lat: parseFloat( \$('input[name=\"{$id}_latitude\"]','#{$id}').val() ), lng: parseFloat( \$('input[name=\"{$id}_longitude\"]','#{$id}').val() )};
+              {$id}_geocoder.geocode({'location': latlng}, function(results, status) {
+                if (status === 'OK') {
+                  \$('#{$id}_reverse_geocodebox').val( JSON.stringify(results) );
+                } else {
+                  \$('#{$id}_reverse_geocodebox').val('Geocoder failed due to: ' + status);
+                }
+              });
+            });
+        ");
+
+        if($this->lat_lon_type == 'textfield'){
+          $this->add_js("
+              \$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}').change(function(evt){
+                \$('#{$id}').trigger('lat_lon_updated');
+              });
+          ");
+        }
+    }
+
     if($this->with_current_location == TRUE){
-        $this->add_js(
-          preg_replace("/\s+/"," ",str_replace("\n","",""."
+        $update_map_func = "";
+        if($this->with_map == TRUE){
+          $update_map_func = "
+            var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
+            var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
+            marker.setPosition( new google.maps.LatLng( lat, lng ) );
+            map.panTo( new google.maps.LatLng( lat, lng ) );
+          ";
+        }
+        $this->add_js("
             \$('#{$id}_current_location_btn').click(function(evt){
               evt.preventDefault();
-              var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
-              var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
               var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
               var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
 
@@ -7010,16 +7117,17 @@ class cs_gmaplocation extends cs_geolocation {
                 navigator.geolocation.getCurrentPosition(function(position) {
                   lat = position.coords.latitude;
                   lng = position.coords.longitude;
-                  marker.setPosition( new google.maps.LatLng( lat, lng ) );
-                  map.panTo( new google.maps.LatLng( lat, lng ) );
                   \$('input[name=\"{$id}_latitude\"]','#{$id}').val(lat);
                   \$('input[name=\"{$id}_longitude\"]','#{$id}').val(lng);
+                  ".(($this->with_reverse == TRUE) ? "\$('#{$id}').trigger('lat_lon_updated');":"")."
+
+                  {$update_map_func}
                 }, function() {
                   /*handleLocationError();*/
                 });
               }
             });
-        ")));
+        ");
     }
 
     parent::pre_render($form);
@@ -7063,15 +7171,21 @@ class cs_gmaplocation extends cs_geolocation {
     }
 
     if($this->with_map == TRUE){
-      $mapattributes = '';
+      $mapattributes = ' class="gmap"';
       $output .= "<div id=\"{$id}-map\"{$mapattributes}></div>\n";
-    }
-    if($this->with_current_location == TRUE){
-      $output .= $this->current_location_btn->render($form);
     }
 
     $output .= $this->latitude->render($form);
     $output .= $this->longitude->render($form);
+
+    if($this->with_current_location == TRUE){
+      $output .= $this->current_location_btn->render($form);
+    }
+
+    if($this->with_reverse == TRUE){
+      $output .= $this->reverse_geocode_box->render($form);
+    }
+
     $output .= "</{$this->tag}>\n";
     return $output;
   }
@@ -7268,7 +7382,7 @@ class cs_nestable extends cs_fields_container {
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
 .dd-list .dd-list { padding-left: 30px; }
 .dd-collapsed .dd-list { display: none; }
-.dd-item,.dd-empty,.dd-placeholder { display: block; position: relative; margin: 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
+.dd-item,.dd-empty,.dd-placeholder { display: block; position: relative; margin: 10px 0 0 0; padding: 0; min-height: 20px; font-size: 13px; line-height: 20px; }
 
 .dd-handle { display: block; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
     background: #fafafa;
@@ -7286,8 +7400,9 @@ class cs_nestable extends cs_fields_container {
 .dd-item > button[data-action="collapse"]:before { content: \'-\'; }
 
 .dd-placeholder,
-.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #f2fbff; border: 1px dashed #b6bcbf; box-sizing: border-box; -moz-box-sizing: border-box; }
-.dd-empty { border: 1px dashed #bbb; min-height: 100px; background-color: #e5e5e5;
+.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #f2fbff; border: 1px dashed #b6bcbf; box-sizing: border-box; -moz-box-sizing: border-box; display: block; }
+.dd-empty {
+    border: 1px dashed #bbb; min-height: 100px; background-color: #e5e5e5;
     background-image: -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
                       -webkit-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff);
     background-image:    -moz-linear-gradient(45deg, #fff 25%, transparent 25%, transparent 75%, #fff 75%, #fff),
@@ -7535,6 +7650,7 @@ class cs_form_builder {
     $function_name = $form_id;
     $form = new cs_form(array(
       'form_id' => $form_id,
+      'definition_function' => $function_name,
     ));
 
     $form_state += cs_form_builder::get_request_values($function_name);
@@ -7547,6 +7663,7 @@ class cs_form_builder {
       }
 
       $form =  $form_obj;
+      $form->set_definition_function( $function_name );
       $_SESSION['form_definition'][$form->get_id()] = $form->toArray();
     }
     return $form;

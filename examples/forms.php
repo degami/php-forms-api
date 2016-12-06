@@ -810,6 +810,7 @@ function locationsform(cs_form $form, &$form_state){
     'title' => 'GeoLocation',
     'type' => 'geolocation',
   ))
+  ->add_field('hr1', array('type'=>'markup','value'=>'<hr />'))
   ->add_field('map', array(
     'title' => 'MapLocation',
     'type' => 'gmaplocation',
@@ -823,10 +824,12 @@ function locationsform(cs_form $form, &$form_state){
     'maptype' => 'google.maps.MapTypeId.TERRAIN',
     'with_current_location' => TRUE,
   ))
+  ->add_field('hr2', array('type'=>'markup','value'=>'<hr />'))
   ->add_field('decode', array(
     'title' => 'GeoDecode',
     'type' => 'gmaplocation',
     'with_geocode' => TRUE,
+    'with_reverse' => TRUE,
     'lat_lon_type' => 'textfield',
     'zoom' => 15,
     'default_value' => array(
@@ -834,11 +837,14 @@ function locationsform(cs_form $form, &$form_state){
       'longitude' => -0.0076589,
     ),
   ))
+  ->add_field('hr3', array('type'=>'markup','value'=>'<hr />'))
   ->add_field('decode_nomap', array(
     'title' => 'GeoDecode No Map',
     'type' => 'gmaplocation',
     'with_geocode' => TRUE,
     'with_map' => FALSE,
+    'with_reverse' => TRUE,
+    'with_current_location' => TRUE,
     'lat_lon_type' => 'textfield',
     'default_value' => array(
       'latitude' => 51.48257659999999,
@@ -846,6 +852,7 @@ function locationsform(cs_form $form, &$form_state){
     ),
   ))
   ->add_field('submit', array(
+    'prefix' => '<br /><br />',
     'type' => 'submit',
   ));
 
