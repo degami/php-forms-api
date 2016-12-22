@@ -1,5 +1,5 @@
 <?php
-define('GOOGLE_API_KEY', 'YOUR_API_KEY_HERE');
+define('GOOGLE_API_KEY', 'AIzaSyC-TIvTiP6R7VoPMn7QuyZq8YwiaT4M2nA');
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
 require_once '../src/form.php';
@@ -29,13 +29,13 @@ $form = cs_form_builder::get_form('locationsform');
 </head>
 
 <body>
+  <h1>Locations Form</h1>
   <div>
     <a href="<?php print dirname($_SERVER['PHP_SELF']);?>">To list</a> |
     <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <h1>Locations Form</h1>
     <?php if ($form->is_submitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <pre><?php var_export($form->get_submit_results());?></pre>

@@ -43,13 +43,12 @@ $form = cs_form_builder::get_form('multistepform');
 </head>
 
 <body>
+  <h1>Example Multistep Form</h1>
   <div>
     <a href="<?php print dirname($_SERVER['PHP_SELF']);?>">To list</a> |
     <a href="<?php print $_SERVER['PHP_SELF'];?>?clearsession=1">Go back</a>
   </div>
   <div id="page">
-    <h1>Example Multistep Form</h1>
-
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
     <?php if ($form->is_submitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->

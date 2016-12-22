@@ -33,13 +33,13 @@ $form = cs_form_builder::get_form('pluploadform');
 </head>
 
 <body>
+  <h1>PLUpload Form</h1>
   <div>
     <a href="<?php print dirname($_SERVER['PHP_SELF']);?>">To list</a> |
     <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <h1>PLUpload Form</h1>
     <?php if ($form->is_submitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>

@@ -19,12 +19,12 @@ if( isset($_REQUEST['partial']) ){
 </head>
 
 <body>
+  <h1>Batch Operation Form</h1>
   <div>
     <a href="<?php print dirname($_SERVER['PHP_SELF']);?>">To list</a> |
     <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   </div>
   <div id="page">
-    <h1>Batch Operation Form</h1>
     <?php print $form->render('html');?>
 
     <?php include "footer.php";?>

@@ -10,13 +10,49 @@
       color: 555;
   }
 
-  body {
+  /*body {
     font-size: 20px;
     line-height: 1.2em;
     font-family: Arial;
     font-size: 14px;
     background: #c6c6c6;
+  }*/
+
+  body{
+      font-family: Arial;
+      font-size: 14px;
+      line-height: 1.2em;
+      padding: 30px;
+      min-width: 940px;
+      border: solid 1px #cecece;
   }
+
+  h1{
+      color: #fff;
+      text-transform: uppercase;
+      background-color: #888;
+      padding: 30px;
+      line-height: 1em;
+      margin: -30px;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 3px #333;
+  }
+  ul{
+      list-style-type: square;
+      margin: 0;
+      padding: 10px;
+  }
+  li{
+      padding: 2px 0;
+  }
+  li.sep{
+      list-style-type: none;
+  }
+  li.sep hr{
+      border: 0;
+      border-top: dotted 1px #cecece;
+  }
+
   label { display: block; }
   span.required { color: red; }
   .form-item.has-errors input,
@@ -102,7 +138,60 @@
     width: 100%;
     margin: 10px 0;
   }
+
+  .errorsbox{
+    position: relative;
+  }
+
+  .errorsbox .ui-icon{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+  }
+
+  .errorsbox li{
+    margin-left: 30px;
+    list-style-type: none;
+  }
+
   </style>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/flick/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.css">
+<script type="text/javascript">
+  (function(){
+    var _z = console;
+    Object.defineProperty( window, "console", {
+      get : function(){
+        throw "Sorry, Can't exceute scripts!";
+        return _z;
+      },
+      set : function(val){
+        _z = val;
+      }
+    });
+
+    document.onkeypress = function (event) {
+        event = (event || window.event);
+        if (event.keyCode == 123) {
+           //alert('No F-12');
+            return false;
+        }
+    }
+    document.onmousedown = function (event) {
+        event = (event || window.event);
+        if (event.keyCode == 123) {
+            //alert('No F-keys');
+            return false;
+        }
+    }
+    document.onkeydown = function (event) {
+        event = (event || window.event);
+        if (event.keyCode == 123) {
+            //alert('No F-keys');
+            return false;
+        }
+    }
+  })();
+
+</script>
