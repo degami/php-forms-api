@@ -1206,6 +1206,18 @@ class cs_form extends cs_element{
     return $this;
   }
 
+  /**
+   * remove field from form
+   * @param  string $field field name
+   * @param  integer $step field step
+   */
+  public function remove_field($name, $step = 0){
+    unset($this->fields[$step][$name]);
+    if(($key = array_search($name, $this->insert_field_order)) !== false) {
+        unset($this->insert_field_order[$key]);
+    }
+    return $this;
+  }
 
   /**
    * get the number of form steps
@@ -5455,6 +5467,18 @@ abstract class cs_fields_container extends cs_field {
   }
 
   /**
+   * remove field from form
+   * @param  string $field field name
+   */
+  public function remove_field($name){
+    unset($this->fields[$name]);
+    if(($key = array_search($name, $this->insert_field_order)) !== false) {
+        unset($this->insert_field_order[$key]);
+    }
+    return $this;
+  }
+
+  /**
    * return form elements values into this element
    * @return array form values
    */
@@ -5814,6 +5838,22 @@ abstract class cs_fields_container_multiple extends cs_fields_container{
   }
 
   /**
+   * remove field from form
+   * @param  string $field field name
+   * @param  integer $partitions_index field partition
+   */
+  public function remove_field($name, $partitions_index = 0){
+    unset($this->fields[$name]);
+    if(($key = array_search($name, $this->insert_field_order[$partitions_index])) !== false) {
+        unset($this->insert_field_order[$partitions_index][$key]);
+    }
+    if(($key = array_search($name, $this->partitions[$partitions_index]['fieldnames'])) !== false) {
+        unset($this->partitions[$partitions_index]['fieldnames'][$key]);
+    }
+    return $this;
+  }
+
+  /**
    * get partition fields array
    * @param  integer $partitions_index partition index
    * @return array             partition fields array
@@ -6102,6 +6142,16 @@ class cs_sortable extends cs_sortable_container{
     //force every field to have its own tab.
     $this->deltas[$name] = count($this->get_fields());
     return parent::add_field($name, $field, $this->deltas[$name]);
+  }
+
+  /**
+   * remove field from form
+   * @param  string $field field name
+   */
+  public function remove_field($name){
+    parent::remove_field($name, $this->deltas['name']);
+    unset($this->deltas[$name]);
+    return $this;
   }
 
   /**
@@ -7281,6 +7331,15 @@ class cs_nestable extends cs_fields_container {
     }
 
     $this->fields_panel->add_field($name, $field);
+    return $this;
+  }
+
+  /**
+   * remove field from form
+   * @param  string $field field name
+   */
+  public function remove_field($name){
+    $this->fields_panel->remove_field($name);
     return $this;
   }
 

@@ -17,6 +17,10 @@ function contactform_submit(&$form) {
   $form->reset();
 }
 
+// function my_contactform_form_alter($form){
+//   $form->get_field('fieldset')->remove_field('message');
+// }
+
 $form = cs_form_builder::get_form('contactform');
 
 ?><!DOCTYPE html>
