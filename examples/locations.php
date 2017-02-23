@@ -1,5 +1,5 @@
 <?php
-define('GOOGLE_API_KEY', 'AIzaSyD1RkQpOwM8o4arUIbrt9BemdwucVmp6lc');
+define('GOOGLE_API_KEY', '<google maps key here>');
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
 require_once '../src/form.php';
