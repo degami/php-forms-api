@@ -5,7 +5,9 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
-$form = cs_form_builder::get_form('contactform_ajax');
+use Degami\PHPFormsApi as FAPI;
+
+$form = FAPI\form_builder::get_form('contactform_ajax');
 
 ?><!DOCTYPE html>
 <html lang="en">

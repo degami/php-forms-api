@@ -1,9 +1,16 @@
 <?php
-define('GOOGLE_API_KEY', 'AIzaSyD1RkQpOwM8o4arUIbrt9BemdwucVmp6lc');
+define('GOOGLE_API_KEY', 'AIzaSyCUy0rAlG1_UE4OyHMNVRoCNjslOk_ubdo');
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
 require_once '../src/form.php';
 include "forms.php";
+
+if(isset($_GET['clearsession'])){
+  session_destroy();
+  session_start();
+}
+
+use Degami\PHPFormsApi as FAPI;
 
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
@@ -16,7 +23,7 @@ function locationsform_submit(&$form) {
   // $form->reset();
 }
 
-$form = cs_form_builder::get_form('locationsform');
+$form = FAPI\form_builder::get_form('locationsform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
