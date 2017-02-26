@@ -324,6 +324,9 @@ abstract class element{
     return $this->get_attributes_string($this->attributes, $reserved_arr);
   }
 
+  public function get_element_class_name(){
+    return strtolower( str_replace("Degami\\PHPFormsApi\\",'', get_class($this)) );
+  }
 
   /**
    * returns the html attributes string
@@ -2527,11 +2530,11 @@ abstract class field extends element{
     }
 
     if(!isset($this->attributes['class'])){
-      $this->attributes['class'] = preg_replace("/^/","",get_class($this));
+      $this->attributes['class'] = $this->get_element_class_name();
     }
 
     if(empty($this->type)){
-      $this->type = preg_replace("/^/","",get_class($this));
+      $this->type = preg_replace("/^Degami\\PHPFormsApi/","",get_class($this));
     }
 
     if(!$this->validate instanceof ordered_functions){
@@ -2798,7 +2801,7 @@ abstract class field extends element{
 
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
-          $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+          $this->label_class .= " label-" . $this->get_element_class_name();
           $this->label_class = trim($this->label_class);
           $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
           $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
@@ -4379,7 +4382,7 @@ class checkbox extends field {
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
 
-    $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+    $this->label_class .= " label-" . $this->get_element_class_name();
     $this->label_class = trim($this->label_class);
     $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
     $output = "<label for=\"{$id}\"{$label_class}>".(($this->text_position == 'before') ? $this->get_text($this->title) : '')."<input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".(($this->text_position != 'before') ? $this->get_text($this->title) : '')."</label>\n";
@@ -5118,7 +5121,7 @@ class datetime extends tag_container {
 
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
-        $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+        $this->label_class .= " label-" .$this->get_element_class_name();
         $this->label_class = trim($this->label_class);
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
         $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
@@ -6796,7 +6799,7 @@ class geolocation extends tag_container {
 
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
-        $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+        $this->label_class .= " label-" .$this->get_element_class_name();
         $this->label_class = trim($this->label_class);
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
         $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
@@ -7213,7 +7216,7 @@ class gmaplocation extends geolocation {
 
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
-        $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+        $this->label_class .= " label-" .$this->get_element_class_name();
         $this->label_class = trim($this->label_class);
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
         $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
