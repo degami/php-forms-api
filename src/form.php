@@ -178,6 +178,7 @@ abstract class element{
   /**
    * set name
    * @param string $name element name
+   * @return element
    */
   public function set_name($name){
     $this->name = $name;
@@ -196,6 +197,7 @@ abstract class element{
   /**
    * set parent
    * @param element $parent element parent
+   * @return element
    */
   public function set_parent(element $parent){
     $this->parent = $parent;
@@ -223,6 +225,7 @@ abstract class element{
    * add error
    * @param string $error_string           error string
    * @param string $validate_function_name validation function name
+   * @return element
    */
   public function add_error($error_string,$validate_function_name){
     $this->notifications['error'][$validate_function_name] = $error_string;
@@ -260,6 +263,7 @@ abstract class element{
    * add highlight
    * @param string $highlight_string           highlight string
    * @param string $validate_function_name validation function name
+   * @return element
    */
   public function add_highlight($highlight_string){
     $this->notifications['highlight'][] = $highlight_string;
@@ -286,6 +290,7 @@ abstract class element{
   /**
    * set element highlights
    * @param array $highlights           highlights array
+   * @return element
    */
   public function set_highlights($highlights){
     $this->notifications['highlight'] = $highlights;
@@ -298,6 +303,7 @@ abstract class element{
    * set html attributes
    * @param string $name  attribute name
    * @param string $value attribute value
+   * @return element
    */
   public function set_attribute($name,$value){
     $this->attributes[$name] = $value;
@@ -324,6 +330,9 @@ abstract class element{
     return $this->get_attributes_string($this->attributes, $reserved_arr);
   }
 
+  public function get_element_class_name(){
+    return strtolower( str_replace("Degami\\PHPFormsApi\\",'', get_class($this)) );
+  }
 
   /**
    * returns the html attributes string
@@ -351,6 +360,7 @@ abstract class element{
   /**
    * add js to element
    * @param string / array $js javascript to add
+   * @return element
    */
   public function add_js($js){
     if( is_array($js) ){
@@ -366,6 +376,7 @@ abstract class element{
   /**
    * minify js string
    * @param string $js javascript minify
+   * @return string
    */
   public function minify_js($js){
     if( is_string($js) && trim($js) != '' ) {
@@ -396,6 +407,7 @@ abstract class element{
   /**
    * add css to element
    * @param string / array $css css to add
+   * @return element
    */
   public function add_css($css){
     if( is_array($css) ){
@@ -452,6 +464,7 @@ abstract class element{
   /**
    * set element suffix
    * @param string $suffix element suffix
+   * @return element
    */
   public function set_suffix($suffix){
     $this->suffix = $suffix;
@@ -552,9 +565,11 @@ abstract class element{
   }
 
   protected static function search_field_by_id( $container, $fieldid ){
+    /** @var field $container */
     if( $container instanceof fields_container || $container instanceof form ){
       $fields = ($container instanceof form) ? $container->get_fields( $container->get_current_step() ) : $container->get_fields();
       foreach ($fields as $key => $field) {
+        /** @var field $field */
         if( $field->get_html_id() == $fieldid ) {
           return $field;
         } elseif( $field instanceof fields_container ) {
@@ -562,8 +577,8 @@ abstract class element{
           if( $out != NULL ) return $out;
         }
       }
-    }elseif( $container->get_html_id() == $field_id ){
-      // not a conteiner
+    }elseif( $container->get_html_id() == $fieldid ){
+      // not a container
       return $container;
     }
     return NULL;
@@ -748,6 +763,7 @@ class form extends element{
   /**
    * set form id
    * @param string $form_id set the form id used for getting the submit function name
+   * @return form
    */
   public function set_form_id($form_id){
     $this->form_id = $form_id;
@@ -766,6 +782,7 @@ class form extends element{
   /**
    * set the form action attribute
    * @param string $action the form action url
+   * @return form
    */
   public function set_action($action){
     $this->action = $action;
@@ -783,6 +800,7 @@ class form extends element{
   /**
    * set the form method
    * @param string $method form method
+   * @return form
    */
   public function set_method($method){
     $this->method = strtolower(trim($method));
@@ -801,6 +819,7 @@ class form extends element{
   /**
    * set the ajax submit url used for form submission
    * @param string $ajax_submit_url ajax endpoint url
+   * @return form
    */
   public function set_ajax_submit_url($ajax_submit_url){
     $this->ajax_submit_url = $ajax_submit_url;
@@ -818,6 +837,7 @@ class form extends element{
   /**
    * set the form render output type
    * @param string $output_type output type ( 'html' / 'json' )
+   * @return form
    */
   public function set_output_type($output_type){
     $this->output_type = $output_type;
@@ -836,6 +856,7 @@ class form extends element{
   /**
    * set no_token flag
    * @param boolean $no_token no token flag
+   * @return form
    */
   public function set_no_token($no_token){
     $this->no_token = $no_token;
@@ -993,6 +1014,7 @@ class form extends element{
       if( $field instanceof fields_container ){
         $field->process($request);
       } else if ( preg_match_all('/(.*?)(\[(.*?)\])+/i',$name, $matches, PREG_SET_ORDER) ) {
+        $value = NULL;
         if(isset($request[ $matches[0][1] ])){
           $value = $request[ $matches[0][1] ];
           foreach($matches as $match){
@@ -1054,6 +1076,7 @@ class form extends element{
       }
     }
 
+    $request = NULL;
     if (!$this->processed) { //&& !form::is_partial()
       if( empty($values) ){
         $request = (strtolower($this->method) == 'post') ? $_POST : $_GET;
@@ -1186,6 +1209,7 @@ class form extends element{
    * @param string  $name  field name
    * @param mixed   $field field to add, can be an array or a field subclass
    * @param integer $step  step to add the field to
+   * @return form
    */
   public function add_field($name, $field, $step = 0) {
     if (is_array($field)) {
@@ -1218,6 +1242,7 @@ class form extends element{
    * remove field from form
    * @param  string $field field name
    * @param  integer $step field step
+   * @return form
    */
   public function remove_field($name, $step = 0){
     unset($this->fields[$step][$name]);
@@ -1265,7 +1290,7 @@ class form extends element{
 
   /**
    * get the step fields by type and name
-   * @param  array  $field_types field types
+   * @param  array|string  $field_types field types
    * @param  string  $name       field name
    * @param  integer $step       step number
    * @return array               the array of fields matching the search criteria
@@ -1409,8 +1434,8 @@ class form extends element{
   }
 
   /**
-   * returns inline error preference
-   * @return boolean errors should be presented inline after every elemen
+   * sets inline error preference
+   * @return form
    */
   public function set_inline_errors($inline_errors) {
     $this->inline_errors = $inline_errors;
@@ -1489,7 +1514,7 @@ class form extends element{
     }
 
     $insertorder = array_flip($this->insert_field_order);
-    $weights = array();
+    $weights = $order = array();
     foreach ($this->get_fields($this->current_step) as $key => $elem) {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
@@ -1514,6 +1539,7 @@ class form extends element{
       $jsondata = json_decode($_REQUEST['jsondata']);
       $callback = $jsondata->callback;
       if( is_callable($callback) ){
+        /** @var field $target_elem */
         $target_elem = $callback( $this );
 
         $html = $target_elem->render($this);
@@ -1863,7 +1889,7 @@ class form extends element{
 
   /**
    * format byte size
-   * @param  integet $size size in bytes
+   * @param  integer $size size in bytes
    * @return string       formatted size
    */
   private static function format_bytes($size) {
@@ -1962,7 +1988,7 @@ class form extends element{
    * @return string         safe value
    */
   public static function process_xss_weak($string) {
-    return filter_xss($string, array('a|abbr|acronym|address|b|bdo|big|blockquote|br|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|h1|h2|h3|h4|h5|h6|hr|i|img|ins|kbd|li|ol|p|pre|q|samp|small|span|strong|sub|sup|table|tbody|td|tfoot|th|thead|tr|tt|ul|var'));
+    return form::process_xss($string, 'a|abbr|acronym|address|b|bdo|big|blockquote|br|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|h1|h2|h3|h4|h5|h6|hr|i|img|ins|kbd|li|ol|p|pre|q|samp|small|span|strong|sub|sup|table|tbody|td|tfoot|th|thead|tr|tt|ul|var');
   }
 
   /**
@@ -2007,7 +2033,7 @@ class form extends element{
   /**
    * _filter_xss_split private method
    * @param  string  $m     string to split
-   * @param  boolean $store store elemnts into static $allowed html
+   * @param  boolean $store store elements into static $allowed html
    * @return string         string
    */
   private static function _filter_xss_split($m, $store = FALSE) {
@@ -2016,7 +2042,7 @@ class form extends element{
     if ($store) {
       $m = explode("|", $m);
       $allowed_html = array_flip($m);
-      return;
+      return '';
     }
 
     $string = $m[1];
@@ -2070,6 +2096,7 @@ class form extends element{
     $attrarr = array();
     $mode = 0;
     $attrname = '';
+    $skip = FALSE;
 
     while (strlen($attr) != 0) {
       // Was the last operation successful?
@@ -2176,9 +2203,9 @@ class form extends element{
    */
   private static function _filter_xss_bad_protocol($string, $decode = TRUE) {
     if ($decode) {
-      $string = process_entity_decode($string);
+      $string = form::process_entity_decode($string);
     }
-    return process_plain(form::_strip_dangerous_protocols($string));
+    return form::process_plain(form::_strip_dangerous_protocols($string));
   }
 
   /**
@@ -2527,11 +2554,11 @@ abstract class field extends element{
     }
 
     if(!isset($this->attributes['class'])){
-      $this->attributes['class'] = preg_replace("/^/","",get_class($this));
+      $this->attributes['class'] = $this->get_element_class_name();
     }
 
     if(empty($this->type)){
-      $this->type = preg_replace("/^/","",get_class($this));
+      $this->type = preg_replace("/^Degami\\PHPFormsApi/","",get_class($this));
     }
 
     if(!$this->validate instanceof ordered_functions){
@@ -2798,7 +2825,7 @@ abstract class field extends element{
 
       if(!empty($this->title)){
         if ( $this->tooltip == FALSE ) {
-          $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+          $this->label_class .= " label-" . $this->get_element_class_name();
           $this->label_class = trim($this->label_class);
           $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
           $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
@@ -4379,7 +4406,7 @@ class checkbox extends field {
 
     $checked = ($this->value == $this->default_value) ? ' checked="checked"' : '';
 
-    $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+    $this->label_class .= " label-" . $this->get_element_class_name();
     $this->label_class = trim($this->label_class);
     $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
     $output = "<label for=\"{$id}\"{$label_class}>".(($this->text_position == 'before') ? $this->get_text($this->title) : '')."<input type=\"checkbox\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->default_value}\"{$checked}{$attributes} /> ".(($this->text_position != 'before') ? $this->get_text($this->title) : '')."</label>\n";
@@ -5118,7 +5145,7 @@ class datetime extends tag_container {
 
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
-        $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+        $this->label_class .= " label-" .$this->get_element_class_name();
         $this->label_class = trim($this->label_class);
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
         $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
@@ -6066,7 +6093,7 @@ abstract class sortable_container extends fields_container_multiple{
    * deltas array ( used for sorting )
    * @var array
    */
-  private $deltas = array();
+  protected $deltas = array();
 
   /**
    * get handle position (left/right)
@@ -6295,6 +6322,7 @@ class sortable_table extends sortable_container{
       $weights = array();
       $order = array();
       foreach ($this->get_partition_fields($trindex) as $key => $elem) {
+        /** @var field $elem */
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
@@ -6303,6 +6331,7 @@ class sortable_table extends sortable_container{
 
       $output .= "<tr id=\"{$id}-sortable-{$trindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>")."\n";
       foreach ($this->get_partition_fields($trindex) as $name => $field) {
+        /** @var field $field */
         $fieldhtml = $field->render($form);
         if( trim($fieldhtml) != '' )
           $output .= "<td>".$fieldhtml."</td>\n";
@@ -6454,6 +6483,7 @@ class table_container extends fields_container_multiple{
       $weights = array();
       $order = array();
       foreach ($this->get_partition_fields($trindex) as $key => $elem) {
+        /** @var field $elem */
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
@@ -6463,6 +6493,7 @@ class table_container extends fields_container_multiple{
       $output .= "<tr id=\"{$id}-row-{$trindex}\">\n";
       $cols = 0;
       foreach ($this->get_partition_fields($trindex) as $name => $field) {
+        /** @var field $field */
         $fieldhtml = $field->render($form);
         if( trim($fieldhtml) != '' ){
           $td_attributes = '';
@@ -6796,7 +6827,7 @@ class geolocation extends tag_container {
 
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
-        $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+        $this->label_class .= " label-" .$this->get_element_class_name();
         $this->label_class = trim($this->label_class);
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
         $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
@@ -7213,7 +7244,7 @@ class gmaplocation extends geolocation {
 
     if(!empty($this->title)){
       if ( $this->tooltip == FALSE ) {
-        $this->label_class .= " " .preg_replace("//i", "label-", get_class($this));
+        $this->label_class .= " label-" .$this->get_element_class_name();
         $this->label_class = trim($this->label_class);
         $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
         $output .= "<label for=\"{$id}\"{$label_class}>{$requiredbefore}".$this->get_text($this->title)."{$requiredafter}</label>\n";
