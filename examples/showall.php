@@ -5,6 +5,13 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
+if(isset($_GET['clearsession'])){
+  session_destroy();
+  session_start();
+}
+
+use Degami\PHPFormsApi as FAPI;
+
 function validate_multiple_by($string,$length = 1){
   if(!is_numeric($length) || $length == 0) $length = 1;
   return ( strlen("".$string) > 0 && (strlen("".$string)%$length) == 0) ? TRUE : '<strong>%t</strong> length must be multiple of '.$length;
@@ -28,7 +35,7 @@ function showall_validate(&$form) {
 
   return TRUE;
 }
-$form = cs_form_builder::get_form('showallform');
+$form = FAPI\form_builder::get_form('showallform');
 
 ?><!DOCTYPE html>
 <html lang="en">

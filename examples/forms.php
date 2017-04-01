@@ -5,13 +5,16 @@ function __($string){
 }
 */
 
+use Degami\PHPFormsApi as FAPI;
+
 require_once '../src/form.php';
+
 // Generate a simple contact form
-function contactform(cs_form $form, &$form_state){
+function contactform(FAPI\form $form, &$form_state){
 
   $form->set_inline_errors(TRUE);
 
-  // $form = new cs_form(array(
+  // $form = new FAPI\form(array(
   //   'form_id' => 'contact',
   // ));
 
@@ -53,8 +56,8 @@ function contactform(cs_form $form, &$form_state){
 
 // Generate a simple contact form
 
-function contactform_ajax(cs_form $form, &$form_state){
-  // $form = new cs_form(array(
+function contactform_ajax(FAPI\form $form, &$form_state){
+  // $form = new FAPI\form(array(
   //   'form_id' => __FUNCTION__,
   //   'ajax_submit_url' => 'ajax_url.php',
   //   'output_type' => 'json',
@@ -100,8 +103,8 @@ function contactform_ajax(cs_form $form, &$form_state){
 //############################################################################//
 
 
-function multistepform(cs_form $form, &$form_state){
-/*  $form = new cs_form(array(
+function multistepform(FAPI\form $form, &$form_state){
+/*  $form = new FAPI\form(array(
     'form_id' => __FUNCTION__,
     'action' => 'multistep.php',
   ));*/
@@ -177,8 +180,8 @@ function multistepform(cs_form $form, &$form_state){
 //############################################################################//
 
 
-function showallform(cs_form $form, &$form_state){
-  $form = new cs_form(array(
+function showallform(FAPI\form $form, &$form_state){
+  $form = new FAPI\form(array(
     'form_id' => 'showall',
     'inline_errors' => TRUE,
   //  'attributes'=>array('enctype'=>'multipart/form-data')
@@ -273,7 +276,7 @@ function showallform(cs_form $form, &$form_state){
   ));
 
 
-  $accordion = new cs_accordion(array(
+  $accordion = new FAPI\accordion(array(
     'collapsible' => TRUE,
     'attributes'=>array(
     // 'style' => 'width: 500px',
@@ -506,7 +509,7 @@ function showallform(cs_form $form, &$form_state){
 //############################################################################//
 //############################################################################//
 
-function nestableform(cs_form $form, &$form_state){
+function nestableform(FAPI\form $form, &$form_state){
   $nestable = $form
   ->add_field('nestable', array(
     'type' => 'nestable',
@@ -566,8 +569,8 @@ function nestableform(cs_form $form, &$form_state){
 //############################################################################//
 
 
-function pluploadform(cs_form $form, &$form_state){
-  // $form = new cs_form(array('form_id' => 'plupload'));
+function pluploadform(FAPI\form $form, &$form_state){
+  // $form = new FAPI\form(array('form_id' => 'plupload'));
   $form->add_field('files_upload', array(
     'type' => 'plupload',
     'title' => 'Upload Extra Files',
@@ -598,8 +601,8 @@ function pluploadform(cs_form $form, &$form_state){
 //############################################################################//
 
 
-function datesform(cs_form $form, &$form_state){
-  //$form = new cs_form(array('form_id' => 'dates'));
+function datesform(FAPI\form $form, &$form_state){
+  //$form = new FAPI\form(array('form_id' => 'dates'));
 
   $form->add_field('date', array(
     'type' => 'date',
@@ -638,8 +641,8 @@ function datesform(cs_form $form, &$form_state){
 //############################################################################//
 //############################################################################//
 
-function eventsform(cs_form $form, &$form_state){
-  // $form = new cs_form(array('form_id' => 'events'));
+function eventsform(FAPI\form $form, &$form_state){
+  // $form = new FAPI\form(array('form_id' => 'events'));
 
   $step = 0;
 
@@ -683,7 +686,7 @@ function eventsform(cs_form $form, &$form_state){
     ));
   }
 
-  if( cs_form::is_partial() ){
+  if( FAPI\form::is_partial() ){
     $jsondata = json_decode($form_state['input_values']['jsondata']);
     $callback = $jsondata->callback;
     if( is_callable($callback) ){
@@ -702,7 +705,7 @@ function eventsform(cs_form $form, &$form_state){
   return $form;
 }
 
-function events_form_callback(cs_form $form){
+function events_form_callback(FAPI\form $form){
   return $form->get_field('textfields');
 }
 
@@ -712,7 +715,7 @@ function events_form_callback(cs_form $form){
 //############################################################################//
 //############################################################################//
 
-function batchoperationsform(cs_form $form, &$form_state){
+function batchoperationsform(FAPI\form $form, &$form_state){
   $step = 0;
   $form->set_action($_SERVER['PHP_SELF']);
 
@@ -725,7 +728,7 @@ function batchoperationsform(cs_form $form, &$form_state){
     'type' => 'tag_container',
   ));
 
-  if( cs_form::is_partial() ){
+  if( FAPI\form::is_partial() ){
     $jsondata = json_decode($form_state['input_values']['jsondata']);
     $callback = $jsondata->callback;
     if( isset($form_state['input_form_definition']['fields'][$step]['progressnum']['value']) && $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] >= 100 ){
@@ -782,7 +785,7 @@ function batchoperationsform(cs_form $form, &$form_state){
   return $form;
 }
 
-function batch_operations_form_callback(cs_form $form){
+function batch_operations_form_callback(FAPI\form $form){
   return $form->get_field('fieldset');
 }
 
@@ -798,7 +801,7 @@ function _batch_get_progress($filename, $offset = 0, $limit = 20){
 //############################################################################//
 //############################################################################//
 
-function locationsform(cs_form $form, &$form_state){
+function locationsform(FAPI\form $form, &$form_state){
 /*
     google.maps.MapTypeId.HYBRID
     google.maps.MapTypeId.ROADMAP

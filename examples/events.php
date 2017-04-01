@@ -5,6 +5,8 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
+use Degami\PHPFormsApi as FAPI;
+
 if(isset($_GET['clearsession'])){
   session_destroy();
   session_start();
@@ -21,7 +23,7 @@ function eventsform_submit(&$form) {
   return $form_values;
 }
 
-$form = cs_form_builder::get_form('eventsform');
+$form = FAPI\form_builder::get_form('eventsform');
 
 if( isset($_REQUEST['partial']) ){
   print $form->render();

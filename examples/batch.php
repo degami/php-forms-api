@@ -5,7 +5,14 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
-$form = cs_form_builder::get_form('batchoperationsform');
+if(isset($_GET['clearsession'])){
+  session_destroy();
+  session_start();
+}
+
+use Degami\PHPFormsApi as FAPI;
+
+$form = FAPI\form_builder::get_form('batchoperationsform');
 
 if( isset($_REQUEST['partial']) ){
   print $form->render();

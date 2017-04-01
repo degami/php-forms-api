@@ -5,6 +5,13 @@ session_start();
 require_once '../src/form.php';
 include "forms.php";
 
+if(isset($_GET['clearsession'])){
+  session_destroy();
+  session_start();
+}
+
+use Degami\PHPFormsApi as FAPI;
+
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
@@ -21,7 +28,7 @@ function contactform_submit(&$form) {
 //   $form->get_field('fieldset')->remove_field('message');
 // }
 
-$form = cs_form_builder::get_form('contactform');
+$form = FAPI\form_builder::get_form('contactform');
 
 ?><!DOCTYPE html>
 <html lang="en">

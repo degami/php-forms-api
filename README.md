@@ -18,7 +18,7 @@ This library is open source licenses using GPL. See LICENSE.txt for more info.
 
 Requirements:
 
-  * PHP 5.2.5+
+  * PHP 5.3
   * jQuery UI
   * jQuery-mask-plugin ( https://github.com/igorescobar/jQuery-Mask-Plugin component is not included as a dependency in composer.json as the packagist.org package info is broken, you need to download the file by yourself )
   * Google's reCaptcha lib in order to use recaptcha fields ( https://code.google.com/p/recaptcha/downloads/list?q=label:phplib-Latest )
@@ -39,6 +39,7 @@ Requirements:
  * ~~Multistep forms~~
  * ~~Form builder class (à la drupal_get_form) in order to inject form state during form definition~~
  * ~~Support for AJAX form updates ( eg. "add another" button, depending fields, event driven modification of the form elements )~~
+ * ~~Own namespace~~
 
 ## Introduction
 
@@ -531,7 +532,7 @@ field is passed for validation.
 Plain, Trim, LTrim, RTrim, XSS, XSS Weak, Addslashes
 
 
-### CS_Form_builder
+### Form_builder
 
 Will be the new way to get form objects. Like drupal_get_form, it will pass a
 form_state argument to the form definition function.

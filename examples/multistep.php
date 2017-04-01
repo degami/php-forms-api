@@ -12,6 +12,7 @@ require 'recaptchalib.php';
 define('RECAPTCHA_PUBLIC_KEY','');
 define('RECAPTCHA_PRIVATE_KEY','');
 
+use Degami\PHPFormsApi as FAPI;
 
 function multistepform_submit(&$form) {
   $form_values = $form->values();
@@ -23,7 +24,7 @@ function multistepform_submit(&$form) {
   // $form->reset();
 }
 
-$form = cs_form_builder::get_form('multistepform');
+$form = FAPI\form_builder::get_form('multistepform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
