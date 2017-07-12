@@ -160,38 +160,38 @@
   <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.css">
 <script type="text/javascript">
   (function(){
-    var _z = console;
-    Object.defineProperty( window, "console", {
-      get : function(){
-        throw "Sorry, Can't exceute scripts!";
-        return _z;
-      },
-      set : function(val){
-        _z = val;
-      }
-    });
+    // var _z = console;
+    // Object.defineProperty( window, "console", {
+    //   get : function(){
+    //     throw "Sorry, Can't execute scripts!";
+    //     return _z;
+    //   },
+    //   set : function(val){
+    //     _z = val;
+    //   }
+    // });
 
-    document.onkeypress = function (event) {
-        event = (event || window.event);
-        if (event.keyCode == 123) {
-           //alert('No F-12');
-            return false;
-        }
-    }
-    document.onmousedown = function (event) {
-        event = (event || window.event);
-        if (event.keyCode == 123) {
-            //alert('No F-keys');
-            return false;
-        }
-    }
-    document.onkeydown = function (event) {
-        event = (event || window.event);
-        if (event.keyCode == 123) {
-            //alert('No F-keys');
-            return false;
-        }
-    }
+    // document.onkeypress = function (event) {
+    //     event = (event || window.event);
+    //     if (event.keyCode == 123) {
+    //        //alert('No F-12');
+    //         return false;
+    //     }
+    // }
+    // document.onmousedown = function (event) {
+    //     event = (event || window.event);
+    //     if (event.keyCode == 123) {
+    //         //alert('No F-keys');
+    //         return false;
+    //     }
+    // }
+    // document.onkeydown = function (event) {
+    //     event = (event || window.event);
+    //     if (event.keyCode == 123) {
+    //         //alert('No F-keys');
+    //         return false;
+    //     }
+    // }
   })();
 
 </script>
