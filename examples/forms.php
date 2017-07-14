@@ -463,6 +463,35 @@ function showallform(FAPI\form $form, &$form_state){
       'Scheme'
     ),
   ))
+  ->add_field('multiselect',array(
+    'type' => 'multiselect',
+    'title' => 'multiselect',
+    'size' => 8,
+    'options' => array(
+      'ActionScript',
+      'AppleScript',
+      'Asp',
+      'BASIC',
+      'C',
+      'C++',
+      'Clojure',
+      'COBOL',
+      'ColdFusion',
+      'Erlang',
+      'Fortran',
+      'Groovy',
+      'Haskell',
+      'Java',
+      'JavaScript',
+      'Lisp',
+      'Perl',
+      'PHP',
+      'Python',
+      'Ruby',
+      'Scala',
+      'Scheme'
+    ),
+  ))
   ->get_field('container')
   ->add_field('checkbox', array(
     'type' => 'checkbox',

@@ -296,6 +296,12 @@ The value after submit is an array containing fields x,y
       'type' => 'selectmenu',
     );
 
+#### Multi Select
+
+    $options += array(
+      'type' => 'multiselect',
+    );
+
 #### Sliders
 
     $options += array(
