@@ -4225,11 +4225,21 @@ class multiselect extends select{
    * @param string $name    field name
    */
   public function __construct($options,$name) {
+      if(!is_array($options)) $options = array();
+      $options['multiple'] = TRUE;
       parent::__construct($options,$name);
 
-      $this->multiple = TRUE;
       $this->leftOptions = $this->options;
       $this->rightOptions = array();
+
+      foreach ($this->get_default_value() as $value) {
+        foreach( $this->leftOptions as $k => $v ){
+          if( $v->get_key() == $value ){
+            $this->rightOptions[] = clone $v;
+            unset($this->leftOptions[$k]);
+          }
+        }
+      }
 
       $this->set_attribute('style','width: 100%;');
   }
@@ -4261,6 +4271,9 @@ class multiselect extends select{
 
   public function process($value = array()){
     parent::process($value);
+
+    $this->leftOptions = $this->options;
+    $this->rightOptions = array();
 
     $values = $this->get_value();
     foreach( array_values($values) as $keyval){

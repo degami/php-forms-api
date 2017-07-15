@@ -39,6 +39,7 @@ function contactform(FAPI\form $form, &$form_state){
     'postprocess' => array('xss'),
     'title' => 'Your message',
   ))
+
   ->add_field('submit', array(
     'type' => 'submit',
   ));
@@ -491,6 +492,7 @@ function showallform(FAPI\form $form, &$form_state){
       'Scala',
       'Scheme'
     ),
+    'default_value' => array(4,5,7),
   ))
   ->get_field('container')
   ->add_field('checkbox', array(
