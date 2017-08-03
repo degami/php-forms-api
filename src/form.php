@@ -7863,14 +7863,25 @@ class ordered_functions implements Iterator{
 class form_builder {
 
   /**
+   * returns the form_it
+   * @param  callable $function_name  the function name
+   * @return string                   the form_id
+   */
+  static function get_form_id( $function_name ){
+    if( is_string($function_name) ) return $function_name;
+    if( is_callable($function_name) && is_array($function_name) ) return $function_name[1];
+    return 'form_id';
+  }
+
+  /**
    * returns a form object.
    * this function calls the form definitor function passing an initial empty form object and the form state
    * @param  string $form_id     form_id (and also form definitor function name)
    * @param  array &$form_state  form state by reference
    * @return form             a new form object
    */
-  static function build_form($form_id, &$form_state){
-    $function_name = $form_id;
+  static function build_form($function_name, &$form_state){
+    $form_id = form_builder::get_form_id($function_name);
     $form = new form(array(
       'form_id' => $form_id,
       'definition_function' => $function_name,
