@@ -738,12 +738,34 @@ class form extends element{
       if( property_exists(get_class($this), $name) )
         $this->$name = $value;
     }
-    if (empty($this->submit) || !is_callable($this->submit)) {
-      array_push($this->submit, "{$this->form_id}_submit");
+
+    $hassubmitter = FALSE;
+    foreach($this->submit as $s){
+      if (!empty($s) && is_callable($s)) {
+        $hassubmitter = TRUE;
+      }
     }
-    if (empty($this->validate) || !is_callable($this->validate)) {
+    if( !$hassubmitter ){
+        array_push($this->submit, "{$this->form_id}_submit");
+    }
+
+    // if (empty($this->submit) || !is_callable($this->submit)) {
+    //   array_push($this->submit, "{$this->form_id}_submit");
+    // }
+
+    $hasvalidator = FALSE;
+    foreach($this->validate as $v){
+      if (!empty($v) && is_callable($v)) {
+        $hasvalidator = TRUE;
+      }
+    }
+    if( !$hasvalidator ){
       array_push($this->validate, "{$this->form_id}_validate");
     }
+
+    // if (empty($this->validate) || !is_callable($this->validate)) {
+    //   array_push($this->validate, "{$this->form_id}_validate");
+    // }
 
     if(!$this->validate instanceof ordered_functions){
       $this->validate = new ordered_functions($this->validate,'validator');
@@ -2407,16 +2429,27 @@ class form extends element{
     $body = FALSE;
 
     try{
-      $func = new \ReflectionFunction( (!empty($this->definition_function) ? $this->definition_function : $this->get_form_id()) );
-      $filename = $func->getFileName();
-      $start_line = $func->getStartLine() - 1; // it's actually - 1, otherwise you wont get the function() block
-      $end_line = $func->getEndLine();
-      $length = $end_line - $start_line;
+      $definition_name = (!empty($this->definition_function) ? $this->definition_function : $this->get_form_id());
+      if( is_callable($definition_name) ){
 
-      $source = file($filename);
-      $body = implode("", array_slice($source, $start_line, $length));
-      $body = str_replace('<', '&lt;', $body);
-      $body = str_replace('>', '&gt;', $body);
+        if( function_exists($definition_name) ){
+          $func = new \ReflectionFunction( $definition_name );
+        } else {
+            $func = new \ReflectionMethod( $definition_name );
+        }
+
+        if( is_object($func) ){
+          $filename = $func->getFileName();
+          $start_line = $func->getStartLine() - 1; // it's actually - 1, otherwise you wont get the function() block
+          $end_line = $func->getEndLine();
+          $length = $end_line - $start_line;
+
+          $source = file($filename);
+          $body = implode("", array_slice($source, $start_line, $length));
+          $body = str_replace('<', '&lt;', $body);
+          $body = str_replace('>', '&gt;', $body);
+        }
+      }
     }catch(Exception $e){
       var_dump($e->getMessage());
     }
@@ -7873,24 +7906,35 @@ class form_builder {
     return 'form_id';
   }
 
+  static function get_definition_function_name( $function_name ){
+    if( is_string($function_name) ) return $function_name;
+    if( is_callable($function_name) && is_array($function_name) ){
+      if( is_string( $function_name[0]) ) return $function_name[0].'::'.$function_name[1];
+      if( is_object( $function_name[0]) ) return get_class($function_name[0]).'::'.$function_name[1];
+    }
+
+    return NULL;
+  }
+
   /**
    * returns a form object.
    * this function calls the form definitor function passing an initial empty form object and the form state
-   * @param  string $form_id     form_id (and also form definitor function name)
+   * @param  callable $callable  form_id (and also form definitor function name)
    * @param  array &$form_state  form state by reference
+   * @param  array $form_options  additional form constructor options
    * @return form             a new form object
    */
-  static function build_form($function_name, &$form_state){
-    $form_id = form_builder::get_form_id($function_name);
+  static function build_form($callable, &$form_state, $form_options = array()){
+    $form_id = form_builder::get_form_id($callable);
+    $function_name = form_builder::get_definition_function_name( $callable );
+
     $form = new form(array(
       'form_id' => $form_id,
       'definition_function' => $function_name,
-    ));
+    ) + $form_options);
 
     $form_state += form_builder::get_request_values($function_name);
-
     if(is_callable($function_name)){
-      //$form = $function_name($form, $form_state);
       $form_obj = call_user_func_array($function_name , array_merge( array($form, &$form_state), $form_state['build_info']['args']) );
       if( ! $form_obj instanceof form ){
         throw new Exception("Error. function {$function_name} does not return a valid form object", 1);
@@ -7949,6 +7993,109 @@ class form_builder {
       }
     }
     return $out;
+  }
+
+  static function guessFormType( $value ){
+    $default_value = $value;
+    $vtype = gettype( $default_value );
+    switch( $vtype ){
+      case 'object':
+        $vtype = get_class( $default_value );
+      break;
+    }
+
+    $type = 'textfield';
+    $validate = array();
+    switch ( strtolower($vtype) ){
+      case 'string':
+      break;
+      case 'integer':
+        $type = 'spinner';$validate = array('integer');
+      break;
+      case 'float':
+      case 'double':
+        $type = 'textfield';$validate = array('numeric');
+      break;
+      case 'boolean':
+      case 'bool':
+        $type = 'checkbox';
+      break;
+      case 'datetime':
+        $type = 'datetime';
+
+        $default_value = array(
+          'year'    => $default_value->format('Y'),
+          'month'   => $default_value->format('m'),
+          'day'     => $default_value->format('d'),
+          'hours'   => $default_value->format('H'),
+          'minutes' => $default_value->format('i'),
+          'seconds' => $default_value->format('s'),
+        );
+
+      break;
+      case 'date':
+        $type = 'date';
+
+        $default_value = array(
+          'year'    => $default_value->format('Y'),
+          'month'   => $default_value->format('m'),
+          'day'     => $default_value->format('d'),
+          'hours'   => $default_value->format('H'),
+          'minutes' => $default_value->format('i'),
+          'seconds' => $default_value->format('s'),
+        );
+
+      break;
+      case 'array':
+      break;
+      case 'object':
+      break;
+    }
+
+    return array( 'type' => $type, 'validate' => $validate, 'default_value' => $default_value );
+  }
+
+  static function objFormDefinition($form, &$form_state, $object){
+
+    $form->set_form_id( get_class($object) );
+    $fields = get_object_vars($object) + get_class_vars( get_class($object) );
+
+    $fieldset = $form->add_field( get_class($object), array(
+      'type' => 'fieldset',
+      'title' => get_class($object),
+    ));
+
+    foreach( $fields as $k => $v ){
+      list($type, $validate, $default_value) = array_values( form_builder::guessFormType($v) );
+      $fieldset->add_field( $k, array(
+        'type' => $type,
+        'title' => $k,
+        'validate' => $validate,
+        'default_value' => $default_value,
+      ) );
+    }
+
+    $form
+    ->add_field('submit', array(
+      'type' => 'submit',
+    ));
+
+    return $form;
+  }
+
+  static function object_form( $object ){
+    $form_state = array();
+    $form_state['build_info']['args'] = array($object);
+
+    $form = form_builder::build_form(
+      array(__CLASS__, 'objFormDefinition'),
+      $form_state,
+      array(
+        'submit' => array(strtolower(get_class($object).'_submit')),
+        'validate' => array(strtolower(get_class($object).'_validate')),
+      )
+    );
+    return $form;
   }
 }
 
