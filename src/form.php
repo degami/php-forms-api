@@ -7896,16 +7896,21 @@ class ordered_functions implements Iterator{
 class form_builder {
 
   /**
-   * returns the form_it
+   * returns the form_id
    * @param  callable $function_name  the function name
    * @return string                   the form_id
    */
   static function get_form_id( $function_name ){
     if( is_string($function_name) ) return $function_name;
     if( is_callable($function_name) && is_array($function_name) ) return $function_name[1];
-    return 'form_id';
+    return 'cs_form';
   }
 
+  /**
+   * returns callable function name string
+   * @param  callabe $function_name callable element
+   * @return string                 the function name
+   */
   static function get_definition_function_name( $function_name ){
     if( is_string($function_name) ) return $function_name;
     if( is_callable($function_name) && is_array($function_name) ){
@@ -7995,7 +8000,7 @@ class form_builder {
     return $out;
   }
 
-  static function guessFormType( $value ){
+  static function guessFormType( $value, $element_name = NULL ){
     $default_value = $value;
     $vtype = gettype( $default_value );
     switch( $vtype ){
@@ -8004,7 +8009,7 @@ class form_builder {
       break;
     }
 
-    $type = 'textfield';
+    $type = NULL;
     $validate = array();
     switch ( strtolower($vtype) ){
       case 'string':
@@ -8052,10 +8057,21 @@ class form_builder {
       break;
     }
 
+    if( $type == NULL ){
+      switch ($element_name) {
+        case '':
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    if( $type == NULL ) $type = 'textfield';
     return array( 'type' => $type, 'validate' => $validate, 'default_value' => $default_value );
   }
 
-  static function objFormDefinition($form, &$form_state, $object){
+  static function objFormDefinition(form $form, &$form_state, $object){
 
     $form->set_form_id( get_class($object) );
     $fields = get_object_vars($object) + get_class_vars( get_class($object) );
@@ -8066,7 +8082,7 @@ class form_builder {
     ));
 
     foreach( $fields as $k => $v ){
-      list($type, $validate, $default_value) = array_values( form_builder::guessFormType($v) );
+      list($type, $validate, $default_value) = array_values( form_builder::guessFormType($v, $k) );
       $fieldset->add_field( $k, array(
         'type' => $type,
         'title' => $k,
@@ -8083,6 +8099,11 @@ class form_builder {
     return $form;
   }
 
+  /**
+   * returns a form object representing the object parameter
+   * @param object $object the object to map
+   * @return form form object
+   */
   static function object_form( $object ){
     $form_state = array();
     $form_state['build_info']['args'] = array($object);
