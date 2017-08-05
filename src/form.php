@@ -8071,8 +8071,10 @@ class form_builder {
           $validate = array('email');
           break;
         case 'date':
-        case 'birthdate':
         case 'day':
+        case 'birth':
+        case 'birthdate':
+        case 'birthday':
           $type = 'date';
           break;
         case 'time':
