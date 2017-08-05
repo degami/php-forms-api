@@ -8013,6 +8013,7 @@ class form_builder {
     $validate = array();
     switch ( strtolower($vtype) ){
       case 'string':
+        $type = 'textfield';
       break;
       case 'integer':
         $type = 'spinner';$validate = array('integer');
@@ -8052,16 +8053,31 @@ class form_builder {
 
       break;
       case 'array':
-      break;
       case 'object':
+        $type = 'textarea';
+        $default_value = json_encode($default_value);
       break;
     }
 
-    if( $type == NULL ){
+    if( $type == NULL && ( $default_value == NULL || is_scalar($default_value) ) ){
       switch ($element_name) {
-        case '':
+        case 'id':
+        case 'surname':
+        case 'name':
+          $type = 'textfield';
           break;
-
+        case 'email':
+          $type = 'textfield';
+          $validate = array('email');
+          break;
+        case 'date':
+        case 'birthdate':
+        case 'day':
+          $type = 'date';
+          break;
+        case 'time':
+          $type = 'time';
+          break;
         default:
           break;
       }
@@ -8072,7 +8088,6 @@ class form_builder {
   }
 
   static function objFormDefinition(form $form, &$form_state, $object){
-
     $form->set_form_id( get_class($object) );
     $fields = get_object_vars($object) + get_class_vars( get_class($object) );
 
