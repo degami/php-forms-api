@@ -17,6 +17,14 @@ use Degami\PHPFormsApi as FAPI;
 // as this is not a real example I'm just outputting the values for now.
 function contactform_submit(&$form) {
   $form_values = $form->values();
+  return implode(' - ',
+    [
+      $form_values->fieldset->name,
+      $form_values->fieldset->email,
+      $form_values->fieldset->message,
+    ]);
+
+  return $form_values;
   $form->add_highlight('Message sent!');
   print_r($form_values);
   //var_dump($form->get_triggering_element());

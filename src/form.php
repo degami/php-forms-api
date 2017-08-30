@@ -17,6 +17,7 @@ use \Exception;
 use \Iterator;
 use \IteratorAggregate;
 use \ArrayIterator;
+use \ArrayAccess;
 
 /*
  *  PHP Forms API library configuration
@@ -922,7 +923,7 @@ class form extends element{
       }
     }
 
-    return $output;
+    return new form_values($output);
   }
 
   /**
@@ -8138,8 +8139,7 @@ class form_builder {
 }
 
 
-class form_values implements IteratorAggregate{
-
+class form_values implements IteratorAggregate, ArrayAccess{
     private $values = array();
 
     public function __get($key){
@@ -8161,4 +8161,29 @@ class form_values implements IteratorAggregate{
     public function getIterator() {
         return new ArrayIterator($this);
     }
+
+    public function keys(){
+      return array_keys($this->values);
+    }
+
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->values[] = $value;
+        } else {
+            $this->values[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset) {
+        return isset($this->values[$offset]);
+    }
+
+    public function offsetUnset($offset) {
+        unset($this->values[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return isset($this->values[$offset]) ? $this->values[$offset] : null;
+    }
+
 }
