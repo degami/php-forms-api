@@ -8198,4 +8198,11 @@ class form_values implements IteratorAggregate, ArrayAccess{
         return isset($this->values[$offset]) ? $this->values[$offset] : null;
     }
 
+    public function toArray(){
+      $out = array();
+      foreach ($this->values as $key => $value) {
+        $out[$key] = ( $value instanceof form_values ) ? $value->toArray() : $value;
+      }
+      return $out;
+    }
 }

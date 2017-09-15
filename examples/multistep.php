@@ -15,7 +15,7 @@ define('RECAPTCHA_PRIVATE_KEY','');
 use Degami\PHPFormsApi as FAPI;
 
 function multistepform_submit(&$form) {
-  $form_values = $form->values();
+  $form_values = $form->values()->toArray();
   // var_export($form);
   // get submission triggering element
   //var_dump($form->get_triggering_element());
