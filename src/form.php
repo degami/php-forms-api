@@ -1911,6 +1911,18 @@ class form extends element{
   }
 
   /**
+   * "is_date" validation function
+   * @param  mixed $value   the element value
+   * @return mixed        TRUE if valid or a string containing the error message
+   */
+  public static function validate_is_date($value) {
+    if ( !$value || ($value && ($date = date_create($value)) === false) ) {
+      return "<em>%t</em> is not a valid date.";
+    }
+    return TRUE;
+  }
+
+  /**
    * format byte size
    * @param  integer $size size in bytes
    * @return string       formatted size
