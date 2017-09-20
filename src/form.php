@@ -706,6 +706,12 @@ class form extends element{
   protected $ajax_submit_url = '';
 
   /**
+   * print form on a dialog
+   * @var boolean
+   */
+  protected $on_dialog = false;
+
+  /**
    * current step
    * @var integer
    */
@@ -892,6 +898,25 @@ class form extends element{
    */
   public function get_no_token(){
     return $this->no_token;
+  }
+
+
+  /**
+   * set the form on_dialog preference
+   * @param string $on_dialog the form on_dialog preference
+   * @return form
+   */
+  public function set_on_dialog($on_dialog){
+    $this->on_dialog = $on_dialog;
+    return $this;
+  }
+
+  /**
+   * get the form on_dialog preference
+   * @return string the form on_dialog preference
+   */
+  public function get_on_dialog(){
+    return $this->on_dialog;
   }
 
   /**
@@ -1487,6 +1512,10 @@ class form extends element{
    * pre-render hook. using this hook form elements can modify the form element
    */
   public function pre_render(){
+    if( $this->on_dialog == TRUE ){
+      $this->add_js('$("#'.$this->get_form_id().'").dialog()');
+    }
+
     foreach ($this->get_fields($this->current_step) as $name => $field) {
       if( is_object($field) && method_exists ( $field , 'pre_render' ) ){
         $field->pre_render($this);
@@ -7943,6 +7972,8 @@ class form_builder {
    * @return form             a new form object
    */
   static function build_form($callable, &$form_state, $form_options = array()){
+    $before = memory_get_usage();
+
     $form_id = form_builder::get_form_id($callable);
     $function_name = form_builder::get_definition_function_name( $callable );
 
@@ -7958,10 +7989,14 @@ class form_builder {
         throw new Exception("Error. function {$function_name} does not return a valid form object", 1);
       }
 
-      $form =  $form_obj;
+      $form = $form_obj;
       $form->set_definition_function( $function_name );
       $_SESSION['form_definition'][$form->get_id()] = $form->toArray();
     }
+
+    $after = memory_get_usage();
+    $form->allocatedSize = ($after - $before);
+
     return $form;
   }
 

@@ -13,13 +13,14 @@ if(isset($_GET['clearsession'])){
 use Degami\PHPFormsApi as FAPI;
 
 function myclass_submit(&$form) {
-  $form_values = $form->values();
+  $form_values = $form->values()->toArray();
   $form->add_highlight('Object submitted.');
   return $form_values;
 }
 
 class MyClass{
 
+  public $id;
   public $name;
   public $surname;
   public $birthday;
@@ -27,6 +28,7 @@ class MyClass{
 
   function __construct( $name, $surname, $birthday, $number)
   {
+    $this->id = 1;
     $this->name = $name;
     $this->surname = $surname;
     $this->birthday = $birthday;

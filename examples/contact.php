@@ -37,7 +37,6 @@ function contactform_submit(&$form) {
 // }
 
 $form = FAPI\form_builder::get_form('contactform');
-
 ?><!DOCTYPE html>
 <html lang="en">
 <head>

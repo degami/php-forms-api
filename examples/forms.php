@@ -11,12 +11,11 @@ require_once '../src/form.php';
 
 // Generate a simple contact form
 function contactform(FAPI\form $form, &$form_state){
-
-  $form->set_inline_errors(TRUE);
-
-  // $form = new FAPI\form(array(
+ // $form = new FAPI\form(array(
   //   'form_id' => 'contact',
   // ));
+  //
+  $form->set_inline_errors(TRUE)->set_on_dialog(TRUE);
 
   $form
   ->add_field('fieldset', array(
