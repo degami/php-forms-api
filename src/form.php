@@ -753,7 +753,7 @@ class form extends element{
       }
     }
     if( !$hassubmitter ){
-        array_push($this->submit, "{$this->form_id}_submit");
+      array_push($this->submit, "{$this->form_id}_submit");
     }
 
     // if (empty($this->submit) || !is_callable($this->submit)) {
@@ -843,7 +843,6 @@ class form extends element{
   public function get_method(){
     return $this->method;
   }
-
 
   /**
    * set the ajax submit url used for form submission
@@ -1177,14 +1176,16 @@ class form extends element{
         foreach($this->submit as $submit_function){
           if( is_callable($submit_function) ) {
 
-            $submitresult = '';
+            if(!is_array($this->submit_functions_results)){
+              $this->submit_functions_results = array();
+            }
             ob_start();
             $submitresult = call_user_func_array( $submit_function, array( $this, $request ) );
             if($submitresult == NULL ){
               $submitresult = ob_get_contents();
             }
             ob_end_clean();
-            $this->submit_functions_results[$submit_function] = $submitresult;
+            $this->submit_functions_results[form_builder::get_definition_function_name($submit_function)] = $submitresult;
           }
         }
       }
@@ -1204,6 +1205,8 @@ class form extends element{
       return NULL;
     } else if ($_REQUEST['form_id'] == $this->form_id) {
       $sid = session_id();
+      if($this->valid == NULL) $this->valid = TRUE;
+
       if (!empty($sid) && !$this->no_token) {
         $this->valid = FALSE;
         $this->add_error($this->get_text('Form is invalid or has expired'),__FUNCTION__);
@@ -1296,7 +1299,7 @@ class form extends element{
   public function remove_field($name, $step = 0){
     unset($this->fields[$step][$name]);
     if(($key = array_search($name, $this->insert_field_order)) !== false) {
-        unset($this->insert_field_order[$key]);
+      unset($this->insert_field_order[$key]);
     }
     return $this;
   }
@@ -1433,6 +1436,20 @@ class form extends element{
   public function get_submit(){
     return $this->submit;
   }
+
+  /**
+   * set form functions list
+   * @param ordered_functions $submit set the form submit functions list
+   * @return form
+   */
+  public function set_submit($submit){
+    if(!($submit instanceof ordered_functions)){
+      $submit = new ordered_functions($submit,'submitter');
+    }
+    $this->submit = $submit;
+    return $this;
+  }
+
 
   /**
    * get the form validate
@@ -1604,10 +1621,10 @@ class form extends element{
         $js = '';
         if(count($target_elem->get_js()) > 0){
           $js = "(function($){\n".
-                  "\t$(document).ready(function(){\n".
-                  "\t\t".implode( ";\n\t\t", $target_elem->get_js() ).";\n".
-                  "\t});\n".
-                "})(jQuery);";
+            "\t$(document).ready(function(){\n".
+            "\t\t".implode( ";\n\t\t", $target_elem->get_js() ).";\n".
+            "\t});\n".
+            "})(jQuery);";
         }
 
         return json_encode(array( 'html' => $html, 'js' => $js ));
@@ -1620,7 +1637,7 @@ class form extends element{
       // print initial js for ajax form
 
       $output = "<script type=\"text/javascript\">"
-          .preg_replace("/\s+/"," ",str_replace("\n","",
+        .preg_replace("/\s+/"," ",str_replace("\n","",
           "(function(\$){
           \$(document).ready(function(){
             var {$this->get_id()}_attachFormBehaviours = function (){
@@ -1681,7 +1698,7 @@ class form extends element{
           }
 
           $output = json_encode($output);
-        break;
+          break;
 
         case 'html':
         default:
@@ -1706,7 +1723,7 @@ class form extends element{
           }
           $output .= $this->get_suffix();
           $output .= $this->get_element_suffix();
-        break;
+          break;
       }
 
     }
@@ -1733,7 +1750,7 @@ class form extends element{
         "\t$(document).ready(function(){\n".
         "\t\t".implode(";\n\t\t",$js).";\n".
         "\t});\n".
-      "})(jQuery);";
+        "})(jQuery);";
     }
     return "";
   }
@@ -2092,7 +2109,7 @@ class form extends element{
       <[^>]*(>|$)       # a string that starts with a <, up until the > or the end of the string
       |                 # or
       >                 # just a >
-      )%x', 'form::_filter_xss_split', $string);
+      )%x', array(__CLASS__, '_filter_xss_split'), $string);
   }
 
   /**
@@ -2316,7 +2333,7 @@ class form extends element{
    * @return string       plain version of $text
    */
   public static function process_plain($text) {
-      // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
+    // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
   }
 
@@ -2420,7 +2437,7 @@ class form extends element{
     if($b == 'required') return 1;
 
     return 0;
-//    return $a > $b ? 1 : -1;
+    //    return $a > $b ? 1 : -1;
   }
 
   /**
@@ -2455,7 +2472,7 @@ class form extends element{
     return 'this';
   }
 
- /**
+  /**
    * set the form definition function name
    * @param string $function_name form definition function name
    */
@@ -2464,7 +2481,7 @@ class form extends element{
     return $this;
   }
 
- /**
+  /**
    * get the form definition function body
    * @return string form definition function body
    */
@@ -2478,7 +2495,7 @@ class form extends element{
         if( function_exists($definition_name) ){
           $func = new \ReflectionFunction( $definition_name );
         } else {
-            $func = new \ReflectionMethod( $definition_name );
+          $func = new \ReflectionMethod( $definition_name );
         }
 
         if( is_object($func) ){
@@ -2794,7 +2811,7 @@ abstract class field extends element{
       if (function_exists($processor_func)) {
         $this->value = $processor_func($this->value);
       } else if(method_exists(get_class($this), $processor_func)){
-          $this->value = call_user_func( array($this, $processor_func), $this->value );
+        $this->value = call_user_func( array($this, $processor_func), $this->value );
       } else {
         if(method_exists('Degami\\PHPFormsApi\\form', $processor_func)){
           $this->value = call_user_func( array('Degami\\PHPFormsApi\\form',$processor_func), $this->value );
@@ -4051,7 +4068,7 @@ class option extends element{
     return $this->key;
   }
 
-   /**
+  /**
    * set the element key
    * @param  mixed $label element key
    */
@@ -4069,7 +4086,7 @@ class option extends element{
     return $this->label;
   }
 
-   /**
+  /**
    * set the element label
    * @param  mixed $label element label
    */
@@ -4301,23 +4318,23 @@ class multiselect extends select{
    * @param string $name    field name
    */
   public function __construct($options,$name) {
-      if(!is_array($options)) $options = array();
-      $options['multiple'] = TRUE;
-      parent::__construct($options,$name);
+    if(!is_array($options)) $options = array();
+    $options['multiple'] = TRUE;
+    parent::__construct($options,$name);
 
-      $this->leftOptions = $this->options;
-      $this->rightOptions = array();
+    $this->leftOptions = $this->options;
+    $this->rightOptions = array();
 
-      foreach ($this->get_default_value() as $value) {
-        foreach( $this->leftOptions as $k => $v ){
-          if( $v->get_key() == $value ){
-            $this->rightOptions[] = clone $v;
-            unset($this->leftOptions[$k]);
-          }
+    foreach ($this->get_default_value() as $value) {
+      foreach( $this->leftOptions as $k => $v ){
+        if( $v->get_key() == $value ){
+          $this->rightOptions[] = clone $v;
+          unset($this->leftOptions[$k]);
         }
       }
+    }
 
-      $this->set_attribute('style','width: 100%;');
+    $this->set_attribute('style','width: 100%;');
   }
 
   public function pre_render(form $form){
@@ -5538,9 +5555,9 @@ class recaptcha extends field {
     );
 
     $resp = recaptcha_check_answer ($this->privatekey,
-                                    $_SERVER["REMOTE_ADDR"],
-                                    $this->value["challenge_field"],
-                                    $this->value["response_field"]);
+      $_SERVER["REMOTE_ADDR"],
+      $this->value["challenge_field"],
+      $this->value["response_field"]);
     if(!$resp->is_valid){
       $this->add_error($this->get_text("Recaptcha response is not valid"), __FUNCTION__);
     }else{
@@ -5709,7 +5726,7 @@ abstract class fields_container extends field {
   public function remove_field($name){
     unset($this->fields[$name]);
     if(($key = array_search($name, $this->insert_field_order)) !== false) {
-        unset($this->insert_field_order[$key]);
+      unset($this->insert_field_order[$key]);
     }
     return $this;
   }
@@ -6081,10 +6098,10 @@ abstract class fields_container_multiple extends fields_container{
   public function remove_field($name, $partitions_index = 0){
     unset($this->fields[$name]);
     if(($key = array_search($name, $this->insert_field_order[$partitions_index])) !== false) {
-        unset($this->insert_field_order[$partitions_index][$key]);
+      unset($this->insert_field_order[$partitions_index][$key]);
     }
     if(($key = array_search($name, $this->partitions[$partitions_index]['fieldnames'])) !== false) {
-        unset($this->partitions[$partitions_index]['fieldnames'][$key]);
+      unset($this->partitions[$partitions_index]['fieldnames'][$key]);
     }
     return $this;
   }
@@ -6936,7 +6953,7 @@ class geolocation extends tag_container {
     $options['container_tag'] = '';
 
     if(!isset($options['size']))
-    $options['size'] = 5;
+      $options['size'] = 5;
 
     $options['type'] = 'textfield';
     $options['suffix'] = $this->get_text('latitude').' ';
@@ -7364,7 +7381,7 @@ class gmaplocation extends geolocation {
     }
 
     if( $this->with_reverse == TRUE ){
-        $this->add_js("
+      $this->add_js("
             var {$id}_geocoder = new google.maps.Geocoder;
             \$('#{$id}').bind('lat_lon_updated',function(evt){
               var latlng = {lat: parseFloat( \$('input[name=\"{$id}_latitude\"]','#{$id}').val() ), lng: parseFloat( \$('input[name=\"{$id}_longitude\"]','#{$id}').val() )};
@@ -7378,26 +7395,26 @@ class gmaplocation extends geolocation {
             });
         ");
 
-        if($this->lat_lon_type == 'textfield'){
-          $this->add_js("
+      if($this->lat_lon_type == 'textfield'){
+        $this->add_js("
               \$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}').change(function(evt){
                 \$('#{$id}').trigger('lat_lon_updated');
               });
           ");
-        }
+      }
     }
 
     if($this->with_current_location == TRUE){
-        $update_map_func = "";
-        if($this->with_map == TRUE){
-          $update_map_func = "
+      $update_map_func = "";
+      if($this->with_map == TRUE){
+        $update_map_func = "
             var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
             var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
             marker.setPosition( new google.maps.LatLng( lat, lng ) );
             map.panTo( new google.maps.LatLng( lat, lng ) );
           ";
-        }
-        $this->add_js("
+      }
+      $this->add_js("
             \$('#{$id}_current_location_btn').click(function(evt){
               evt.preventDefault();
               var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
@@ -7527,8 +7544,8 @@ class nestable extends fields_container {
       'attributes' => array('class' => $tagclass),
       'childnum' => $this->num_children(),
     ),
-    //'leaf-'.$this->get_level().'-'.$this->num_children()
-    $this->get_name().'-leaf-'. $this->num_children()
+      //'leaf-'.$this->get_level().'-'.$this->num_children()
+      $this->get_name().'-leaf-'. $this->num_children()
     );
 
     $this->children[] = $nextchild;
@@ -7660,8 +7677,8 @@ class nestable extends fields_container {
     $id = $this->get_html_id();
     if($this->get_level() == 0){
 
-    $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".
-      "\$('#{$id}','#{$form->get_id()}').data('output', \$('#{$id}-output'));
+      $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".
+        "\$('#{$id}','#{$form->get_id()}').data('output', \$('#{$id}-output'));
        \$('#{$id}','#{$form->get_id()}').nestable({group: {$this->group}, maxDepth: {$this->maxDepth} }).on('change', function(e){
         var list   = e.length ? e : $(e.target),
         output = list.data('output');
@@ -7671,11 +7688,11 @@ class nestable extends fields_container {
             output.val('JSON browser support required for this.');
         }
       }).trigger('change');"
-    )));
+      )));
 
       if(!nestable::$_css_rendered){
 
-    $this->add_css('
+        $this->add_css('
 .dd { position: relative; display: block; margin: 0; padding: 0; list-style: none; font-size: 13px; line-height: 20px; }
 
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
@@ -7791,11 +7808,11 @@ class ordered_functions implements Iterator{
    * @param string $sort_callback sort callback name
    */
   public function __construct(array $array, $type, $sort_callback = NULL) {
-      $this->position = 0;
-      $this->array = $array;
-      $this->type = $type;
-      $this->sort_callback = $sort_callback;
-      $this->sort();
+    $this->position = 0;
+    $this->array = $array;
+    $this->type = $type;
+    $this->sort_callback = $sort_callback;
+    $this->sort();
   }
 
   /**
@@ -7979,9 +7996,9 @@ class form_builder {
     $function_name = form_builder::get_definition_function_name( $callable );
 
     $form = new form(array(
-      'form_id' => $form_id,
-      'definition_function' => $function_name,
-    ) + $form_options);
+        'form_id' => $form_id,
+        'definition_function' => $function_name,
+      ) + $form_options);
 
     $form_state += form_builder::get_request_values($function_name);
     if(is_callable($function_name)){
@@ -8055,7 +8072,7 @@ class form_builder {
     switch( $vtype ){
       case 'object':
         $vtype = get_class( $default_value );
-      break;
+        break;
     }
 
     $type = NULL;
@@ -8063,18 +8080,18 @@ class form_builder {
     switch ( strtolower($vtype) ){
       case 'string':
         $type = 'textfield';
-      break;
+        break;
       case 'integer':
         $type = 'spinner';$validate = array('integer');
-      break;
+        break;
       case 'float':
       case 'double':
         $type = 'textfield';$validate = array('numeric');
-      break;
+        break;
       case 'boolean':
       case 'bool':
         $type = 'checkbox';
-      break;
+        break;
       case 'datetime':
         $type = 'datetime';
 
@@ -8087,7 +8104,7 @@ class form_builder {
           'seconds' => $default_value->format('s'),
         );
 
-      break;
+        break;
       case 'date':
         $type = 'date';
 
@@ -8100,12 +8117,12 @@ class form_builder {
           'seconds' => $default_value->format('s'),
         );
 
-      break;
+        break;
       case 'array':
       case 'object':
         $type = 'textarea';
         $default_value = json_encode($default_value);
-      break;
+        break;
     }
 
     if( $type == NULL && ( $default_value == NULL || is_scalar($default_value) ) ){
@@ -8158,9 +8175,9 @@ class form_builder {
     }
 
     $form
-    ->add_field('submit', array(
-      'type' => 'submit',
-    ));
+      ->add_field('submit', array(
+        'type' => 'submit',
+      ));
 
     return $form;
   }
@@ -8188,57 +8205,57 @@ class form_builder {
 
 
 class form_values implements IteratorAggregate, ArrayAccess{
-    private $values = array();
+  private $values = array();
 
-    public function __get($key){
-      return isset($this->values[$key]) ? $this->values[$key] : NULL;
-    }
+  public function __get($key){
+    return isset($this->values[$key]) ? $this->values[$key] : NULL;
+  }
 
-    public function __set($key, $value){
-      $this->values[$key] = $value;
-      return $this;
-    }
+  public function __set($key, $value){
+    $this->values[$key] = $value;
+    return $this;
+  }
 
-    public function __construct($values) {
-      foreach( $values as $k => $v ){
-        if( is_numeric($k) ) $k = '_value'.$k;
-        $this->{$k} = (is_array($v)) ? new form_values($v) : $v;
-      }
+  public function __construct($values) {
+    foreach( $values as $k => $v ){
+      if( is_numeric($k) ) $k = '_value'.$k;
+      $this->{$k} = (is_array($v)) ? new form_values($v) : $v;
     }
+  }
 
-    public function getIterator() {
-        return new ArrayIterator($this);
-    }
+  public function getIterator() {
+    return new ArrayIterator($this);
+  }
 
-    public function keys(){
-      return array_keys($this->values);
-    }
+  public function keys(){
+    return array_keys($this->values);
+  }
 
-    public function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            $this->values[] = $value;
-        } else {
-            $this->values[$offset] = $value;
-        }
+  public function offsetSet($offset, $value) {
+    if (is_null($offset)) {
+      $this->values[] = $value;
+    } else {
+      $this->values[$offset] = $value;
     }
+  }
 
-    public function offsetExists($offset) {
-        return isset($this->values[$offset]);
-    }
+  public function offsetExists($offset) {
+    return isset($this->values[$offset]);
+  }
 
-    public function offsetUnset($offset) {
-        unset($this->values[$offset]);
-    }
+  public function offsetUnset($offset) {
+    unset($this->values[$offset]);
+  }
 
-    public function offsetGet($offset) {
-        return isset($this->values[$offset]) ? $this->values[$offset] : null;
-    }
+  public function offsetGet($offset) {
+    return isset($this->values[$offset]) ? $this->values[$offset] : null;
+  }
 
-    public function toArray(){
-      $out = array();
-      foreach ($this->values as $key => $value) {
-        $out[$key] = ( $value instanceof form_values ) ? $value->toArray() : $value;
-      }
-      return $out;
+  public function toArray(){
+    $out = array();
+    foreach ($this->values as $key => $value) {
+      $out[$key] = ( $value instanceof form_values ) ? $value->toArray() : $value;
     }
+    return $out;
+  }
 }
