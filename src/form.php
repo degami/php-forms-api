@@ -1175,10 +1175,11 @@ class form extends element{
           }
         }
         foreach($this->submit as $submit_function){
-          if( function_exists($submit_function) ) {
+          if( is_callable($submit_function) ) {
+
             $submitresult = '';
             ob_start();
-            $submitresult = $submit_function($this, $request);
+            $submitresult = call_user_func_array( $submit_function, array( $this, $request ) );
             if($submitresult == NULL ){
               $submitresult = ob_get_contents();
             }
