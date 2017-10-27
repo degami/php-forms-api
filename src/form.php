@@ -66,7 +66,7 @@ if( !defined('FORMS_HIGHLIGHTS_TEMPLATE') ){
   define('FORMS_HIGHLIGHTS_TEMPLATE','<div class="ui-state-highlight ui-corner-all highlightsbox">'.FORMS_HIGHLIGHTS_ICON.'<ul>%s</ul></div>');
 }
 
-if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE ) || session_id() != '') {
+if( ( function_exists('session_status') && session_status() != PHP_SESSION_NONE ) || trim(session_id()) != '') {
   ini_set('session.gc_maxlifetime',FORMS_SESSION_TIMEOUT);
   session_set_cookie_params(FORMS_SESSION_TIMEOUT);
 }
@@ -782,8 +782,8 @@ class form extends element{
       $this->submit = new ordered_functions($this->submit,'submitter');
     }
 
-    $sid = session_id();
-    if (!empty($sid)) {
+    $has_session = form_builder::session_present();
+    if ($has_session) {
       $this->form_token = sha1(mt_rand(0, 1000000));
       $_SESSION['form_token'][$this->form_token] = $_SERVER['REQUEST_TIME'];
     }
@@ -1179,6 +1179,7 @@ class form extends element{
             if(!is_array($this->submit_functions_results)){
               $this->submit_functions_results = array();
             }
+            $submitresult = '';
             ob_start();
             $submitresult = call_user_func_array( $submit_function, array( $this, $request ) );
             if($submitresult == NULL ){
@@ -1204,10 +1205,9 @@ class form extends element{
     if (!isset($_REQUEST['form_id'])) {
       return NULL;
     } else if ($_REQUEST['form_id'] == $this->form_id) {
-      $sid = session_id();
+      $has_session = form_builder::session_present();
       if($this->valid == NULL) $this->valid = TRUE;
-
-      if (!empty($sid) && !$this->no_token) {
+      if ($has_session && !$this->no_token) {
         $this->valid = FALSE;
         $this->add_error($this->get_text('Form is invalid or has expired'),__FUNCTION__);
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
@@ -1438,7 +1438,7 @@ class form extends element{
   }
 
   /**
-   * set form functions list
+   * set form submit functions list
    * @param ordered_functions $submit set the form submit functions list
    * @return form
    */
@@ -1458,6 +1458,20 @@ class form extends element{
   public function get_validate(){
     return $this->validate;
   }
+
+  /**
+   * set form validate functions list
+   * @param ordered_functions $validate set the form validate functions list
+   * @return form
+   */
+  public function set_validate($validate){
+    if(!($validate instanceof ordered_functions)){
+      $validate = new ordered_functions($validate,'validator');
+    }
+    $this->validate = $validate;
+    return $this;
+  }
+
 
   /**
    * get the form id
@@ -7954,6 +7968,10 @@ class ordered_functions implements Iterator{
  * the form builder class
  */
 class form_builder {
+
+  static function session_present(){
+    return defined('PHP_VERSION_ID') && PHP_VERSION_ID > 54000 ? session_status() != PHP_SESSION_NONE : trim(session_id()) != '';
+  }
 
   /**
    * returns the form_id
