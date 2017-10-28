@@ -5,3 +5,4 @@ vendor
 *.sublime-project
 *.sublime-workspace
 *.sublime-classdb
+examples/googlekeys.php

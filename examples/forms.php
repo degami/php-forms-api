@@ -8,6 +8,7 @@ function __($string){
 use Degami\PHPFormsApi as FAPI;
 
 require_once '../vendor/autoload.php';
+require_once 'recaptchalib.php';
 
 // Generate a simple contact form
 function contactform(FAPI\form $form, &$form_state){
@@ -38,7 +39,6 @@ function contactform(FAPI\form $form, &$form_state){
     'postprocess' => array('xss'),
     'title' => 'Your message',
   ))
-
   ->add_field('submit', array(
     'type' => 'submit',
   ));

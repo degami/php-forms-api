@@ -443,7 +443,7 @@ abstract class element{
    * @param string $container_class element container_class
    * @return element
    */
-  public function set_container_tag($container_class){
+  public function set_container_class($container_class){
     $this->container_class = $container_class;
 
     return $this;
