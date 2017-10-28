@@ -16,6 +16,7 @@
       "components/jqueryui": "*"
   },
   "autoload": {
-    "files": ["src/form.php"]
+    "files": ["src/php_forms_api_defines.php"],
+    "psr-4": {"Degami\\PHPFormsApi\\": "src/classes"}
   }
 }

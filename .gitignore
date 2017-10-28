@@ -1,5 +1,7 @@
 .idea
 docs
-php-forms-api.sublime-project
-php-forms-api.sublime-workspace
-phpclass.sublime-classdb
+vendor
+*.sublime-projectcompletions
+*.sublime-project
+*.sublime-workspace
+*.sublime-classdb

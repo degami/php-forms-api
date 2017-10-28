@@ -7,7 +7,7 @@ function __($string){
 
 use Degami\PHPFormsApi as FAPI;
 
-require_once '../src/form.php';
+require_once '../vendor/autoload.php';
 
 // Generate a simple contact form
 function contactform(FAPI\form $form, &$form_state){
@@ -63,9 +63,10 @@ function contactform_ajax(FAPI\form $form, &$form_state){
   //   'output_type' => 'json',
   // ));
 
-  $form->set_form_id(__FUNCTION__);
-  $form->set_ajax_submit_url('ajax_url.php');
-  $form->set_output_type('json');
+  $form
+    ->set_form_id(__FUNCTION__)
+    ->set_ajax_submit_url('ajax_url.php')
+    ->set_output_type('json');
 
   $form->add_field('name', array(
     'type' => 'textfield',

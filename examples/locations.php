@@ -2,7 +2,7 @@
 define('GOOGLE_API_KEY', '<google maps key here>');
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
-require_once '../src/form.php';
+require_once '../vendor/autoload.php';
 include "forms.php";
 
 if(isset($_GET['clearsession'])){

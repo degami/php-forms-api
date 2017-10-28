@@ -6,7 +6,7 @@ if(isset($_GET['clearsession'])){
   session_start();
 }
 
-require_once '../src/form.php';
+require_once '../vendor/autoload.php';
 include "forms.php";
 require 'recaptchalib.php';
 define('RECAPTCHA_PUBLIC_KEY','');

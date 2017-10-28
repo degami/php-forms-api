@@ -2,7 +2,7 @@
 
 // if sessions are enabled then the form uses a token for extra security against CSRF
 session_start();
-require_once '../src/form.php';
+require_once '../vendor/autoload.php';
 include "forms.php";
 
 use Degami\PHPFormsApi as FAPI;
