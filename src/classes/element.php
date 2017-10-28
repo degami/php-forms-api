@@ -412,6 +412,44 @@ abstract class element{
   }
 
   /**
+   * get element container_tag
+   * @return string element container_tag
+   */
+  public function get_container_tag(){
+    return $this->container_tag;
+  }
+
+  /**
+   * set element container_tag
+   * @param string $container_tag element container_tag
+   * @return element
+   */
+  public function set_container_tag($container_tag){
+    $this->container_tag = $container_tag;
+
+    return $this;
+  }
+
+  /**
+   * get element container_class
+   * @return string element container_class
+   */
+  public function get_container_class(){
+    return $this->container_class;
+  }
+
+  /**
+   * set element container_class
+   * @param string $container_class element container_class
+   * @return element
+   */
+  public function set_container_tag($container_class){
+    $this->container_class = $container_class;
+
+    return $this;
+  }
+
+  /**
    * get element html prefix
    * @return string html for the element prefix
    */

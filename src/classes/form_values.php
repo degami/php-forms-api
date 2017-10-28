@@ -13,7 +13,7 @@ use \IteratorAggregate;
 use \ArrayIterator;
 use \ArrayAccess;
 
-/*
+/**
  * a class to hold form fields submitted values
  */
 class form_values implements IteratorAggregate, ArrayAccess{
