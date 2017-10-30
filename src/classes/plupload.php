@@ -18,7 +18,7 @@ class plupload extends field {
    * filters
    * @var array
    */
-  protected $filters = array();
+  protected $filters = [];
 
   /**
    * upload.php url

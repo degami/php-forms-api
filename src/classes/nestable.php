@@ -18,24 +18,24 @@ class nestable extends fields_container {
   public $childnum = 0;
   public $tag = 'ol';
   public $tagclass = 'dd-list';
-  public $children = array();
+  public $children = [];
   public $fields_panel = NULL;
   public $maxDepth = 5;
   public static $_groupcounter = 0;
   public static $_css_rendered = FALSE;
   public $group = 0;
 
-  public function __construct($options = array(), $name = NULL){
+  public function __construct($options = [], $name = NULL){
     parent::__construct($options, $name);
-    $this->fields_panel = new tag_container(array(
+    $this->fields_panel = new tag_container([
       'type' => 'tag_container',
       'tag' => 'div',
       'container_class' => '',
       'container_tag' => '',
       'prefix' => '<div class="dd-panel"><div class="dd-handle" style="vertical-align: top;display: inline-block;">&nbsp;</div><div class="dd-content">',
       'suffix' => '</div></div>',
-      'attributes' => array('class' => 'level-'.$this->level),
-    ),'panel-'.$this->get_level().'-'.$this->get_name());
+      'attributes' => ['class' => 'level-'.$this->level],
+    ],'panel-'.$this->get_level().'-'.$this->get_name());
 
     parent::add_field($this->fields_panel->get_name(), $this->fields_panel);
 
@@ -50,15 +50,15 @@ class nestable extends fields_container {
     if($tag == NULL) $tag = $this->tag;
     if($tagclass == NULL) $tagclass = $this->tagclass;
 
-    $nextchild = new nestable(array(
+    $nextchild = new nestable([
       'type' => 'nestable',
       'level' => $this->level+1,
       'tag' => $tag,
       'container_class' => '',
       'container_tag' => '',
-      'attributes' => array('class' => $tagclass),
+      'attributes' => ['class' => $tagclass],
       'childnum' => $this->num_children(),
-    ),
+    ],
       //'leaf-'.$this->get_level().'-'.$this->num_children()
       $this->get_name().'-leaf-'. $this->num_children()
     );
@@ -133,7 +133,7 @@ class nestable extends fields_container {
   }
 
   private static function create_values_array( $tree, nestable $nestablefield ){
-    $out = array();
+    $out = [];
     $panel = $nestablefield->get_panel_by_id($tree['id']);
     if( $panel instanceof fields_container ){
       //$out[$tree['id']]['value'] = $panel->values();
@@ -152,7 +152,7 @@ class nestable extends fields_container {
     if($this->value) {
       // return $this->value;
       // var_dump($this->value);die();
-      $out = array();
+      $out = [];
       foreach($this->value as $tree){
         // $out = array_merge($out, nestable::create_values_array($tree, $this) );
         $out[] = nestable::create_values_array($tree, $this);

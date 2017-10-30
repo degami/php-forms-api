@@ -54,7 +54,7 @@ class datepicker extends field {
    * disabled dates array
    * @var array
    */
-  protected $disabled_dates = array(); // an array of date strings compliant to $date_format
+  protected $disabled_dates = []; // an array of date strings compliant to $date_format
 
   /**
    * pre_render hook

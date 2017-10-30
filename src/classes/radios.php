@@ -27,7 +27,7 @@ class radios extends field_multivalues {
     foreach ($this->options as $key => $value) {
       $attributes = $this->get_attributes();
       if(is_array($value) && isset($value['attributes'])){
-        $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
+        $attributes = $this->get_attributes_string($value['attributes'],['type','name','id','value']);
       }
       if(is_array($value)){
         $value = $value['value'];

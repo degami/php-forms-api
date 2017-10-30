@@ -24,13 +24,13 @@ class maskedfield extends textfield{
    * jQuery Mask Plugin patterns
    * @var array
    */
-  private $translation = array(
+  private $translation = [
     '0'  =>  "\d",
     '9'  =>  "\d?",
     '#'  =>  "\d+",
     'A'  =>  "[a-zA-Z0-9]",
     'S'  =>  "[a-zA-Z]",
-  );
+  ];
 
   /**
    * class constructor

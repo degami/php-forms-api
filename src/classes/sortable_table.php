@@ -18,7 +18,7 @@ class sortable_table extends sortable_container{
    * table header
    * @var array
    */
-  protected $table_header = array();
+  protected $table_header = [];
 
   /**
    * pre_render hook
@@ -63,7 +63,7 @@ class sortable_table extends sortable_container{
 
     if(!empty($this->table_header) ){
       if(!is_array($this->table_header)) {
-        $this->table_header = array($this->table_header);
+        $this->table_header = [$this->table_header];
       }
 
       $output .= "<thead>\n";
@@ -78,8 +78,8 @@ class sortable_table extends sortable_container{
     $output .= "<tbody>\n";
     foreach($this->partitions as $trindex => $tr){
       $insertorder = array_flip($this->insert_field_order[$trindex]);
-      $weights = array();
-      $order = array();
+      $weights = [];
+      $order = [];
       foreach ($this->get_partition_fields($trindex) as $key => $elem) {
         /** @var field $elem */
         $weights[$key]  = $elem->get_weight();

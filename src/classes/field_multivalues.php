@@ -19,7 +19,7 @@ abstract class field_multivalues extends field {
    * options array
    * @var array
    */
-  protected $options = array();
+  protected $options = [];
 
   /**
    * get elements options array by reference

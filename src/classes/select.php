@@ -33,7 +33,7 @@ class select extends field_multivalues {
           $o->set_parent($this);
           $this->options[] = $o;
         }else if(is_array($o)){
-          $option = new optgroup( $k , array('options' => $o) );
+          $option = new optgroup( $k , ['options' => $o] );
           $option->set_parent($this);
           $this->options[] = $option;
         }else{
@@ -50,7 +50,7 @@ class select extends field_multivalues {
         if(is_array($options['default_value'])) $options['default_value'] = reset($options['default_value']);
         $options['default_value'] = "".$options['default_value'];
       }else{
-        if(!is_array($options['default_value'])) $options['default_value'] = array($options['default_value']);
+        if(!is_array($options['default_value'])) $options['default_value'] = [$options['default_value']];
         foreach( $options['default_value'] as $k => $v) {
           $options['default_value'][$k] = "".$v;
         }

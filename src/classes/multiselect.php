@@ -23,12 +23,12 @@ class multiselect extends select{
    * @param string $name    field name
    */
   public function __construct($options,$name) {
-    if(!is_array($options)) $options = array();
+    if(!is_array($options)) $options = [];
     $options['multiple'] = TRUE;
     parent::__construct($options,$name);
 
     $this->leftOptions = $this->options;
-    $this->rightOptions = array();
+    $this->rightOptions = [];
 
     foreach ($this->get_default_value() as $value) {
       foreach( $this->leftOptions as $k => $v ){
@@ -67,11 +67,11 @@ class multiselect extends select{
     parent::pre_render($form);
   }
 
-  public function process($value = array()){
+  public function process($value = []){
     parent::process($value);
 
     $this->leftOptions = $this->options;
-    $this->rightOptions = array();
+    $this->rightOptions = [];
 
     $values = $this->get_value();
     foreach( array_values($values) as $keyval){

@@ -78,7 +78,7 @@ class optgroup extends element{
    */
   public function render(select $form_field){
     $this->no_translation = $form_field->no_translation;
-    $attributes = $this->get_attributes(array('label'));
+    $attributes = $this->get_attributes(['label']);
     $output = "<optgroup label=\"".$this->get_text($this->label)."\"{$attributes}>\n";
     foreach ($this->options as $option) {
       $output .= $option->render($form_field);

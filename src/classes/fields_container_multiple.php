@@ -20,7 +20,7 @@ abstract class fields_container_multiple extends fields_container{
    * element subelements
    * @var array
    */
-  protected $partitions = array();
+  protected $partitions = [];
 
   /**
    * get element partitions
@@ -43,7 +43,7 @@ abstract class fields_container_multiple extends fields_container{
    * @param string $title partition title
    */
   public function add_partition($title){
-    $this->partitions[] = array('title'=>$title,'fieldnames'=>array());
+    $this->partitions[] = ['title'=>$title,'fieldnames'=>[]];
 
     return $this;
   }
@@ -70,7 +70,7 @@ abstract class fields_container_multiple extends fields_container{
     $this->fields[$name] = $field;
     $this->insert_field_order[$partitions_index][] = $name;
     if(!isset($this->partitions[$partitions_index])){
-      $this->partitions[$partitions_index] = array('title'=>'','fieldnames'=>array());
+      $this->partitions[$partitions_index] = ['title'=>'','fieldnames'=>[]];
     }
     $this->partitions[$partitions_index]['fieldnames'][] = $name;
 
@@ -105,7 +105,7 @@ abstract class fields_container_multiple extends fields_container{
    * @return array             partition fields array
    */
   public function get_partition_fields($partitions_index){
-    $out = array();
+    $out = [];
     $fieldsnames = $this->partitions[$partitions_index]['fieldnames'];
     foreach($fieldsnames as $name){
       $out[$name] = $this->get_field($name);

@@ -32,7 +32,7 @@ class option extends element{
    * @param string $label   label
    * @param array  $options build options
    */
-  function __construct($key, $label, $options = array()) {
+  function __construct($key, $label, $options = []) {
     $this->key = trim($key);
     $this->label = $label;
 
@@ -53,12 +53,12 @@ class option extends element{
     $selected = '';
     $field_value = $form_field->get_value();
     if(is_array($field_value) || $form_field->is_multiple() == TRUE){
-      if( !is_array($field_value) ) $field_value = array($field_value);
+      if( !is_array($field_value) ) $field_value = [$field_value];
       $selected = in_array($this->key, array_values($field_value), TRUE) ? ' selected="selected"' : '';
     }else{
       $selected = ($this->key === $field_value) ? ' selected="selected"' : '';
     }
-    $attributes = $this->get_attributes(array('value','selected'));
+    $attributes = $this->get_attributes( ['value','selected'] );
     $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>".$this->get_text($this->label)."</option>\n";
     return $output;
   }

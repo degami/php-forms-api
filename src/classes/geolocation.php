@@ -31,10 +31,10 @@ class geolocation extends tag_container {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
     parent::__construct($options,$name);
 
-    $defaults = isset($options['default_value']) ? $options['default_value'] : array('latitude' => 0, 'longitude' => 0);
+    $defaults = isset($options['default_value']) ? $options['default_value'] : ['latitude' => 0, 'longitude' => 0];
 
     unset($options['title']);
     unset($options['prefix']);
@@ -155,10 +155,10 @@ class geolocation extends tag_container {
    * @return array field value
    */
   public function values() {
-    return array(
+    return [
       'latitude'=> $this->latitude->values(),
       'longitude'=> $this->longitude->values(),
-    );
+    ];
   }
 
   /**

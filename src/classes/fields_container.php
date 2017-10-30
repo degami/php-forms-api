@@ -20,13 +20,13 @@ abstract class fields_container extends field {
    * keeps fields insert order
    * @var array
    */
-  protected $insert_field_order = array();
+  protected $insert_field_order = [];
 
   /**
    * element fields
    * @var array
    */
-  protected $fields = array();
+  protected $fields = [];
 
   /**
    * get the fields array by reference
@@ -42,8 +42,8 @@ abstract class fields_container extends field {
    * @return array              fields in the element
    */
   public function get_fields_by_type($field_types){
-    if(!is_array($field_types)) $field_types = array($field_types);
-    $out = array();
+    if(!is_array($field_types)) $field_types = [$field_types];
+    $out = [];
 
     foreach($this->get_fields() as $field){
       if($field instanceof fields_container){
@@ -64,8 +64,8 @@ abstract class fields_container extends field {
    * @return array              fields in the element matching the search criteria
    */
   public function get_fields_by_type_and_name($field_types,$name){
-    if(!is_array($field_types)) $field_types = array($field_types);
-    $out = array();
+    if(!is_array($field_types)) $field_types = [$field_types];
+    $out = [];
 
     foreach($this->get_fields() as $field){
       if($field instanceof fields_container){
@@ -135,7 +135,7 @@ abstract class fields_container extends field {
    * @return array form values
    */
   public function values() {
-    $output = array();
+    $output = [];
     foreach ($this->get_fields() as $name => $field) {
       if($field->is_a_value() == TRUE){
         $output[$name] = $field->values();
@@ -181,11 +181,11 @@ abstract class fields_container extends field {
         // no value on request[name] && field is a checkbox - process anyway with an empty value
         $this->get_field($name)->process(NULL);
       } else if( $field instanceof select ){
-        if($field->is_multiple()) $this->get_field($name)->process(array());
+        if($field->is_multiple()) $this->get_field($name)->process([]);
         else $this->get_field($name)->process(NULL);
       } else if( $field instanceof field_multivalues ){
         // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
-        $this->get_field($name)->process(array());
+        $this->get_field($name)->process([]);
       }
     }
   }

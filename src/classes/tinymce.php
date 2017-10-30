@@ -18,7 +18,7 @@ class tinymce extends textarea {
    * tinymce options
    * @var array
    */
-  private $tinymce_options = array();
+  private $tinymce_options = [];
 
   /**
    * get tinymce options array
@@ -34,7 +34,7 @@ class tinymce extends textarea {
    */
   public function set_tinymce_options($options){
     $options = (array) $options;
-    $options = array_filter($options, array($this,'is_valid_tinymce_option'));
+    $options = array_filter($options, [$this,'is_valid_tinymce_option']);
     $this->tinymce_options = $options;
 
     return $this;

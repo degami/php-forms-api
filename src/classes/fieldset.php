@@ -81,7 +81,7 @@ class fieldset extends fields_container {
     }
 
     $insertorder = array_flip($this->insert_field_order);
-    $weights = array();
+    $weights = [];
     foreach ($this->get_fields() as $key => $elem) {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];

@@ -69,7 +69,7 @@ class spinner extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('type','name','id','value','min','max','step'));
+    $attributes = $this->get_attributes(['type','name','id','value','min','max','step']);
 
     $output .= "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$html_options}{$attributes} />\n";
 

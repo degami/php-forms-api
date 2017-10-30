@@ -19,25 +19,25 @@ abstract class field extends element{
    * validate functions list
    * @var array
    */
-  protected $validate = array();
+  protected $validate = [];
 
   /**
    * preprocess functions list
    * @var array
    */
-  protected $preprocess = array();
+  protected $preprocess = [];
 
   /**
    * postprocess functions list
    * @var array
    */
-  protected $postprocess = array();
+  protected $postprocess = [];
 
   /**
    * element js events list
    * @var array
    */
-  protected $event = array();
+  protected $event = [];
 
   /**
    * element size
@@ -122,7 +122,7 @@ abstract class field extends element{
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
 
     $this->build_options = $options;
 
@@ -142,7 +142,7 @@ abstract class field extends element{
     }
 
     if(!$this->validate instanceof ordered_functions){
-      $this->validate = new ordered_functions($this->validate,'validator',array( form::class,'order_validators' ));
+      $this->validate = new ordered_functions($this->validate,'validator', [ form::class,'order_validators' ] );
     }
 
     if(!$this->preprocess instanceof ordered_functions){
@@ -211,7 +211,7 @@ abstract class field extends element{
   public function reset() {
     $this->value = $this->default_value;
     $this->pre_rendered = FALSE;
-    $this->set_errors( array() );
+    $this->set_errors( [] );
   }
 
   /**
@@ -298,10 +298,10 @@ abstract class field extends element{
       if (function_exists($processor_func)) {
         $this->value = $processor_func($this->value);
       } else if(method_exists(get_class($this), $processor_func)){
-        $this->value = call_user_func( array($this, $processor_func), $this->value );
+        $this->value = call_user_func( [$this, $processor_func], $this->value );
       } else {
         if(method_exists(form::class, $processor_func)){
-          $this->value = call_user_func( array(form::class,$processor_func), $this->value );
+          $this->value = call_user_func( [form::class,$processor_func], $this->value );
         }
       }
     }
@@ -319,10 +319,10 @@ abstract class field extends element{
    * @return boolean valid state
    */
   public function valid() {
-    $this->set_errors( array() );
+    $this->set_errors( [] );
 
     foreach ($this->validate as $validator) {
-      $matches = array();
+      $matches = [];
       if(is_array($validator)){
         $validator_func = $validator['validator'];
       }else{
@@ -335,10 +335,10 @@ abstract class field extends element{
       if (function_exists($validator_func)) {
         $error = $validator_func($this->value, $options);
       } else if(method_exists(get_class($this), $validator_func)){
-        $error = call_user_func( array(get_class($this), $validator_func), $this->value, $options );
+        $error = call_user_func( [get_class($this), $validator_func], $this->value, $options );
       }else {
         if(method_exists(form::class, $validator_func)){
-          $error = call_user_func( array(form::class, $validator_func), $this->value, $options );
+          $error = call_user_func( [form::class, $validator_func], $this->value, $options );
         }
       }
       if (isset($error) && $error !== TRUE) {

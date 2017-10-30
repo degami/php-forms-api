@@ -62,25 +62,25 @@ abstract class element{
    * element errors array
    * @var array
    */
-  protected $notifications = array( 'error' => array(), 'highlight'=>array() );
+  protected $notifications = [ 'error' => [], 'highlight'=>[] ];
 
   /**
    * element attributes array
    * @var array
    */
-  protected $attributes = array();
+  protected $attributes = [];
 
   /**
    * element js array
    * @var array
    */
-  protected $js = array();
+  protected $js = [];
 
   /**
    * element css array
    * @var array
    */
-  protected $css = array();
+  protected $css = [];
 
   /**
    * element prefix
@@ -265,7 +265,7 @@ abstract class element{
    * @param  array  $reserved_arr array of attributes name that will be skipped if present in the attributes array
    * @return string               the html attributes string
    */
-  public function get_attributes($reserved_arr = array('type','name','id','value')){
+  public function get_attributes( $reserved_arr = ['type','name','id','value'] ){
     return $this->get_attributes_string($this->attributes, $reserved_arr);
   }
 
@@ -279,7 +279,7 @@ abstract class element{
    * @param  array  $reserved_arr   array of attributes name that will be skipped if present in the attributes array
    * @return string                 the html attributes string
    */
-  public function get_attributes_string( $attributes_arr, $reserved_arr = array('type','name','id','value')){
+  public function get_attributes_string( $attributes_arr, $reserved_arr = ['type','name','id','value'] ){
     $attributes = '';
     foreach ($reserved_arr as $key => $reserved) {
       if(isset($attributes_arr[$reserved])) unset($attributes_arr[$reserved]);
@@ -303,7 +303,7 @@ abstract class element{
    */
   public function add_js($js){
     if( is_array($js) ){
-      $js = array_filter(array_map( array('minify_js', $this), $js));
+      $js = array_filter(array_map( ['minify_js', $this], $js));
       $this->js = array_merge( $js, $this->js );
     } else if( is_string($js) && trim($js) != '' ) {
       $this->js[] = $this->minify_js($js);

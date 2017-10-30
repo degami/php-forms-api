@@ -108,9 +108,9 @@ class gmaplocation extends geolocation {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
     parent::__construct($options,$name);
-    $defaults = isset($options['default_value']) ? $options['default_value'] : array('latitude' => 0, 'longitude' => 0);
+    $defaults = isset($options['default_value']) ? $options['default_value'] : ['latitude' => 0, 'longitude' => 0];
 
     unset($options['title']);
     unset($options['prefix']);
@@ -197,10 +197,10 @@ class gmaplocation extends geolocation {
   public function values() {
     $out = parent::values();
     if($this->with_geocode == TRUE){
-      $out += array( 'geocodebox' => $this->geocode_box->values() );
+      $out += [ 'geocodebox' => $this->geocode_box->values() ];
     }
     if($this->with_reverse == TRUE){
-      $out += array( 'reverse_geocodebox' => $this->reverse_geocode_box->values() );
+      $out += [ 'reverse_geocodebox' => $this->reverse_geocode_box->values() ];
     }
     return $out;
   }

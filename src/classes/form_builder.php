@@ -53,20 +53,20 @@ class form_builder {
    * @param  array $form_options  additional form constructor options
    * @return form             a new form object
    */
-  static function build_form($callable, &$form_state, $form_options = array()){
+  static function build_form($callable, &$form_state, $form_options = []){
     $before = memory_get_usage();
 
     $form_id = form_builder::get_form_id($callable);
     $function_name = form_builder::get_definition_function_name( $callable );
 
-    $form = new form(array(
+    $form = new form([
         'form_id' => $form_id,
         'definition_function' => $function_name,
-      ) + $form_options);
+      ] + $form_options);
 
     $form_state += form_builder::get_request_values($function_name);
     if(is_callable($function_name)){
-      $form_obj = call_user_func_array($function_name , array_merge( array($form, &$form_state), $form_state['build_info']['args']) );
+      $form_obj = call_user_func_array($function_name , array_merge( [$form, &$form_state], $form_state['build_info']['args']) );
       if( ! $form_obj instanceof form ){
         throw new Exception("Error. function {$function_name} does not return a valid form object", 1);
       }
@@ -88,7 +88,7 @@ class form_builder {
    * @return form         a new form object
    */
   static function get_form($form_id){
-    $form_state = array();
+    $form_state = [];
     $args = func_get_args();
     // Remove $form_id from the arguments.
     array_shift($args);
@@ -114,8 +114,8 @@ class form_builder {
    * @return array           the form_state array
    */
   static function get_request_values($form_id){
-    $out = array('input_values' => array() , 'input_form_definition'=>NULL);
-    foreach(array('_POST' => $_POST,'_GET' => $_GET,'_REQUEST' => $_REQUEST) as $key => $array){
+    $out = ['input_values' => [] , 'input_form_definition'=>NULL];
+    foreach(['_POST' => $_POST,'_GET' => $_GET,'_REQUEST' => $_REQUEST] as $key => $array){
       if(!empty($array['form_id']) && $array['form_id'] == $form_id){
         $out['input_values'] = $array; //array_merge($out, $array);
         $out['input_values']['__values_container'] = $key; //array_merge($out, $array);
@@ -140,17 +140,17 @@ class form_builder {
     }
 
     $type = NULL;
-    $validate = array();
+    $validate = [];
     switch ( strtolower($vtype) ){
       case 'string':
         $type = 'textfield';
         break;
       case 'integer':
-        $type = 'spinner';$validate = array('integer');
+        $type = 'spinner';$validate = ['integer'];
         break;
       case 'float':
       case 'double':
-        $type = 'textfield';$validate = array('numeric');
+        $type = 'textfield';$validate = ['numeric'];
         break;
       case 'boolean':
       case 'bool':
@@ -159,27 +159,27 @@ class form_builder {
       case 'datetime':
         $type = 'datetime';
 
-        $default_value = array(
+        $default_value = [
           'year'    => $default_value->format('Y'),
           'month'   => $default_value->format('m'),
           'day'     => $default_value->format('d'),
           'hours'   => $default_value->format('H'),
           'minutes' => $default_value->format('i'),
           'seconds' => $default_value->format('s'),
-        );
+        ];
 
         break;
       case 'date':
         $type = 'date';
 
-        $default_value = array(
+        $default_value = [
           'year'    => $default_value->format('Y'),
           'month'   => $default_value->format('m'),
           'day'     => $default_value->format('d'),
           'hours'   => $default_value->format('H'),
           'minutes' => $default_value->format('i'),
           'seconds' => $default_value->format('s'),
-        );
+        ];
 
         break;
       case 'array':
@@ -198,7 +198,7 @@ class form_builder {
           break;
         case 'email':
           $type = 'textfield';
-          $validate = array('email');
+          $validate = ['email'];
           break;
         case 'date':
         case 'day':
@@ -216,32 +216,32 @@ class form_builder {
     }
 
     if( $type == NULL ) $type = 'textfield';
-    return array( 'type' => $type, 'validate' => $validate, 'default_value' => $default_value );
+    return [ 'type' => $type, 'validate' => $validate, 'default_value' => $default_value ];
   }
 
   static function objFormDefinition(form $form, &$form_state, $object){
     $form->set_form_id( get_class($object) );
     $fields = get_object_vars($object) + get_class_vars( get_class($object) );
 
-    $fieldset = $form->add_field( get_class($object), array(
+    $fieldset = $form->add_field( get_class($object), [
       'type' => 'fieldset',
       'title' => get_class($object),
-    ));
+    ]);
 
     foreach( $fields as $k => $v ){
       list($type, $validate, $default_value) = array_values( form_builder::guessFormType($v, $k) );
-      $fieldset->add_field( $k, array(
+      $fieldset->add_field( $k, [
         'type' => $type,
         'title' => $k,
         'validate' => $validate,
         'default_value' => $default_value,
-      ) );
+      ]);
     }
 
     $form
-      ->add_field('submit', array(
+      ->add_field('submit', [
         'type' => 'submit',
-      ));
+      ]);
 
     return $form;
   }
@@ -252,16 +252,16 @@ class form_builder {
    * @return form form object
    */
   static function object_form( $object ){
-    $form_state = array();
-    $form_state['build_info']['args'] = array($object);
+    $form_state = [];
+    $form_state['build_info']['args'] = [$object];
 
     $form = form_builder::build_form(
-      array(__CLASS__, 'objFormDefinition'),
+      [__CLASS__, 'objFormDefinition'],
       $form_state,
-      array(
-        'submit' => array(strtolower(get_class($object).'_submit')),
-        'validate' => array(strtolower(get_class($object).'_validate')),
-      )
+      [
+        'submit' => [strtolower(get_class($object).'_submit')],
+        'validate' => [strtolower(get_class($object).'_validate')],
+      ]
     );
     return $form;
   }

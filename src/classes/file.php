@@ -42,7 +42,7 @@ class file extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('type','name','id','size'));
+    $attributes = $this->get_attributes( ['type','name','id','size'] );
 
     $output .= "<input type=\"hidden\" name=\"{$this->name}\" value=\"{$this->name}\" />";
     $output .= "<input type=\"file\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\"{$attributes} />";
@@ -55,12 +55,12 @@ class file extends field {
    * @param  string $name file input name
    */
   public function process($value) {
-    $this->value = array(
+    $this->value = [
       'filepath' => (isset($value['filepath'])) ? $value['filepath'] : $this->destination .'/'. basename($_FILES[$this->get_name()]['name']),
       'filename' => (isset($value['filename'])) ? $value['filename'] : basename($_FILES[$this->get_name()]['name']),
       'filesize' => (isset($value['filesize'])) ? $value['filesize'] : $_FILES[$this->get_name()]['size'],
       'mimetype' => (isset($value['mimetype'])) ? $value['mimetype'] : $_FILES[$this->get_name()]['type'],
-    );
+    ];
     if(isset($value['uploaded'])){
       $this->uploaded = $value['uploaded'];
     }

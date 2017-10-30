@@ -53,7 +53,7 @@ class textarea extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('name','id','value','rows','cols'));
+    $attributes = $this->get_attributes( ['name','id','value','rows','cols'] );
     $output = "<textarea id=\"{$id}\" name=\"{$this->name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n".$this->value."</textarea>";
     return $output;
   }

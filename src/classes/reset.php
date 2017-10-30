@@ -19,7 +19,7 @@ class reset extends action {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
     parent::__construct($options,$name);
     if(isset($options['value'])){
       $this->value = $options['value'];

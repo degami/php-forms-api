@@ -20,7 +20,7 @@ class value extends field {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
     $this->container_tag = '';
     $this->container_class = '';
     parent::__construct($options,$name);

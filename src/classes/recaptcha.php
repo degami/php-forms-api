@@ -71,13 +71,13 @@ class recaptcha extends field {
       return TRUE;
     }
 
-    if(!is_array($this->value)) $this->value = array();
+    if(!is_array($this->value)) $this->value = [];
 
     // if something is missing...
-    $this->value += array(
+    $this->value += [
       'challenge_field' => '',
       'response_field' => '',
-    );
+    ];
 
     $resp = recaptcha_check_answer ($this->privatekey,
       $_SERVER["REMOTE_ADDR"],

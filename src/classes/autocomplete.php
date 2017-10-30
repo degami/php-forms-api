@@ -24,7 +24,7 @@ class autocomplete extends textfield{
    * options for autocomplete (if autocomplete path was not provided)
    * @var array
    */
-  protected $options = array();
+  protected $options = [];
 
   /**
    * minimum string length for autocomplete

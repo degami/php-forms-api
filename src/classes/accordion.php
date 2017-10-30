@@ -62,8 +62,8 @@ class accordion extends fields_container_multiple {
 
     foreach($this->partitions as $accordionindex => $accordion){
       $insertorder = array_flip($this->insert_field_order[$accordionindex]);
-      $weights = array();
-      $order = array();
+      $weights = [];
+      $order = [];
       foreach ($this->get_partition_fields($accordionindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];

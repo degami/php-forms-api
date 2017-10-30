@@ -74,13 +74,13 @@ class form extends element{
    * validate functions list
    * @var array
    */
-  protected $validate = array();
+  protected $validate = [];
 
   /**
    * submit functions list
    * @var array
    */
-  protected $submit = array();
+  protected $submit = [];
 
   /**
    * form output type (html/json)
@@ -110,13 +110,13 @@ class form extends element{
    * keeps fields insert order
    * @var array
    */
-  protected $insert_field_order = array();
+  protected $insert_field_order = [];
 
   /**
    * form fields
    * @var array
    */
-  protected $fields = array();
+  protected $fields = [];
 
   /**
    * ajax submit url
@@ -140,7 +140,7 @@ class form extends element{
    * array of submit functions results
    * @var array
    */
-  private $submit_functions_results = array();
+  private $submit_functions_results = [];
 
 
   /**
@@ -153,7 +153,7 @@ class form extends element{
    * class constructor
    * @param array $options build options
    */
-  public function __construct($options = array()) {
+  public function __construct($options = []) {
     $this->build_options = $options;
 
     $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
@@ -354,7 +354,7 @@ class form extends element{
     if (!$this->processed) {
       $this->process();
     }
-    $output = array();
+    $output = [];
     for($step = 0; $step <= $this->get_num_steps() ; $step++){
       foreach ($this->get_fields($step) as $name => $field) {
         if($field->is_a_value() == TRUE){
@@ -374,7 +374,7 @@ class form extends element{
    * @return array step values
    */
   private function get_current_step_values(){
-    $output = array();
+    $output = [];
     foreach ($this->get_fields($this->current_step) as $name => $field) {
       if($field->is_a_value() == TRUE){
         $output[$name] = $field->values();
@@ -422,10 +422,10 @@ class form extends element{
     $this->validated = FALSE;
     $this->submitted = FALSE;
     $this->js_generated = FALSE;
-    $this->set_errors( array() );
+    $this->set_errors( [] );
     $this->valid = NULL;
     $this->current_step = 0;
-    $this->submit_functions_results = array();
+    $this->submit_functions_results = [];
   }
 
   /**
@@ -496,11 +496,11 @@ class form extends element{
         // no value on request[name] && field is a checkbox or radios group - process anyway with an empty value
         $field->process(NULL);
       } else if( $field instanceof select ){
-        if($field->is_multiple()) $field->process(array());
+        if($field->is_multiple()) $field->process([]);
         else $field->process(NULL);
       } else if( $field instanceof field_multivalues ){
         // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
-        $field->process(array());
+        $field->process([]);
       }
     }
   }
@@ -533,7 +533,7 @@ class form extends element{
    * starts the form processing, validating and submitting
    * @param  array  $values the request values array
    */
-  public function process( $values = array() ) {
+  public function process( $values = [] ) {
     // let others alter the form
     $defined_functions = get_defined_functions();
     foreach( $defined_functions['user'] as $function_name){
@@ -596,11 +596,11 @@ class form extends element{
           if( is_callable($submit_function) ) {
 
             if(!is_array($this->submit_functions_results)){
-              $this->submit_functions_results = array();
+              $this->submit_functions_results = [];
             }
             $submitresult = '';
             ob_start();
-            $submitresult = call_user_func_array( $submit_function, array( &$this, $request ) );
+            $submitresult = call_user_func_array( $submit_function, [ &$this, $request ] );
             if($submitresult == NULL ){
               $submitresult = ob_get_contents();
             }
@@ -632,7 +632,7 @@ class form extends element{
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
           if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) {
             $this->valid = TRUE;
-            $this->set_errors( array() );
+            $this->set_errors( [] );
             if( !form::is_partial() ){
               unset($_SESSION['form_token'][$_REQUEST['form_token']]);
             }
@@ -753,7 +753,7 @@ class form extends element{
    * @return array        the array of elements for the step specified
    */
   public function &get_fields($step = 0){
-    $notfound = array();
+    $notfound = [];
     if(!isset($this->fields[$step])) return $notfound;
     return $this->fields[$step];
   }
@@ -767,8 +767,8 @@ class form extends element{
    * @return array               the array of fields matching the search criteria
    */
   private function get_step_fields_by_type_and_name($field_types, $name = NULL, $step = 0){
-    if(!is_array($field_types)) $field_types = array($field_types);
-    $out = array();
+    if(!is_array($field_types)) $field_types = [$field_types];
+    $out = [];
     foreach($this->get_fields($step) as $field){
       if($field instanceof fields_container){
         if($name != NULL ){
@@ -795,8 +795,8 @@ class form extends element{
    * @return array              fields in the form
    */
   public function get_fields_by_type($field_types){
-    if(!is_array($field_types)) $field_types = array($field_types);
-    $out = array();
+    if(!is_array($field_types)) $field_types = [$field_types];
+    $out = [];
 
     for($step=0;$step < $this->get_num_steps();$step++){
       $out = array_merge($out, $this->get_step_fields_by_type_and_name($field_types, NULL, $step));
@@ -811,8 +811,8 @@ class form extends element{
    * @return array              fields in the form matching the search criteria
    */
   public function get_fields_by_type_and_name($field_types, $name){
-    if(!is_array($field_types)) $field_types = array($field_types);
-    $out = array();
+    if(!is_array($field_types)) $field_types = [$field_types];
+    $out = [];
 
     for($step=0;$step < $this->get_num_steps();$step++){
       $out = array_merge($out, $this->get_step_fields_by_type_and_name($field_types, $name, $step));
@@ -835,7 +835,7 @@ class form extends element{
    * @return action subclass the submitter
    */
   public function get_triggering_element(){
-    $fields = $this->get_fields_by_type(array('submit','button','image_button'));
+    $fields = $this->get_fields_by_type(['submit','button','image_button']);
     foreach($fields as $field){
       if($field->get_clicked() == TRUE) return $field;
     }
@@ -1017,7 +1017,7 @@ class form extends element{
     }
 
     $insertorder = array_flip($this->insert_field_order);
-    $weights = $order = array();
+    $weights = $order = [];
     foreach ($this->get_fields($this->current_step) as $key => $elem) {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];
@@ -1033,7 +1033,7 @@ class form extends element{
       }
     }
 
-    $attributes = $this->get_attributes(array('action','method','id'));
+    $attributes = $this->get_attributes(['action','method','id']);
     $js = $this->generate_js();
 
     if( form::is_partial() ){
@@ -1060,7 +1060,7 @@ class form extends element{
             "})(jQuery);";
         }
 
-        return json_encode(array( 'html' => $html, 'js' => $js ));
+        return json_encode([ 'html' => $html, 'js' => $js ]);
       }
 
       return FALSE;
@@ -1105,7 +1105,7 @@ class form extends element{
 
       switch($output_type){
         case 'json':
-          $output = array('html'=>'','js'=>'','is_submitted'=>$this->is_submitted());
+          $output = ['html'=>'','js'=>'','is_submitted'=>$this->is_submitted()];
 
           $output['html']  = $this->get_element_prefix();
           $output['html'] .= $this->get_prefix();
@@ -1408,7 +1408,7 @@ class form extends element{
    * @return string       formatted size
    */
   private static function format_bytes($size) {
-    $units = array(' B', ' KB', ' MB', ' GB', ' TB');
+    $units = [' B', ' KB', ' MB', ' GB', ' TB'];
     for ($i = 0; $size >= 1024 && $i < 4; $i++) $size /= 1024;
     return round($size, 2).$units[$i];
   }
@@ -1542,7 +1542,7 @@ class form extends element{
       <[^>]*(>|$)       # a string that starts with a <, up until the > or the end of the string
       |                 # or
       >                 # just a >
-      )%x', array(__CLASS__, '_filter_xss_split'), $string);
+      )%x', [__CLASS__, '_filter_xss_split'], $string);
   }
 
   /**
@@ -1608,7 +1608,7 @@ class form extends element{
    * @return array        filtered attributes array
    */
   private static function _filter_xss_attributes($attr) {
-    $attrarr = array();
+    $attrarr = [];
     $mode = 0;
     $attrname = '';
     $skip = FALSE;
@@ -1732,7 +1732,7 @@ class form extends element{
     static $allowed_protocols;
 
     if (!isset($allowed_protocols)) {
-      $allowed_protocols = array_flip(array('ftp', 'http', 'https', 'irc', 'mailto', 'news', 'nntp', 'rtsp', 'sftp', 'ssh', 'tel', 'telnet', 'webcal'));
+      $allowed_protocols = array_flip( ['ftp', 'http', 'https', 'irc', 'mailto', 'news', 'nntp', 'rtsp', 'sftp', 'ssh', 'tel', 'telnet', 'webcal'] );
     }
 
     // Iteratively remove any invalid protocol found.
@@ -1813,7 +1813,7 @@ class form extends element{
    * @return array        monodimensional array
    */
   public static function array_flatten($array) {
-    $return = array();
+    $return = [];
     foreach ($array as $key => $value) {
       if (is_array($value)){
         $return = array_merge($return, form::array_flatten($value));
@@ -1831,7 +1831,7 @@ class form extends element{
    * @return array              the filtered array
    */
   public static function array_get_values($search_key, $array) {
-    $return = array();
+    $return = [];
     foreach ($array as $key => $value) {
       if (is_array($value)){
         $return = array_merge($return, form::array_get_values($search_key, $value));

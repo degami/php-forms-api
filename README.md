@@ -18,7 +18,7 @@ This library is open source licenses using GPL. See LICENSE.txt for more info.
 
 Requirements:
 
-  * PHP 5.3
+  * PHP 5.5
   * jQuery UI
   * jQuery-mask-plugin ( https://github.com/igorescobar/jQuery-Mask-Plugin component is not included as a dependency in composer.json as the packagist.org package info is broken, you need to download the file by yourself )
   * Google's reCaptcha lib in order to use recaptcha fields ( https://code.google.com/p/recaptcha/downloads/list?q=label:phplib-Latest )
@@ -517,7 +517,7 @@ They are always valid.
       'longitude' => NULL,
       'geocodebox' => NULL,
     );
-    
+
 #### Switchbox
 
     $options += array(

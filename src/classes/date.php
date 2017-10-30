@@ -43,15 +43,15 @@ class date extends field {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
 
     $this->start_year = date('Y')-100;
     $this->end_year = date('Y')+100;
-    $this->default_value = array(
+    $this->default_value = [
       'year'=>date('Y'),
       'month'=>date('m'),
       'day'=>date('d'),
-    );
+    ];
 
     parent::__construct($options, $name);
   }
@@ -90,7 +90,7 @@ class date extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('type','name','id','size','day','month','year'));
+    $attributes = $this->get_attributes( ['type','name','id','size','day','month','year'] );
 
     $output .= "<div id=\"{$id}\"{$attributes}>";
 
@@ -98,7 +98,7 @@ class date extends field {
       $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
       if(isset($this->attributes['day']) && is_array($this->attributes['day'])){
         if($this->disabled == TRUE) $this->attributes['day']['disabled']='disabled';
-        $attributes = $this->get_attributes_string($this->attributes['day'],array('type','name','id','value'));
+        $attributes = $this->get_attributes_string($this->attributes['day'], ['type','name','id','value'] );
       }
       $output .= "<select name=\"{$this->name}[day]\"{$attributes}>";
       for($i=1;$i<=31;$i++){
@@ -111,7 +111,7 @@ class date extends field {
       $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
       if(isset($this->attributes['month']) && is_array($this->attributes['month'])){
         if($this->disabled == TRUE) $this->attributes['month']['disabled']='disabled';
-        $attributes = $this->get_attributes_string($this->attributes['month'],array('type','name','id','value'));
+        $attributes = $this->get_attributes_string($this->attributes['month'], ['type','name','id','value'] );
       }
       $output .= "<select name=\"{$this->name}[month]\"{$attributes}>";
       for($i=1;$i<=12;$i++){
@@ -123,7 +123,7 @@ class date extends field {
     $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
     if(isset($this->attributes['year']) && is_array($this->attributes['year'])){
       if($this->disabled == TRUE) $this->attributes['year']['disabled']='disabled';
-      $attributes = $this->get_attributes_string($this->attributes['year'],array('type','name','id','value'));
+      $attributes = $this->get_attributes_string($this->attributes['year'], ['type','name','id','value'] );
     }
     $output .= "<select name=\"{$this->name}[year]\"{$attributes}>";
     for($i=$this->start_year;$i<=$this->end_year;$i++){
@@ -141,9 +141,9 @@ class date extends field {
    * @param  array $value value to set
    */
   public function process($value) {
-    $this->value = array(
+    $this->value = [
       'year' => $value['year'],
-    );
+    ];
     if($this->granularity!='year'){
       $this->value['month'] = $value['month'];
       if($this->granularity!='month'){

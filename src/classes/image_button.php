@@ -31,11 +31,11 @@ class image_button extends clickable {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
-    $this->default_value = array(
+  public function __construct($options = [], $name = NULL) {
+    $this->default_value = [
       'x'=>-1,
       'y'=>-1,
-    );
+    ];
 
     parent::__construct($options, $name);
   }
@@ -48,7 +48,7 @@ class image_button extends clickable {
   public function render_field(form $form) {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('type','name','id','value','src','alt'));
+    $attributes = $this->get_attributes( ['type','name','id','value','src','alt'] );
     //  value=\"{$this->value}\"
     $output = "<input id=\"{$id}\" name=\"{$this->name}\" type=\"image\" src=\"{$this->src}\" alt=\"{$this->alt}\"{$attributes} />\n";
     return $output;
@@ -64,10 +64,10 @@ class image_button extends clickable {
       if(preg_match('/^(.*?)_(x|y)$/',$key,$matches) && $this->get_name() == $matches[1] ){
         //assume this is an input type="image"
         if( isset($request[$matches[1].'_'.(($matches[2] == 'x')?'y':'x')]) ){
-          $request[$matches[1]] = array(
+          $request[$matches[1]] = [
             'x'=>$request[$matches[1].'_x'],
             'y'=>$request[$matches[1].'_y'],
-          );
+          ];
 
           unset($request[$matches[1].'_x']);
           unset($request[$matches[1].'_y']);

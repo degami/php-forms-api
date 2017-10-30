@@ -34,10 +34,10 @@ class switchbox extends radios {
     parent::__construct($options, $name);
 
     // "options" is overwritten
-    $this->options = array(
+    $this->options = [
       $this->no_value => $this->no_label,
       $this->yes_value => $this->yes_label,
-    );
+    ];
   }
 
   /**
@@ -51,9 +51,9 @@ class switchbox extends radios {
 
     foreach($this->options as $key => $value){
       $this->add_js("\$('#{$id}-{$key}','#{$form->get_id()}')
-        .click(function(evt){ 
-          \$(this).closest('label').addClass('ui-state-active'); 
-          \$('#{$id} input[type=\"radio\"]').not(this).closest('label').removeClass('ui-state-active'); 
+        .click(function(evt){
+          \$(this).closest('label').addClass('ui-state-active');
+          \$('#{$id} input[type=\"radio\"]').not(this).closest('label').removeClass('ui-state-active');
          });");
     }
 
@@ -77,7 +77,7 @@ class switchbox extends radios {
     foreach ($this->options as $key => $value) {
       $attributes = $this->get_attributes();
       if(is_array($value) && isset($value['attributes'])){
-        $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
+        $attributes = $this->get_attributes_string($value['attributes'], ['type','name','id','value'] );
       }
       if(is_array($value)){
         $value = $value['value'];

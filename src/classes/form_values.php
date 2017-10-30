@@ -17,7 +17,7 @@ use \ArrayAccess;
  * a class to hold form fields submitted values
  */
 class form_values implements IteratorAggregate, ArrayAccess{
-  private $values = array();
+  private $values = [];
 
   public function __get($key){
     return isset($this->values[$key]) ? $this->values[$key] : NULL;
@@ -64,7 +64,7 @@ class form_values implements IteratorAggregate, ArrayAccess{
   }
 
   public function toArray(){
-    $out = array();
+    $out = [];
     foreach ($this->values as $key => $value) {
       $out[$key] = ( $value instanceof form_values ) ? $value->toArray() : $value;
     }

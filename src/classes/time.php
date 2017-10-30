@@ -31,13 +31,13 @@ class time extends field {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
 
-    $this->default_value = array(
+    $this->default_value = [
       'hours'=>0,
       'minutes'=>0,
       'seconds'=>0,
-    );
+    ];
 
     parent::__construct($options, $name);
   }
@@ -78,14 +78,14 @@ class time extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(array('type','name','id','size','hours','minutes','seconds'));
+    $attributes = $this->get_attributes( ['type','name','id','size','hours','minutes','seconds'] );
 
     $output .= "<div id=\"{$id}\"{$attributes}>";
 
     $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
     if(isset($this->attributes['hours']) && is_array($this->attributes['hours'])){
       if($this->disabled == TRUE) $this->attributes['hours']['disabled']='disabled';
-      $attributes = $this->get_attributes_string($this->attributes['hours'],array('type','name','id','value'));
+      $attributes = $this->get_attributes_string($this->attributes['hours'], ['type','name','id','value'] );
     }
     $output .= "<select name=\"{$this->name}[hours]\"{$attributes}>";
     for($i=0;$i<=23;$i++){
@@ -98,7 +98,7 @@ class time extends field {
       $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
       if(isset($this->attributes['minutes']) && is_array($this->attributes['minutes'])){
         if($this->disabled == TRUE) $this->attributes['minutes']['disabled']='disabled';
-        $attributes = $this->get_attributes_string($this->attributes['minutes'],array('type','name','id','value'));
+        $attributes = $this->get_attributes_string($this->attributes['minutes'], ['type','name','id','value'] );
       }
       $output .= "<select name=\"{$this->name}[minutes]\"{$attributes}>";
       for($i=0;$i<=59;$i++){
@@ -111,7 +111,7 @@ class time extends field {
         $attributes = ''.($this->disabled == TRUE) ? ' disabled="disabled"':'';
         if(isset($this->attributes['seconds']) && is_array($this->attributes['seconds'])){
           if($this->disabled == TRUE) $this->attributes['seconds']['disabled']='disabled';
-          $attributes = $this->get_attributes_string($this->attributes['seconds'],array('type','name','id','value'));
+          $attributes = $this->get_attributes_string($this->attributes['seconds'], ['type','name','id','value'] );
         }
         $output .= "<select name=\"{$this->name}[seconds]\"{$attributes}>";
         for($i=0;$i<=59;$i++){
@@ -131,9 +131,9 @@ class time extends field {
    * @param  array $value value to set
    */
   public function process($value) {
-    $this->value = array(
+    $this->value = [
       'hours' => $value['hours'],
-    );
+    ];
     if($this->granularity!='hours'){
       $this->value['minutes'] = $value['minutes'];
       if($this->granularity!='minutes'){

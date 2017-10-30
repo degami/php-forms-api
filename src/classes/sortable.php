@@ -71,8 +71,8 @@ class sortable extends sortable_container{
 
     foreach($this->partitions as $partitionindex => $tab){
       $insertorder = array_flip($this->insert_field_order[$partitionindex]);
-      $weights = array();
-      $order = array();
+      $weights = [];
+      $order = [];
       foreach ($this->get_partition_fields($partitionindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];

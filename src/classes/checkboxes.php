@@ -22,7 +22,7 @@ class checkboxes extends field_multivalues {
   public function render_field(form $form) {
     $id = $this->get_html_id();
     if(!is_array($this->default_value)) {
-      $this->default_value = array($this->default_value);
+      $this->default_value = [ $this->default_value ];
     }
 
     $output = '<div class="options">';
@@ -36,7 +36,7 @@ class checkboxes extends field_multivalues {
         $output .= $value->render($form);
       }else{
         if(is_array($value) && isset($value['attributes'])){
-          $attributes = $this->get_attributes_string($value['attributes'],array('type','name','id','value'));
+          $attributes = $this->get_attributes_string($value['attributes'], ['type','name','id','value'] );
         }
         if(is_array($value)){
           $value = $value['value'];

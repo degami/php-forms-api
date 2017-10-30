@@ -18,13 +18,13 @@ class table_container extends fields_container_multiple{
    * table header
    * @var array
    */
-  protected $table_header = array();
+  protected $table_header = [];
 
   /**
    * attributes for TRs or TDs
    * @var array
    */
-  protected $col_row_attributes = array();
+  protected $col_row_attributes = [];
 
   /**
    * set table header array
@@ -96,11 +96,11 @@ class table_container extends fields_container_multiple{
   public function render_field(form $form) {
     $id = $this->get_html_id();
 
-    $table_matrix = array();
+    $table_matrix = [];
     $rows = 0;
 
     foreach($this->partitions as $trindex => $tr){
-      $table_matrix[$rows] = array();
+      $table_matrix[$rows] = [];
       $cols = 0;
       foreach ($this->get_partition_fields($trindex) as $name => $field) {
         $table_matrix[$rows][$cols] = '';
@@ -122,7 +122,7 @@ class table_container extends fields_container_multiple{
 
     if(!empty($this->table_header) ){
       if(!is_array($this->table_header)) {
-        $this->table_header = array($this->table_header);
+        $this->table_header = [$this->table_header];
       }
 
       $output .= "<thead>\n";
@@ -144,8 +144,8 @@ class table_container extends fields_container_multiple{
     $rows = 0;
     foreach($this->partitions as $trindex => $tr){
       $insertorder = array_flip($this->insert_field_order[$trindex]);
-      $weights = array();
-      $order = array();
+      $weights = [];
+      $order = [];
       foreach ($this->get_partition_fields($trindex) as $key => $elem) {
         /** @var field $elem */
         $weights[$key]  = $elem->get_weight();

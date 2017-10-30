@@ -39,12 +39,12 @@ class tabs extends fields_container_multiple {
 
     $output .= "<div id=\"{$id}\"{$attributes}>\n";
 
-    $tabs_html = array();
-    $tab_links = array();
+    $tabs_html = [];
+    $tab_links = [];
     foreach($this->partitions as $tabindex => $tab){
       $insertorder = array_flip($this->insert_field_order[$tabindex]);
-      $weights = array();
-      $order = array();
+      $weights = [];
+      $order = [];
       foreach ($this->get_partition_fields($tabindex) as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];

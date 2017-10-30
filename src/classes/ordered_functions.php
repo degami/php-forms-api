@@ -25,7 +25,7 @@ class ordered_functions implements Iterator{
    * iterable elements
    * @var array
    */
-  private $array = array();
+  private $array = [];
 
   /**
    * sort function name
@@ -54,7 +54,7 @@ class ordered_functions implements Iterator{
     // $this->array = array_filter( array_map('trim', $this->array) );
     // $this->array = array_unique( array_map('strtolower', $this->array) );
 
-    $tmparr = array();
+    $tmparr = [];
     foreach ($this->array as &$value) {
       if(is_string($value)){
         $value = strtolower(trim($value));
@@ -134,7 +134,7 @@ class ordered_functions implements Iterator{
    */
   public function values(){
     // return array_values($this->array);
-    $out = array();
+    $out = [];
     foreach ($this->array as $key => $value) {
       if(is_array($value) && isset($value[$this->type])){
         $out[] = $value[$this->type];
@@ -167,7 +167,7 @@ class ordered_functions implements Iterator{
    * @param  mixed $value element to remove
    */
   public function remove_element($value){
-    $this->array = array_diff($this->array, array($value));
+    $this->array = array_diff($this->array, [$value]);
     $this->sort();
   }
 

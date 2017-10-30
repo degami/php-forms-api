@@ -24,7 +24,7 @@ class tag_container extends fields_container {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(),$name = NULL){
+  public function __construct($options = [],$name = NULL){
     parent::__construct($options,$name);
 
     if($this->attributes['class'] == 'tag_container'){ // if set to the default
@@ -43,7 +43,7 @@ class tag_container extends fields_container {
     $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
 
     $insertorder = array_flip($this->insert_field_order);
-    $weights = array();
+    $weights = [];
     foreach ($this->get_fields() as $key => $elem) {
       $weights[$key]  = $elem->get_weight();
       $order[$key] = $insertorder[$key];

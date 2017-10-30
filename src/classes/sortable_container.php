@@ -25,7 +25,7 @@ abstract class sortable_container extends fields_container_multiple{
    * deltas array ( used for sorting )
    * @var array
    */
-  protected $deltas = array();
+  protected $deltas = [];
 
   /**
    * get handle position (left/right)
@@ -40,10 +40,10 @@ abstract class sortable_container extends fields_container_multiple{
    * @return array form values
    */
   public function values() {
-    $output = array();
+    $output = [];
 
     $fields_with_delta = $this->get_fields_with_delta();
-    usort($fields_with_delta, array(__CLASS__,'orderby_delta'));
+    usort($fields_with_delta, [__CLASS__,'orderby_delta']);
 
     foreach ($fields_with_delta as $name => $info) {
       $field = $info['field'];
@@ -79,9 +79,9 @@ abstract class sortable_container extends fields_container_multiple{
    * @return array fields with delta
    */
   private function get_fields_with_delta(){
-    $out = array();
+    $out = [];
     foreach($this->get_fields() as $key => $field){
-      $out[$key]=array('field'=> $field,'delta'=>$this->deltas[$key]);
+      $out[$key]=['field'=> $field,'delta'=>$this->deltas[$key]];
     }
     return $out;
   }

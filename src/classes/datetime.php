@@ -31,7 +31,7 @@ class datetime extends tag_container {
    * @param array  $options build options
    * @param string $name    field name
    */
-  public function __construct($options = array(), $name = NULL) {
+  public function __construct($options = [], $name = NULL) {
     parent::__construct($options,$name);
 
     unset($options['title']);
@@ -143,11 +143,11 @@ class datetime extends tag_container {
    * @return array field value
    */
   public function values() {
-    return array(
+    return [
       'date'=> $this->date->values(),
       'time'=> $this->time->values(),
       'datetime' => $this->date->value_string().' '.$this->time->value_string(),
-    );
+    ];
   }
 
   /**
