@@ -43,6 +43,11 @@ $form = FAPI\form_builder::get_form('contactform');
   <meta charset="utf-8" />
   <title>Example contact form</title>
   <?php include "header.php";?>
+  <style>
+    input[type=text],textarea{
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
