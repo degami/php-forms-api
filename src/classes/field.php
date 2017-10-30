@@ -138,11 +138,11 @@ abstract class field extends element{
     }
 
     if(empty($this->type)){
-      $this->type = preg_replace("/^Degami\\PHPFormsApi/","",get_class($this));
+      $this->type = substr(get_class($this), strrpos(get_class($this), '\\') + 1);
     }
 
     if(!$this->validate instanceof ordered_functions){
-      $this->validate = new ordered_functions($this->validate,'validator','form::order_validators');
+      $this->validate = new ordered_functions($this->validate,'validator',array( form::class,'order_validators' ));
     }
 
     if(!$this->preprocess instanceof ordered_functions){
@@ -300,8 +300,8 @@ abstract class field extends element{
       } else if(method_exists(get_class($this), $processor_func)){
         $this->value = call_user_func( array($this, $processor_func), $this->value );
       } else {
-        if(method_exists('Degami\\PHPFormsApi\\form', $processor_func)){
-          $this->value = call_user_func( array('Degami\\PHPFormsApi\\form',$processor_func), $this->value );
+        if(method_exists(form::class, $processor_func)){
+          $this->value = call_user_func( array(form::class,$processor_func), $this->value );
         }
       }
     }
@@ -337,8 +337,8 @@ abstract class field extends element{
       } else if(method_exists(get_class($this), $validator_func)){
         $error = call_user_func( array(get_class($this), $validator_func), $this->value, $options );
       }else {
-        if(method_exists('Degami\\PHPFormsApi\\form', $validator_func)){
-          $error = call_user_func( array('Degami\\PHPFormsApi\\form', $validator_func), $this->value, $options );
+        if(method_exists(form::class, $validator_func)){
+          $error = call_user_func( array(form::class, $validator_func), $this->value, $options );
         }
       }
       if (isset($error) && $error !== TRUE) {

@@ -270,7 +270,7 @@ abstract class element{
   }
 
   public function get_element_class_name(){
-    return strtolower( str_replace("Degami\\PHPFormsApi\\",'', get_class($this)) );
+    return strtolower( substr(get_class($this), strrpos(get_class($this), '\\') + 1) );
   }
 
   /**

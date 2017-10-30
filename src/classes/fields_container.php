@@ -95,7 +95,7 @@ abstract class fields_container extends field {
    */
   public function add_field($name, $field) {
     if (!is_object($field)) {
-      $field_type = "Degami\\PHPFormsApi\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
+      $field_type = __NAMESPACE__ . "\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
       if(!class_exists($field_type)){
         throw new Exception("Error adding field. Class $field_type not found", 1);
       }

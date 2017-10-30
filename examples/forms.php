@@ -192,7 +192,7 @@ function multistepform(FAPI\form $form, &$form_state){
 function showallform(FAPI\form $form, &$form_state){
   $form = new FAPI\form(array(
     'form_id' => 'showall',
-    'inline_errors' => TRUE,
+    //'inline_errors' => TRUE,
   //  'attributes'=>array('enctype'=>'multipart/form-data')
   ));
 

@@ -88,7 +88,7 @@ class nestable extends fields_container {
   public function add_field($name, $field){
     $field_type = NULL;
     if (!is_object($field)) {
-      $field_type = "Degami\\PHPFormsApi\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
+      $field_type = __NAMESPACE__ . "\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
     }else{
       $field_type = get_class($field);
     }

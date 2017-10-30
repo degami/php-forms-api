@@ -600,7 +600,7 @@ class form extends element{
             }
             $submitresult = '';
             ob_start();
-            $submitresult = call_user_func_array( $submit_function, array( $this, $request ) );
+            $submitresult = call_user_func_array( $submit_function, array( &$this, $request ) );
             if($submitresult == NULL ){
               $submitresult = ob_get_contents();
             }
@@ -684,7 +684,7 @@ class form extends element{
    */
   public function add_field($name, $field, $step = 0) {
     if (is_array($field)) {
-      $field_type = "Degami\\PHPFormsApi\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
+      $field_type = __NAMESPACE__ . "\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
       if(!class_exists($field_type)){
         throw new Exception("Error adding field. Class \"$field_type\" not found", 1);
       }

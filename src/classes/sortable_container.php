@@ -43,7 +43,7 @@ abstract class sortable_container extends fields_container_multiple{
     $output = array();
 
     $fields_with_delta = $this->get_fields_with_delta();
-    usort($fields_with_delta, 'sortable_container::orderby_delta');
+    usort($fields_with_delta, array(__CLASS__,'orderby_delta'));
 
     foreach ($fields_with_delta as $name => $info) {
       $field = $info['field'];
