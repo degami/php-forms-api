@@ -42,7 +42,10 @@ function contactform(FAPI\form $form, &$form_state){
   ->add_field('switcher', array(
     'type' => 'switchbox',
     'title' => 'Yes or No',
-    'default_value' => '1',
+    'default_value' => 1,
+//    'default_value' => 'a',
+//    'yes_value' => 'a', 'yes_label' => 'A value',
+//    'no_value' => 'b', 'no_label' => 'B value',
   ))
   ->add_field('submit', array(
     'type' => 'submit',

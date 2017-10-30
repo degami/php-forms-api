@@ -15,22 +15,28 @@ namespace Degami\PHPFormsApi;
 class switchbox extends radios {
 
   /** @var string $no_label */
+  protected $no_value;
+
+  /** @var string $no_label */
   protected $no_label;
+
+  /** @var string $yes_label */
+  protected $yes_value;
 
   /** @var string $yes_label */
   protected $yes_label;
 
   public function __construct(array $options = [], $name = NULL) {
-    $this->no_label = $this->get_text('No');
-    $this->yes_label = $this->get_text('Yes');
+    $this->no_value = 0; $this->no_label = $this->get_text('No');
+    $this->yes_value = 1; $this->yes_label = $this->get_text('Yes');
 
-    // labels can be overwrite
+    // labels and values can be overwritten
     parent::__construct($options, $name);
 
     // "options" is overwritten
     $this->options = array(
-      0 => $this->no_label,
-      1 => $this->yes_label,
+      $this->no_value => $this->no_label,
+      $this->yes_value => $this->yes_label,
     );
   }
 

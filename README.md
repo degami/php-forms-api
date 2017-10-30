@@ -522,8 +522,10 @@ They are always valid.
 
     $options += array(
       'type' => 'switchbox',
-      'yes' => 'Yes',
-      'no' => 'No',
+      'yes_value' => 1,
+      'yes_label' => 'Yes',
+      'no_value' => 0,
+      'no_label' => 'No',
     );
 
 ### Validators reference
