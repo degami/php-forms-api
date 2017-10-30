@@ -57,6 +57,7 @@ $form = FAPI\form_builder::get_form('contactform');
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
       <pre><?php var_export($form->get_submit_results());?></pre>
+      <pre><?php var_export($form->values());?></pre>
     <?php else: ?>
       <?php print $form->render(); ?>
     <?php endif; ?>

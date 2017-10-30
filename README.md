@@ -517,6 +517,14 @@ They are always valid.
       'longitude' => NULL,
       'geocodebox' => NULL,
     );
+    
+#### Switchbox
+
+    $options += array(
+      'type' => 'switchbox',
+      'yes' => 'Yes',
+      'no' => 'No',
+    );
 
 ### Validators reference
 

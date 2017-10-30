@@ -39,6 +39,11 @@ function contactform(FAPI\form $form, &$form_state){
     'postprocess' => array('xss'),
     'title' => 'Your message',
   ))
+  ->add_field('switcher', array(
+    'type' => 'switchbox',
+    'title' => 'Yes or No',
+    'default_value' => '1',
+  ))
   ->add_field('submit', array(
     'type' => 'submit',
   ));
