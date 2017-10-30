@@ -8,7 +8,6 @@ if(isset($_GET['clearsession'])){
 
 require_once '../vendor/autoload.php';
 include "forms.php";
-require 'recaptchalib.php';
 define('RECAPTCHA_PUBLIC_KEY','');
 define('RECAPTCHA_PRIVATE_KEY','');
 
