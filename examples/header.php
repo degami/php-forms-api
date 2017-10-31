@@ -19,8 +19,8 @@
   }*/
 
   body{
-      font-family: Arial;
-      font-size: 14px;
+      font-family: Lato;
+      font-size: 16px;
       line-height: 1.2em;
       padding: 30px;
       min-width: 940px;
@@ -71,7 +71,7 @@
   .form-item select,
   .form-item button,
   .form-item textarea{
-    font-size: 12px;
+    font-size: inherit;
     max-width: 99%;
     border: solid 1px #cecece;
     padding: 4px;
@@ -158,10 +158,16 @@
     width:50%;
   }
 
+  .ui-widget{
+    font-size: inherit !important;
+    font-family: inherit !important;
+  }
+
   </style>
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script type="text/javascript" src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.1/themes/ui-lightness/jquery-ui.css">
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/eggplant/jquery-ui.css">
 <script type="text/javascript">
   (function(){
     // var _z = console;
