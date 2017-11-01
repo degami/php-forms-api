@@ -16,7 +16,7 @@ function contactform(FAPI\form $form, &$form_state){
   //   'form_id' => 'contact',
   // ));
   //
-  $form->set_inline_errors(TRUE)->set_on_dialog(TRUE);
+  $form->set_inline_errors(TRUE); //->set_on_dialog(TRUE);
 
   $form
   ->add_field('fieldset', array(
@@ -46,6 +46,11 @@ function contactform(FAPI\form $form, &$form_state){
 //    'default_value' => 'a',
 //    'yes_value' => 'a', 'yes_label' => 'A value',
 //    'no_value' => 'b', 'no_label' => 'B value',
+  ))
+  ->add_field('captcha', array(
+    'type' => 'math_captcha',
+    'title' => 'Check this out!',
+    'pre_filled' => TRUE,
   ))
   ->add_field('submit', array(
     'type' => 'submit',

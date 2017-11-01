@@ -12,7 +12,7 @@ namespace Degami\PHPFormsApi;
 /**
  * the recaptcha field class
  */
-class recaptcha extends field {
+class recaptcha extends captcha {
 
   /**
    * public key
@@ -26,28 +26,6 @@ class recaptcha extends field {
    */
   protected $privatekey = '';
 
-  /**
-   * "already validated" flag
-   * @var boolean
-   */
-  protected $already_validated = FALSE;
-
-  /**
-   * process hook
-   * @param  mixed $values value to set
-   */
-  public function process($values){
-    parent::process($values);
-    if(isset($values['already_validated'])) $this->already_validated = $values['already_validated'];
-  }
-
-  /**
-   * check if element is already validated
-   * @return boolean TRUE if element has already been validated
-   */
-  public function is_already_validated(){
-    return $this->already_validated;
-  }
 
   /**
    * render_field hook
@@ -94,14 +72,6 @@ class recaptcha extends field {
   }
 
   /**
-   * is_a_value hook
-   * @return boolean this is not a value
-   */
-  public function is_a_value(){
-    return FALSE;
-  }
-
-  /**
    * alter_request hook
    * @param array $request request array
    */
@@ -120,15 +90,6 @@ class recaptcha extends field {
         }
       }
     }
-  }
-
-  /**
-   * after_validate hook
-   * @param  form $form form object
-   */
-  public function after_validate(form $form){
-    $_SESSION[$form->get_id()]['steps'][$form->get_current_step()][$this->get_name()] = $this->values();
-    $_SESSION[$form->get_id()]['steps'][$form->get_current_step()][$this->get_name()]['already_validated'] = $this->is_already_validated();
   }
 
 }
