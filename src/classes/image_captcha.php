@@ -57,17 +57,16 @@ namespace Degami\PHPFormsApi;
    protected $font_size = 14;
 
    /**
-    * captcha code
-    * @var string
-    */
-   protected $code;
-
-   /**
     * pre-fill code into textfield
     * @var boolean
     */
    protected $pre_filled = FALSE;
 
+   /**
+    * captcha code
+    * @var string
+    */
+   private $code;
 
    private function get_random_text(){
      $this->code = '';

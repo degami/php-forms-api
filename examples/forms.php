@@ -322,11 +322,13 @@ function showallform(FAPI\form $form, &$form_state){
   $accordion->add_field('datepicker', array(
     'type' => 'datepicker',
     'title' => 'date picker',
+    'weight' => -10,
   ),1);
 
   $accordion->add_field('datetime', array(
     'type' => 'datetime',
     'title' => 'date time',
+    'js_selects' => TRUE,
   ),1);
 
 

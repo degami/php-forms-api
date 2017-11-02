@@ -27,6 +27,12 @@ class datetime extends tag_container {
   protected $time = NULL;
 
   /**
+   * "use js selects" flag
+   * @var boolean
+   */
+  protected $js_selects = FALSE;
+
+  /**
    * class constructor
    * @param array  $options build options
    * @param string $name    field name
@@ -52,10 +58,23 @@ class datetime extends tag_container {
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
     $this->add_css("#{$id} div.date,#{$id} div.time{display: inline-block;margin-right: 5px;}");
-    parent::pre_render($form);
 
     $this->date->pre_render($form);
     $this->time->pre_render($form);
+
+    foreach( $this->date->get_js() as $date_js_line ){
+      if(!empty($date_js_line)){
+          $this->add_js($date_js_line);
+      }
+    }
+
+    foreach( $this->time->get_js() as $time_js_line){
+      if(!empty($time_js_line)){
+          $this->add_js($time_js_line);
+      }
+    }
+
+    parent::pre_render($form);
   }
 
   /**

@@ -104,7 +104,7 @@ abstract class fields_container_multiple extends fields_container{
    * @param  integer $partitions_index partition index
    * @return array             partition fields array
    */
-  public function get_partition_fields($partitions_index){
+  public function &get_partition_fields($partitions_index){
     $out = [];
     $fieldsnames = $this->partitions[$partitions_index]['fieldnames'];
     foreach($fieldsnames as $name){

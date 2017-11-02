@@ -73,15 +73,19 @@ class sortable extends sortable_container{
       $insertorder = array_flip($this->insert_field_order[$partitionindex]);
       $weights = [];
       $order = [];
-      foreach ($this->get_partition_fields($partitionindex) as $key => $elem) {
+
+      $partition_fields = $this->get_partition_fields($partitionindex);
+
+      foreach ($partition_fields as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_partition_fields($partitionindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($partitionindex));
+      if( count( $partition_fields ) > 0 ){
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
+      }
 
       $output .= "<div id=\"{$id}-sortable-{$partitionindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
-      foreach ($this->get_partition_fields($partitionindex) as $name => $field) {
+      foreach ($partition_fields as $name => $field) {
         $output .= $field->render($form);
       }
       $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$partitionindex}\" value=\"{$partitionindex}\" />\n";

@@ -64,18 +64,21 @@ class accordion extends fields_container_multiple {
       $insertorder = array_flip($this->insert_field_order[$accordionindex]);
       $weights = [];
       $order = [];
-      foreach ($this->get_partition_fields($accordionindex) as $key => $elem) {
+
+      $partition_fields = $this->get_partition_fields($accordionindex);
+
+      foreach ($partition_fields as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_partition_fields($accordionindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($accordionindex));
-
+      if( count( $partition_fields ) > 0 ){
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
+      }
 
       $addclass_tab = ' class="tabel '.( $this->partition_has_errors($accordionindex, $form) ? 'has-errors' : '' ).'"';
       $output .= "<h3{$addclass_tab}>".$this->get_text($this->partitions[$accordionindex]['title'])."</h3>";
       $output .= "<div id=\"{$id}-tab-inner-{$accordionindex}\" class=\"tab-inner".( $this->partition_has_errors($accordionindex, $form) ? ' has-errors' : '' )."\">\n";
-      foreach ($this->get_partition_fields($accordionindex) as $name => $field) {
+      foreach ($partition_fields as $name => $field) {
         $output .= $field->render($form);
       }
       $output .= "</div>\n";

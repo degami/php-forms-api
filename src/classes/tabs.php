@@ -45,17 +45,21 @@ class tabs extends fields_container_multiple {
       $insertorder = array_flip($this->insert_field_order[$tabindex]);
       $weights = [];
       $order = [];
-      foreach ($this->get_partition_fields($tabindex) as $key => $elem) {
+
+      $partition_fields = $this->get_partition_fields($tabindex);
+
+      foreach ($partition_fields as $key => $elem) {
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_partition_fields($tabindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($tabindex));
+      if( count( $this->get_partition_fields($tabindex) ) > 0 ){
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
+      }
 
       $addclass_tab = ' class="tabel '.( $this->partition_has_errors($tabindex, $form) ? 'has-errors' : '' ).'"';
       $tab_links[$tabindex] = "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->partitions[$tabindex]['title'])."</a></li>";
       $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->partition_has_errors($tabindex, $form) ? ' has-errors' : '' )."\">\n";
-      foreach ($this->get_partition_fields($tabindex) as $name => $field) {
+      foreach ($partition_fields as $name => $field) {
         $tabs_html[$tabindex] .= $field->render($form);
       }
       $tabs_html[$tabindex] .= "</div>\n";

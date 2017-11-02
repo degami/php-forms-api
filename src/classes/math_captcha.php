@@ -15,17 +15,12 @@ namespace Degami\PHPFormsApi;
  class math_captcha extends captcha{
 
    /**
-    * captcha code
-    * @var string
-    */
-   protected $code;
-
-   /**
     * pre-fill code into textfield
     * @var boolean
     */
    protected $pre_filled = FALSE;
 
+   private $code;
    private $a;
    private $b;
    private $op;

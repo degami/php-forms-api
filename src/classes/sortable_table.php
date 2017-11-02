@@ -80,16 +80,20 @@ class sortable_table extends sortable_container{
       $insertorder = array_flip($this->insert_field_order[$trindex]);
       $weights = [];
       $order = [];
-      foreach ($this->get_partition_fields($trindex) as $key => $elem) {
+
+      $partition_fields = $this->get_partition_fields($trindex);
+
+      foreach ($partition_fields as $key => $elem) {
         /** @var field $elem */
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_partition_fields($trindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($trindex));
+      if( count( $partition_fields ) > 0 ){
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);        
+      }
 
       $output .= "<tr id=\"{$id}-sortable-{$trindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>")."\n";
-      foreach ($this->get_partition_fields($trindex) as $name => $field) {
+      foreach ($partition_fields as $name => $field) {
         /** @var field $field */
         $fieldhtml = $field->render($form);
         if( trim($fieldhtml) != '' )

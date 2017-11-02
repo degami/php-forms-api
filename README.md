@@ -329,6 +329,16 @@ The value after submit is an array containing fields x,y
       'type' => 'checkbox',
     );
 
+#### Switchbox
+
+    $options += array(
+      'type' => 'switchbox',
+      'yes_value' => 1,
+      'yes_label' => 'Yes',
+      'no_value' => 0,
+      'no_label' => 'No',
+    );
+
 #### Hidden values
 
     $options += array(
@@ -426,6 +436,27 @@ They are always valid.
       'seconds'=>'',
     );
 
+#### Math captcha
+
+    $options += array(
+      'type' => 'math_captcha',
+      'pre_filled' => FALSE,
+    );
+    
+#### Image captcha
+
+    $options += array(
+      'type' => 'image_captcha',
+       'out_type' => 'png',
+       'characters' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+       'min_length' => 5,
+       'max_length' => 8,
+       'image_width' => 100,
+       'image_height' => 50,
+       'font_size' => 14,
+       'pre_filled' => FALSE,
+    );
+
 #### Recapthas
 
     $options += array(
@@ -516,16 +547,6 @@ They are always valid.
       'latitude' => NULL,
       'longitude' => NULL,
       'geocodebox' => NULL,
-    );
-
-#### Switchbox
-
-    $options += array(
-      'type' => 'switchbox',
-      'yes_value' => 1,
-      'yes_label' => 'Yes',
-      'no_value' => 0,
-      'no_label' => 'No',
     );
 
 ### Validators reference
