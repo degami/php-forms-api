@@ -58,12 +58,10 @@ class plupload extends field {
     $this->add_js("
       var {$id}_files_remaining = 0;
       $('#{$id}_uploader').pluploadQueue({
-        // General settings
         runtimes : 'html5,flash,silverlight,html4',
         chunk_size : '1mb',
         unique_names : true,
 
-        // Resize images on client-side if we can
         resize : {width : 320, height : 240, quality : 90},
 
         url : '{$this->url}',
@@ -71,24 +69,17 @@ class plupload extends field {
         silverlight_xap_url : '{$this->xap_url}',
         filters : ".json_encode($this->filters).",
 
-        // PreInit events, bound before any internal events
         preinit : {
             Init: function(up, info) {
             },
 
             UploadFile: function(up, file) {
-                // You can override settings before the file is uploaded
-                // up.setOption('url', 'upload.php?id=' + file.id);
-                // up.setOption('multipart_params', {param1 : 'value1', param2 : 'value2'});
             }
         },
 
-        // Post init events, bound after the internal events
         init : {
-
             FileUploaded: function(up, file, info) {
-                // Called when file has finished uploading
-                response = JSON.parse( info.response )
+                response = JSON.parse( info.response );
 
                 if(file.status == plupload.DONE && response.result == null){
                   var value = \$.trim( \$('#{$id}_uploaded_json').val() );
@@ -124,7 +115,6 @@ class plupload extends field {
             },
 
             Error: function(up, args) {
-                // Called when error occurs
                 log('[Error] ', args);
             }
         }
@@ -139,9 +129,7 @@ class plupload extends field {
 
             if (typeof(arg) != 'string') {
                 plupload.each(arg, function(value, key) {
-                    // Convert items in File objects to human readable form
                     if (arg instanceof plupload.File) {
-                        // Convert status to human readable
                         switch (value) {
                             case plupload.QUEUED:
                                 value = 'QUEUED';
