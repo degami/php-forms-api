@@ -309,6 +309,12 @@ The value after submit is an array containing fields x,y
       'options' => array(),
     );
 
+#### Color Pickers
+
+    $options += array(
+      'type' => 'colorpicker',
+    );
+
 #### Radio buttons
 
     $options += array(
@@ -329,7 +335,7 @@ The value after submit is an array containing fields x,y
       'type' => 'checkbox',
     );
 
-#### Switchbox
+#### Switchboxes
 
     $options += array(
       'type' => 'switchbox',
@@ -442,7 +448,7 @@ They are always valid.
       'type' => 'math_captcha',
       'pre_filled' => FALSE,
     );
-    
+
 #### Image captcha
 
     $options += array(

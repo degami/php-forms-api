@@ -302,7 +302,12 @@ function showallform(FAPI\form $form, &$form_state){
   $accordion->add_field('spinner', array(
     'type' => 'spinner',
     'title' => 'Select a value',
-  ),0);
+  ),0)
+  ->add_field('colorpicker',array(
+    'type' => 'colorpicker',
+    'title' => 'Pick your color',
+    'default_value' => '#88B2D1',
+  ));
 
   $accordion->add_field('date', array(
     'type' => 'date',
