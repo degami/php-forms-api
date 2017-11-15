@@ -126,15 +126,10 @@ You will find the source code for this example in this file: example/contact.php
 
 ## Form API reference
 
-To use this Form API in your projects you just need to include the main
-form.php file as follows:
+Inclusion: Autoload will do the magic :)
 
-    require 'form.php';
-
-Be sure to correct the path to form.php if it is not in the same folder as
-your script. The static assets (images, css and javascript) should by default
-be in a folder called assets. You may need to set the BASE_PATH configuration
-option if this changes.
+Usage: Write the definition and submission functions, then get the form object
+with form_builder::get_form() and render it.
 
 ### Form objects
 
