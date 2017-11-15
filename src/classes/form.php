@@ -526,7 +526,10 @@ class form extends element{
       }
     }
 
-    $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
+    $has_session = form_builder::session_present();
+    if( $has_session ){
+      $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
+    }
   }
 
   /**
@@ -534,11 +537,21 @@ class form extends element{
    * @param  array  $values the request values array
    */
   public function process( $values = [] ) {
+
+    $has_session = form_builder::session_present();
+    if( $has_session ){
+      foreach($_SESSION['form_token'] as $key => $time){
+        if ( $time < ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) ) {
+          unset($_SESSION['form_token'][$key]);
+        }
+      }
+    }
+
     // let others alter the form
     $defined_functions = get_defined_functions();
     foreach( $defined_functions['user'] as $function_name){
       if( preg_match("/.*?_{$this->form_id}_form_alter$/i", $function_name) ){
-        $function_name($this);
+        call_user_func_array( $function_name, [ &$this ] );
       }
     }
 
@@ -559,7 +572,7 @@ class form extends element{
         }
         // insert values into fields
         for($step = 0; $step < $this->current_step; $step++){
-          if(isset($_SESSION[$this->form_id]['steps'][$step])){
+          if($has_session && isset($_SESSION[$this->form_id]['steps'][$step])){
             $this->inject_values($_SESSION[$this->form_id]['steps'][$step], $step);
           }
         }
@@ -583,7 +596,7 @@ class form extends element{
       if( !form::is_partial() && !$this->submitted && $this->valid() && $this->is_final_step() ){
         $this->submitted = TRUE;
 
-        if(isset($_SESSION[$this->form_id])){
+        if($has_session && isset($_SESSION[$this->form_id])){
           unset($_SESSION[$this->form_id]);
         }
 
@@ -592,9 +605,9 @@ class form extends element{
             $field->postprocess();
           }
         }
+
         foreach($this->submit as $submit_function){
           if( is_callable($submit_function) ) {
-
             if(!is_array($this->submit_functions_results)){
               $this->submit_functions_results = [];
             }
@@ -630,7 +643,7 @@ class form extends element{
         $this->valid = FALSE;
         $this->add_error($this->get_text('Form is invalid or has expired'),__FUNCTION__);
         if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
-          if ($_SESSION['form_token'][$_REQUEST['form_token']] >= $_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) {
+          if ( $_SESSION['form_token'][$_REQUEST['form_token']] >= ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT) ) {
             $this->valid = TRUE;
             $this->set_errors( [] );
             if( !form::is_partial() ){

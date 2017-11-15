@@ -33,7 +33,7 @@ function contactform_submit(&$form) {
 }
 
 // function my_contactform_form_alter($form){
-//   $form->get_field('fieldset')->remove_field('message');
+//  $form->get_field('fieldset')->remove_field('message');
 // }
 
 $form = FAPI\form_builder::get_form('contactform');
