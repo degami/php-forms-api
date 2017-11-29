@@ -43,6 +43,7 @@ $form = FAPI\form_builder::get_form('contactform');
   <meta charset="utf-8" />
   <title>Example contact form</title>
   <?php include "header.php";?>
+  <script type="text/javascript" src='http://cdn.tinymce.com/4/tinymce.min.js'></script>
   <style>
     input[type=text],textarea{
       width: 100%;

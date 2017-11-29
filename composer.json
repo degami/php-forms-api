@@ -17,6 +17,13 @@
   },
   "autoload": {
     "files": ["src/php_forms_api_defines.php"],
-    "psr-4": {"Degami\\PHPFormsApi\\": "src/classes"}
+    "psr-4": {
+      "Degami\\PHPFormsApi\\": "src/classes",
+      "Degami\\PHPFormsApi\\Base\\": "src/classes/base",
+      "Degami\\PHPFormsApi\\Traits\\": "src/classes/traits",
+      "Degami\\PHPFormsApi\\Accessories\\": "src/classes/accessories",
+      "Degami\\PHPFormsApi\\Containers\\": "src/classes/containers",
+      "Degami\\PHPFormsApi\\Fields\\": "src/classes/fields"
+    }
   }
 }

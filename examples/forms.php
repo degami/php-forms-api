@@ -35,7 +35,7 @@ function contactform(FAPI\form $form, &$form_state){
     'title' => 'Your email address',
   ))
   ->add_field('message', array(
-    'type' => 'textarea',
+    'type' => 'tinymce',
     'postprocess' => array('xss'),
     'title' => 'Your message',
   ))
@@ -290,7 +290,7 @@ function showallform(FAPI\form $form, &$form_state){
   ));
 
 
-  $accordion = new FAPI\accordion(array(
+  $accordion = new FAPI\Containers\accordion(array(
     'collapsible' => TRUE,
     'attributes'=>array(
     // 'style' => 'width: 500px',

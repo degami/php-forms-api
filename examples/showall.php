@@ -19,7 +19,7 @@ function validate_multiple_by($string,$length = 1){
 
 
 function showall_submit(&$form) {
-  $form_values = $form->values();
+  $form_values = $form->values()->toArray();
   // var_export($form);
   // get submission triggering element
 
