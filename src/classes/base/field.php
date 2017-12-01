@@ -13,11 +13,12 @@ use Degami\PHPFormsApi\Accessories\ordered_functions;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;
 use Degami\PHPFormsApi\Fields\checkbox;
+
 /**
  * the field element class.
  * @abstract
  */
-abstract class field extends element{
+abstract class field extends element implements field_interface{
 
   /**
    * validate functions list
@@ -304,10 +305,8 @@ abstract class field extends element{
         $this->value = $processor_func($this->value);
       } else if(method_exists(get_class($this), $processor_func)){
         $this->value = call_user_func( [$this, $processor_func], $this->value );
-      } else {
-        if(method_exists(form::class, $processor_func)){
-          $this->value = call_user_func( [form::class,$processor_func], $this->value );
-        }
+      } else if(method_exists(form::class, $processor_func)){
+        $this->value = call_user_func( [form::class,$processor_func], $this->value );
       }
     }
   }
@@ -381,11 +380,6 @@ abstract class field extends element{
    */
   public function pre_render(form $form){
     $this->pre_rendered = TRUE;
-
-    //if(count($this->get_js()) > 0) {
-    //  $form->add_js( $this->get_js() );
-    //}
-
     // should not return value, just change element/form state
     return;
   }
@@ -522,19 +516,6 @@ abstract class field extends element{
     });";
     return $eventjs;
   }
-
-  /**
-   * ABSTRACT - the function that actually renders the html field
-   * @param  form $form form object
-   * @return string        the field html
-   */
-  abstract public function render_field(form $form); // renders html
-
-  /**
-   * ABSTRACT - this function tells to the form if this element is a value that needs to be included into parent values() function call result
-   * @return boolean include_me
-   */
-  abstract public function is_a_value();                // tells if component value is passed on the parent values() function call
 
   /**
    * alter request hook

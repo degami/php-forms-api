@@ -116,4 +116,5 @@ trait tools {
 		if(is_string($string) && function_exists('__')) return __($string);
 		return $string;
 	}
+
 }

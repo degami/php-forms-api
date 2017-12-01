@@ -70,4 +70,15 @@ class form_values implements IteratorAggregate, ArrayAccess{
     }
     return $out;
   }
+
+  public function only(array $keys){
+    $out = [];
+    if( empty($keys) ) return $this->toArray();
+    foreach( $this->toArray() as $k => $v ){
+      if( in_array($k, $keys) ){
+        $out[$k] = $v;
+      }
+    }
+    return $out;
+  }
 }
