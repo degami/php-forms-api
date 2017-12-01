@@ -228,18 +228,6 @@ trait validators{
     }
 
     /**
-     * format byte size
-     * @param  integer $size size in bytes
-     * @return string       formatted size
-     */
-    private static function format_bytes($size) {
-      $units = [' B', ' KB', ' MB', ' GB', ' TB'];
-      for ($i = 0; $size >= 1024 && $i < 4; $i++) $size /= 1024;
-      return round($size, 2).$units[$i];
-    }
-
-
-    /**
      * "email" validation function
      * @param  mixed $value   the element value
      * @return mixed        TRUE if valid or a string containing the error message
@@ -282,5 +270,4 @@ trait validators{
       }
       return TRUE;
     }
-
 }

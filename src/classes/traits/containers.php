@@ -13,12 +13,22 @@ use Degami\PHPFormsApi\Base\field;
 use \Exception;
 
 trait containers {
-
+  
+  /**
+   * get parent namespace
+   * @return string  parent namespace
+   */
   private function parentNameSpace(){
     $namespaceParts = explode('\\', __NAMESPACE__);
     return implode("\\",array_slice($namespaceParts,0,-1));
   }
 
+  /**
+   * returns a field object instance
+   * @param string $name field name
+   * @param mixed  $field field to add, can be an array or a field subclass
+   * @return field instance
+   */
   public function get_field_obj($name, $field){
     if (is_array($field)) {
       $field_type = $this->parentNameSpace() . "\\Fields\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
