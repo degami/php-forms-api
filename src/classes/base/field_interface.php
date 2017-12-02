@@ -37,4 +37,15 @@ interface field_interface {
    */
   public function process($value);
 
+  /**
+   * validate hook
+   * @return boolean TRUE if element is valid
+   */
+  public function valid();
+
+  /**
+   * return form elements values into this element
+   * @return array form values
+   */
+  public function values();
 }

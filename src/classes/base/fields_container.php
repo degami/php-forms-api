@@ -22,7 +22,7 @@ use \Exception;
  * a field that contains other fields class
  * @abstract
  */
-abstract class fields_container extends field {
+abstract class fields_container extends field implements fields_container_interface {
 
   use containers;
 
@@ -274,7 +274,7 @@ abstract class fields_container extends field {
    * on_add_return overload
    * @return string 'this'
    */
-  protected function on_add_return(){
+  public function on_add_return(){
     return 'this';
   }
 }

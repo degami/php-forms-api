@@ -185,7 +185,7 @@ class datetime extends tag_container {
    * on_add_return overload
    * @return string 'parent'
    */
-  protected function on_add_return(){
+  public function on_add_return(){
     return 'parent';
   }
 }
