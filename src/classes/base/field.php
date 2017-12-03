@@ -285,7 +285,6 @@ abstract class field extends element implements field_interface{
     return $this->ajax_url;
   }
 
-
   /**
    * process (set) the field value
    * @param  mixed $value value to set
@@ -316,6 +315,14 @@ abstract class field extends element implements field_interface{
    */
   public function postprocess() {
     $this->preprocess("postprocess");
+  }
+
+  /**
+   * which element should return the add_field() function
+   * @return string one of 'parent' or 'this'
+   */
+  public function on_add_return(){
+    return 'parent';
   }
 
   /**

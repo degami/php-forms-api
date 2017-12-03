@@ -117,4 +117,14 @@ trait tools {
 		return $string;
 	}
 
+	/**
+   * returns the translated version of the input text ( when available ) depending on current element configuration
+   * @param  string $text input text
+   * @return string       text to return (translated or not)
+   */
+  protected function get_text($text){
+    if( $this->no_translation == TRUE ) return $text;
+    return call_user_func_array([__CLASS__, 'translate_string'], [$text]);
+  }
+
 }

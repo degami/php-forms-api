@@ -9,6 +9,7 @@
 
 namespace Degami\PHPFormsApi\Base;
 
+use Degami\PHPFormsApi\Traits\tools;
 use Degami\PHPFormsApi\Accessories\ordered_functions;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;
@@ -19,6 +20,8 @@ use Degami\PHPFormsApi\Base\fields_container;
  * @abstract
  */
 abstract class element{
+
+  use tools;
 
   /**
    * element name
@@ -525,24 +528,6 @@ abstract class element{
     }
 
     return $elem;
-  }
-
-  /**
-   * which element should return the add_field() function
-   * @return string one of 'parent' or 'this'
-   */
-  protected function on_add_return(){
-    return 'parent';
-  }
-
-  /**
-   * returns the translated version of the input text ( when available ) depending on current element configuration
-   * @param  string $text input text
-   * @return string       text to return (translated or not)
-   */
-  protected function get_text($text){
-    if( $this->no_translation == TRUE ) return $text;
-    return form::translate_string($text);
   }
 
   protected static function search_field_by_id( $container, $fieldid ){

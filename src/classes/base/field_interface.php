@@ -48,4 +48,10 @@ interface field_interface {
    * @return array form values
    */
   public function values();
+
+  /**
+   * which element should return the add_field() function
+   * @return string one of 'parent' or 'this'
+   */
+  public function on_add_return();
 }
