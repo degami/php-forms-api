@@ -7,7 +7,6 @@ use Degami\PHPFormsApi as FAPI;
 
 <?php
     $has_session = FAPI\form_builder::session_present();
-    var_dump($has_session);
     if ($has_session) : ?>
     <h3>Session Info</h3>
     <pre class="sessioninfo"><?php print_r($_SESSION); ?></pre>

@@ -521,6 +521,13 @@ They are always valid.
       'type' => 'nestable',
     );
 
+#### Repeatables
+
+    $options += array(
+      'type' => 'repeatable',
+      'num_reps' => 1,
+    );
+    
 #### Geolocation (latitude, longitude)
 
     $options += array(

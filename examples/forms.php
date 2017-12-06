@@ -912,3 +912,36 @@ function locationsform(FAPI\form $form, &$form_state){
 
   return $form;
 }
+
+
+
+function repeatableform(FAPI\form $form, &$form_state){
+  $form->set_inline_errors(TRUE); //->set_on_dialog(TRUE);
+
+  $form
+    ->add_field('rep', array(
+      'type' => 'repeatable',
+      'title' => 'Emails',
+    ))
+    ->add_field('name', array(
+      'type' => 'textfield',
+      'validate' => array('required'),
+      'preprocess' => array('trim'),
+      'title' => 'Your name',
+    ))
+    ->add_field('email', array(
+      'type' => 'textfield',
+      'validate' => array('required', 'email'),
+      'title' => 'Your email address',
+    ))
+  ;
+
+
+    $form
+      ->add_field('hr1', array('type'=>'markup','value'=>'<hr />'))
+      ->add_field('submit', array(
+        'type' => 'submit',
+      ));
+
+  return $form;
+}

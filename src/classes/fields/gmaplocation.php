@@ -338,7 +338,7 @@ class gmaplocation extends geolocation {
           ";
       }
       $this->add_js("
-            \$('#{$id}_current_location_btn').click(function(evt){
+            \$('button.current_location','#{$id}').click(function(evt){
               evt.preventDefault();
               var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
               var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
