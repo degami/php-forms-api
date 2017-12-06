@@ -4,7 +4,8 @@ function __($string){
   return str_repeat($string.' ' , 2);
 }
 */
-
+require_once '../vendor/autoload.php';
+include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
 
 require_once '../vendor/autoload.php';

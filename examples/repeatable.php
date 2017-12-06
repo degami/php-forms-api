@@ -1,17 +1,8 @@
 <?php
-@require_once('googlekeys.php');
-
-// if sessions are enabled then the form uses a token for extra security against CSRF
-session_start();
 require_once '../vendor/autoload.php';
-include "forms.php";
-
-if(isset($_GET['clearsession'])){
-  session_destroy();
-  session_start();
-}
-
+include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
+session_start();
 
 // function __($str){
 //   return "__ $str __";
@@ -37,7 +28,6 @@ $form = FAPI\form_builder::get_form('repeatableform');
   <title>Example contact form</title>
   <?php include "header.php";?>
   <script type="text/javascript" src='http://cdn.tinymce.com/4/tinymce.min.js'></script>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp&amp;libraries=geometry,places&amp;key=<?php print GOOGLE_API_KEY;?>"></script>
 
   <style>
     input[type=text],textarea{
@@ -49,7 +39,7 @@ $form = FAPI\form_builder::get_form('repeatableform');
 <body>
   <h1>Example Form</h1>
   <div>
-    <a href="<?php print dirname($_SERVER['PHP_SELF']);?>">To list</a> |
+    <a href="<?php print dirname($_SERVER['PHP_SELF']);?>?clearsession=1">To list</a> |
     <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   </div>
   <div id="page">

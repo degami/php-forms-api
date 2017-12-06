@@ -1,16 +1,8 @@
 <?php
-
-// if sessions are enabled then the form uses a token for extra security against CSRF
-session_start();
 require_once '../vendor/autoload.php';
-include "forms.php";
-
-if(isset($_GET['clearsession'])){
-  session_destroy();
-  session_start();
-}
-
+include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
+session_start();
 
 function myclass_submit(&$form) {
   $form_values = $form->values()->toArray();
@@ -50,7 +42,7 @@ $form = FAPI\form_builder::object_form($classObject);
 <body>
   <h1>Example objectForm</h1>
   <div>
-    <a href="<?php print dirname($_SERVER['PHP_SELF']);?>">To list</a> |
+    <a href="<?php print dirname($_SERVER['PHP_SELF']);?>?clearsession=1">To list</a> |
     <a href="<?php print $_SERVER['PHP_SELF'];?>">Go back</a>
   </div>
   <div id="page">

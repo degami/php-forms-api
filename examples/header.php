@@ -1,4 +1,14 @@
-<style>
+<?php
+// if sessions are enabled then the form uses a token for extra security against CSRF
+@session_start();
+require_once '../vendor/autoload.php';
+include_once "forms.php";
+
+if(isset($_GET['clearsession'])){
+  session_destroy();
+  session_start();
+}
+?><style>
   a{
       color: #888;
       text-decoration: none;

@@ -1,11 +1,8 @@
 <?php
-// if sessions are enabled then the form uses a token for extra security against CSRF
-session_start();
-
 require_once '../vendor/autoload.php';
-include "forms.php";
-
+include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
+session_start();
 
 $form = FAPI\form_builder::get_form('contactform_ajax');
 $form->process();
