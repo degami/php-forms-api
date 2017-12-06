@@ -15,6 +15,9 @@ use Degami\PHPFormsApi\Fields\datetime;
 use Degami\PHPFormsApi\Fields\geolocation;
 use \Exception;
 
+/**
+ * a field container with a repeatable group of fields
+ */
 class repeatable extends fields_container_multiple {
 
   protected $num_reps = 1;
@@ -157,20 +160,20 @@ class repeatable extends fields_container_multiple {
       $this->add_css("#{$id} .repeatable-row{ margin: 10px 0; padding: 10px; border: solid 1px #cecece; position: relative; }");
       $this->add_css("#{$id} .repeatable-row .remove-btn{ position: absolute; top: 5px; right: 10px; z-index: 10;}");
 
-      $this->add_js("\$('#{$id}').delegate('.remove-btn','click',function(evt){ 
-        evt.preventDefault(); 
+      $this->add_js("\$('#{$id}').delegate('.remove-btn','click',function(evt){
+        evt.preventDefault();
         \$(this).closest('.repeatable-row').remove();
         var \$target = $('.fields-target:eq(0)');
         var newrownum = \$target.find('.repeatable-row').length;
         \$('input[name=\"{$id}-numreps\"]').val(newrownum);
       });");
-      $this->add_js("\$('.btnaddmore', '#{$id}').click(function(evt){ 
-        evt.preventDefault(); 
+      $this->add_js("\$('.btnaddmore', '#{$id}').click(function(evt){
+        evt.preventDefault();
         var \$target = \$('.fields-target:eq(0)');
-        \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target ); 
-        var newrownum = \$target.find('.repeatable-row').length; 
+        \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target );
+        var newrownum = \$target.find('.repeatable-row').length;
         \$('input[name=\"{$id}-numreps\"]').val(newrownum);
-        {$js} 
+        {$js}
       });");
     }
 
