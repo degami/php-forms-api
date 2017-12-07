@@ -10,10 +10,13 @@
 namespace Degami\PHPFormsApi\Traits;
 
 use Degami\PHPFormsApi\Base\field;
+use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Fields\datetime;
+use Degami\PHPFormsApi\Fields\geolocation;
 use \Exception;
 
 trait containers {
-  
+
   /**
    * get parent namespace
    * @return string  parent namespace
@@ -56,4 +59,9 @@ trait containers {
 
     return $field;
   }
+
+  public function is_field_container( field $field){
+      return $field instanceof fields_container && !( $field instanceof datetime || $field instanceof geolocation );
+  }
+
 }

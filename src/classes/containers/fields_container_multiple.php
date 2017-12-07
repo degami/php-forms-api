@@ -75,7 +75,7 @@ abstract class fields_container_multiple extends fields_container{
     $this->partitions[$partitions_index]['fieldnames'][] = $name;
 
     if( !method_exists($field, 'on_add_return') ) {
-      if(  $field instanceof fields_container && !( $field instanceof datetime || $field instanceof geolocation ) )
+      if(  $this->is_field_container($field) )
         return $field;
       return $this;
     }

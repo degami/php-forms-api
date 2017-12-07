@@ -68,7 +68,6 @@ class nestable extends fields_container {
       'attributes' => ['class' => $tagclass],
       'childnum' => $this->num_children(),
     ],
-      //'leaf-'.$this->get_level().'-'.$this->num_children()
       $this->get_name().'-leaf-'. $this->num_children()
     );
 
@@ -96,7 +95,7 @@ class nestable extends fields_container {
 
   public function add_field($name, $field){
     $field = $this->get_field_obj($name, $field);
-    if($field instanceof fields_container && !( $field instanceof geolocation || $field instanceof datetime ) ){
+    if( $this->is_field_container($field) ){
       throw new Exception("Can't add a fields_container to a tree_container.", 1);
     }
 
@@ -117,7 +116,6 @@ class nestable extends fields_container {
     parent::process( $values );
     if(isset($values[$this->get_name()])){
       $this->value = json_decode($values[$this->get_name()], TRUE);
-      //$this->value[0]['values'] = nestable::find_by_id($this->value[0]['id']);
     }
   }
 
@@ -134,11 +132,9 @@ class nestable extends fields_container {
     $out = [];
     $panel = $nestablefield->get_panel_by_id($tree['id']);
     if( $panel instanceof fields_container ){
-      //$out[$tree['id']]['value'] = $panel->values();
       $out['value'] = $panel->values();
       if(isset($tree['children'])){
         foreach($tree['children'] as $child){
-          //$out[$tree['id']]['children'][] = nestable::create_values_array($child, $nestablefield);
           $out['children'][] = nestable::create_values_array($child, $nestablefield);
         }
       }
@@ -148,11 +144,8 @@ class nestable extends fields_container {
 
   public function values(){
     if($this->value) {
-      // return $this->value;
-      // var_dump($this->value);die();
       $out = [];
       foreach($this->value as $tree){
-        // $out = array_merge($out, nestable::create_values_array($tree, $this) );
         $out[] = nestable::create_values_array($tree, $this);
       }
       return $out;

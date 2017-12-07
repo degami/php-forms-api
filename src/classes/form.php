@@ -723,7 +723,7 @@ class form extends element{
     $this->insert_field_order[] = $name;
 
     if( !method_exists($field, 'on_add_return') ) {
-      if(  $field instanceof fields_container && !( $field instanceof datetime || $field instanceof geolocation ) )
+      if(  $this->is_field_container($field) )
         return $field;
       return $this;
     }

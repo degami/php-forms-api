@@ -40,7 +40,7 @@ class repeatable extends fields_container_multiple {
   public function add_field($name, $field, $partitions_index = 0) {
     $field = $this->get_field_obj($name, $field);
 
-    if( $field instanceof fields_container && !( $field instanceof datetime || $field instanceof geolocation ) ) {
+    if( $this->is_field_container($field) ) {
       throw new Exception('Can\'t nest field_containers into repeteables');
     }
 
@@ -48,7 +48,7 @@ class repeatable extends fields_container_multiple {
     $this->repetable_insert_field_order[] = $name;
 
     if( !method_exists($field, 'on_add_return') ) {
-      if(  $field instanceof fields_container && !( $field instanceof datetime || $field instanceof geolocation ) )
+      if(  $this->is_field_container($field) )
         return $field;
       return $this;
     }
