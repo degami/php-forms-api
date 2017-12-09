@@ -304,6 +304,11 @@ function showallform(FAPI\form $form, &$form_state){
     'type' => 'spinner',
     'title' => 'Select a value',
   ),0)
+  ->add_field('color',array(
+    'type'=>'color',
+    'title' => 'Color',
+    'default_value' => '#be2a99',    
+  ))
   ->add_field('colorpicker',array(
     'type' => 'colorpicker',
     'title' => 'Pick your color',
