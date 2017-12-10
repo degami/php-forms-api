@@ -123,6 +123,7 @@ if(isset($_GET['clearsession'])){
     background: #fff;
   }
 
+  .sessiontitle,
   .functiontitle{
     border: solid 1px #c6c6c6;
     background-color: #c6c6c6;
@@ -131,9 +132,11 @@ if(isset($_GET['clearsession'])){
     color: #fff;
     text-shadow: 1px 1px #666;
     margin: 0;
+    margin-top: 10px;
     font-weight: bold;
   }
 
+  .sessionbody,
   .functionbody{
     max-height: 200px;
     overflow-y: auto;
