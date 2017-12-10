@@ -18,6 +18,24 @@ use Degami\PHPFormsApi\Base\field;
 class number extends field {
 
   /**
+   * minimum value
+   * @var null
+   */
+  protected $min = NULL;
+
+  /**
+   * maximum value
+   * @var null
+   */
+  protected $max = NULL;
+
+  /**
+   * step value
+   * @var integer
+   */
+  protected $step = 1;
+
+  /**
    * class constructor
    * @param array  $options build options
    * @param string $name    field name
@@ -36,15 +54,22 @@ class number extends field {
    */
   public function render_field(form $form) {
     $id = $this->get_html_id();
+    $output = '';
+
+    $html_options = '';
+    if( is_numeric($this->min) && is_numeric($this->max) && $this->max >= $this->min ){
+      $html_options = " min=\"{$this->min}\" max=\"{$this->max}\" step=\"{$this->step}\"";
+    }
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
-    if( is_array($this->value) ) $this->value = '';
-    $output = "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"".htmlspecialchars($this->value)."\"{$attributes} />\n";
+    $attributes = $this->get_attributes(['type','name','id','value','min','max','step']);
+
+    $output .= "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$html_options}{$attributes} />\n";
+
     return $output;
   }
 
