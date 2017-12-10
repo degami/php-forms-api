@@ -304,10 +304,14 @@ function showallform(FAPI\form $form, &$form_state){
     'type' => 'spinner',
     'title' => 'Select a value',
   ),0)
+  ->add_field('number', array(
+    'type' => 'number',
+    'title' => 'Number field',
+  ),0)
   ->add_field('color',array(
     'type'=>'color',
     'title' => 'Color',
-    'default_value' => '#be2a99',    
+    'default_value' => '#be2a99',
   ))
   ->add_field('colorpicker',array(
     'type' => 'colorpicker',
