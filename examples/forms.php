@@ -233,8 +233,7 @@ function showallform(FAPI\form $form, &$form_state){
      ),
   ));
   $form->get_field('fieldset')->add_field('email', array(
-    'type' => 'textfield',
-    'validate' => array('required', 'email'),
+    'type' => 'email',
     'title' => 'Your email address',
     'attributes' => array(
       'style' => 'width: 100%',
