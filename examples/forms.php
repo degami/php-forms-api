@@ -303,6 +303,10 @@ function showallform(FAPI\form $form, &$form_state){
     'type' => 'spinner',
     'title' => 'Select a value',
   ),0)
+  ->add_field('range', array(
+    'type' => 'range',
+    'title' => 'Range a value',
+  ),0)
   ->add_field('number', array(
     'type' => 'number',
     'title' => 'Number field',

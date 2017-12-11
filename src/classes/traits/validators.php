@@ -270,4 +270,28 @@ trait validators{
       }
       return TRUE;
     }
+
+    /**
+     * "is_RGB" validation function
+     * @param  mixed $value   the element value
+     * @return mixed        TRUE if valid or a string containing the error message
+     */
+    public static function validate_rgb($value) {
+      if ( !$value || ($value && !preg_match("/^#?([a-f\d]{3}([a-f\d]{3})?)$/i", $value)) ) {
+        return "<em>%t</em> is not a valid RGB color string.";
+      }
+      return TRUE;
+    }
+
+    /**
+     * "is_URL" validation function
+     * @param  mixed $value   the element value
+     * @return mixed        TRUE if valid or a string containing the error message
+     */
+    public static function validate_url($value) {
+      if ( !$value || ($value && !preg_match("/^https?:\/\/(.*?)$/i", $value)) ) {
+        return "<em>%t</em> is not a valid URL string.";
+      }
+      return TRUE;
+    }
 }
