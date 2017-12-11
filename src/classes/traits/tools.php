@@ -11,6 +11,9 @@ namespace Degami\PHPFormsApi\Traits;
 
 use Degami\PHPFormsApi\form;
 
+/**
+ * tools functions
+ */
 trait tools {
 	/**
 	 * format byte size

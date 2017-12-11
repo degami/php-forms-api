@@ -15,6 +15,9 @@ use Degami\PHPFormsApi\Fields\datetime;
 use Degami\PHPFormsApi\Fields\geolocation;
 use \Exception;
 
+/**
+ * containers specific functions
+ */
 trait containers {
 
   /**
@@ -60,6 +63,11 @@ trait containers {
     return $field;
   }
 
+  /**
+   * check if field is a field container
+   * @param field $field field instance
+   * @return boolean true if field is a field container
+   */
   public function is_field_container( field $field){
       return $field instanceof fields_container && !( $field instanceof datetime || $field instanceof geolocation );
   }

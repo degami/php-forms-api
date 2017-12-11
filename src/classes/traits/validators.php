@@ -11,6 +11,9 @@ namespace Degami\PHPFormsApi\Traits;
 
 use Degami\PHPFormsApi\form;
 
+/**
+ * validations functions
+ */
 trait validators{
 
     /**

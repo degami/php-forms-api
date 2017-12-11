@@ -10,6 +10,9 @@
 namespace Degami\PHPFormsApi\Base;
 use Degami\PHPFormsApi\form;
 
+/**
+ * fields container interface
+ */
 interface fields_container_interface {
 
   /**
