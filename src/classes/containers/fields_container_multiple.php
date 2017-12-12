@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Base\field;
 use Degami\PHPFormsApi\Fields\datetime;
 use Degami\PHPFormsApi\Fields\geolocation;
 use Degami\PHPFormsApi\Traits\containers;
@@ -111,6 +112,26 @@ abstract class fields_container_multiple extends fields_container{
       $out[$name] = $this->get_field($name);
     }
     return $out;
+  }
+
+  /**
+   * set partition fields array
+   * @param  array $fields array of new fields to set for partition
+   * @param  integer $partitions_index partition index
+   */
+  public function set_partition_fields( $fields, $partition_index = 0 ){
+    $fieldsnames = $this->partitions[$partition_index]['fieldnames'];
+    foreach($fieldsnames as $name){
+      $this->remove_field($name, $partitions_index);
+    }
+    unset($this->partitions[$partition_index]['fieldnames']);
+    $this->partitions[$partition_index]['fieldnames'] = [];
+    foreach($fields as $name => $field){
+      if( $field instanceof field ) $name = $field->get_name();
+      $field = $this->get_field_obj($name, $field);
+      $this->add_field( $field->get_name(), $field, $partition_index );
+    }
+    return $this;
   }
 
   /**

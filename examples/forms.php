@@ -912,6 +912,11 @@ function locationsform(FAPI\form $form, &$form_state){
 
 
 
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+
 function repeatableform(FAPI\form $form, &$form_state){
   $form->set_inline_errors(TRUE); //->set_on_dialog(TRUE);
 
@@ -939,6 +944,42 @@ function repeatableform(FAPI\form $form, &$form_state){
       ->add_field('submit', array(
         'type' => 'submit',
       ));
+
+  return $form;
+}
+
+
+
+//############################################################################//
+//############################################################################//
+//############################################################################//
+
+
+function bulkform(FAPI\form $form, &$form_state){
+  $bulk = $form->add_field('bulk', array(
+    'type' => 'bulk_table',
+  ));
+  $bulk->set_table_header(array(
+    'text',
+    'number'
+  ));
+  $bulk->add_operation('dump', 'dump', 'var_dump');
+  $bulk->add_operation('print', 'print', 'print');
+
+  for( $i = 0; $i < 4; $i++){
+    $bulk->add_row()->add_field('text_'.$i, array(
+      'type' => 'textfield',
+      'default_value' => 'textfield_'.$i,
+    ), $i)
+    ->add_field('number_'.$i, array(
+      'type' => 'number',
+      'default_value' => ''.$i,
+    ), $i);
+  }
+
+  $form->add_field('submit', array(
+    'type' => 'submit',
+  ));
 
   return $form;
 }

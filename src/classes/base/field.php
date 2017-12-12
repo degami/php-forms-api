@@ -400,7 +400,7 @@ abstract class field extends element implements field_interface{
 
     $id = $this->get_html_id();
     $output = $this->get_element_prefix();
-    $output.=$this->get_prefix();
+    $output .= $this->get_prefix();
 
     if( !($this instanceof fields_container) && !($this instanceof checkbox)){
       // containers do not need label. checkbox too, as the render function prints the label itself

@@ -153,8 +153,11 @@ class table_container extends fields_container_multiple{
         $weights[$key]  = $elem->get_weight();
         $order[$key] = $insertorder[$key];
       }
-      if( count( $this->get_partition_fields($trindex) ) > 0 )
-        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_partition_fields($trindex));
+      if( count( $this->get_partition_fields($trindex) ) > 0 ){
+        $partition_fields = $this->get_partition_fields($trindex);
+        array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
+        $this->set_partition_fields($partition_fields, $trindex);
+      }
 
       $output .= "<tr id=\"{$id}-row-{$trindex}\">\n";
       $cols = 0;
