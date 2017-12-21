@@ -34,7 +34,7 @@ function contactform(FAPI\form $form, &$form_state){
     'type' => 'textfield',
     'validate' => array('required', 'email'),
     'title' => 'Your email address',
-  ))
+  )) 
   ->add_field('message', array(
     'type' => 'tinymce',
     'postprocess' => array('xss'),
