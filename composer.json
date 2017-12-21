@@ -1,7 +1,7 @@
 {
   "name": "degami/php-forms-api",
   "description": "A simple to use Forms API for generating, validating and processing forms in PHP",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "type": "library",
   "keywords": ["forms", "PHP", "API"],
   "homepage": "https://github.com/degami/php-forms-api",
