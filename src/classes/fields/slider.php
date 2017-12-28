@@ -31,12 +31,11 @@ class slider extends select{
    */
   public function __construct($options, $name = NULL){
     // get the "default_value" index value
-    $values = form::array_get_values($this->default_value,$this->options);
+    $values = call_user_func_array([__CLASS__, 'array_get_values'], [ $this->default_value, $this->options ]);
     $oldkey_value = end($values);
 
     // flatten the options array ang get a numeric keyset
-    // $this->options = form::array_flatten($this->options);
-    $options['options'] = form::array_flatten($options['options']);
+    $options['options'] = call_user_func_array([__CLASS__, 'array_flatten'], [ $options['options'] ]);
 
     // search the new index
     $this->value = $this->default_value = array_search($oldkey_value,$this->options);

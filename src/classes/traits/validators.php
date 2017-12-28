@@ -167,7 +167,7 @@ trait validators{
      * @return mixed        TRUE if valid or a string containing the error message
      */
     public static function validate_match($value, $options) {
-      $other = form::scan_array($options, $_REQUEST);
+      $other = call_user_func_array([__CLASS__, 'scan_array'], [$options, $_REQUEST]);
       if ($value != $other) {
         return "The field <em>%t</em> is invalid.";
       }
@@ -212,7 +212,7 @@ trait validators{
     public static function validate_max_file_size($value, $options) {
       if(!isset($value['filesize'])) return "<em>%t</em> - Error. value has no filesize attribute";
       if ($value['filesize'] > $options) {
-        $max_size = form::format_bytes($options);
+        $max_size = call_user_func_array([__CLASS__, 'format_bytes'], [$options]);
         return "The file <em>%t</em> is too big. Maximum filesize is {$max_size}.";
       }
       return TRUE;

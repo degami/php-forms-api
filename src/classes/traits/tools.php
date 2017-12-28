@@ -35,7 +35,7 @@ trait tools {
 	private static function scan_array($string, $array) {
 		list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
 		if ( $key && $rest ) {
-			return @form::scan_array($rest, $array[$key]);
+			return call_user_func_array([__CLASS__, 'scan_array'], [$rest, $array[$key]]);
 		} elseif ( $key ) {
 			return $array[$key];
 		} else {
@@ -52,7 +52,7 @@ trait tools {
 		$return = [];
 		foreach ($array as $key => $value) {
 			if (is_array($value)){
-				$return = array_merge($return, form::array_flatten($value));
+				$return = array_merge($return, call_user_func_array([__CLASS__, 'array_flatten'], [$value]));
 			} else {
 				$return[$key] = $value;
 			}
@@ -70,7 +70,7 @@ trait tools {
 		$return = [];
 		foreach ($array as $key => $value) {
 			if (is_array($value)){
-				$return = array_merge($return, form::array_get_values($search_key, $value));
+				$return = array_merge($return, call_user_func_array([__CLASS__, 'array_get_values'], [ $search_key, $value ]));
 			}else if($key == $search_key){
 				$return[] = $value;
 			}

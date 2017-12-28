@@ -9,8 +9,6 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
-use Degami\PHPFormsApi\form;
-
 /**
  * processor functions
  */
@@ -49,7 +47,7 @@ trait processors{
      * @return string         safe value
      */
     public static function process_xss_weak($string) {
-      return form::process_xss($string, 'a|abbr|acronym|address|b|bdo|big|blockquote|br|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|h1|h2|h3|h4|h5|h6|hr|i|img|ins|kbd|li|ol|p|pre|q|samp|small|span|strong|sub|sup|table|tbody|td|tfoot|th|thead|tr|tt|ul|var');
+      return call_user_func_array([__CLASS__, 'process_xss'], [ $string, 'a|abbr|acronym|address|b|bdo|big|blockquote|br|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|h1|h2|h3|h4|h5|h6|hr|i|img|ins|kbd|li|ol|p|pre|q|samp|small|span|strong|sub|sup|table|tbody|td|tfoot|th|thead|tr|tt|ul|var' ]);
     }
 
     /**
@@ -73,11 +71,11 @@ trait processors{
     public static function process_xss($string, $allowed_tags = FORMS_XSS_ALLOWED_TAGS) {
       // Only operate on valid UTF-8 strings. This is necessary to prevent cross
       // site scripting issues on Internet Explorer 6.
-      if (!form::_validate_utf8($string)) {
+      if (!call_user_func_array([__CLASS__, '_validate_utf8'], [ $string ])) {
         return '';
       }
       // Store the input format
-      form::_filter_xss_split($allowed_tags, TRUE);
+      call_user_func_array([__CLASS__, '_filter_xss_split'], [ $allowed_tags, TRUE ]);
       // Remove NUL characters (ignored by some browsers)
       $string = str_replace(chr(0), '', $string);
       // Remove Netscape 4 JS entities
@@ -153,7 +151,7 @@ trait processors{
       $attrlist = preg_replace('%(\s?)/\s*$%', '\1', $attrlist);
 
       // Clean up attributes
-      $attr2 = implode(' ', form::_filter_xss_attributes($attrlist));
+      $attr2 = implode(' ', call_user_func_array([__CLASS__, '_filter_xss_attributes'], [$attrlist]) );
       $attr2 = preg_replace('/[<>]/', '', $attr2);
       $attr2 = strlen($attr2) ? ' ' . $attr2 : '';
 
@@ -208,7 +206,7 @@ trait processors{
           case 2:
             // Attribute value, a URL after href= for instance.
             if (preg_match('/^"([^"]*)"(\s+|$)/', $attr, $match)) {
-              $thisval = form::_filter_xss_bad_protocol($match[1]);
+              $thisval = call_user_func_array([__CLASS__, '_filter_xss_bad_protocol'], [ $match[1] ]);
 
               if (!$skip) {
                 $attrarr[] = "$attrname=\"$thisval\"";
@@ -220,7 +218,7 @@ trait processors{
             }
 
             if (preg_match("/^'([^']*)'(\s+|$)/", $attr, $match)) {
-              $thisval = form::_filter_xss_bad_protocol($match[1]);
+              $thisval = call_user_func_array([__CLASS__, '_filter_xss_bad_protocol'], [ $match[1] ]);
 
               if (!$skip) {
                 $attrarr[] = "$attrname='$thisval'";
@@ -232,7 +230,7 @@ trait processors{
             }
 
             if (preg_match("%^([^\s\"']+)(\s+|$)%", $attr, $match)) {
-              $thisval = form::_filter_xss_bad_protocol($match[1]);
+              $thisval = call_user_func_array([__CLASS__, '_filter_xss_bad_protocol'], [ $match[1] ]);
 
               if (!$skip) {
                 $attrarr[] = "$attrname=\"$thisval\"";
@@ -276,9 +274,12 @@ trait processors{
      */
     private static function _filter_xss_bad_protocol($string, $decode = TRUE) {
       if ($decode) {
-        $string = form::process_entity_decode($string);
+        $string = call_user_func_array([__CLASS__, 'process_entity_decode'], [ $string ]);
       }
-      return form::process_plain(form::_strip_dangerous_protocols($string));
+
+      return call_user_func_array([__CLASS__, 'process_plain'], [ 
+        call_user_func_array([__CLASS__, '_strip_dangerous_protocols'], [ $string ])
+      ]);
     }
 
     /**

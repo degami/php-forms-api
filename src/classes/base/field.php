@@ -10,6 +10,7 @@
 namespace Degami\PHPFormsApi\Base;
 
 use Degami\PHPFormsApi\Interfaces\field_interface;
+use Degami\PHPFormsApi\Traits\tools;
 use Degami\PHPFormsApi\Accessories\ordered_functions;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;
@@ -20,6 +21,8 @@ use Degami\PHPFormsApi\Fields\checkbox;
  * @abstract
  */
 abstract class field extends element implements field_interface{
+
+  use tools;
 
   /**
    * validate functions list
@@ -149,7 +152,7 @@ abstract class field extends element implements field_interface{
     }
 
     if(!$this->validate instanceof ordered_functions){
-      $this->validate = new ordered_functions($this->validate,'validator', [ form::class,'order_validators' ] );
+      $this->validate = new ordered_functions($this->validate,'validator', [ __CLASS__,'order_validators' ] );
     }
 
     if(!$this->preprocess instanceof ordered_functions){
@@ -303,9 +306,9 @@ abstract class field extends element implements field_interface{
       $processor_func = "process_{$processor}";
       if (function_exists($processor_func)) {
         $this->value = $processor_func($this->value);
-      } else if(method_exists(get_class($this), $processor_func)){
+      } elseif(method_exists(get_class($this), $processor_func)) {
         $this->value = call_user_func( [$this, $processor_func], $this->value );
-      } else if(method_exists(form::class, $processor_func)){
+      } elseif(method_exists(form::class, $processor_func)) {
         $this->value = call_user_func( [form::class,$processor_func], $this->value );
       }
     }
@@ -346,12 +349,10 @@ abstract class field extends element implements field_interface{
       $options = isset($matches[3]) ? $matches[3] : NULL;
       if (function_exists($validator_func)) {
         $error = $validator_func($this->value, $options);
-      } else if(method_exists(get_class($this), $validator_func)){
+      } elseif(method_exists(get_class($this), $validator_func)) {
         $error = call_user_func( [get_class($this), $validator_func], $this->value, $options );
-      }else {
-        if(method_exists(form::class, $validator_func)){
-          $error = call_user_func( [form::class, $validator_func], $this->value, $options );
-        }
+      } elseif(method_exists(form::class, $validator_func)) {
+        $error = call_user_func( [form::class, $validator_func], $this->value, $options );
       }
       if (isset($error) && $error !== TRUE) {
         $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
