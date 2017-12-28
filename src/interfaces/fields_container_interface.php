@@ -7,14 +7,14 @@
    ####                  FIELD INTERFACE                ####
    ######################################################### */
 
-namespace Degami\PHPFormsApi\Base;
+namespace Degami\PHPFormsApi\Interfaces;
 use Degami\PHPFormsApi\form;
 
 /**
  * fields container interface
  */
 interface fields_container_interface {
-
+  
   /**
    * add field to form
    * @param string  $name  field name

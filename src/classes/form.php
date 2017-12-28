@@ -126,18 +126,6 @@ class form extends element{
   protected $js_generated = FALSE;
 
   /**
-   * keeps fields insert order
-   * @var array
-   */
-  protected $insert_field_order = [];
-
-  /**
-   * form fields
-   * @var array
-   */
-  protected $fields = [];
-
-  /**
    * ajax submit url
    * @var string
    */
@@ -779,7 +767,6 @@ class form extends element{
     if(!isset($this->fields[$step])) return $notfound;
     return $this->fields[$step];
   }
-
 
   /**
    * get the step fields by type and name

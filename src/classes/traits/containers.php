@@ -21,6 +21,26 @@ use \Exception;
 trait containers {
 
   /**
+   * keeps fields insert order
+   * @var array
+   */
+  protected $insert_field_order = [];
+
+  /**
+   * element fields
+   * @var array
+   */
+  protected $fields = [];
+
+  /**
+   * get the fields array by reference
+   * @return array        the array of field elements
+   */
+  public function &get_fields(){
+    return $this->fields;
+  }
+
+  /**
    * get parent namespace
    * @return string  parent namespace
    */

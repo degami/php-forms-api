@@ -19,6 +19,7 @@
     "files": ["src/php_forms_api_defines.php"],
     "psr-4": {
       "Degami\\PHPFormsApi\\": "src/classes",
+      "Degami\\PHPFormsApi\\Interfaces\\": "src/interfaces",
       "Degami\\PHPFormsApi\\Base\\": "src/classes/base",
       "Degami\\PHPFormsApi\\Traits\\": "src/classes/traits",
       "Degami\\PHPFormsApi\\Accessories\\": "src/classes/accessories",

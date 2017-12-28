@@ -7,7 +7,7 @@
    ####                  FIELD INTERFACE                ####
    ######################################################### */
 
-namespace Degami\PHPFormsApi\Base;
+namespace Degami\PHPFormsApi\Interfaces;
 use Degami\PHPFormsApi\form;
 
 /**

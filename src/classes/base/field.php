@@ -9,6 +9,7 @@
 
 namespace Degami\PHPFormsApi\Base;
 
+use Degami\PHPFormsApi\Interfaces\field_interface;
 use Degami\PHPFormsApi\Accessories\ordered_functions;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;

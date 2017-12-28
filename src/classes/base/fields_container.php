@@ -9,6 +9,7 @@
 
 namespace Degami\PHPFormsApi\Base;
 
+use Degami\PHPFormsApi\Interfaces\fields_container_interface;
 use Degami\PHPFormsApi\Traits\containers;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Fields\checkbox;
@@ -25,26 +26,6 @@ use \Exception;
 abstract class fields_container extends field implements fields_container_interface {
 
   use containers;
-
-  /**
-   * keeps fields insert order
-   * @var array
-   */
-  protected $insert_field_order = [];
-
-  /**
-   * element fields
-   * @var array
-   */
-  protected $fields = [];
-
-  /**
-   * get the fields array by reference
-   * @return array        the array of field elements
-   */
-  public function &get_fields(){
-    return $this->fields;
-  }
 
   /**
    * get the form fields by type
