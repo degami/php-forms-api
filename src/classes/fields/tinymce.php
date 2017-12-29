@@ -54,7 +54,7 @@ class tinymce extends textarea {
     $tinymce_options = new stdClass;
     foreach ($this->tinymce_options as $key => $value) {
       if( ! $this->is_valid_tinymce_option($key) ) continue;
-      $tinymce_options->$key = $value;
+      $tinymce_options->{$key} = $value;
     }
     $this->add_js("tinymce.init(".json_encode($tinymce_options).");");
     parent::pre_render($form);

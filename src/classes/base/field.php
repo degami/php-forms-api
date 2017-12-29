@@ -140,7 +140,7 @@ abstract class field extends element implements field_interface{
     foreach ($options as $name => $value) {
       $name = trim($name);
       if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+        $this->{$name} = $value;
     }
 
     if(!isset($this->attributes['class'])){
@@ -302,7 +302,7 @@ abstract class field extends element implements field_interface{
    * @param  string $process_type which list to process
    */
   public function preprocess($process_type = "preprocess") {
-    foreach ($this->$process_type as $processor) {
+    foreach ($this->{$process_type} as $processor) {
       $processor_func = "process_{$processor}";
       if (function_exists($processor_func)) {
         $this->value = $processor_func($this->value);

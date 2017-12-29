@@ -169,7 +169,7 @@ class form extends element{
     foreach ($options as $name => $value) {
       $name = trim($name);
       if( property_exists(get_class($this), $name) )
-        $this->$name = $value;
+        $this->{$name} = $value;
     }
 
     $hassubmitter = FALSE;

@@ -13,6 +13,7 @@ use Degami\PHPFormsApi\Traits\tools;
 use Degami\PHPFormsApi\Accessories\ordered_functions;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;
+use \Exception;
 
 /**
  * base element class
@@ -548,6 +549,31 @@ abstract class element{
       return $container;
     }
     return NULL;
+  }
+
+  /**
+   * Set/Get attribute wrapper
+   *
+   * @param   string $method
+   * @param   array $args
+   * @return  mixed
+   */
+  public function __call($method, $args){
+      switch ( strtolower(substr($method, 0, 4)) ) {
+          case 'get_' :
+            $name = trim(strtolower(substr($method, 4)));
+            if( property_exists(get_class($this), $name) ){
+              return $this->{$name};
+            }
+          case 'set_' :
+            $name = trim(strtolower(substr($method, 4)));
+            $value = is_array($args) ? reset($args) : NULL;
+            if( property_exists(get_class($this), $name) ){
+              $this->{$name} = $value;
+              return $this;
+            }
+      }
+      throw new Exception("Invalid method ".get_class($this)."::".$method."(".print_r($args,1).")");
   }
 
 }

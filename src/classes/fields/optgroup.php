@@ -53,7 +53,7 @@ class optgroup extends element{
     foreach ($options as $key => $value) {
       $key = trim($key);
       if( property_exists(get_class($this), $key) )
-        $this->$key = $value;
+        $this->{$key} = $value;
     }
   }
 
