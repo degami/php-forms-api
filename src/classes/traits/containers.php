@@ -11,8 +11,7 @@ namespace Degami\PHPFormsApi\Traits;
 
 use Degami\PHPFormsApi\Base\field;
 use Degami\PHPFormsApi\Base\fields_container;
-use Degami\PHPFormsApi\Fields\datetime;
-use Degami\PHPFormsApi\Fields\geolocation;
+use Degami\PHPFormsApi\Fields\composed_field;
 use \Exception;
 
 /**
@@ -89,7 +88,7 @@ trait containers {
    * @return boolean true if field is a field container
    */
   public function is_field_container( field $field){
-      return $field instanceof fields_container && !( $field instanceof datetime || $field instanceof geolocation );
+      return $field instanceof fields_container && !( $field instanceof composed_field );
   }
 
 }
