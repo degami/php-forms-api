@@ -506,7 +506,6 @@ abstract class element{
     foreach($values as $key => $val){
       $values[$key] = element::_toArray($key, $val);
     }
-
     return $values;
   }
 
@@ -516,18 +515,18 @@ abstract class element{
    * @param  mixed  $elem element
    * @return array        element as an array
    */
-  private static function _toArray($key, $elem){
-    if($key == 'parent'){
-      return "";
+  private static function _toArray($key, $elem, $path = '/'){
+    if($key === 'parent'){
+      return "-- link to parent --";
     }
-    if(is_object($elem) && ($elem instanceof element ||  $elem instanceof ordered_functions) ){
+
+    if( is_object($elem) && ($elem instanceof element ||  $elem instanceof ordered_functions) ){
       $elem = $elem->toArray();
     }else if(is_array($elem)){
       foreach($elem as $k => $val){
-        $elem[$k] = element::_toArray($k, $val);
+        $elem[$k] = element::_toArray($k, $val, $path.$key.'/');
       }
     }
-
     return $elem;
   }
 

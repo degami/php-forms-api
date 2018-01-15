@@ -34,7 +34,7 @@ function contactform(FAPI\form $form, &$form_state){
     'type' => 'textfield',
     'validate' => array('required', 'email'),
     'title' => 'Your email address',
-  )) 
+  ))
   ->add_field('message', array(
     'type' => 'tinymce',
     'postprocess' => array('xss'),
@@ -702,35 +702,17 @@ function eventsform(FAPI\form $form, &$form_state){
     'title' => 'textfields',
   ));
 
-  $num_textfields = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) ? (count($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) + 1) : 1;
-   /*$fieldset->add_field('num_textfields', array(
-    'type' => 'textfield',
+  $num_textfields = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']['num_textfields']['value']) ? ($form_state['input_form_definition']['fields'][$step]['textfields']['fields']['num_textfields']['value'] + 1) : 1;
+
+  $fieldset->add_field('num_textfields', array(
+    'type' => 'hidden',
     'default_value' => $num_textfields,
-    'size' => 3,
-    'attributes' => array(  'style' => 'width: auto;' ),
-  ));*/
+  ));
 
   for($i = 0 ; $i < $num_textfields; $i++ ){
-    // $suffix = new stdClass();
-    // $suffix->oldnum = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) ? count($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) : NULL;
-    // $suffix->i = $i;
-    // $suffix->num_textfields = $num_textfields;
-    // $suffix->form_state = (!empty($form_state['input_form_definition']['fields'][$step]['textfields']['fields'])) ? array_keys($form_state['input_form_definition']['fields'][$step]['textfields']['fields']) : NULL;
-
     $fieldset->add_field('text_'.$i, array(
       'type' => 'textfield',
       'title' => 'text',
-      'ajax_url' => $_SERVER['PHP_SELF'],
-      'event' => array(
-        array(
-          'event' => 'focus',
-          'callback' => 'events_form_callback',
-          'target' => 'fieldset-textfields',
-          'effect' => 'fade',
-          'method' => 'replace',
-        ),
-      ),
-      // 'suffix' => '<pre>'.var_export($suffix, TRUE).'</pre>',
     ));
   }
 
@@ -746,9 +728,25 @@ function eventsform(FAPI\form $form, &$form_state){
     //$fieldset->add_js('console.log($("#num_textfields").val())');
   }
 
+  $form->add_field('addmore', array(
+    'type' => 'submit',
+    'value' => 'Add more',
+    'ajax_url' => $_SERVER['PHP_SELF'],
+    'event' => array(
+      array(
+        'event' => 'click',
+        'callback' => 'events_form_callback',
+        'target' => 'fieldset-textfields',
+        'effect' => 'fade',
+        'method' => 'replace',
+      ),
+    ),
+  ));
+
   $form->add_field('submit', array(
     'type' => 'submit',
   ));
+
 //var_dump($form->toArray());
   return $form;
 }
