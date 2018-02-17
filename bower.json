@@ -1,8 +1,0 @@
-{
-  "name": "degami-php-forms-api",
-  "version": "0.1",
-  "main": "src/form.php",
-  "dependencies": {
-    "jqueryui": "master"
-  },
-}
