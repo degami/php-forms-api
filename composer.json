@@ -1,11 +1,11 @@
 {
   "name": "degami/php-forms-api",
   "description": "A simple to use Forms API for generating, validating and processing forms in PHP",
-  "version": "2.2.2",
   "type": "library",
   "keywords": ["forms", "PHP", "API"],
   "homepage": "https://github.com/degami/php-forms-api",
-  "license": "GNU Public License",
+
+  "license": "MIT",
   "authors": [
     {
       "name": "degami@github.com",
@@ -13,7 +13,7 @@
     }
   ],
   "require": {
-      "components/jqueryui": "*"
+      "components/jqueryui": "1.12.*"
   },
   "autoload": {
     "files": ["src/php_forms_api_defines.php"],
