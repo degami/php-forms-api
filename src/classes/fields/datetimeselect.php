@@ -13,9 +13,9 @@ use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\field;
 
 /**
- * the datetime group field class
+ * the datetime select group field class
  */
-class datetime extends composed_field {
+class datetimeselect extends composed_field {
 
   /**
    * date sub element
@@ -46,11 +46,11 @@ class datetime extends composed_field {
     unset($options['title']);
     $options['container_tag'] = '';
 
-    $options['type'] = 'date';
-    $this->date = new date($options,$name.'_date');
+    $options['type'] = 'dateselect';
+    $this->date = new dateselect($options,$name.'_date');
 
-    $options['type'] = 'time';
-    $this->time = new time($options,$name.'_time');
+    $options['type'] = 'timeselect';
+    $this->time = new timeselect($options,$name.'_time');
   }
 
   /**
@@ -168,7 +168,7 @@ class datetime extends composed_field {
     return [
       'date'=> $this->date->values(),
       'time'=> $this->time->values(),
-      'datetime' => $this->date->values().' '.$this->time->values(),
+      'datetime' => $this->date->value_string().' '.$this->time->value_string(),
     ];
   }
 }

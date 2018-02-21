@@ -652,28 +652,55 @@ function pluploadform(FAPI\form $form, &$form_state){
 function datesform(FAPI\form $form, &$form_state){
   //$form = new FAPI\form(array('form_id' => 'dates'));
 
-  $form->add_field('date', array(
+  $fieldset = $form->add_field('html', array(
+    'type' => 'fieldset',
+    'title' => 'as html fields',    
+  ));
+
+  $fieldset->add_field('date', array(
     'type' => 'date',
+    'title' => 'select date',
+  ));
+
+  $fieldset->add_field('time', array(
+    'type' => 'time',
+    'title' => 'time',
+    'default_value' => '10:23',
+  ));
+
+  $fieldset->add_field('datetime', array(
+    'type' => 'datetime',
+    'title' => 'date time',
+  ));
+
+  $fieldset->add_field('datepicker', array(
+    'type' => 'datepicker',
+    'title' => 'date picker',
+  ));
+
+  $fieldset = $form->add_field('selects', array(
+    'type' => 'fieldset',
+    'title' => 'as selects',
+  ));
+
+  $fieldset->add_field('dateselect', array(
+    'type' => 'dateselect',
     'title' => 'select date',
     'granularity' => 'day',
     'js_selects' => FALSE,
   ));
 
-  $form->add_field('time', array(
-    'type' => 'time',
+  $fieldset->add_field('timeselect', array(
+    'type' => 'timeselect',
     'title' => 'time',
     'granularity' => 'minutes',
     'default_value' => array('hours'=>10,'minutes'=>23),
     'js_selects' => FALSE,
   ));
 
-  $form->add_field('datepicker', array(
-    'type' => 'datepicker',
-    'title' => 'date picker',
-  ));
 
-  $form->add_field('datetime', array(
-    'type' => 'datetime',
+  $fieldset->add_field('datetimeselect', array(
+    'type' => 'datetimeselect',
     'title' => 'date time',
   ));
 
