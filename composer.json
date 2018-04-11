@@ -22,6 +22,8 @@
       "Degami\\PHPFormsApi\\Interfaces\\": "src/interfaces",
       "Degami\\PHPFormsApi\\Base\\": "src/classes/base",
       "Degami\\PHPFormsApi\\Traits\\": "src/classes/traits",
+      "Degami\\PHPFormsApi\\Abstracts\\Containers\\": "src/classes/abstracts/containers",
+      "Degami\\PHPFormsApi\\Abstracts\\Fields\\": "src/classes/abstracts/fields",
       "Degami\\PHPFormsApi\\Accessories\\": "src/classes/accessories",
       "Degami\\PHPFormsApi\\Containers\\": "src/classes/containers",
       "Degami\\PHPFormsApi\\Fields\\": "src/classes/fields"

@@ -10,6 +10,7 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
+use Degami\PHPFormsApi\Abstracts\Containers\sortable_container;
 
 /**
  * a sortable table rows field container

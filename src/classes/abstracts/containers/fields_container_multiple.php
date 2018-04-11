@@ -7,7 +7,7 @@
    ####              FIELD CONTAINERS                   ####
    ######################################################### */
 
-namespace Degami\PHPFormsApi\Containers;
+namespace Degami\PHPFormsApi\Abstracts\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;

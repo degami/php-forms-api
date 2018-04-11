@@ -7,7 +7,7 @@
    ####                    FIELDS                       ####
    ######################################################### */
 
-namespace Degami\PHPFormsApi\Fields;
+namespace Degami\PHPFormsApi\Abstracts\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\field;

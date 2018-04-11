@@ -10,6 +10,7 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
+use Degami\PHPFormsApi\Abstracts\Containers\fields_container_multiple;
 
 /**
  * a "tabbed" field container

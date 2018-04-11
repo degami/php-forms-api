@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Abstracts\Containers\fields_container_multiple;
 use Degami\PHPFormsApi\Fields\datetime;
 use Degami\PHPFormsApi\Fields\geolocation;
 use \Exception;

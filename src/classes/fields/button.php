@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\field;
+use Degami\PHPFormsApi\Abstracts\Fields\clickable;
 
 /**
  * the button field class

@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Base\field;
+use Degami\PHPFormsApi\Abstracts\Fields\captcha;
 
 /**
  * the image captcha field class
