@@ -24,7 +24,7 @@ use Degami\PHPFormsApi\Fields\geolocation;
 use Degami\PHPFormsApi\Fields\checkbox;
 use Degami\PHPFormsApi\Fields\radios;
 use Degami\PHPFormsApi\Fields\select;
-use Degami\PHPFormsApi\Fields\field_multivalues;
+use Degami\PHPFormsApi\Abstracts\Fields\field_multivalues;
 
 
 /**

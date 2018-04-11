@@ -14,7 +14,7 @@ use Degami\PHPFormsApi\Traits\containers;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Fields\checkbox;
 use Degami\PHPFormsApi\Fields\select;
-use Degami\PHPFormsApi\Fields\field_multivalues;
+use Degami\PHPFormsApi\Abstracts\Fields\field_multivalues;
 use Degami\PHPFormsApi\Fields\datetime;
 use Degami\PHPFormsApi\Fields\geolocation;
 use \Exception;
