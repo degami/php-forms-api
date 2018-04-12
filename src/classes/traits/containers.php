@@ -11,7 +11,7 @@ namespace Degami\PHPFormsApi\Traits;
 
 use Degami\PHPFormsApi\Base\field;
 use Degami\PHPFormsApi\Base\fields_container;
-use Degami\PHPFormsApi\Fields\composed_field;
+use Degami\PHPFormsApi\Abstracts\Fields\composed_field;
 use \Exception;
 
 /**
