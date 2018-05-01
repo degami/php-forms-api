@@ -9,8 +9,8 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
-use Degami\PHPFormsApi\Base\field;
-use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Abstracts\Base\fields_container;
 use Degami\PHPFormsApi\Abstracts\Fields\composed_field;
 use \Exception;
 
@@ -58,7 +58,6 @@ trait containers {
     if (is_array($field)) {
       $field_type = $this->parentNameSpace() . "\\Fields\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
       $container_type = $this->parentNameSpace() . "\\Containers\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
-      $base_type = $this->parentNameSpace() . "\\Base\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
       $root_type = $this->parentNameSpace() . "\\" . ( isset($field['type']) ? "{$field['type']}" : 'textfield' );
       if(!class_exists($field_type) && !class_exists($container_type) && !class_exists($root_type) && !class_exists($base_type)){
         throw new Exception("Error adding field. Class \"$field_type\", \"$base_type\", \"$container_type\", \"$root_type\" not found", 1);
@@ -68,8 +67,6 @@ trait containers {
         $field = new $field_type($field, $name);
       } else if( class_exists($container_type) ) {
         $field = new $container_type($field, $name);
-      } else if( class_exists($base_type) ) {
-        $field = new $base_type($field, $name);
       } else {
         $field = new $root_type($field, $name);
       }

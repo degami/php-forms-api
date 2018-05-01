@@ -7,13 +7,13 @@
    ####                  FIELD BASE                     ####
    ######################################################### */
 
-namespace Degami\PHPFormsApi\Base;
+namespace Degami\PHPFormsApi\Abstracts\Base;
 
 use Degami\PHPFormsApi\Interfaces\field_interface;
 use Degami\PHPFormsApi\Traits\tools;
 use Degami\PHPFormsApi\Accessories\ordered_functions;
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Abstracts\Base\fields_container;
 use Degami\PHPFormsApi\Fields\checkbox;
 
 /**

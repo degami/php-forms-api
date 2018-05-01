@@ -10,7 +10,7 @@
 namespace Degami\PHPFormsApi\Abstracts\Fields;
 
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\field;
+use Degami\PHPFormsApi\Abstracts\Base\field;
 
 /**
  * the "clickable" field element (a button or a submit )

@@ -10,7 +10,7 @@
 namespace Degami\PHPFormsApi\Abstracts\Containers;
 
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Abstracts\Base\fields_container;
 
 /**
  * an abstract sortable field container

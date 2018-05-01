@@ -10,7 +10,7 @@
 namespace Degami\PHPFormsApi\Abstracts\Fields;
 
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\field;
+use Degami\PHPFormsApi\Abstracts\Base\field;
 
 /**
  * the "actionable" field element class (a button, a submit or a reset)

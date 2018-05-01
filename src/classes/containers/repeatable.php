@@ -10,7 +10,7 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Abstracts\Base\fields_container;
 use Degami\PHPFormsApi\Abstracts\Containers\fields_container_multiple;
 use Degami\PHPFormsApi\Fields\datetime;
 use Degami\PHPFormsApi\Fields\geolocation;
@@ -81,7 +81,7 @@ class repeatable extends fields_container_multiple {
     }
     for( $i = 0 ; $i < $this->num_reps; $i++ ){
       foreach ($this->repetable_fields as $rfield){
-        /** @var \Degami\PHPFormsApi\Base\field $field */
+        /** @var \Degami\PHPFormsApi\Abstracts\Base\field $field */
         $field = clone $rfield;
         $field
           ->set_id($this->get_name().'_'.$i.'_'.$field->get_name())
@@ -96,7 +96,7 @@ class repeatable extends fields_container_multiple {
     $valuestoprocess = array_values($values[ $this->get_name() ]);
 
     foreach($this->get_fields() as $i => $field){
-      /** @var \Degami\PHPFormsApi\Base\field $field */
+      /** @var \Degami\PHPFormsApi\Abstracts\Base\field $field */
       $matches = NULL;
       if( preg_match("/".$this->get_name()."\[([0-9]+)\]\[(.*?)\]/", $field->get_name(), $matches) ){
         if( isset( $valuestoprocess[ $matches[1] ][ $matches[2] ] ) ){
@@ -110,7 +110,7 @@ class repeatable extends fields_container_multiple {
   public function get_value() {
     $out = [];
     foreach($this->get_fields() as $i => $field){
-      /** @var \Degami\PHPFormsApi\Base\field $field */
+      /** @var \Degami\PHPFormsApi\Abstracts\Base\field $field */
       if($field->is_a_value() == TRUE){
         $matches = NULL;
         if( preg_match("/".$this->get_name()."\[([0-9]+)\]\[(.*?)\]/", $field->get_name(), $matches) ){
@@ -133,7 +133,7 @@ class repeatable extends fields_container_multiple {
       $repetatable_fields = "<div id=\"{$id}-row-{x}\">\n<div class=\"repeatable-row\">";
       $fake_form = new form();
       foreach($this->repetable_fields as $rfield){
-        /** @var \Degami\PHPFormsApi\Base\field $field */
+        /** @var \Degami\PHPFormsApi\Abstracts\Base\field $field */
         $field = clone $rfield;
         $field
           ->set_id($this->get_name().'_{x}_'.$field->get_name())

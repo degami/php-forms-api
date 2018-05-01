@@ -10,7 +10,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\field;
+use Degami\PHPFormsApi\Abstracts\Base\field;
 
 /**
  * the google maps geolocation field class

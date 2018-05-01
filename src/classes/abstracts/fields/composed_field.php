@@ -10,7 +10,7 @@
 namespace Degami\PHPFormsApi\Abstracts\Fields;
 
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\field;
+use Degami\PHPFormsApi\Abstracts\Base\field;
 use Degami\PHPFormsApi\Containers\tag_container;
 
 /**

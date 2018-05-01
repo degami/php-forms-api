@@ -10,7 +10,7 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
-use Degami\PHPFormsApi\Base\fields_container;
+use Degami\PHPFormsApi\Abstracts\Base\fields_container;
 
 /**
  * a field container that can specify container's html tag
