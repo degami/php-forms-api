@@ -64,12 +64,19 @@ trait containers {
       }
 
       if( class_exists($field_type) ){
-        $field = new $field_type($field, $name);
+        $type = $field_type;
       } else if( class_exists($container_type) ) {
-        $field = new $container_type($field, $name);
+        $type = $container_type;
       } else {
-        $field = new $root_type($field, $name);
+        $type = $root_type;
       }
+
+      if( is_subclass_of( $type, 'Degami\PHPFormsApi\Abstracts\Base\field' )  ){
+        $field = $type::get_instance($field, $name); 
+      } else {
+        $field = new $type($field, $name);
+      }
+
     }else if($field instanceof field){
       $field->set_name($name);
     }else{

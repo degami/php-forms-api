@@ -170,6 +170,22 @@ abstract class field extends element implements field_interface{
     $this->value = $this->default_value;
   }
 
+  /**
+   * class "static" constructor 
+   * @param array  $options build options
+   * @param string $name    field name
+   */
+  public static function get_instance($options = [], $name = NULL){
+    // let others alter the field
+    $defined_functions = get_defined_functions();
+    $called_class = array_map("strtolower", explode("\\",preg_replace( "/^Degami\\\\PHPFormsApi\\\\(.*?)$/i","\\1", get_called_class() ), 2));
+    foreach( $defined_functions['user'] as $function_name){
+      if( preg_match("/.*?_".$called_class[1]."_".$called_class[0]."_alter$/i", $function_name) ){
+        call_user_func_array( $function_name, [ &$options, &$name ] );
+      }
+    }
+    return new static($options, $name);
+  }
 
   /**
    * return field value
@@ -446,7 +462,7 @@ abstract class field extends element implements field_interface{
     $output .= $this->get_suffix();
     $output .= $this->get_element_suffix();
 
-    if( count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
+    if( is_array($this->event) && count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
       foreach($this->event as $event){
         $eventjs = $this->generate_event_js($event, $form);
         $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".$eventjs)));
