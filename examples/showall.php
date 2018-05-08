@@ -36,8 +36,14 @@ $form = FAPI\form_builder::get_form('showallform');
   <title>Example Show them all form</title>
   <?php include "header.php";?>
   <script type="text/javascript" src='http://cdn.tinymce.com/4/tinymce.min.js'></script>
-  <script type="text/javascript" src="http://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
   <script type="text/javascript" src="http://dbushell.github.io/Nestable/jquery.nestable.js"></script>
+
+  <?php if (file_exists("igorescobar/jquery-mask-plugin/dist/jquery.mask.min.js")):?>
+    <script type="text/javascript" src="igorescobar/jquery-mask-plugin/dist/jquery.mask.min.js"></script>
+  <?php else:?>
+    <script type="text/javascript" src="http://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
+  <?php endif;?>
+
   <script type="text/javascript"><?php
 
     // if you wish to have form's js scripts here rather than after the form....

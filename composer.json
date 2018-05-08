@@ -13,7 +13,9 @@
     }
   ],
   "require": {
-      "components/jqueryui": "1.12.*"
+      "php": ">=5.5.0",
+      "components/jqueryui": "1.12.*",
+      "igorescobar/jquery-mask-plugin": "*"
   },
   "autoload": {
     "files": ["src/php_forms_api_defines.php"],

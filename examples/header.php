@@ -178,8 +178,19 @@ if(isset($_GET['clearsession'])){
 
   </style>
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
+  <?php if (file_exists("components/jquery/jquery.min.js")):?>
+    <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
+  <?php else:?>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <?php endif;?>
+  
+  <?php if (file_exists("components/jqueryui/jquery-ui.min.js")):?>
+    <script type="text/javascript" src="components/jqueryui/jquery-ui.min.js"></script>
+  <?php else:?>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <?php endif;?>
+
   <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <!--  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/eggplant/jquery-ui.css"> -->
 <script type="text/javascript">
