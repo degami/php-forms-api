@@ -4,6 +4,13 @@ include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
 session_start();
 
+// function my_textfield_field_alter(&$options, &$name){
+//   $name = 'my_'.$name;
+//   $options['attributes'] = ['style' => 'border: solid 1px #f00;'];
+// }
+// function my_textfield_field_render_output_alter(&$html){
+//   $html = 'aaa'.$html;
+// }
 // function __($str){
 //   return "__ $str __";
 // }
