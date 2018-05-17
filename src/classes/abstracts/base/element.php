@@ -176,7 +176,6 @@ abstract class element{
    */
   public function add_error($error_string,$validate_function_name){
     $this->notifications['error'][$validate_function_name] = $error_string;
-
     return $this;
   }
 

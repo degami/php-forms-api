@@ -20,6 +20,7 @@ session_start();
 // as this is not a real example I'm just outputting the values for now.
 function contactform_submit(&$form) {
   $form_values = $form->values();
+
   return implode(' - ',
     [
       $form_values->fieldset->name,
