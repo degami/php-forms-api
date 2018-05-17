@@ -21,6 +21,13 @@ session_start();
 function contactform_submit(&$form) {
   $form_values = $form->values();
 
+  $out = [];
+  foreach ($form_values->fieldset as $key => $value) {
+    $out[$key] = $value;
+  }
+
+  return $out;
+
   return implode(' - ',
     [
       $form_values->fieldset->name,
