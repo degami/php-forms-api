@@ -9,11 +9,12 @@
 
 namespace Degami\PHPFormsApi\Accessories;
 use Degami\PHPFormsApi\Abstracts\Base\data_bag;
+use \Countable;
 
 /**
  * class for maintaining ordered list of functions
  */
-class ordered_functions extends data_bag{
+class ordered_functions extends data_bag implements Countable{
 
   /**
    * sort function name
@@ -129,4 +130,9 @@ class ordered_functions extends data_bag{
   public function toArray(){
     return $this->data;
   }
+
+  public function count(){
+    return count($this->data);
+  }
+
 }

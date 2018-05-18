@@ -456,7 +456,7 @@ abstract class field extends element implements field_interface{
     $output .= $this->get_suffix();
     $output .= $this->get_element_suffix();
 
-    if( is_array($this->event) && count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
+    if( count($this->event) > 0 && trim($this->get_ajax_url()) != '' ){
       foreach($this->event as $event){
         $eventjs = $this->generate_event_js($event, $form);
         $this->add_js(preg_replace("/\s+/"," ",str_replace("\n","","".$eventjs)));
