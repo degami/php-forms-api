@@ -13,12 +13,13 @@ use \Iterator;
 use \IteratorAggregate;
 use \ArrayIterator;
 use \ArrayAccess;
+use \Countable;
 
 /**
  * a class to hold form fields submitted values
  */
 
-abstract class data_bag  implements Iterator, ArrayAccess{
+abstract class data_bag  implements Iterator, ArrayAccess, Countable{
 
   /**
    * current position
@@ -146,4 +147,8 @@ abstract class data_bag  implements Iterator, ArrayAccess{
     }
     return $out;
   }	
+
+  public function count(){
+    return count($this->data);
+  }
 }
