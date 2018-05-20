@@ -78,7 +78,7 @@ abstract class field_multivalues extends field {
 
     if(!is_array($this->value) && !empty($this->value)){
       $check = $this->options_has_key($this->value);
-      $this->add_error(str_replace("%t",$titlestr, $this->get_text("%t: Invalid choice")).serialize( [ $this->value, $this->options_has_key($this->value) ] ),__FUNCTION__);
+      $this->add_error(str_replace("%t",$titlestr, $this->get_text("%t: Invalid choice")),__FUNCTION__);
 
       if(!$check) return FALSE;
     }else if(field_multivalues::is_foreacheable($this->value)){
