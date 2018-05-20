@@ -659,7 +659,6 @@ class form extends element{
           }
         }
       }
-
       for($step = 0; $step <= $this->current_step; $step++){
         foreach ($this->get_fields($step) as $field) {
           if (!$field->valid()) {
@@ -746,7 +745,7 @@ class form extends element{
    * @return boolean this is the final step
    */
   private function is_final_step(){
-    return ($this->current_step >= $this->get_num_steps());
+    return ($this->get_current_step() >= $this->get_num_steps());
   }
 
   /**
