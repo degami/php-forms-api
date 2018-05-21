@@ -98,8 +98,10 @@ class bulk_table extends table_container{
       }
     }
 
+    $operation_key = $values[$this->get_name()]['op'];
+    $callable = $this->operations[ $operation_key ]['op'];
     foreach($values[$this->get_name()]['rows'] as $args){
-      call_user_func_array($this->operations[ $values[$this->get_name()]['op'] ], $args);
+      call_user_func_array($callable, $args);
     }
 
     parent::process( $values );

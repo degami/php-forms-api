@@ -989,7 +989,7 @@ function bulkform(FAPI\form $form, &$form_state){
     'number'
   ));
   $bulk->add_operation('dump', 'dump', 'var_dump');
-  $bulk->add_operation('print', 'print', 'print');
+  $bulk->add_operation('print', 'print', 'printf');
 
   for( $i = 0; $i < 4; $i++){
     $bulk->add_row()->add_field('text_'.$i, array(

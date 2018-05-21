@@ -91,10 +91,10 @@ abstract class fields_container_multiple extends fields_container{
    */
   public function remove_field($name, $partitions_index = 0){
     unset($this->fields[$name]);
-    if(($key = array_search($name, $this->insert_field_order[$partitions_index])) !== false) {
+    if( isset($this->insert_field_order[$partitions_index]) && ($key = array_search($name, $this->insert_field_order[$partitions_index])) !== false) {
       unset($this->insert_field_order[$partitions_index][$key]);
     }
-    if(($key = array_search($name, $this->partitions[$partitions_index]['fieldnames'])) !== false) {
+    if( isset($this->partitions[$partitions_index]['fieldnames']) && ($key = array_search($name, $this->partitions[$partitions_index]['fieldnames'])) !== false) {
       unset($this->partitions[$partitions_index]['fieldnames'][$key]);
     }
     return $this;
@@ -122,7 +122,7 @@ abstract class fields_container_multiple extends fields_container{
   public function set_partition_fields( $fields, $partition_index = 0 ){
     $fieldsnames = $this->partitions[$partition_index]['fieldnames'];
     foreach($fieldsnames as $name){
-      $this->remove_field($name, $partitions_index);
+      $this->remove_field($name, $partition_index);
     }
     unset($this->partitions[$partition_index]['fieldnames']);
     $this->partitions[$partition_index]['fieldnames'] = [];

@@ -229,7 +229,7 @@ abstract class field extends element implements field_interface{
    * resets the field
    */
   public function reset() {
-    $this->value = $this->default_value;
+    $this->set_value( $this->get_default_value() );
     $this->pre_rendered = FALSE;
     $this->set_errors( [] );
   }
@@ -304,7 +304,7 @@ abstract class field extends element implements field_interface{
    * @param  mixed $value value to set
    */
   public function process($value) {
-    $this->value = $value;
+    $this->set_value($value);
   }
 
   /**
@@ -314,12 +314,12 @@ abstract class field extends element implements field_interface{
   public function preprocess($process_type = "preprocess") {
     foreach ($this->{$process_type} as $processor) {
       $processor_func = "process_{$processor}";
-      if (function_exists($processor_func)) {
-        $this->value = $processor_func($this->value);
-      } elseif(method_exists(get_class($this), $processor_func)) {
+      if(method_exists(get_class($this), $processor_func)) {
         $this->value = call_user_func( [$this, $processor_func], $this->value );
       } elseif(method_exists(form::class, $processor_func)) {
         $this->value = call_user_func( [form::class,$processor_func], $this->value );
+      } elseif(function_exists("process_{$this->get_type()}_{$processor}")) {
+        $this->value = $processor_func($this->value);
       }
     }
   }
@@ -466,7 +466,8 @@ abstract class field extends element implements field_interface{
     // let others alter the output
     static::execute_alter( "/.*?_".static::get_class_name_string()."_render_output_alter$/i", [&$output] );
 
-    return $output ;
+    // return html string
+    return $output;
   }
 
   /**
