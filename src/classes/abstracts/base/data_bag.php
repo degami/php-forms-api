@@ -35,11 +35,15 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
 
   public function __construct($data) {
   	$this->position = -1;
-  	$called_class = get_called_class();
+    $this->set($data);
+  }
+
+  public function set( $data ){
     foreach( $data as $k => $v ){
       if( is_numeric($k) ) $k = '_value'.$k;
-      $this->{$k} = (is_array($v)) ? new $called_class($v) : $v;
+      $this->{$k} = $v;
     }
+    return $this;
   }
 
   /**
@@ -97,7 +101,7 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
   }
 
   public function __set($key, $value){
-    $this->data[$key] = $value;
+    $this->data[$key] = (is_array($value)) ? new static($value) : $value;
     return $this;
   }
 
@@ -110,11 +114,7 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
   }
 
   public function offsetSet($offset, $value) {
-    if (is_null($offset)) {
-      $this->data[] = $value;
-    } else {
-      $this->data[$offset] = $value;
-    }
+    $this->{$offset} = $value;
   }
 
   public function offsetExists($offset) {
