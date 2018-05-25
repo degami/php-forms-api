@@ -34,7 +34,7 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
   protected $data = [];
 
   public function __construct($data) {
-  	$this->position = -1;
+    $this->position = -1;
     $this->set($data);
   }
 
@@ -44,6 +44,15 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
       $this->{$k} = $v;
     }
     return $this;
+  }
+
+  public function unset( $key ){
+    $this->offsetUnset($key);
+    return $this;
+  }
+
+  public function isset( $key ){
+    return $this->offsetExists( $key );
   }
 
   /**
@@ -57,7 +66,7 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
    * get data keys
    */
   private function get_keys(){
-  	return array_keys( $this->data );
+    return array_keys( $this->data );
   }
 
   /**
@@ -65,8 +74,8 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
    * @return mixed current element
    */
   public function current() {
-  	$keys = $this->get_keys();
-  	if(!isset($keys[$this->position])) return FALSE;
+    $keys = $this->get_keys();
+    if(!isset($keys[$this->position])) return FALSE;
     return $this->data[ $keys[$this->position] ];
   }
 
@@ -75,7 +84,7 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
    * @return integer position
    */
   public function key() {
-  	$keys = $this->get_keys();
+    $keys = $this->get_keys();
     return $keys[ $this->position ];
   }
 
@@ -91,8 +100,8 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
    * @return boolean current position is valid
    */
   public function valid() {
-  	$keys = $this->get_keys();
-  	if(!isset($keys[$this->position])) return FALSE;
+    $keys = $this->get_keys();
+    if(!isset($keys[$this->position])) return FALSE;
     return isset($this->data[ $keys[$this->position] ]);
   }
 
@@ -146,7 +155,7 @@ abstract class data_bag  implements Iterator, ArrayAccess, Countable{
       }
     }
     return $out;
-  }	
+  } 
 
   public function count(){
     return count($this->data);
