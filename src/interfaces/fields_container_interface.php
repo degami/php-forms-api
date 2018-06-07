@@ -14,7 +14,7 @@ use Degami\PHPFormsApi\form;
  * fields container interface
  */
 interface fields_container_interface {
-  
+
   /**
    * add field to form
    * @param string  $name  field name

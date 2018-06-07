@@ -1,20 +1,21 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                 ACCESSORIES                     ####
-   ######################################################### */
+####                 ACCESSORIES                     ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Accessories;
 
+use Degami\PHPFormsApi\Interfaces\tag_interface;
 use Degami\PHPFormsApi\Abstracts\Base\base_element;
 
 /**
- * a class to render form fields tags
- */
-class tag_element extends base_element{
+* a class to render form fields tags
+*/
+class tag_element extends base_element implements tag_interface{
 
 	static $closed_tags = ['textarea','select','option','optgroup','datalist','button'];
 
@@ -30,14 +31,13 @@ class tag_element extends base_element{
 	protected $value_needed = TRUE;
 
 
-	/**
-	* class constructor
-	* @param array  $options build options
-	*/
-	public function __construct($options = []) {
-
+/**
+* class constructor
+* @param array  $options build options
+*/
+public function __construct($options = []) {
 		$this->tag = '';
-		
+
 		$this->type = '';
 		$this->name = '';
 		$this->id = '';
@@ -78,14 +78,14 @@ class tag_element extends base_element{
 			}
 		}
 
-	    foreach ($options as $name => $value) {
-	      $name = trim($name);
-	      if( property_exists(get_class($this), $name) )
-	        $this->{$name} = $value;
-	    }
+		foreach ($options as $name => $value) {
+			$name = trim($name);
+			if( property_exists(get_class($this), $name) )
+				$this->{$name} = $value;
+		}
 
 		if(!isset($this->attributes['class'])){
-		  $this->attributes['class'] = $this->get_element_class_name();
+			$this->attributes['class'] = $this->get_element_class_name();
 		}
 	}
 
@@ -102,8 +102,8 @@ class tag_element extends base_element{
 		}
 		$attributes = $this->get_attributes($this->reserved_attributes);
 		return "<{$this->tag}{$reserved_attributes}{$attributes}".($this->has_close ? ">" : "/>").
-				$this->text.
-				($this->has_close ? $this->render_children()."</{$this->tag}>" : "");
+		$this->text.
+		($this->has_close ? $this->render_children()."</{$this->tag}>" : "");
 	}
 
 	public function add_child($child) {
@@ -112,11 +112,11 @@ class tag_element extends base_element{
 		return $this;
 	}
 
-	public function render_children(){
+	private function render_children(){
 		$out = "";
 		foreach ($this->children as $key => $value) {
 			if($value instanceof tag_element) $out .= $value->render_tag();
-			// else if( $value instanceof field) $out .= $value->render();
+	// else if( $value instanceof field) $out .= $value->render();
 			else if( is_scalar($value)) $out .= $value;
 		}
 		return $out;
