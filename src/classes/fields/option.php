@@ -12,6 +12,8 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\element;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
+
 
 /**
  * the option element class
@@ -56,15 +58,26 @@ class option extends element{
     $this->no_translation = $form_field->no_translation;
     $selected = '';
     $field_value = $form_field->get_value();
+
     if(is_array($field_value) || $form_field->is_multiple() == TRUE){
       if( !is_array($field_value) ) $field_value = [$field_value];
-      $selected = in_array($this->key, array_values($field_value), TRUE) ? ' selected="selected"' : '';
+      if( in_array($this->key, array_values($field_value), TRUE) ){
+        $this->attributes['selected'] = 'selected';
+      }
     }else{
-      $selected = ($this->key === $field_value) ? ' selected="selected"' : '';
+      if($this->key === $field_value){
+        $this->attributes['selected'] = 'selected';
+      }
     }
-    $attributes = $this->get_attributes( ['value','selected'] );
-    $output = "<option value=\"{$this->key}\"{$selected}{$attributes}>".$this->get_text($this->label)."</option>\n";
-    return $output;
+    $tag = new tag_element([
+      'tag' => 'option',
+      'type' => null,
+      'value' => $this->key,
+      'text' => $this->get_text($this->label),
+      'attributes' => $this->attributes + ['class' => FALSE],
+      'has_close' => TRUE,
+    ]);
+    return $tag->render_tag();
   }
 
   /**

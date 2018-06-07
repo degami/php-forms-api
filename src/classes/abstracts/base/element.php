@@ -20,7 +20,7 @@ use \Exception;
  * every form element classes inherits from this class
  * @abstract
  */
-abstract class element{
+abstract class element extends base_element{
 
   use tools;
 
@@ -71,12 +71,6 @@ abstract class element{
    * @var array
    */
   protected $notifications = [ 'error' => [], 'highlight'=>[] ];
-
-  /**
-   * element attributes array
-   * @var array
-   */
-  protected $attributes = [];
 
   /**
    * element js array
@@ -242,65 +236,6 @@ abstract class element{
     $this->notifications['highlight'] = $highlights;
 
     return $this;
-  }
-
-
-  /**
-   * set html attributes
-   * @param string $name  attribute name
-   * @param string $value attribute value
-   * @return element
-   */
-  public function set_attribute($name,$value){
-    $this->attributes[$name] = $value;
-
-    return $this;
-  }
-
-
-  /**
-   * get attribute value if present. FALSE on failure
-   * @param  string $name attribute name
-   * @return string       attribute description
-   */
-  public function get_attribute($name){
-    return isset($this->attributes[$name]) ? $this->attributes[$name] : FALSE;
-  }
-
-  /**
-   * returns the element html attributes string
-   * @param  array  $reserved_arr array of attributes name that will be skipped if present in the attributes array
-   * @return string               the html attributes string
-   */
-  public function get_attributes( $reserved_arr = ['type','name','id','value'] ){
-    return $this->get_attributes_string($this->attributes, $reserved_arr);
-  }
-
-  public function get_element_class_name(){
-    return strtolower( substr(get_class($this), strrpos(get_class($this), '\\') + 1) );
-  }
-
-  /**
-   * returns the html attributes string
-   * @param  array $attributes_arr  attributes array
-   * @param  array  $reserved_arr   array of attributes name that will be skipped if present in the attributes array
-   * @return string                 the html attributes string
-   */
-  public function get_attributes_string( $attributes_arr, $reserved_arr = ['type','name','id','value'] ){
-    $attributes = '';
-    foreach ($reserved_arr as $key => $reserved) {
-      if(isset($attributes_arr[$reserved])) unset($attributes_arr[$reserved]);
-    }
-    foreach ($attributes_arr as $key => $value) {
-      if(!is_string($value) && !is_numeric($value)) continue;
-      $value = form::process_plain($value);
-      if(trim($value) != ''){
-        $value=trim($value);
-        $attributes .= " {$key}=\"{$value}\"";
-      }
-    }
-    $attributes = trim($attributes);
-    return empty($attributes) ? '' : ' ' . $attributes;
   }
 
   /**
@@ -496,39 +431,6 @@ abstract class element{
     return '';
   }
 
-  /**
-   * to array
-   * @return array array representation for the element properties
-   */
-  public function toArray(){
-    $values = get_object_vars($this);
-    foreach($values as $key => $val){
-      $values[$key] = element::_toArray($key, $val);
-    }
-    return $values;
-  }
-
-  /**
-   * _toArray private method
-   * @param  mixed  $key  key
-   * @param  mixed  $elem element
-   * @return array        element as an array
-   */
-  private static function _toArray($key, $elem, $path = '/'){
-    if($key === 'parent'){
-      return "-- link to parent --";
-    }
-
-    if( is_object($elem) && ($elem instanceof element ||  $elem instanceof ordered_functions) ){
-      $elem = $elem->toArray();
-    }else if(is_array($elem)){
-      foreach($elem as $k => $val){
-        $elem[$k] = element::_toArray($k, $val, $path.$key.'/');
-      }
-    }
-    return $elem;
-  }
-
   protected static function search_field_by_id( $container, $fieldid ){
     /** @var field $container */
     if( $container instanceof fields_container || $container instanceof form ){
@@ -547,31 +449,6 @@ abstract class element{
       return $container;
     }
     return NULL;
-  }
-
-  /**
-   * Set/Get attribute wrapper
-   *
-   * @param   string $method
-   * @param   array $args
-   * @return  mixed
-   */
-  public function __call($method, $args){
-      switch ( strtolower(substr($method, 0, 4)) ) {
-          case 'get_' :
-            $name = trim(strtolower(substr($method, 4)));
-            if( property_exists(get_class($this), $name) ){
-              return $this->{$name};
-            }
-          case 'set_' :
-            $name = trim(strtolower(substr($method, 4)));
-            $value = is_array($args) ? reset($args) : NULL;
-            if( property_exists(get_class($this), $name) ){
-              $this->{$name} = $value;
-              return $this;
-            }
-      }
-      throw new Exception("Invalid method ".get_class($this)."::".$method."(".print_r($args,1).")");
   }
 
 }

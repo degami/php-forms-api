@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * the switch selection field class

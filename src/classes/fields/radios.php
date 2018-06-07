@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 use Degami\PHPFormsApi\Abstracts\Fields\field_multivalues;
 
 /**
@@ -29,16 +30,28 @@ class radios extends field_multivalues {
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
 
     foreach ($this->options as $key => $value) {
-      $attributes = $this->get_attributes();
       if(is_array($value) && isset($value['attributes'])){
-        $attributes = $this->get_attributes_string($value['attributes'],['type','name','id','value']);
+        $attributes = $value['attributes'];
+      } else {
+        $attributes = [];
       }
+
       if(is_array($value)){
         $value = $value['value'];
       }
 
-      $checked = ($this->value == $key) ? ' checked="checked"' : '';
-      $output .= "<label class=\"label-radio\" for=\"{$id}-{$key}\"><input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$this->name}\" value=\"{$key}\"{$checked}{$attributes} />{$value}</label>\n";
+      $output .= "<label class=\"label-radio\" for=\"{$id}-{$key}\">";
+      $tag = new tag_element([
+        'tag' => 'input',
+        'type' => 'radio',
+        'id' => "{$id}-{$key}",
+        'name' => $this->name,
+        'value' => $key,
+        'attributes' => array_merge($attributes, ($this->value == $key) ? ['checked' => 'checked'] : []),
+        'text' => $value,
+      ]);
+      $output .= $tag->render_tag();
+      $output .= "</label>\n";
     }
     $output .= '</div>';
     return $output;

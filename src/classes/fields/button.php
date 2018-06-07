@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 use Degami\PHPFormsApi\Abstracts\Fields\clickable;
 
 /**
@@ -42,9 +43,17 @@ class button extends clickable {
   public function render_field(form $form) {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
-    $output = "<button id=\"{$id}\" name=\"{$this->name}\"{$attributes} value=\"{$this->value}\">".$this->get_text($this->label)."</button>\n";
-    return $output;
+
+    $tag = new tag_element([
+      'tag' => 'button',
+      'id' => $id,
+      'name' => $this->name,
+      'value' => $this->value,
+      'text' => $this->get_text($this->label),
+      'attributes' => $this->attributes,
+      'has_close' => TRUE,
+    ]);
+    return $tag->render_tag();    
   }
 
 }

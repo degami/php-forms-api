@@ -1,30 +1,30 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /*
- * the "Multiselect select" field class
- */
+* the "Multiselect select" field class
+*/
 class multiselect extends select{
-
   private $leftOptions;
   private $rightOptions;
 
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options,$name) {
     if(!is_array($options)) $options = [];
     $options['multiple'] = TRUE;
@@ -88,10 +88,10 @@ class multiselect extends select{
   }
 
   /**
-   * render_field hook
-   * @param  form $form form object
-   * @return string        the element html
-   */
+  * render_field hook
+  * @param  form $form form object
+  * @return string        the element html
+  */
   public function render_field(form $form) {
     $id = $this->get_html_id();
     $output = '';

@@ -12,6 +12,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\element;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 use Degami\PHPFormsApi\Abstracts\Fields\field_multivalues;
 /**
  * the optgroup element class
@@ -82,12 +83,17 @@ class optgroup extends element{
    */
   public function render(select $form_field){
     $this->no_translation = $form_field->no_translation;
-    $attributes = $this->get_attributes(['label']);
-    $output = "<optgroup label=\"".$this->get_text($this->label)."\"{$attributes}>\n";
+    $tag = new tag_element([
+      'tag' => 'optgroup',
+      'type' => null,
+      'id' => null,
+      'attributes' => $this->attributes + [ 'label' => $this->label ],
+      'value_needed' => FALSE,
+      'has_close' => TRUE,
+    ]);
     foreach ($this->options as $option) {
-      $output .= $option->render($form_field);
+      $tag->add_child( $option->render($form_field) );
     }
-    $output .= "</optgroup>\n";
-    return $output;
+    return $tag->render_tag();
   }
 }

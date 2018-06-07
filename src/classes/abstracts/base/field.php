@@ -291,6 +291,10 @@ abstract class field extends element implements field_interface{
     return !empty($this->id) ? $this->get_id() : $this->get_name();
   }
 
+  public function get_element_class_name(){
+    return strtolower( substr(get_class($this), strrpos(get_class($this), '\\') + 1) );
+  }
+
   /**
    * get field ajax url
    * @return string field ajax url

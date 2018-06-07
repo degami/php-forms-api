@@ -361,6 +361,7 @@ function showallform(FAPI\form $form, &$form_state){
   ))
   ->add_tab('tab1') //index 0
   ->add_tab('tab2') //index 1
+  ->add_tab('tab3') //index 2  
   ->add_field('markup2',array(
     'type' => 'markup',
     'value' => 'markup bbb',
@@ -374,6 +375,11 @@ function showallform(FAPI\form $form, &$form_state){
     'options' => array(0=>'zero',1=>'one',2=>'two'),
     'default_value' => 1,
   )) //to tab 0
+  ->add_field('radios', array(
+    'type' => 'radios',
+    'options' => array(0=>'zero',1=>'one',2=>'two'),
+    'default_value' => 2,
+  ),2) //to tab 2
   ->add_field('reqtextfield', array(
     'title' => 'Required Textfield',
     'type' => 'textfield',

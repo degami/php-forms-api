@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * the textarea field class
@@ -56,9 +57,16 @@ class textarea extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes( ['name','id','value','rows','cols'] );
-    $output = "<textarea id=\"{$id}\" name=\"{$this->name}\" cols=\"{$this->size}\" rows=\"{$this->rows}\"{$attributes}>\n".$this->value."</textarea>";
-    return $output;
+
+    $tag = new tag_element([
+      'tag' => 'textarea',
+      'id' => $id,
+      'name' => $this->name,
+      'text' => $this->value,
+      'attributes' => $this->attributes + ['cols' => $this->size, 'rows' => $this->rows],
+      'has_close' => TRUE,
+    ]);
+    return $tag->render_tag();
   }
 
   /**

@@ -1,11 +1,11 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
@@ -13,20 +13,19 @@ use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
 
 /**
- * the "masked" text input field class
- */
+* the "masked" text input field class
+*/
 class maskedfield extends textfield{
-
   /**
-   * input mask string
-   * @var string
-   */
+  * input mask string
+  * @var string
+  */
   protected $mask;
 
   /**
-   * jQuery Mask Plugin patterns
-   * @var array
-   */
+  * jQuery Mask Plugin patterns
+  * @var array
+  */
   private $translation = [
     '0'  =>  "\d",
     '9'  =>  "\d?",
@@ -36,10 +35,10 @@ class maskedfield extends textfield{
   ];
 
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options, $name = NULL){
     if(!isset($options['attributes']['class'])){
       $options['attributes']['class'] = '';
@@ -50,9 +49,9 @@ class maskedfield extends textfield{
   }
 
   /**
-   * pre_render hook
-   * @param  form $form form object
-   */
+  * pre_render hook
+  * @param  form $form form object
+  */
   public function pre_render(form $form){
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
@@ -61,9 +60,9 @@ class maskedfield extends textfield{
   }
 
   /**
-   * validate hook
-   * @return boolean this TRUE if this element conforms to mask
-   */
+  * validate hook
+  * @return boolean this TRUE if this element conforms to mask
+  */
   public function valid() {
     $mask = $this->mask;
     $mask = preg_replace("(\[|\]|\(|\))","\\\1",$mask);

@@ -1,51 +1,51 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
- * the date select group field class
- */
+* the date select group field class
+*/
 class dateselect extends field {
-
   /**
-   * granularity (day / month / year)
-   * @var string
-   */
+  * granularity (day / month / year)
+  * @var string
+  */
   protected $granularity = 'day';
 
   /**
-   * start year
-   * @var integer
-   */
+  * start year
+  * @var integer
+  */
   protected $start_year;
 
   /**
-   * end year
-   * @var integer
-   */
+  * end year
+  * @var integer
+  */
   protected $end_year;
 
   /**
-   * "use js selects" flag
-   * @var boolean
-   */
+  * "use js selects" flag
+  * @var boolean
+  */
   protected $js_selects = FALSE;
 
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options = [], $name = NULL) {
 
     $this->start_year = date('Y')-100;
@@ -60,9 +60,9 @@ class dateselect extends field {
   }
 
   /**
-   * pre_render hook
-   * @param  form $form form object
-   */
+  * pre_render hook
+  * @param  form $form form object
+  */
   public function pre_render(form $form){
     if( $this->pre_rendered == TRUE ) return;
     if($this->js_selects == TRUE){
@@ -80,10 +80,10 @@ class dateselect extends field {
   }
 
   /**
-   * render_field hook
-   * @param  form $form form object
-   * @return string        the element html
-   */
+  * render_field hook
+  * @param  form $form form object
+  * @return string        the element html
+  */
   public function render_field(form $form) {
     $id = $this->get_html_id();
     $output = '';
@@ -140,9 +140,9 @@ class dateselect extends field {
   }
 
   /**
-   * process hook
-   * @param  array $value value to set
-   */
+  * process hook
+  * @param  array $value value to set
+  */
   public function process($value) {
     $this->value = [
       'year' => $value['year'],
@@ -156,9 +156,9 @@ class dateselect extends field {
   }
 
   /**
-   * validate hook
-   * @return boolean TRUE if element is valid
-   */
+  * validate hook
+  * @return boolean TRUE if element is valid
+  */
   public function valid() {
     $year = $this->value['year'];
     $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -175,17 +175,17 @@ class dateselect extends field {
   }
 
   /**
-   * is_a_value hook
-   * @return boolean this is a value
-   */
+  * is_a_value hook
+  * @return boolean this is a value
+  */
   public function is_a_value(){
     return TRUE;
   }
 
   /**
-   * get start timestamp
-   * @return int start timestamp
-   */
+  * get start timestamp
+  * @return int start timestamp
+  */
   public function ts_start(){
     $year = $this->value['year'];
     $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -195,9 +195,9 @@ class dateselect extends field {
   }
 
   /**
-   * get end timestamp
-   * @return int end timestamp
-   */
+  * get end timestamp
+  * @return int end timestamp
+  */
   public function ts_end(){
     $year = $this->value['year'];
     $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -207,9 +207,9 @@ class dateselect extends field {
   }
 
   /**
-   * get value as a date string
-   * @return string date value
-   */
+  * get value as a date string
+  * @return string date value
+  */
   public function value_string(){
     $value = $this->values();
     $out = (($value['year'] < 10) ? '0':'').((int) $value['year']);

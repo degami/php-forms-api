@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * the text input field class
@@ -30,10 +31,17 @@ class textfield extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
     if( is_array($this->value) ) $this->value = '';
-    $output = "<input type=\"text\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"".htmlspecialchars($this->value)."\"{$attributes} />\n";
-    return $output;
+
+    $tag = new tag_element([
+      'tag' => 'input',
+      'type' => 'text',
+      'id' => $id,
+      'name' => $this->name,
+      'value' => htmlspecialchars($this->value),
+      'attributes' => $this->attributes + ['size' => $this->size],
+    ]);
+    return $tag->render_tag();
   }
 
   /**

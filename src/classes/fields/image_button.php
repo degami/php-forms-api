@@ -1,40 +1,40 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 use Degami\PHPFormsApi\Abstracts\Fields\clickable;
 
 /**
- * the image submit input type field class
- */
+* the image submit input type field class
+*/
 class image_button extends clickable {
-
   /**
-   * image source
-   * @var string
-   */
+  * image source
+  * @var string
+  */
   protected $src;
 
   /**
-   * image alternate
-   * @var string
-   */
+  * image alternate
+  * @var string
+  */
   protected $alt;
 
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options = [], $name = NULL) {
     $this->default_value = [
       'x'=>-1,
@@ -45,23 +45,29 @@ class image_button extends clickable {
   }
 
   /**
-   * render_field hook
-   * @param  form $form form object
-   * @return string        the element html
-   */
+  * render_field hook
+  * @param  form $form form object
+  * @return string        the element html
+  */
   public function render_field(form $form) {
     $id = $this->get_html_id();
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes( ['type','name','id','value','src','alt'] );
-    //  value=\"{$this->value}\"
-    $output = "<input id=\"{$id}\" name=\"{$this->name}\" type=\"image\" src=\"{$this->src}\" alt=\"{$this->alt}\"{$attributes} />\n";
-    return $output;
+
+    $tag = new tag_element([
+      'tag' => 'input',
+      'type' => 'image',
+      'id' => $id,
+      'name' => $this->name,
+      'value_needed' => FALSE,
+      'attributes' => $this->attributes + ['src' => $this->src, 'alt' => $this->alt],
+    ]);
+    return $tag->render_tag();
   }
 
   /**
-   * alter_request hook
-   * @param  array $request request array
-   */
+  * alter_request hook
+  * @param  array $request request array
+  */
   public function alter_request(&$request){
     foreach($request as $key => $val){
       //IMAGE BUTTONS HANDLE
@@ -79,5 +85,4 @@ class image_button extends clickable {
       }
     }
   }
-
 }

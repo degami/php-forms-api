@@ -1,27 +1,27 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
- * the text input field class
- */
+* the colorpicker input field class
+*/
 class colorpicker extends field {
-
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options = [], $name = NULL) {
     parent::__construct($options, $name);
     if( !empty($this->default_value) && !$this->is_RGB($this->default_value)){
@@ -34,10 +34,10 @@ class colorpicker extends field {
   }
 
   /**
-   * render_field hook
-   * @param  form $form form object
-   * @return string        the element html
-   */
+  * render_field hook
+  * @param  form $form form object
+  * @return string        the element html
+  */
   public function render_field(form $form) {
     $id = $this->get_html_id();
 
@@ -47,25 +47,33 @@ class colorpicker extends field {
     }
     $this->attributes['class'] .= ' ui-state-disabled';
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
     if( is_array($this->value) ) $this->value = '';
+
     $output = "
-      <div id=\"{$id}\">
-        <div class=\"clearfix\">
-          <div id=\"{$id}-red\"></div>
-          <div id=\"{$id}-green\"></div>
-          <div id=\"{$id}-blue\"></div>
-          <div id=\"{$id}-swatch\" class=\"ui-widget-content ui-corner-all\"></div>
-        </div>
-        <input type=\"text\" name=\"{$this->name}\" size=\"{$this->size}\" onFocus=\"blur();\" value=\"".htmlspecialchars($this->value)."\"{$attributes} />
-      </div>\n";
+    <div id=\"{$id}\">
+      <div class=\"clearfix\">
+        <div id=\"{$id}-red\"></div>
+        <div id=\"{$id}-green\"></div>
+        <div id=\"{$id}-blue\"></div>
+        <div id=\"{$id}-swatch\" class=\"ui-widget-content ui-corner-all\"></div>
+      </div>";
+
+      $tag = new tag_element([
+        'tag' => 'input',
+        'type' => 'text',
+        'name' => $this->name,
+        'value' => htmlspecialchars($this->value),
+        'attributes' => $this->attributes + ['size' => $this->size, 'onFocus' => "blur();" ],
+      ]);
+      $output .= $tag->render_tag();
+    $output .= "</div>\n";
     return $output;
   }
 
   /**
-   * pre_render hook
-   * @param  form $form form object
-   */
+  * pre_render hook
+  * @param  form $form form object
+  */
   public function pre_render(form $form){
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
@@ -86,44 +94,44 @@ class colorpicker extends field {
 
     $js_func_refreshSwatch = "function refreshSwatch() {
       var red = \$( \"#{$id}-red\" ).slider( \"value\" ),
-        green = \$( \"#{$id}-green\" ).slider( \"value\" ),
-        blue = \$( \"#{$id}-blue\" ).slider( \"value\" ),
-        hex = $js_func_hexFromRGB( red, green, blue );
+      green = \$( \"#{$id}-green\" ).slider( \"value\" ),
+      blue = \$( \"#{$id}-blue\" ).slider( \"value\" ),
+      hex = $js_func_hexFromRGB( red, green, blue );
       \$( \"#{$id}-swatch\" ).css( \"background-color\", \"#\" + hex );
       \$( \"input[name='{$this->name}']\", \"#{$id}\" ).val(\"#\" + hex );
     }";
 
     $this->add_js("
       \$('#{$id}-red,#{$id}-green,#{$id}-blue','#{$form->get_id()}').slider({
-      orientation: \"horizontal\",
-      range: \"min\",
-      max: 255,
-      slide: {$js_func_refreshSwatch},
-      change: {$js_func_refreshSwatch}
-    });");
+        orientation: \"horizontal\",
+        range: \"min\",
+        max: 255,
+        slide: {$js_func_refreshSwatch},
+        change: {$js_func_refreshSwatch}
+      });");
 
     $this->add_css("
-    #{$id} {padding-top: 20px;}
-    #{$id}-red, #{$id}-green, #{$id}-blue {
-      float: left;
-      clear: left;
-      width: 300px;
-      margin: 5px;
-    }
-    #{$id}-swatch {
-      width: 120px;
-      height: 100px;
-      margin-top: -15px;
-      margin-left: 350px;
-      background-image: none;
-    }
-    #{$id}-red .ui-slider-range { background: #ef2929; }
-    #{$id}-red .ui-slider-handle { border-color: #ef2929; }
-    #{$id}-green .ui-slider-range { background: #8ae234; }
-    #{$id}-green .ui-slider-handle { border-color: #8ae234; }
-    #{$id}-blue .ui-slider-range { background: #729fcf; }
-    #{$id}-blue .ui-slider-handle { border-color: #729fcf; }
-    #{$id} .clearfix{display: table;width:100%;clear: both;float: none;padding-bottom: 15px;}
+      #{$id} {padding-top: 20px;}
+      #{$id}-red, #{$id}-green, #{$id}-blue {
+        float: left;
+        clear: left;
+        width: 300px;
+        margin: 5px;
+      }
+      #{$id}-swatch {
+        width: 120px;
+        height: 100px;
+        margin-top: -15px;
+        margin-left: 350px;
+        background-image: none;
+      }
+      #{$id}-red .ui-slider-range { background: #ef2929; }
+      #{$id}-red .ui-slider-handle { border-color: #ef2929; }
+      #{$id}-green .ui-slider-range { background: #8ae234; }
+      #{$id}-green .ui-slider-handle { border-color: #8ae234; }
+      #{$id}-blue .ui-slider-range { background: #729fcf; }
+      #{$id}-blue .ui-slider-handle { border-color: #729fcf; }
+      #{$id} .clearfix{display: table;width:100%;clear: both;float: none;padding-bottom: 15px;}
     ");
 
     if(!empty($this->value)){
@@ -147,9 +155,9 @@ class colorpicker extends field {
   }
 
   /**
-   * is_a_value hook
-   * @return boolean this is a value
-   */
+  * is_a_value hook
+  * @return boolean this is a value
+  */
   public function is_a_value(){
     return TRUE;
   }

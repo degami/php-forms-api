@@ -1,27 +1,27 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
- * the hidden input field class
- */
+* the hidden input field class
+*/
 class hidden extends field {
-
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options = [], $name = NULL) {
     $this->container_tag = '';
     $this->container_class = '';
@@ -29,20 +29,29 @@ class hidden extends field {
   }
 
   /**
-   * render_field hook
-   * @param  form $form form object
-   * @return string        the element html
-   */
+  * render_field hook
+  * @param  form $form form object
+  * @return string        the element html
+  */
   public function render_field(form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
-    return "<input type=\"hidden\" id=\"{$id}\" name=\"{$this->name}\" value=\"{$this->value}\"{$attributes} />\n";
+
+    $tag = new tag_element([
+      'tag' => 'input',
+      'type' => 'hidden',
+      'id' => $id,
+      'name' => $this->name,
+      'value' => $this->value,
+      'attributes' => $this->attributes,
+    ]);
+    return $tag->render_tag();
   }
 
   /**
-   * is_a_value hook
-   * @return boolean this is a value
-   */
+  * is_a_value hook
+  * @return boolean this is a value
+  */
   public function is_a_value(){
     return TRUE;
   }

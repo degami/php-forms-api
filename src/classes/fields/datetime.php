@@ -1,46 +1,46 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 use Degami\PHPFormsApi\Abstracts\Fields\composed_field;
 
 /**
- * the datetime group field class
- */
+* the datetime group field class
+*/
 class datetime extends composed_field {
-
   /**
-   * date sub element
-   * @var date
-   */
+  * date sub element
+  * @var date
+  */
   protected $date = NULL;
 
   /**
-   * time sub_element
-   * @var time
-   */
+  * time sub_element
+  * @var time
+  */
   protected $time = NULL;
 
   /**
-   * "use js selects" flag
-   * @var boolean
-   */
+  * "use js selects" flag
+  * @var boolean
+  */
   protected $js_selects = FALSE;
 
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options = [], $name = NULL) {
     parent::__construct($options,$name);
 
@@ -55,9 +55,9 @@ class datetime extends composed_field {
   }
 
   /**
-   * pre_render hook
-   * @param  form $form form object
-   */
+  * pre_render hook
+  * @param  form $form form object
+  */
   public function pre_render(form $form){
     if( $this->pre_rendered == TRUE ) return;
     $id = $this->get_html_id();
@@ -68,13 +68,13 @@ class datetime extends composed_field {
 
     foreach( $this->date->get_js() as $date_js_line ){
       if(!empty($date_js_line)){
-          $this->add_js($date_js_line);
+        $this->add_js($date_js_line);
       }
     }
 
     foreach( $this->time->get_js() as $time_js_line){
       if(!empty($time_js_line)){
-          $this->add_js($time_js_line);
+        $this->add_js($time_js_line);
       }
     }
 
@@ -82,52 +82,52 @@ class datetime extends composed_field {
   }
 
   /**
-   * preprocess hook . it simply calls the sub elements preprocess
-   * @param  string $process_type preprocess type
-   */
+  * preprocess hook . it simply calls the sub elements preprocess
+  * @param  string $process_type preprocess type
+  */
   public function preprocess($process_type = "preprocess") {
     $this->date->preprocess($process_type);
     $this->time->preprocess($process_type);
   }
 
   /**
-   * process hook . it simply calls the sub elements process
-   * @param  array $values value to set
-   */
+  * process hook . it simply calls the sub elements process
+  * @param  array $values value to set
+  */
   public function process($values) {
     $this->date->process($values[$this->get_name().'_date']);
     $this->time->process($values[$this->get_name().'_time']);
   }
 
   /**
-   * validate hook
-   * @return boolean TRUE if element is valid
-   */
+  * validate hook
+  * @return boolean TRUE if element is valid
+  */
   public function valid() {
     return $this->date->valid() && $this->time->valid();
   }
 
   /**
-   * renders form errors
-   * @return string errors as an html <li> list
-   */
+  * renders form errors
+  * @return string errors as an html <li> list
+  */
   public function show_errors() {
     return (trim($this->date->show_errors() . $this->time->show_errors()) == '') ? '' : trim($this->date->show_errors() . $this->time->show_errors());
   }
 
   /**
-   * resets the sub elements
-   */
+  * resets the sub elements
+  */
   public function reset() {
     $this->date->reset();
     $this->time->reset();
   }
 
   /**
-   * render_field hook
-   * @param  form $form form object
-   * @return string        the element html
-   */
+  * render_field hook
+  * @param  form $form form object
+  * @return string        the element html
+  */
   public function render_field(form $form) {
     $id = $this->get_html_id();
     $attributes = $this->get_attributes();
@@ -162,9 +162,9 @@ class datetime extends composed_field {
   }
 
   /**
-   * return field value
-   * @return array field value
-   */
+  * return field value
+  * @return array field value
+  */
   public function values() {
     return [
       'date'=> $this->date->values(),

@@ -1,82 +1,91 @@
 <?php
 /**
- * PHP FORMS API
- * @package degami/php-forms-api
- */
+* PHP FORMS API
+* @package degami/php-forms-api
+*/
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
- * the number input field class
- */
+* the number input field class
+*/
 class number extends field {
-
   /**
-   * minimum value
-   * @var null
-   */
+  * minimum value
+  * @var null
+  */
   protected $min = NULL;
 
   /**
-   * maximum value
-   * @var null
-   */
+  * maximum value
+  * @var null
+  */
   protected $max = NULL;
 
   /**
-   * step value
-   * @var integer
-   */
+  * step value
+  * @var integer
+  */
   protected $step = 1;
 
   /**
-   * class constructor
-   * @param array  $options build options
-   * @param string $name    field name
-   */
+  * class constructor
+  * @param array  $options build options
+  * @param string $name    field name
+  */
   public function __construct($options = [], $name = NULL) {
     parent::__construct($options, $name);
 
-    // ensure is numeric validator is present
+  // ensure is numeric validator is present
     $this->get_validate()->add_element('numeric');
   }
 
   /**
-   * render_field hook
-   * @param  form $form form object
-   * @return string        the element html
-   */
+  * render_field hook
+  * @param  form $form form object
+  * @return string        the element html
+  */
   public function render_field(form $form) {
     $id = $this->get_html_id();
-    $output = '';
-
-    $html_options = '';
-    if( is_numeric($this->min) && is_numeric($this->max) && $this->max >= $this->min ){
-      $html_options = " min=\"{$this->min}\" max=\"{$this->max}\" step=\"{$this->step}\"";
-    }
 
     if(!isset($this->attributes['class'])) $this->attributes['class'] = '';
     if ($this->has_errors()) {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes(['type','name','id','value','min','max','step']);
 
-    $output .= "<input type=\"number\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"{$this->value}\"{$html_options}{$attributes} />\n";
+    $this->attributes['size'] = $this->size;
+    if( is_numeric($this->min) && is_numeric($this->max) && $this->max >= $this->min ){
+      $this->attributes += [
+        'size' => $this->size,
+        'min' => $this->min,
+        'max' => $this->max,
+        'step' => $this->step
+      ];
+    }
 
-    return $output;
+    $tag = new tag_element([
+      'tag' => 'input',
+      'type' => 'number',
+      'id' => $id,
+      'name' => $this->name,
+      'value' => $this->value,
+      'attributes' => $this->attributes,
+    ]);
+    return $tag->render_tag();    
   }
 
   /**
-   * is_a_value hook
-   * @return boolean this is a value
-   */
+  * is_a_value hook
+  * @return boolean this is a value
+  */
   public function is_a_value(){
     return TRUE;
   }

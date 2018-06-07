@@ -11,6 +11,8 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
+
 
 /**
  * the password input field class
@@ -97,11 +99,29 @@ class password extends field {
       $this->attributes['class'] .= ' has-errors';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
-    $output = "<input type=\"password\" id=\"{$id}\" name=\"{$this->name}\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
+    $output = "";
+
+    $tag = new tag_element([
+      'tag' => 'input',
+      'type' => 'password',
+      'id' => $id,
+      'name' => $this->name,
+      'value' => "",
+      'attributes' => $this->attributes + ['size' => $this->size],
+    ]);
+    $output .= $tag->render_tag();
+
     if($this->with_confirm == TRUE){
       $output .= "<label for=\"{$id}-confirm\">".$this->get_text($this->confirm_string)."</label>";
-      $output .= "<input type=\"password\" id=\"{$id}-confirm\" name=\"{$this->name}_confirm\" size=\"{$this->size}\" value=\"\"{$attributes} />\n";
+      $tag = new tag_element([
+        'tag' => 'input',
+        'type' => 'password',
+        'id' => $id.'-confirm',
+        'name' => $this->name.'_confirm',
+        'value' => "",
+        'attributes' => $this->attributes + ['size' => $this->size],
+      ]);
+      $output .= $tag->render_tag();
     }
     if($this->with_strength_check){
       $output .= "<span id=\"{$id}_result\" class=\"password_strength_checker\"></span>";

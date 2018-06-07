@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\field;
+use Degami\PHPFormsApi\Accessories\tag_element;
 use Degami\PHPFormsApi\Abstracts\Fields\action;
 
 /**
@@ -41,9 +42,16 @@ class reset extends action {
       $this->value = 'Reset';
     }
     if($this->disabled == TRUE) $this->attributes['disabled']='disabled';
-    $attributes = $this->get_attributes();
-    $output = "<input type=\"reset\" id=\"{$id}\" name=\"{$this->name}\" value=\"".$this->get_text($this->value)."\"{$attributes} />\n";
-    return $output;
+
+    $tag = new tag_element([
+      'tag' => 'input',
+      'type' => 'reset',
+      'id' => $id,
+      'name' => $this->name,
+      'value' => $this->get_text($this->value),
+      'attributes' => $this->attributes,
+    ]);
+    return $tag->render_tag();      
   }
 
 }
