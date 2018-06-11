@@ -43,6 +43,16 @@ abstract class base_element{
     return $this;
   }
 
+  /**
+   * set html attributes
+   * @param array $attributes attributes array
+   * @return element
+   */
+  public function set_attributes_array($attributes){
+    $this->attributes = $attributes;
+
+    return $this;
+  }
 
   /**
    * get attribute value if present. FALSE on failure
@@ -83,6 +93,14 @@ abstract class base_element{
     }
     $attributes = trim($attributes);
     return empty($attributes) ? '' : ' ' . $attributes;
+  }
+
+  /**
+   * get attributes array
+   * @return array attributes array
+   */
+  public function get_attributes_array(){
+    return $this->attributes;
   }
 
   /**

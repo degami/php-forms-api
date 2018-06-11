@@ -55,7 +55,7 @@ public function __construct($options = []) {
 			unset($options['reserved_attributes']);
 		}
 
-		if(in_array( $this->tag, ['textarea','select'] )){
+		if(in_array( $this->tag, ['textarea','select','optgroup','datalist'] )){
 			$this->value_needed = FALSE;
 		}
 
@@ -94,6 +94,7 @@ public function __construct($options = []) {
 	}
 
 	public function render_tag(){
+    static::execute_alter( "/.*?_before_render_".$this->tag."_alter$/i", [&$this] );
 		$reserved_attributes = "";
 		foreach ($this->reserved_attributes as $key) {
 			if( property_exists(get_class($this), $key) && (!empty($this->{$key}) || $key == 'value' && $this->get_value_needed()) ){
@@ -116,7 +117,6 @@ public function __construct($options = []) {
 		$out = "";
 		foreach ($this->children as $key => $value) {
 			if($value instanceof tag_element) $out .= $value->render_tag();
-	// else if( $value instanceof field) $out .= $value->render();
 			else if( is_scalar($value)) $out .= $value;
 		}
 		return $out;

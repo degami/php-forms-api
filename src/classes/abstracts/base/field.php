@@ -475,31 +475,6 @@ abstract class field extends element implements field_interface{
   }
 
   /**
-   * get a string representing the called class
-   * @return string
-   */
-  public static function get_class_name_string(){
-    $called_class = array_map("strtolower", explode("\\",preg_replace( "/^Degami\\\\PHPFormsApi\\\\(.*?)$/i","\\1", get_called_class() ), 2));
-    return $called_class[1]."_".preg_replace("/s$/","",$called_class[0]);
-  }
-
-  /**
-   * check if a function name in the "user" space match the regexp
-   * and if found executes it passing the arguments
-   */  
-  public static function execute_alter($regexp, $args){
-    $defined_functions = get_defined_functions();
-    if(!is_array($args)){
-      $args = [ $args ];
-    }
-    foreach( $defined_functions['user'] as $function_name){
-      if( preg_match($regexp, $function_name) ){
-        call_user_func_array( $function_name, $args );
-      }
-    }    
-  }
-
-  /**
    * generate the necessary js to handle ajax field event property
    * @param  array  $event event element
    * @param  form $form  form object

@@ -14,7 +14,6 @@ session_start();
 // function __($str){
 //   return "__ $str __";
 // }
-
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
