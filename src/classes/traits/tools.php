@@ -154,4 +154,8 @@ trait tools {
       }
     }    
   }
+
+  public static function is_foreacheable($var){
+    return (is_array($var) || ($var instanceof Traversable)); 
+  }
 }

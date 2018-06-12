@@ -35,10 +35,6 @@ abstract class field_multivalues extends field {
     return $this->options;
   }
 
-  public static function is_foreacheable($var){
-    return (is_array($var) || ($var instanceof Traversable)); 
-  }
-
   /**
    * check if key is present into haystack
    * @param  mixed  $needle   element to find
