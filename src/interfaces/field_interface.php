@@ -30,7 +30,7 @@ interface field_interface {
   /**
    * the function that actually renders the html field
    * @param  form $form form object
-   * @return string        the field html
+   * @return string|tag_element the field html
    */
   public function render_field(form $form); // renders html
 

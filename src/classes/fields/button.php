@@ -53,7 +53,7 @@ class button extends clickable {
       'attributes' => $this->attributes,
       'has_close' => TRUE,
     ]);
-    return $tag->render_tag();    
+    return $tag;    
   }
 
 }

@@ -14,6 +14,7 @@ use Degami\PHPFormsApi\Abstracts\Base\fields_container;
 use Degami\PHPFormsApi\Abstracts\Containers\fields_container_multiple;
 use Degami\PHPFormsApi\Fields\datetime;
 use Degami\PHPFormsApi\Fields\geolocation;
+use Degami\PHPFormsApi\Accessories\tag_element;
 use \Exception;
 
 /**
@@ -171,8 +172,8 @@ class repeatable extends fields_container_multiple {
       $this->add_js("\$('.btnaddmore', '#{$id}').click(function(evt){
         evt.preventDefault();
         var \$target = \$('.fields-target:eq(0)');
-        \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target );
         var newrownum = \$target.find('.repeatable-row').length;
+        \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target );
         \$('input[name=\"{$id}-numreps\"]').val(newrownum);
         {$js}
       });");
@@ -185,10 +186,22 @@ class repeatable extends fields_container_multiple {
   public function render_field(form $form) {
     $id = $this->get_html_id();
 
-    $output = '';
-    $attributes = $this->get_attributes();
+    $tag = new tag_element([
+      'tag' => 'div',
+      'id' => $id,
+      'attributes' => $this->attributes,
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
 
-    $output .= "<div id=\"{$id}\"{$attributes}><div class=\"fields-target\">\n";
+    $target = new tag_element([
+      'tag' => 'div',
+      'attributes' => ['class' => 'fields-target'],
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
+
+    $tag->add_child($target);
 
     foreach($this->partitions as $partitionindex => $tab){
       $insertorder = array_flip($this->insert_field_order[$partitionindex]);
@@ -205,19 +218,39 @@ class repeatable extends fields_container_multiple {
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
       }
 
-      $output .= "<div id=\"{$id}-row-{$partitionindex}\">\n<div class=\"repeatable-row\">\n";
-      $output .= "<input type=\"hidden\" name=\"{$id}-numreps\" value=\"{$this->num_reps}\" />\n";
+      $inner = new tag_element([
+        'tag' => 'div',
+        'id' => $id.'-row-'.$partitionindex,
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]);
+      $target->add_child($inner);
+
+      $repeatablerow = new tag_element([
+        'tag' => 'div',
+        'attributes' => ['class' => 'repeatable-row'],
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]);
+      $inner->add_child($repeatablerow);      
+
+      $repeatablerow->add_child("<input type=\"hidden\" name=\"{$id}-numreps\" value=\"{$this->num_reps}\" />\n");
       foreach ($partition_fields as $name => $field) {
-        $output .= $field->render($form);
+        $repeatablerow->add_child($field->render($form));
       }
-      $output .= "<a href=\"#\" class=\"remove-btn btn\" name=\"{$id}-remove-{$partitionindex}\">&times;</a>\n";
-      $output .= "</div></div>\n";
+      $repeatablerow->add_child("<a href=\"#\" class=\"remove-btn btn\" name=\"{$id}-remove-{$partitionindex}\">&times;</a>\n");
     }
 
-    $output .= "</div><button class=\"btn btnaddmore\" id=\"{$id}-btn-addmore\">".$this->get_text('+')."</button>";
-    $output .= "</div>\n";
+    $tag->add_child(new tag_element([
+      'tag' => 'button',
+      'id' => $id.'-btn-addmore',
+      'attributes' => ['class' => 'btn btnaddmore'],
+      'text' => $this->get_text('+'),
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]));
 
-    return $output;
+    return $tag;
   }
 
 }

@@ -94,6 +94,6 @@ class optgroup extends element{
     foreach ($this->options as $option) {
       $tag->add_child( $option->render($form_field) );
     }
-    return $tag->render_tag();
+    return $tag;
   }
 }

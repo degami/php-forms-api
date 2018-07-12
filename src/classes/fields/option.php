@@ -77,7 +77,7 @@ class option extends element{
       'attributes' => $this->attributes + ['class' => FALSE],
       'has_close' => TRUE,
     ]);
-    return $tag->render_tag();
+    return $tag;
   }
 
   /**

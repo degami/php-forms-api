@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\fields_container;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * a fieldset field container
@@ -75,13 +76,6 @@ class fieldset extends fields_container {
    */
   public function render_field(form $form) {
     $id = $this->get_html_id();
-    $output = '';
-
-    $attributes = $this->get_attributes();
-    $output .= "<fieldset id=\"{$id}\"{$attributes}>\n";
-    if (!empty($this->title)) {
-      $output .= "<legend>".$this->get_text($this->title)."</legend>\n";
-    }
 
     $insertorder = array_flip($this->insert_field_order);
     $weights = [];
@@ -92,11 +86,33 @@ class fieldset extends fields_container {
     if( count( $this->get_fields() ) > 0 )
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
 
-    $output .= "<div class=\"fieldset-inner\">\n";
-    foreach ($this->get_fields() as $name => $field) {
-      $output .= $field->render($form);
+    $tag = new tag_element([
+      'tag' => 'fieldset',
+      'id' => $id,
+      'attributes' => $this->attributes,
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
+    if (!empty($this->title)) {
+      $tag->add_child(new tag_element([
+        'tag' => 'legend',
+        'text' => $this->get_text($this->title),
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]));
     }
-    $output .= "</div></fieldset>\n";
-    return $output;
+    $inner = new tag_element([
+      'tag' => 'div',
+      'attributes' => ['class' => 'fieldset-inner'],
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
+
+    foreach ($this->get_fields() as $name => $field) {
+      $inner->add_child( $field->render($form) );
+    }
+
+    $tag->add_child($inner);
+    return $tag;
   }
 }

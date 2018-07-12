@@ -52,7 +52,7 @@ class email extends field {
       'value' => $this->value,
       'attributes' => $this->attributes + ['size' => $this->size],
     ]);
-    return $tag->render_tag();
+    return $tag;
   }
 
   /**

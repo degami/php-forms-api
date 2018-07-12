@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Containers\fields_container_multiple;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * a table field container
@@ -118,32 +119,53 @@ class table_container extends fields_container_multiple{
       $rows++;
     }
 
-    $output = '';
-    $attributes = $this->get_attributes();
-
-    $output .= "<table id=\"{$id}\"{$attributes}>\n";
+    $tag = new tag_element([
+      'tag' => 'table',
+      'id' => $id,
+      'attributes' => $this->attributes,
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
 
     if(!empty($this->table_header) ){
       if(!is_array($this->table_header)) {
         $this->table_header = [$this->table_header];
       }
 
-      $output .= "<thead>\n";
+      $thead = new tag_element([
+        'tag' => 'thead',
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]);
+      $tag->add_child($thead);
+
       foreach($this->table_header as $th){
         if(is_array($th)){
-          $th_attributes = '';
-          if(!empty($th['attributes'])){
-            $th_attributes = $this->get_attributes_string($th['attributes']);
-          }
-          $output .= "<th{$th_attributes}>".$this->get_text($th['value'])."</th>";
+          $thead->add_child(new tag_element([
+            'tag' => 'th',
+            'text' => $this->get_text($th['value']),
+            'attributes' => $th['attributes'],
+            'has_close' => TRUE,
+            'value_needed' => FALSE,
+          ]));
         }else{
-          $output .= "<th>".$this->get_text($th)."</th>";
+          $thead->add_child(new tag_element([
+            'tag' => 'th',
+            'text' => $this->get_text($th),
+            'has_close' => TRUE,
+            'value_needed' => FALSE,
+          ]));
         }
       }
-      $output .= "</thead>\n";
     }
 
-    $output .= "<tbody>\n";
+    $tbody = new tag_element([
+      'tag' => 'tbody',
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
+    $tag->add_child($tbody);
+
     $rows = 0;
     foreach($this->partitions as $trindex => $tr){
       $insertorder = array_flip($this->insert_field_order[$trindex]);
@@ -160,7 +182,14 @@ class table_container extends fields_container_multiple{
         $this->set_partition_fields($partition_fields, $trindex);
       }
 
-      $output .= "<tr id=\"{$id}-row-{$trindex}\">\n";
+      $trow = new tag_element([
+        'tag' => 'tr',
+        'id' => $id.'-row-'.$trindex,
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]);
+      $tbody->add_child($trow);
+
       $cols = 0;
       foreach ($this->get_partition_fields($trindex) as $name => $field) {
         /** @var field $field */
@@ -170,15 +199,13 @@ class table_container extends fields_container_multiple{
           if(!empty($table_matrix[$rows][$cols])){
             $td_attributes = $table_matrix[$rows][$cols];
           }
-          $output .= "<td{$td_attributes}>".$fieldhtml."</td>\n";
+          $trow->add_child("<td{$td_attributes}>".$fieldhtml."</td>\n");
         }
         $cols++;
       }
-      $output .= "</tr>\n";
       $rows++;
     }
-    $output .= "</tbody>\n</table>\n";
 
-    return $output;
+    return $tag;
   }
 }

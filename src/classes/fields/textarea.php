@@ -66,7 +66,7 @@ class textarea extends field {
       'attributes' => $this->attributes + ['cols' => $this->size, 'rows' => $this->rows],
       'has_close' => TRUE,
     ]);
-    return $tag->render_tag();
+    return $tag;
   }
 
   /**

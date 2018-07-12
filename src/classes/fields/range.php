@@ -50,7 +50,7 @@ class range extends number {
       'value' => $this->value,
       'attributes' => $this->attributes,
     ]);
-    return $tag->render_tag();   
+    return $tag;   
   }
 
 }

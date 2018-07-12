@@ -121,4 +121,17 @@ public function __construct($options = []) {
 		}
 		return $out;
 	}
+
+
+  /**
+   * toString magic method
+   * @return string the tag html
+   */
+  public function __toString(){
+    try{
+      return $this->render_tag();
+    }catch(Exception $e){
+      return $e->getMessage()."\n".$e->getTraceAsString();
+    }
+  }	
 }

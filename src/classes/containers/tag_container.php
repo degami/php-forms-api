@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Base\fields_container;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * a field container that can specify container's html tag
@@ -42,8 +43,14 @@ class tag_container extends fields_container {
    */
   public function render_field(form $form) {
     $id = $this->get_html_id();
-    $attributes = $this->get_attributes();
-    $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
+
+    $tag = new tag_element([
+      'tag' => $this->tag,
+      'id' => $id,
+      'attributes' => $this->attributes,
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
 
     $insertorder = array_flip($this->insert_field_order);
     $weights = [];
@@ -54,10 +61,8 @@ class tag_container extends fields_container {
     if( count( $this->get_fields() ) > 0 )
       array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->get_fields());
     foreach ($this->get_fields() as $name => $field) {
-      $output .= $field->render($form);
+      $tag->add_child( $field->render($form) );
     }
-    $output .= "</{$this->tag}>\n";
-
-    return $output;
+    return $tag;
   }
 }

@@ -79,7 +79,7 @@ class number extends field {
       'value' => $this->value,
       'attributes' => $this->attributes,
     ]);
-    return $tag->render_tag();    
+    return $tag;    
   }
 
   /**

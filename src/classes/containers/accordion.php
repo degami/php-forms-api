@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Containers\fields_container_multiple;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * an accordion field container
@@ -57,11 +58,13 @@ class accordion extends fields_container_multiple {
    */
   public function render_field(form $form) {
     $id = $this->get_html_id();
-
-    $output = '';
-    $attributes = $this->get_attributes();
-
-    $output .= "<div id=\"{$id}\"{$attributes}>\n";
+    $tag = new tag_element([
+      'tag' => 'div',
+      'id' => $id,
+      'attributes' => $this->attributes,
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
 
     foreach($this->partitions as $accordionindex => $accordion){
       $insertorder = array_flip($this->insert_field_order[$accordionindex]);
@@ -78,17 +81,29 @@ class accordion extends fields_container_multiple {
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
       }
 
-      $addclass_tab = ' class="tabel '.( $this->partition_has_errors($accordionindex, $form) ? 'has-errors' : '' ).'"';
-      $output .= "<h3{$addclass_tab}>".$this->get_text($this->partitions[$accordionindex]['title'])."</h3>";
-      $output .= "<div id=\"{$id}-tab-inner-{$accordionindex}\" class=\"tab-inner".( $this->partition_has_errors($accordionindex, $form) ? ' has-errors' : '' )."\">\n";
-      foreach ($partition_fields as $name => $field) {
-        $output .= $field->render($form);
-      }
-      $output .= "</div>\n";
-    }
-    $output .= "</div>\n";
+      $tag->add_child(new tag_element([
+        'tag' => 'h3',
+        'text' => $this->get_text($this->partitions[$accordionindex]['title']),
+        'attributes' => ['class' => 'tabel '.( $this->partition_has_errors($accordionindex, $form) ? 'has-errors' : '' )],
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]));
 
-    return $output;
+      $inner = new tag_element([
+        'tag' => 'div',
+        'id' => $id.'-tab-inner-'.$accordionindex,
+        'attributes' => ['class' => 'tab-inner'.( $this->partition_has_errors($accordionindex, $form) ? ' has-errors' : '' )],
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]);
+
+      foreach ($partition_fields as $name => $field) {
+        $inner->add_child( $field->render($form) );
+      }
+      $tag->add_child($inner);
+    }
+
+    return $tag;
   }
 
   public function add_accordion($title){

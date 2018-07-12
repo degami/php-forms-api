@@ -61,7 +61,7 @@ class image_button extends clickable {
       'value_needed' => FALSE,
       'attributes' => $this->attributes + ['src' => $this->src, 'alt' => $this->alt],
     ]);
-    return $tag->render_tag();
+    return $tag;
   }
 
   /**

@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Containers\fields_container_multiple;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * a "tabbed" field container
@@ -37,13 +38,22 @@ class tabs extends fields_container_multiple {
   public function render_field(form $form) {
     $id = $this->get_html_id();
 
-    $output = '';
-    $attributes = $this->get_attributes();
+    $tag = new tag_element([
+      'tag' => 'div',
+      'id' => $id,
+      'attributes' => $this->attributes,
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
 
-    $output .= "<div id=\"{$id}\"{$attributes}>\n";
+    $tab_links = new tag_element([
+      'tag' => 'ul',
+      'has_close' => TRUE,
+      'value_needed' => FALSE,
+    ]);
 
-    $tabs_html = [];
-    $tab_links = [];
+    $tag->add_child($tab_links);
+    
     foreach($this->partitions as $tabindex => $tab){
       $insertorder = array_flip($this->insert_field_order[$tabindex]);
       $weights = [];
@@ -60,16 +70,23 @@ class tabs extends fields_container_multiple {
       }
 
       $addclass_tab = ' class="tabel '.( $this->partition_has_errors($tabindex, $form) ? 'has-errors' : '' ).'"';
-      $tab_links[$tabindex] = "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->partitions[$tabindex]['title'])."</a></li>";
-      $tabs_html[$tabindex] = "<div id=\"{$id}-tab-inner-{$tabindex}\" class=\"tab-inner".( $this->partition_has_errors($tabindex, $form) ? ' has-errors' : '' )."\">\n";
-      foreach ($partition_fields as $name => $field) {
-        $tabs_html[$tabindex] .= $field->render($form);
-      }
-      $tabs_html[$tabindex] .= "</div>\n";
-    }
-    $output .= "<ul>".implode("",$tab_links)."</ul>".implode("",$tabs_html). "</div>\n";
+      $tab_links->add_child("<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".$this->get_text($this->partitions[$tabindex]['title'])."</a></li>");
 
-    return $output;
+      $inner = new tag_element([
+        'tag' => 'div',
+        'id' => $id.'-tab-inner-'.$tabindex,
+        'attributes' => ['class' => 'tab-inner'.( $this->partition_has_errors($tabindex, $form) ? ' has-errors' : '' )],
+        'has_close' => TRUE,
+        'value_needed' => FALSE,
+      ]);
+
+      foreach ($partition_fields as $name => $field) {
+        $inner->add_child($field->render($form));
+      }
+      $tag->add_child($inner);
+    }
+    
+    return $tag;
   }
 
   public function add_tab($title){

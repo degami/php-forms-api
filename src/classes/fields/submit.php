@@ -39,7 +39,7 @@ class submit extends clickable {
       'value' => $this->get_text($this->value),
       'attributes' => $this->attributes,
     ]);
-    return $tag->render_tag();       
+    return $tag;       
   }
 
 }
