@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Containers\sortable_container;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * a sortable field container
@@ -67,10 +68,11 @@ class sortable extends sortable_container{
 
     $handle_position = trim(strtolower($this->get_handle_position()));
 
-    $output = '';
-    $attributes = $this->get_attributes();
-
-    $output .= "<div id=\"{$id}\"{$attributes}>\n";
+    $tag = new tag_element([
+      'tag' => 'div',
+      'id' => $id,
+      'attributes' => $this->attributes,
+    ]);
 
     foreach($this->partitions as $partitionindex => $tab){
       $insertorder = array_flip($this->insert_field_order[$partitionindex]);
@@ -86,15 +88,44 @@ class sortable extends sortable_container{
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
       }
 
-      $output .= "<div id=\"{$id}-sortable-{$partitionindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;\"></span>")."<div style=\"display: inline-block;\">\n";
-      foreach ($partition_fields as $name => $field) {
-        $output .= $field->render($form);
-      }
-      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$partitionindex}\" value=\"{$partitionindex}\" />\n";
-      $output .= "</div>".(($handle_position == 'right') ? "<span class=\"ui-icon ui-icon-arrowthick-2-n-s\" style=\"display: inline-block;float: right;\"></span>" : '')."</div>\n";
-    }
-    $output .= "</div>\n";
+      $inner = new tag_element([
+        'tag' => 'div',
+        'id' => $id.'-sortable-'.$partitionindex,
+        'attributes' => ['class' => 'tab-inner ui-state-default'],
+      ]);
 
-    return $output;
+      $tag->add_child($inner);
+
+      if($handle_position != 'right'){
+        $inner->add_child(new tag_element([
+          'tag' => 'span',
+          'attributes' => ['class' => 'ui-icon ui-icon-arrowthick-2-n-s','style' => 'display: inline-block;'],
+        ]));
+      }
+
+      $inner_inline = new tag_element([
+        'tag' => 'div',
+        'attributes' => ['style' => 'display: inline-block;'],
+      ]);
+      $inner->add_child($inner_inline);
+
+      foreach ($partition_fields as $name => $field) {
+        $inner_inline->add_child($field->render($form));
+      }
+      $inner_inline->add_child(new tag_element([
+        'tag' => 'input',
+        'type' => 'hidden',
+        'name' => $id.'-delta-'.$partitionindex,
+        'value' => $partitionindex,
+        'has_close' => FALSE,
+      ]));
+      if($handle_position == 'right'){
+        $inner_inline->add_child(new tag_element([
+          'tag' => 'span',
+          'attributes' => ['class' => 'ui-icon ui-icon-arrowthick-2-n-s','style' => 'display: inline-block;float: right;'],
+        ]));
+      }
+    }
+    return $tag;
   }
 }

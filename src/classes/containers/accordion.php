@@ -62,8 +62,6 @@ class accordion extends fields_container_multiple {
       'tag' => 'div',
       'id' => $id,
       'attributes' => $this->attributes,
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
 
     foreach($this->partitions as $accordionindex => $accordion){
@@ -85,16 +83,12 @@ class accordion extends fields_container_multiple {
         'tag' => 'h3',
         'text' => $this->get_text($this->partitions[$accordionindex]['title']),
         'attributes' => ['class' => 'tabel '.( $this->partition_has_errors($accordionindex, $form) ? 'has-errors' : '' )],
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]));
 
       $inner = new tag_element([
         'tag' => 'div',
         'id' => $id.'-tab-inner-'.$accordionindex,
         'attributes' => ['class' => 'tab-inner'.( $this->partition_has_errors($accordionindex, $form) ? ' has-errors' : '' )],
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]);
 
       foreach ($partition_fields as $name => $field) {

@@ -190,15 +190,11 @@ class repeatable extends fields_container_multiple {
       'tag' => 'div',
       'id' => $id,
       'attributes' => $this->attributes,
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
 
     $target = new tag_element([
       'tag' => 'div',
       'attributes' => ['class' => 'fields-target'],
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
 
     $tag->add_child($target);
@@ -221,16 +217,12 @@ class repeatable extends fields_container_multiple {
       $inner = new tag_element([
         'tag' => 'div',
         'id' => $id.'-row-'.$partitionindex,
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]);
       $target->add_child($inner);
 
       $repeatablerow = new tag_element([
         'tag' => 'div',
         'attributes' => ['class' => 'repeatable-row'],
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]);
       $inner->add_child($repeatablerow);      
 

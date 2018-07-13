@@ -90,22 +90,16 @@ class fieldset extends fields_container {
       'tag' => 'fieldset',
       'id' => $id,
       'attributes' => $this->attributes,
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
     if (!empty($this->title)) {
       $tag->add_child(new tag_element([
         'tag' => 'legend',
         'text' => $this->get_text($this->title),
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]));
     }
     $inner = new tag_element([
       'tag' => 'div',
       'attributes' => ['class' => 'fieldset-inner'],
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
 
     foreach ($this->get_fields() as $name => $field) {

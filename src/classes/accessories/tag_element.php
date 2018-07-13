@@ -17,7 +17,15 @@ use Degami\PHPFormsApi\Abstracts\Base\base_element;
 */
 class tag_element extends base_element implements tag_interface{
 
-	static $closed_tags = ['textarea','select','option','optgroup','datalist','button'];
+	static $closed_tags = [
+		'textarea','select','option','optgroup','datalist','button','fieldset','legend',
+		'div', 'span', 'table', 'thead', 'tbody', 'tr', 'td','h3','ul','li',
+	];
+
+	static $novalue_tags = [
+		'textarea','select','optgroup','datalist','fieldset','legend',
+		'div', 'span', 'table', 'thead', 'tbody', 'tr', 'td','h3','ul','li',
+	];
 
 	protected $tag;
 	protected $type;
@@ -55,7 +63,7 @@ public function __construct($options = []) {
 			unset($options['reserved_attributes']);
 		}
 
-		if(in_array( $this->tag, ['textarea','select','optgroup','datalist'] )){
+		if(in_array( $this->tag, static::$novalue_tags )){
 			$this->value_needed = FALSE;
 		}
 

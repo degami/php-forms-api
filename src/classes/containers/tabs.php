@@ -42,14 +42,10 @@ class tabs extends fields_container_multiple {
       'tag' => 'div',
       'id' => $id,
       'attributes' => $this->attributes,
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
 
     $tab_links = new tag_element([
       'tag' => 'ul',
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
 
     $tag->add_child($tab_links);
@@ -76,8 +72,6 @@ class tabs extends fields_container_multiple {
         'tag' => 'div',
         'id' => $id.'-tab-inner-'.$tabindex,
         'attributes' => ['class' => 'tab-inner'.( $this->partition_has_errors($tabindex, $form) ? ' has-errors' : '' )],
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]);
 
       foreach ($partition_fields as $name => $field) {

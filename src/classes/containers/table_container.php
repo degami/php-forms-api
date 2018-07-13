@@ -123,8 +123,6 @@ class table_container extends fields_container_multiple{
       'tag' => 'table',
       'id' => $id,
       'attributes' => $this->attributes,
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
 
     if(!empty($this->table_header) ){
@@ -134,8 +132,6 @@ class table_container extends fields_container_multiple{
 
       $thead = new tag_element([
         'tag' => 'thead',
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]);
       $tag->add_child($thead);
 
@@ -145,15 +141,11 @@ class table_container extends fields_container_multiple{
             'tag' => 'th',
             'text' => $this->get_text($th['value']),
             'attributes' => $th['attributes'],
-            'has_close' => TRUE,
-            'value_needed' => FALSE,
           ]));
         }else{
           $thead->add_child(new tag_element([
             'tag' => 'th',
             'text' => $this->get_text($th),
-            'has_close' => TRUE,
-            'value_needed' => FALSE,
           ]));
         }
       }
@@ -161,8 +153,6 @@ class table_container extends fields_container_multiple{
 
     $tbody = new tag_element([
       'tag' => 'tbody',
-      'has_close' => TRUE,
-      'value_needed' => FALSE,
     ]);
     $tag->add_child($tbody);
 
@@ -185,8 +175,6 @@ class table_container extends fields_container_multiple{
       $trow = new tag_element([
         'tag' => 'tr',
         'id' => $id.'-row-'.$trindex,
-        'has_close' => TRUE,
-        'value_needed' => FALSE,
       ]);
       $tbody->add_child($trow);
 

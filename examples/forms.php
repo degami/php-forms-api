@@ -421,19 +421,19 @@ function showallform(FAPI\form $form, &$form_state){
   ));
 
 
-  // $sortable = $form->add_field('sortable',array(
-  //   'type' => 'sortable',
-  // ));
+  $sortable = $form->add_field('sortable',array(
+    'type' => 'sortable',
+  ));
 
-  // for($i=0;$i<5;$i++){
-  //   $field = array(
-  //     'title' => 'Textfield '.($i+1),
-  //     'type' => 'textfield',
-  //   );
-  //   $sortable->add_field('sortable_field_'.$i,$field);
-  // }
+  for($i=0;$i<5;$i++){
+    $field = array(
+    'title' => 'Textfield '.($i+1),
+    'type' => 'textfield',
+    );
+    $sortable->add_field('sortable_field_'.$i,$field);
+  }
 
-  $sortable_table = $form->add_field('sortable',array(
+  $sortable_table = $form->add_field('sortable_table',array(
     'type' => 'sortable_table',
     'table_header' => array(
       'Textfields',

@@ -11,6 +11,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\form;
 use Degami\PHPFormsApi\Abstracts\Containers\sortable_container;
+use Degami\PHPFormsApi\Accessories\tag_element;
 
 /**
  * a sortable table rows field container
@@ -59,26 +60,45 @@ class sortable_table extends sortable_container{
 
     $handle_position = trim(strtolower($this->get_handle_position()));
 
-    $output = '';
-    $attributes = $this->get_attributes();
-
-    $output .= "<table id=\"{$id}\"{$attributes}>\n";
+    $tag = new tag_element([
+      'tag' => 'table',
+      'id' => $id,
+      'attributes' => $this->attributes,
+    ]);
 
     if(!empty($this->table_header) ){
       if(!is_array($this->table_header)) {
         $this->table_header = [$this->table_header];
       }
 
-      $output .= "<thead>\n";
-      if($handle_position != 'right') $output .= "<th>&nbsp;</th>";
-      foreach($this->table_header as $th){
-        $output .= "<th>".$this->get_text($th)."</th>";
+      $thead = new tag_element([
+        'tag' => 'thead',
+      ]);
+      $tag->add_child($thead);
+
+      if($handle_position != 'right'){
+        $thead->add_child(new tag_element([
+          'tag' => 'th', 'text' => '&nbsp;',
+        ]));
       }
-      if($handle_position == 'right') $output .= "<th>&nbsp;</th>";
-      $output .= "</thead>\n";
+      foreach($this->table_header as $th){
+        $thead->add_child(new tag_element([
+          'tag' => 'th',
+          'text' => $this->get_text($th),
+        ]));
+      }
+      if($handle_position == 'right'){
+        $thead->add_child(new tag_element([
+          'tag' => 'th', 'text' => '&nbsp;',
+        ]));
+      }
     }
 
-    $output .= "<tbody>\n";
+    $tbody = new tag_element([
+      'tag' => 'tbody',
+    ]);
+    $tag->add_child($tbody);
+
     foreach($this->partitions as $trindex => $tr){
       $insertorder = array_flip($this->insert_field_order[$trindex]);
       $weights = [];
@@ -95,18 +115,60 @@ class sortable_table extends sortable_container{
         array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
       }
 
-      $output .= "<tr id=\"{$id}-sortable-{$trindex}\"  class=\"tab-inner ui-state-default\">\n".(($handle_position == 'right') ? '' : "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>")."\n";
+      $trow = new tag_element([
+        'tag' => 'tr',
+        'id' => $id.'-sortable-'.$trindex,
+        'attributes' => [ 'class' => 'tab-inner ui-state-default'],
+      ]);
+      $tbody->add_child($trow);
+
+      if($handle_position != 'right'){
+        $td = new tag_element([
+          'tag' => 'td',
+          'attributes' => [  'width' => 16, 'style' => 'width: 16px;'],
+          'children' => [ 
+            new tag_element([
+              'tag' => 'span',
+              'attributes' => ['class' => 'ui-icon ui-icon-arrowthick-2-n-s','style' => 'display: inline-block;'],
+            ]) 
+          ],
+        ]);       
+        $trow->add_child($td);
+      }
+
       foreach ($partition_fields as $name => $field) {
         /** @var field $field */
         $fieldhtml = $field->render($form);
-        if( trim($fieldhtml) != '' )
-          $output .= "<td>".$fieldhtml."</td>\n";
+        if( trim($fieldhtml) != '' ){
+          $trow->add_child(new tag_element([
+            'tag' => 'td',
+            'children' => [ $fieldhtml ],
+          ]));
+        }
       }
-      $output .= "<input type=\"hidden\" name=\"{$id}-delta-{$trindex}\" value=\"{$trindex}\" />\n";
-      $output .= (($handle_position == 'right') ? "<td width=\"16\" style=\"width: 16px;\"><span class=\"ui-icon ui-icon-arrowthick-2-n-s\"></span></td>" : '')."</tr>\n";
-    }
-    $output .= "</tbody>\n</table>\n";
 
-    return $output;
+      $trow->add_child(new tag_element([
+        'tag' => 'input',
+        'type' => 'hidden',
+        'name' => $id.'-delta-'.$trindex,
+        'value' => $trindex,
+        'has_close' => FALSE,
+      ]));
+      if($handle_position == 'right'){
+        $td = new tag_element([
+          'tag' => 'td',
+          'attributes' => [  'width' => 16, 'style' => 'width: 16px;'],
+          'children' => [
+            new tag_element([
+              'tag' => 'span',
+              'attributes' => ['class' => 'ui-icon ui-icon-arrowthick-2-n-s','style' => 'display: inline-block;'],
+            ])
+          ],
+        ]);
+        $trow->add_child($td);
+      }
+    }
+
+    return $tag;
   }
 }
