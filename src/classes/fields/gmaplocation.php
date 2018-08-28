@@ -125,6 +125,7 @@ class gmaplocation extends geolocation {
     $opt['attributes']['class'] = 'latitude';
     if($this->lat_lon_type == 'textfield') $opt['type'] = 'textfield';
     $opt['default_value'] = (is_array($defaults) && isset($defaults['latitude'])) ? $defaults['latitude'] : 0;
+    if($this->lat_lon_type == 'textfield') $opt['suffix'] = $this->get_text('latitude').' ';
     if($this->lat_lon_type == 'textfield') $this->latitude = new textfield($opt,$name.'_latitude');
     else $this->latitude = new hidden($opt,$name.'_latitude');
 
@@ -133,6 +134,7 @@ class gmaplocation extends geolocation {
     $opt['attributes']['class'] = 'longitude';
     if($this->lat_lon_type == 'textfield') $opt['type'] = 'textfield';
     $opt['default_value'] = (is_array($defaults) && isset($defaults['longitude'])) ? $defaults['longitude'] : 0;
+    if($this->lat_lon_type == 'textfield') $opt['suffix'] = $this->get_text('longitude').' ';
     if($this->lat_lon_type == 'textfield') $this->longitude = new textfield($opt,$name.'_longitude');
     else $this->longitude = new hidden($opt,$name.'_longitude');
 

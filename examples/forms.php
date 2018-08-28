@@ -361,7 +361,7 @@ function showallform(FAPI\form $form, &$form_state){
   ))
   ->add_tab('tab1') //index 0
   ->add_tab('tab2') //index 1
-  ->add_tab('tab3') //index 2  
+  ->add_tab('tab3') //index 2
   ->add_field('markup2',array(
     'type' => 'markup',
     'value' => 'markup bbb',
@@ -660,7 +660,7 @@ function datesform(FAPI\form $form, &$form_state){
 
   $fieldset = $form->add_field('html', array(
     'type' => 'fieldset',
-    'title' => 'as html fields',    
+    'title' => 'as html fields',
   ));
 
   $fieldset->add_field('date', array(
@@ -932,6 +932,21 @@ function locationsform(FAPI\form $form, &$form_state){
       'latitude' => 51.48257659999999,
       'longitude' => -0.0076589,
     ),
+  ))
+  ->add_field('hr4', array('type'=>'markup','value'=>'<hr />'))
+  ->add_field('leafletmap', array(
+    'title' => 'LeafletLocation',
+    'type' => 'leafletlocation',
+    'scrollwheel' => TRUE,
+    'zoom' => 15,
+    'mapheight' => '400px',
+    'default_value' => array(
+      'latitude' => 45.434332,
+      'longitude' => 12.338440,
+    ),
+    'maptype' => 'mapbox.light',
+    'accessToken' => 'pk.eyJ1IjoiZGVnYW1pIiwiYSI6ImNqbGNlZmVpbjBsZ3Uza3VhOHA4NDczMG8ifQ.gtG114OTQ4RTJdmStUiWRA',
+    'lat_lon_type' => 'textfield',
   ))
   ->add_field('submit', array(
     'prefix' => '<br /><br />',
