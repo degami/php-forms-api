@@ -3,6 +3,10 @@
 if(!defined('GOOGLE_API_KEY')){
   define('GOOGLE_API_KEY', '<google maps key here>');
 }
+if(!defined('MAPBOX_API_KEY')){
+  define('MAPBOX_API_KEY', '<google maps key here>');
+}
+
 // if sessions are enabled then the form uses a token for extra security against CSRF
 require_once '../vendor/autoload.php';
 include_once "forms.php";
