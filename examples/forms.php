@@ -945,7 +945,7 @@ function locationsform(FAPI\form $form, &$form_state){
       'longitude' => 12.338440,
     ),
     'maptype' => 'mapbox.light',
-    'accessToken' => 'pk.eyJ1IjoiZGVnYW1pIiwiYSI6ImNqbGNlZmVpbjBsZ3Uza3VhOHA4NDczMG8ifQ.gtG114OTQ4RTJdmStUiWRA',
+    'accessToken' => MAPBOX_API_KEY,
     'lat_lon_type' => 'textfield',
   ))
   ->add_field('submit', array(
