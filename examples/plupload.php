@@ -15,7 +15,7 @@ function pluploadform_submit(&$form) {
   }
 }
 
-$form = FAPI\form_builder::get_form('pluploadform');
+$form = FAPI\FormBuilder::getForm('pluploadform');
 
 
 ?><!DOCTYPE html>
@@ -39,7 +39,7 @@ $form = FAPI\form_builder::get_form('pluploadform');
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->is_submitted()): ?>
+    <?php if ($form->isSubmitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
     <?php else: ?>

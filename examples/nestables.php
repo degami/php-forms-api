@@ -21,7 +21,7 @@ function nestableform_submit(&$form) {
   // $form->reset();
 }
 
-$form = FAPI\form_builder::get_form('nestableform');
+$form = FAPI\FormBuilder::getForm('nestableform');
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -37,7 +37,7 @@ $form = FAPI\form_builder::get_form('nestableform');
   <script type="text/javascript"><?php
 
     // if you wish to have form's js scripts here rather than after the form....
-    print $form->generate_js();
+    print $form->generateJs();
 
   ?></script>
 </head>
@@ -50,10 +50,10 @@ $form = FAPI\form_builder::get_form('nestableform');
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->is_submitted()): ?>
+    <?php if ($form->isSubmitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
-      <pre><?php var_export($form->get_submit_results());?></pre>
+      <pre><?php var_export($form->getSubmitResults());?></pre>
     <?php else: ?>
       <?php print $form->render(); ?>
     <?php endif; ?>

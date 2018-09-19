@@ -4,7 +4,7 @@ include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
 session_start();
 
-$form = FAPI\form_builder::get_form('batchoperationsform');
+$form = FAPI\FormBuilder::getForm('batchoperationsform');
 
 if( isset($_REQUEST['partial']) ){
   print $form->render();

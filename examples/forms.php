@@ -12,35 +12,35 @@ require_once '../vendor/autoload.php';
 require_once 'recaptchalib.php';
 
 // Generate a simple contact form
-function contactform(FAPI\form $form, &$form_state){
+function contactform(FAPI\Form $form, &$form_state){
  // $form = new FAPI\form(array(
   //   'form_id' => 'contact',
   // ));
   //
-  $form->set_inline_errors(TRUE); //->set_on_dialog(TRUE);
+  $form->setInlineErrors(TRUE); //->set_on_dialog(TRUE);
 
   $form
-  ->add_field('fieldset', array(
+  ->addField('fieldset', array(
     'type' => 'tabs',
     'title' => 'Contact',
-  ))->add_tab('Contact')
-  ->add_field('name', array(
+  ))->addTab('Contact')
+  ->addField('name', array(
     'type' => 'textfield',
     'validate' => array('required'),
     'preprocess' => array('trim'),
     'title' => 'Your name',
   ))
-  ->add_field('email', array(
+  ->addField('email', array(
     'type' => 'textfield',
     'validate' => array('required', 'email'),
     'title' => 'Your email address',
   ))
-  ->add_field('message', array(
+  ->addField('message', array(
     'type' => 'tinymce',
     'postprocess' => array('xss'),
     'title' => 'Your message',
   ))
-  ->add_field('switcher', array(
+  ->addField('switcher', array(
     'type' => 'switchbox',
     'title' => 'Yes or No',
     'default_value' => 1,
@@ -48,12 +48,12 @@ function contactform(FAPI\form $form, &$form_state){
 //    'yes_value' => 'a', 'yes_label' => 'A value',
 //    'no_value' => 'b', 'no_label' => 'B value',
   ))
-  ->add_field('captcha', array(
+  ->addField('captcha', array(
     'type' => 'math_captcha',
     'title' => 'Check this out!',
     'pre_filled' => TRUE,
   ))
-  ->add_field('submit', array(
+  ->addField('submit', array(
     'type' => 'submit',
   ));
 
@@ -70,7 +70,7 @@ function contactform(FAPI\form $form, &$form_state){
 
 // Generate a simple contact form
 
-function contactform_ajax(FAPI\form $form, &$form_state){
+function contactform_ajax(FAPI\Form $form, &$form_state){
   // $form = new FAPI\form(array(
   //   'form_id' => __FUNCTION__,
   //   'ajax_submit_url' => 'ajax_url.php',
@@ -78,35 +78,35 @@ function contactform_ajax(FAPI\form $form, &$form_state){
   // ));
 
   $form
-    ->set_form_id(__FUNCTION__)
-    ->set_ajax_submit_url('ajax_url.php')
-    ->set_output_type('json');
+    ->setFormId(__FUNCTION__)
+    ->setAjaxSubmitUrl('ajax_url.php')
+    ->setOutputType('json');
 
-  $form->add_field('name', array(
+  $form->addField('name', array(
     'type' => 'textfield',
     'validate' => array('required'),
     'preprocess' => array('trim'),
     'title' => 'Your name',
   ));
-  $form->add_field('email', array(
+  $form->addField('email', array(
     'type' => 'textfield',
     'validate' => array('required', 'email'),
     'title' => 'Your email address',
   ));
-  $form->add_field('message', array(
+  $form->addField('message', array(
     'type' => 'textarea',
     'postprocess' => array('xss'),
     'title' => 'Your message',
   ));
-  $form->add_field('submit', array(
+  $form->addField('submit', array(
     'type' => 'submit',
   ));
-  $form->add_field('message2', array(
+  $form->addField('message2', array(
     'type' => 'textarea',
     'postprocess' => array('xss'),
     'title' => 'Your message 2',
   ),1);
-  $form->add_field('submit2', array(
+  $form->addField('submit2', array(
     'type' => 'submit',
   ),1);
 
@@ -118,69 +118,69 @@ function contactform_ajax(FAPI\form $form, &$form_state){
 //############################################################################//
 
 
-function multistepform(FAPI\form $form, &$form_state){
+function multistepform(FAPI\Form $form, &$form_state){
 /*  $form = new FAPI\form(array(
     'form_id' => __FUNCTION__,
     'action' => 'multistep.php',
   ));*/
 
-  $form->set_action('multistep.php');
+  $form->setAction('multistep.php');
 
   // add to step 0
   $form
-  ->add_field('login_info',array(
+  ->addField('login_info',array(
     'type'=>'fieldset'
   ),0)
-  ->add_field('username',array(
+  ->addField('username',array(
     'title' => 'Username',
     'type'=>'textfield',
     'validate' => array('required'),
     'preprocess' => array('trim'),
   ))
-  ->add_field('password',array(
+  ->addField('password',array(
     'title' => 'Password',
     'type'=>'password',
     'validate' => array('required'),
     'preprocess' => array('trim'),
   ))
-  ->add_field('image',array(
+  ->addField('image',array(
     'title' => 'Picture',
     'type'=>'file',
     'destination' => dirname(__FILE__),
   ))
-  // ->add_field('recaptcha',array(
+  // ->addField('recaptcha',array(
   //   'title' => 'Recaptcha',
   //   'type'=>'recaptcha',
   //   'publickey' => RECAPTCHA_PUBLIC_KEY,
   //   'privatekey' => RECAPTCHA_PRIVATE_KEY,
   // ))
-  ->add_field('submit',array(
+  ->addField('submit',array(
     'type'=>'submit',
     'value' => 'Continue',
   ));
 
   // add to step 1
   $form
-  ->add_field('personal_info',array(
+  ->addField('personal_info',array(
     'type'=>'fieldset'
   ),1)
-  ->add_field('name',array(
+  ->addField('name',array(
     'title' => 'Name',
     'type'=>'textfield',
     'validate' => array('required'),
     'preprocess' => array('trim'),
   ))
-  ->add_field('surname',array(
+  ->addField('surname',array(
     'title' => 'Surname',
     'type'=>'textfield',
     'validate' => array('required'),
     'preprocess' => array('trim'),
   ))
-  ->add_field('birthday',array(
+  ->addField('birthday',array(
     'title' => 'Birthday',
     'type'=>'date',
   ))
-  ->add_field('submit',array(
+  ->addField('submit',array(
     'type'=>'submit',
     'value' => 'Save',
   ));
@@ -195,8 +195,8 @@ function multistepform(FAPI\form $form, &$form_state){
 //############################################################################//
 
 
-function showallform(FAPI\form $form, &$form_state){
-  $form = new FAPI\form(array(
+function showallform(FAPI\Form $form, &$form_state){
+  $form = new FAPI\Form(array(
     'form_id' => 'showall',
     //'inline_errors' => TRUE,
   //  'attributes'=>array('enctype'=>'multipart/form-data')
@@ -205,7 +205,7 @@ function showallform(FAPI\form $form, &$form_state){
   $object = new stdClass;
   $object->val1='val1';
 
-  $form->add_field('object',array(
+  $form->addField('object',array(
     'type'=>'value',
     'value' => $object,
     'my_evil_option' => 'evil_value',
@@ -213,7 +213,7 @@ function showallform(FAPI\form $form, &$form_state){
 
   // var_dump( isset($form->get_field('object')->my_evil_option) ); // evil option is not contained
 
-  $form->add_field('fieldset', array(
+  $form->addField('fieldset', array(
     'type' => 'fieldset',
     'attributes'=>array(
       //'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
@@ -222,7 +222,7 @@ function showallform(FAPI\form $form, &$form_state){
     'title' => 'my fieldset',
   ));
 
-  $form->get_field('fieldset')->add_field('name', array(
+  $form->getField('fieldset')->addField('name', array(
     'type' => 'textfield',
     'validate' => array('multiple_by[3]','ReQuired'), // will be reordered and normalized
     'preprocess' => array('trim'),
@@ -232,7 +232,7 @@ function showallform(FAPI\form $form, &$form_state){
       'style' => 'width: 100%',
      ),
   ));
-  $form->get_field('fieldset')->add_field('email', array(
+  $form->getField('fieldset')->addField('email', array(
     'type' => 'email',
     'title' => 'Your email address',
     'attributes' => array(
@@ -240,7 +240,7 @@ function showallform(FAPI\form $form, &$form_state){
       'placeholder' => 'yourmail@yourdomain',
      ),
   ));
-  $form->get_field('fieldset')->add_field('password', array(
+  $form->getField('fieldset')->addField('password', array(
     'type' => 'password',
     // 'validate' => array('required'),
     'title' => 'Your Password',
@@ -250,14 +250,14 @@ function showallform(FAPI\form $form, &$form_state){
     'with_confirm' => TRUE,
     'with_strength_check' => TRUE,
   ));
-  $form->get_field('fieldset')->add_field('markup1', array(
+  $form->getField('fieldset')->addField('markup1', array(
     'type' => 'markup',
     'value' => 'Markup 1 before all',
     'weight' => -10,
   ));
 
 
-  $form->add_field('fieldset2',array(
+  $form->addField('fieldset2',array(
     'type' => 'fieldset',
     'attributes'=>array(
       // 'style' => 'width: 500px;padding: 10px 10px 10px 5px;',
@@ -266,7 +266,7 @@ function showallform(FAPI\form $form, &$form_state){
     'collapsed' => false,
     'title' => 'my fieldset 2',
   ))
-  ->add_field('message', array(
+  ->addField('message', array(
     'type' => 'textarea',
     'postprocess' => array('xss'),
     'title' => 'Your message',
@@ -278,58 +278,57 @@ function showallform(FAPI\form $form, &$form_state){
       'style' => 'width: 100%',
      ),
   ))
-  ->add_field('message2', array(
+  ->addField('message2', array(
     'type' => 'tinymce',
     'title' => 'Your beautiful message',
     'rows' => 10,
   ))
-  ->add_field('masked',array(
+  ->addField('masked',array(
     'title' => 'Phone',
     'type' => 'maskedfield',
     'mask'=>'0000-0000',
   ));
 
-
-  $accordion = new FAPI\Containers\accordion(array(
+  $accordion = new FAPI\Containers\Accordion(array(
     'collapsible' => TRUE,
     'attributes'=>array(
     // 'style' => 'width: 500px',
   )),'accordion');
 
-  $accordion->add_accordion('accordion1');
-  $accordion->add_accordion('accordion2');
+  $accordion->addAccordion('accordion1');
+  $accordion->addAccordion('accordion2');
 
-  $accordion->add_field('spinner', array(
+  $accordion->addField('spinner', array(
     'type' => 'spinner',
     'title' => 'Select a value',
   ),0)
-  ->add_field('range', array(
+  ->addField('range', array(
     'type' => 'range',
     'title' => 'Range a value',
   ),0)
-  ->add_field('number', array(
+  ->addField('number', array(
     'type' => 'number',
     'title' => 'Number field',
   ),0)
-  ->add_field('color',array(
+  ->addField('color',array(
     'type'=>'color',
     'title' => 'Color',
     'default_value' => '#be2a99',
   ))
-  ->add_field('colorpicker',array(
+  ->addField('colorpicker',array(
     'type' => 'colorpicker',
     'title' => 'Pick your color',
     'default_value' => '#88B2D1',
   ));
 
-  $accordion->add_field('date', array(
+  $accordion->addField('date', array(
     'type' => 'date',
     'title' => 'select date',
     'granularity' => 'day',
     'js_selects' => FALSE,
   ),1);
 
-  $accordion->add_field('time', array(
+  $accordion->addField('time', array(
     'type' => 'time',
     'title' => 'time',
     'granularity' => 'minutes',
@@ -337,61 +336,61 @@ function showallform(FAPI\form $form, &$form_state){
     'js_selects' => FALSE,
   ),1);
 
-  $accordion->add_field('datepicker', array(
+  $accordion->addField('datepicker', array(
     'type' => 'datepicker',
     'title' => 'date picker',
     'weight' => -10,
   ),1);
 
-  $accordion->add_field('datetime', array(
+  $accordion->addField('datetime', array(
     'type' => 'datetime',
     'title' => 'date time',
     'js_selects' => TRUE,
   ),1);
 
 
-  $form->add_field($accordion->get_name(), $accordion);
+  $form->addField($accordion->getName(), $accordion);
 
 
-  $form->add_field('tabs',array(
+  $form->addField('tabs',array(
     'type' => 'tabs',
     'attributes'=>array(
       // 'style' => 'width: 500px',
     ),
   ))
-  ->add_tab('tab1') //index 0
-  ->add_tab('tab2') //index 1
-  ->add_tab('tab3') //index 2
-  ->add_field('markup2',array(
+  ->addTab('tab1') //index 0
+  ->addTab('tab2') //index 1
+  ->addTab('tab3') //index 2
+  ->addField('markup2',array(
     'type' => 'markup',
     'value' => 'markup bbb',
   ),0) //to tab 0
-  ->add_field('markup3',array(
+  ->addField('markup3',array(
     'type' => 'markup',
     'value' => 'markup ccc',
   ),1) //to tab 1
-  ->add_field('checkboxes', array(
+  ->addField('checkboxes', array(
     'type' => 'checkboxes',
     'options' => array(0=>'zero',1=>'one',2=>'two'),
     'default_value' => 1,
   )) //to tab 0
-  ->add_field('radios', array(
+  ->addField('radios', array(
     'type' => 'radios',
     'options' => array(0=>'zero',1=>'one',2=>'two'),
     'default_value' => 2,
   ),2) //to tab 2
-  ->add_field('reqtextfield', array(
+  ->addField('reqtextfield', array(
     'title' => 'Required Textfield',
     'type' => 'textfield',
     'default_value' => '',
     'validate' => array('required'),
   )) //to tab 0
-  ->add_field('file', array(
+  ->addField('file', array(
     'type' => 'file',
     'destination' => dirname(__FILE__),
     // 'validate' => array('required'),
   ),1) //to tab 1
-  ->add_field('select', array(
+  ->addField('select', array(
     'type' => 'select',
     'title' => 'select a number - select',
     'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
@@ -400,13 +399,13 @@ function showallform(FAPI\form $form, &$form_state){
     ),
     'validate' => array('required'),
   ),1) //to tab 1
-  ->add_field('selectmenu', array(
+  ->addField('selectmenu', array(
     'type' => 'selectmenu',
     'title' => 'select a number - selectmenu',
     'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
     'default_value' => '2',
   ),1) //to tab 1
-  ->add_field('slider', array(
+  ->addField('slider', array(
     'type' => 'slider',
     'title' => 'select a number - slider',
     'options' => array('1'=>'one','2'=>'two','3'=>'three','four'=>array('5'=>'five','6'=>'six','7'=>'seven'),'8'=>'eight'),
@@ -415,13 +414,13 @@ function showallform(FAPI\form $form, &$form_state){
   ),1); //to tab 1
 
 
-  $form->add_field('hidden1', array(
+  $form->addField('hidden1', array(
     'type' => 'hidden',
     'default_value' => 'aaaa',
   ));
 
 
-  $sortable = $form->add_field('sortable',array(
+  $sortable = $form->addField('sortable',array(
     'type' => 'sortable',
   ));
 
@@ -430,10 +429,10 @@ function showallform(FAPI\form $form, &$form_state){
     'title' => 'Textfield '.($i+1),
     'type' => 'textfield',
     );
-    $sortable->add_field('sortable_field_'.$i,$field);
+    $sortable->addField('sortable_field_'.$i,$field);
   }
 
-  $sortable_table = $form->add_field('sortable_table',array(
+  $sortable_table = $form->addField('sortable_table',array(
     'type' => 'sortable_table',
     'table_header' => array(
       'Textfields',
@@ -445,30 +444,30 @@ function showallform(FAPI\form $form, &$form_state){
       'type' => 'textfield',
       'default_value' => 'value '.($i+1),
     );
-    $sortable_table->add_field('sortable_field_'.$i,$field,$i);
+    $sortable_table->addField('sortable_field_'.$i,$field,$i);
   }
 
-  $nestable = $form->add_field('container', array(
+  $nestable = $form->addField('container', array(
     'type' => 'tag_container',
     'weight' => 1000,
-  ))->add_field('nestable', array(
+  ))->addField('nestable', array(
     'type' => 'nestable',
     'prefix' => '<br /><br />',
     'suffix' => '<br /><br />',
   ));
 
   for($i = 0; $i < 5; $i++){
-    $nestable->add_field('nested_val_'.$i,array(
+    $nestable->addField('nested_val_'.$i,array(
       'type' => 'textfield',
       'default_value' => 'nested '.$i,
-    ))->add_child()->add_field('nested_child_val_'.$i,array(
+    ))->addChild()->addField('nested_child_val_'.$i,array(
       'type' => 'textfield',
       'default_value' => 'nestedchild '.$i,
     ));
   }
   //echo '<pre>';var_dump($nestable);echo '</pre>';
 
-  $form->add_field('progressbar', array(
+  $form->addField('progressbar', array(
     'title' => 'Progress',
     'type' => 'progressbar',
     'default_value' => '42',
@@ -500,48 +499,48 @@ function showallform(FAPI\form $form, &$form_state){
     'Scheme'
   );
 
-  $form->add_field('autocomplete', array(
+  $form->addField('autocomplete', array(
     'type' => 'autocomplete',
     'title' => 'autocomplete',
     'options' => $elemslist,
   ))
-  ->add_field('datalist', array(
+  ->addField('datalist', array(
     'type' => 'datalist',
     'title' => 'datalist',
     'options' => $elemslist,
   ))
-  ->add_field('multiselect',array(
+  ->addField('multiselect',array(
     'type' => 'multiselect',
     'title' => 'multiselect',
     'size' => 8,
     'options' => $elemslist,
     'default_value' => array(4,5,7),
   ))
-  ->get_field('container')
-  ->add_field('checkbox', array(
+  ->getField('container')
+  ->addField('checkbox', array(
     'type' => 'checkbox',
     'default_value' => 'checkbox',
     'title' => 'Check me',
     'validate' => array( array('validator'=>'required','error_message'=>'You must check the <strong>%t</strong> checkbox!' ) ),
   ))
-  ->add_field('actions', array(
+  ->addField('actions', array(
     'type' => 'tag_container',
     'tag' => 'div',
   ))
-  ->add_field('submit', array(
+  ->addField('submit', array(
     'type' => 'submit',
     'value' => 'Send',
   ))
-  ->add_field('submit2', array(
+  ->addField('submit2', array(
     'type' => 'submit',
     'value' => 'Send2',
     'js_button' => TRUE,
   ))
-  ->add_field('button', array(
+  ->addField('button', array(
     'type' => 'button',
     'value' => 'Send3',
   ))
-  ->add_field('image', array(
+  ->addField('image', array(
     'type' => 'image_button',
     'src' => 'https://www.google.it/images/srpr/logo11w.png',
     'attributes' => array(
@@ -549,7 +548,7 @@ function showallform(FAPI\form $form, &$form_state){
     ),
     'js_button' => TRUE,
   ))
-  ->add_field('reset', array(
+  ->addField('reset', array(
     'type' => 'reset',
     'value' => 'Reset',
     'js_button' => TRUE,
@@ -563,46 +562,46 @@ function showallform(FAPI\form $form, &$form_state){
 //############################################################################//
 //############################################################################//
 
-function nestableform(FAPI\form $form, &$form_state){
+function nestableform(FAPI\Form $form, &$form_state){
   $nestable = $form
-  ->add_field('nestable', array(
+  ->addField('nestable', array(
     'type' => 'nestable',
     'maxDepth' => 100,
     'prefix' => '<br /><br />',
     'suffix' => '<br /><br />',
-  ))->add_field('nested_val_0',array(
+  ))->addField('nested_val_0',array(
     'type' => 'textfield',
     'default_value' => 'nested 0',
   ));
 
   $nestable2 = $form
-  ->add_field('nestable2', array(
+  ->addField('nestable2', array(
     'type' => 'nestable',
     'maxDepth' => 100,
     'prefix' => '<br /><br />',
     'suffix' => '<br /><br />',
-  ))->add_field('nested2_val_0',array(
+  ))->addField('nested2_val_0',array(
     'type' => 'textfield',
     'default_value' => 'nested2 0',
   ));
 
   for($i = 1; $i <= 5; $i++){
-    $nestable->add_child()->add_field('nested_val_'.$i,array(
+    $nestable->addChild()->addField('nested_val_'.$i,array(
       'type' => 'value',
       'default_value' => 'nested '.$i,
       'prefix' => 'nested '.$i,
-    ))->add_child()->add_field('nested_child_val_'.$i,array(
+    ))->addChild()->addField('nested_child_val_'.$i,array(
       'type' => 'value',
       'default_value' => 'nestedchild '.$i,
       'prefix' => 'nestedchild '.$i,
       'suffix' => '<a href="#" style="float:right;" onClick="javascript:{alert(\'ciao\'); return false;}">ciao</a>',
     ));
 
-    $nestable2->add_child()->add_field('nested2_val_'.$i,array(
+    $nestable2->addChild()->addField('nested2_val_'.$i,array(
       'type' => 'value',
       'default_value' => 'nested2 '.$i,
       'prefix' => 'nested2 '.$i,
-    ))->add_child()->add_field('nested2_child_val_'.$i,array(
+    ))->addChild()->addField('nested2_child_val_'.$i,array(
       'type' => 'value',
       'default_value' => 'nestedchild2 '.$i,
       'prefix' => 'nestedchild2 '.$i,
@@ -611,7 +610,7 @@ function nestableform(FAPI\form $form, &$form_state){
 
   }
 
-  $form->add_field('submit', array(
+  $form->addField('submit', array(
     'type' => 'submit',
     'value' => 'Send',
   ));
@@ -623,9 +622,9 @@ function nestableform(FAPI\form $form, &$form_state){
 //############################################################################//
 
 
-function pluploadform(FAPI\form $form, &$form_state){
+function pluploadform(FAPI\Form $form, &$form_state){
   // $form = new FAPI\form(array('form_id' => 'plupload'));
-  $form->add_field('files_upload', array(
+  $form->addField('files_upload', array(
     'type' => 'plupload',
     'title' => 'Upload Extra Files',
     'filters' => array(
@@ -642,7 +641,7 @@ function pluploadform(FAPI\form $form, &$form_state){
   ));
 
 
-  $form->add_field('submit', array(
+  $form->addField('submit', array(
     'type' => 'submit',
   ));
 
@@ -655,48 +654,48 @@ function pluploadform(FAPI\form $form, &$form_state){
 //############################################################################//
 
 
-function datesform(FAPI\form $form, &$form_state){
+function datesform(FAPI\Form $form, &$form_state){
   //$form = new FAPI\form(array('form_id' => 'dates'));
 
-  $fieldset = $form->add_field('html', array(
+  $fieldset = $form->addField('html', array(
     'type' => 'fieldset',
     'title' => 'as html fields',
   ));
 
-  $fieldset->add_field('date', array(
+  $fieldset->addField('date', array(
     'type' => 'date',
     'title' => 'select date',
   ));
 
-  $fieldset->add_field('time', array(
+  $fieldset->addField('time', array(
     'type' => 'time',
     'title' => 'time',
     'default_value' => '10:23',
   ));
 
-  $fieldset->add_field('datetime', array(
+  $fieldset->addField('datetime', array(
     'type' => 'datetime',
     'title' => 'date time',
   ));
 
-  $fieldset->add_field('datepicker', array(
+  $fieldset->addField('datepicker', array(
     'type' => 'datepicker',
     'title' => 'date picker',
   ));
 
-  $fieldset = $form->add_field('selects', array(
+  $fieldset = $form->addField('selects', array(
     'type' => 'fieldset',
     'title' => 'as selects',
   ));
 
-  $fieldset->add_field('dateselect', array(
+  $fieldset->addField('dateselect', array(
     'type' => 'dateselect',
     'title' => 'select date',
     'granularity' => 'day',
     'js_selects' => FALSE,
   ));
 
-  $fieldset->add_field('timeselect', array(
+  $fieldset->addField('timeselect', array(
     'type' => 'timeselect',
     'title' => 'time',
     'granularity' => 'minutes',
@@ -705,12 +704,12 @@ function datesform(FAPI\form $form, &$form_state){
   ));
 
 
-  $fieldset->add_field('datetimeselect', array(
+  $fieldset->addField('datetimeselect', array(
     'type' => 'datetimeselect',
     'title' => 'date time',
   ));
 
-  $form->add_field('submit', array(
+  $form->addField('submit', array(
     'type' => 'submit',
   ));
 
@@ -722,14 +721,14 @@ function datesform(FAPI\form $form, &$form_state){
 //############################################################################//
 //############################################################################//
 
-function eventsform(FAPI\form $form, &$form_state){
+function eventsform(FAPI\Form $form, &$form_state){
   // $form = new FAPI\form(array('form_id' => 'events'));
 
   $step = 0;
 
-  $form->set_action($_SERVER['PHP_SELF']);
+  $form->setAction($_SERVER['PHP_SELF']);
 
-  $fieldset = $form->add_field('textfields', array(
+  $fieldset = $form->addField('textfields', array(
     'type' => 'fieldset',
     'id' => 'fieldset-textfields',
     'title' => 'textfields',
@@ -737,31 +736,31 @@ function eventsform(FAPI\form $form, &$form_state){
 
   $num_textfields = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']['num_textfields']['value']) ? ($form_state['input_form_definition']['fields'][$step]['textfields']['fields']['num_textfields']['value'] + 1) : 1;
 
-  $fieldset->add_field('num_textfields', array(
+  $fieldset->addField('num_textfields', array(
     'type' => 'hidden',
     'default_value' => $num_textfields,
   ));
 
   for($i = 0 ; $i < $num_textfields; $i++ ){
-    $fieldset->add_field('text_'.$i, array(
+    $fieldset->addField('text_'.$i, array(
       'type' => 'textfield',
       'title' => 'text',
     ));
   }
 
-  if( FAPI\form::is_partial() ){
+  if( FAPI\Form::isPartial() ){
     $jsondata = json_decode($form_state['input_values']['jsondata']);
     $callback = $jsondata->callback;
     if( is_callable($callback) ){
       //$target_elem = $callback( $form )->get_field('num_textfields');
       //$fieldset->add_js('console.log(JSON.parse(\''.json_encode( array( 'build_options' => preg_replace("/\\\"|\"|\n/","",serialize($target_elem->get_build_options())),  'id' => $target_elem->get_html_id(), 'value' => $target_elem->get_value()) ).'\'))');
-      $fieldset->add_js("\$('input[name=\"{$jsondata->name}\"]').focus();");
+      $fieldset->addJs("\$('input[name=\"{$jsondata->name}\"]').focus();");
     }
     //$fieldset->add_js('alert($("#num_textfields").val())');
     //$fieldset->add_js('console.log($("#num_textfields").val())');
   }
 
-  $form->add_field('addmore', array(
+  $form->addField('addmore', array(
     'type' => 'submit',
     'value' => 'Add more',
     'ajax_url' => $_SERVER['PHP_SELF'],
@@ -776,7 +775,7 @@ function eventsform(FAPI\form $form, &$form_state){
     ),
   ));
 
-  $form->add_field('submit', array(
+  $form->addField('submit', array(
     'type' => 'submit',
   ));
 
@@ -784,8 +783,8 @@ function eventsform(FAPI\form $form, &$form_state){
   return $form;
 }
 
-function events_form_callback(FAPI\form $form){
-  return $form->get_field('textfields');
+function events_form_callback(FAPI\Form $form){
+  return $form->getField('textfields');
 }
 
 
@@ -794,36 +793,36 @@ function events_form_callback(FAPI\form $form){
 //############################################################################//
 //############################################################################//
 
-function batchoperationsform(FAPI\form $form, &$form_state){
+function batchoperationsform(FAPI\Form $form, &$form_state){
   $step = 0;
-  $form->set_action($_SERVER['PHP_SELF']);
+  $form->setAction($_SERVER['PHP_SELF']);
 
-  $form->add_field('progressnum', array(
+  $form->addField('progressnum', array(
     'type' => 'value',
     'value' => (isset( $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] ) )? $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] + 20 : 0,
   ));
 
-  $fieldset = $form->add_field('fieldset', array(
+  $fieldset = $form->addField('fieldset', array(
     'type' => 'tag_container',
   ));
 
-  if( FAPI\form::is_partial() ){
+  if( FAPI\Form::isPartial() ){
     $jsondata = json_decode($form_state['input_values']['jsondata']);
     $callback = $jsondata->callback;
     if( isset($form_state['input_form_definition']['fields'][$step]['progressnum']['value']) && $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] >= 100 ){
-      $fieldset->add_field('done', array(
+      $fieldset->addField('done', array(
         'type' => 'markup',
         'default_value' => 'finito!',
       ));
     }else{
 
       if( is_callable($callback) ){
-        $fieldset->add_js("setTimeout(function(){ \$('#progress','#{$form->get_id()}').trigger('click') },1000);");
+        $fieldset->addJs("setTimeout(function(){ \$('#progress','#{$form->getId()}').trigger('click') },1000);");
       }
 
-      $fieldset->add_field('progress', array(
+      $fieldset->addField('progress', array(
         'type' => 'progressbar',
-          'default_value' =>  $form->get_field('progressnum')->get_value(),
+          'default_value' =>  $form->getField('progressnum')->get_value(),
           'show_label' => TRUE,
           'ajax_url' => $_SERVER['PHP_SELF'],
           'event' => array(
@@ -842,7 +841,7 @@ function batchoperationsform(FAPI\form $form, &$form_state){
   }
 
   // must be outside of the fieldset in order to be processed
-  $form->add_field('file', array(
+  $form->addField('file', array(
     'type' => 'file',
       'ajax_url' => $_SERVER['PHP_SELF'],
       'destination' => dirname(__FILE__),
@@ -857,15 +856,15 @@ function batchoperationsform(FAPI\form $form, &$form_state){
       ),
   ));
 
-/*  $fieldset->add_field('submit', array(
+/*  $fieldset->addField('submit', array(
     'type' => 'submit',
   ));
 */
   return $form;
 }
 
-function batch_operations_form_callback(FAPI\form $form){
-  return $form->get_field('fieldset');
+function batch_operations_form_callback(FAPI\Form $form){
+  return $form->getField('fieldset');
 }
 
 
@@ -880,7 +879,7 @@ function _batch_get_progress($filename, $offset = 0, $limit = 20){
 //############################################################################//
 //############################################################################//
 
-function locationsform(FAPI\form $form, &$form_state){
+function locationsform(FAPI\Form $form, &$form_state){
 /*
     google.maps.MapTypeId.HYBRID
     google.maps.MapTypeId.ROADMAP
@@ -888,12 +887,12 @@ function locationsform(FAPI\form $form, &$form_state){
     google.maps.MapTypeId.TERRAIN
 */
 
-  $form->add_field('location', array(
+  $form->addField('location', array(
     'title' => 'GeoLocation',
     'type' => 'geolocation',
   ))
-  ->add_field('hr1', array('type'=>'markup','value'=>'<hr />'))
-  ->add_field('map', array(
+  ->addField('hr1', array('type'=>'markup','value'=>'<hr />'))
+  ->addField('map', array(
     'title' => 'MapLocation',
     'type' => 'gmaplocation',
     'scrollwheel' => TRUE,
@@ -906,8 +905,8 @@ function locationsform(FAPI\form $form, &$form_state){
     'maptype' => 'google.maps.MapTypeId.TERRAIN',
     'with_current_location' => TRUE,
   ))
-  ->add_field('hr2', array('type'=>'markup','value'=>'<hr />'))
-  ->add_field('decode', array(
+  ->addField('hr2', array('type'=>'markup','value'=>'<hr />'))
+  ->addField('decode', array(
     'title' => 'GeoDecode',
     'type' => 'gmaplocation',
     'with_geocode' => TRUE,
@@ -919,8 +918,8 @@ function locationsform(FAPI\form $form, &$form_state){
       'longitude' => -0.0076589,
     ),
   ))
-  ->add_field('hr3', array('type'=>'markup','value'=>'<hr />'))
-  ->add_field('decode_nomap', array(
+  ->addField('hr3', array('type'=>'markup','value'=>'<hr />'))
+  ->addField('decode_nomap', array(
     'title' => 'GeoDecode No Map',
     'type' => 'gmaplocation',
     'with_geocode' => TRUE,
@@ -933,8 +932,8 @@ function locationsform(FAPI\form $form, &$form_state){
       'longitude' => -0.0076589,
     ),
   ))
-  ->add_field('hr4', array('type'=>'markup','value'=>'<hr />'))
-  ->add_field('leafletmap', array(
+  ->addField('hr4', array('type'=>'markup','value'=>'<hr />'))
+  ->addField('leafletmap', array(
     'title' => 'LeafletLocation',
     'type' => 'leafletlocation',
     'scrollwheel' => TRUE,
@@ -948,7 +947,7 @@ function locationsform(FAPI\form $form, &$form_state){
     'accessToken' => MAPBOX_API_KEY,
     'lat_lon_type' => 'textfield',
   ))
-  ->add_field('submit', array(
+  ->addField('submit', array(
     'prefix' => '<br /><br />',
     'type' => 'submit',
   ));
@@ -963,21 +962,21 @@ function locationsform(FAPI\form $form, &$form_state){
 //############################################################################//
 
 
-function repeatableform(FAPI\form $form, &$form_state){
-  $form->set_inline_errors(TRUE); //->set_on_dialog(TRUE);
+function repeatableform(FAPI\Form $form, &$form_state){
+  $form->setInlineErrors(TRUE); //->set_on_dialog(TRUE);
 
   $form
-    ->add_field('rep', array(
+    ->addField('rep', array(
       'type' => 'repeatable',
       'title' => 'Emails',
     ))
-    ->add_field('name', array(
+    ->addField('name', array(
       'type' => 'textfield',
       'validate' => array('required'),
       'preprocess' => array('trim'),
       'title' => 'Your name',
     ))
-    ->add_field('email', array(
+    ->addField('email', array(
       'type' => 'textfield',
       'validate' => array('required', 'email'),
       'title' => 'Your email address',
@@ -986,8 +985,8 @@ function repeatableform(FAPI\form $form, &$form_state){
 
 
     $form
-      ->add_field('hr1', array('type'=>'markup','value'=>'<hr />'))
-      ->add_field('submit', array(
+      ->addField('hr1', array('type'=>'markup','value'=>'<hr />'))
+      ->addField('submit', array(
         'type' => 'submit',
       ));
 
@@ -1001,29 +1000,29 @@ function repeatableform(FAPI\form $form, &$form_state){
 //############################################################################//
 
 
-function bulkform(FAPI\form $form, &$form_state){
-  $bulk = $form->add_field('bulk', array(
+function bulkform(FAPI\Form $form, &$form_state){
+  $bulk = $form->addField('bulk', array(
     'type' => 'bulk_table',
   ));
-  $bulk->set_table_header(array(
+  $bulk->setTableHeader(array(
     'text',
     'number'
   ));
-  $bulk->add_operation('dump', 'dump', 'var_dump');
-  $bulk->add_operation('print', 'print', 'printf');
+  $bulk->addOperation('dump', 'dump', 'var_dump');
+  $bulk->addOperation('print', 'print', 'printf');
 
   for( $i = 0; $i < 4; $i++){
-    $bulk->add_row()->add_field('text_'.$i, array(
+    $bulk->addRow()->addField('text_'.$i, array(
       'type' => 'textfield',
       'default_value' => 'textfield_'.$i,
     ), $i)
-    ->add_field('number_'.$i, array(
+    ->addField('number_'.$i, array(
       'type' => 'number',
       'default_value' => ''.$i,
     ), $i);
   }
 
-  $form->add_field('submit', array(
+  $form->addField('submit', array(
     'type' => 'submit',
   ));
 

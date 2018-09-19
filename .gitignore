@@ -7,3 +7,4 @@ vendor
 *.sublime-workspace
 *.sublime-classdb
 examples/googlekeys.php
+.php_cs.cache

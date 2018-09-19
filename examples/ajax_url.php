@@ -4,7 +4,7 @@ include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
 session_start();
 
-$form = FAPI\form_builder::get_form('contactform_ajax');
+$form = FAPI\FormBuilder::getForm('contactform_ajax');
 $form->process();
 
 // Submit function to call when the form is submitted and passes validation.
@@ -18,8 +18,8 @@ function contactform_ajax_submit(&$form) {
   // $form->reset();
 }
 
-if ($form->is_submitted()):
-  print json_encode( array( 'html' => '<p>Thanks for submitting the form.</p> <pre>'.var_export($form->get_submit_results('contactform_ajax_submit'),TRUE).'</pre>', 'js' => '' , 'is_submitted' => TRUE ) );
+if ($form->isSubmitted()):
+  print json_encode( array( 'html' => '<p>Thanks for submitting the form.</p> <pre>'.var_export($form->getSubmitResults('contactform_ajax_submit'),TRUE).'</pre>', 'js' => '' , 'is_submitted' => TRUE ) );
 else:
   print $form->render(/* 'json' */);
 endif;

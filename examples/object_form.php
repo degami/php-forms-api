@@ -6,7 +6,7 @@ session_start();
 
 function myclass_submit(&$form) {
   $form_values = $form->values()->toArray();
-  $form->add_highlight('Object submitted.');
+  $form->addHighlight('Object submitted.');
   return $form_values;
 }
 
@@ -29,7 +29,7 @@ class MyClass{
 }
 
 $classObject = new MyClass('Mirko','De Grandis',new \DateTime('1980-01-12'),1);
-$form = FAPI\form_builder::object_form($classObject);
+$form = FAPI\FormBuilder::objectForm($classObject);
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -47,10 +47,10 @@ $form = FAPI\form_builder::object_form($classObject);
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->is_submitted()): ?>
+    <?php if ($form->isSubmitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
-      <pre><?php var_export($form->get_submit_results());?></pre>
+      <pre><?php var_export($form->getSubmitResults());?></pre>
     <?php else: ?>
       <?php print $form->render(); ?>
     <?php endif; ?>

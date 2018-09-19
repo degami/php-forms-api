@@ -24,7 +24,7 @@ function locationsform_submit(&$form) {
   // $form->reset();
 }
 
-$form = FAPI\form_builder::get_form('locationsform');
+$form = FAPI\FormBuilder::getForm('locationsform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,9 +51,9 @@ $form = FAPI\form_builder::get_form('locationsform');
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->is_submitted()): ?>
+    <?php if ($form->isSubmitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
-      <pre><?php var_export($form->get_submit_results());?></pre>
+      <pre><?php var_export($form->getSubmitResults());?></pre>
       <p>Thanks for submitting the form.</p>
     <?php else: ?>
       <?php print $form; ?>

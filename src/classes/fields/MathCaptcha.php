@@ -1,0 +1,137 @@
+<?php
+/**
+ * PHP FORMS API
+ *
+ * @package degami/php-forms-api
+ */
+/* #########################################################
+   ####                    FIELDS                       ####
+   ######################################################### */
+
+namespace Degami\PHPFormsApi\Fields;
+
+use Degami\PHPFormsApi\Form;
+use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
+
+/**
+ * the image captcha field class
+ */
+class MathCaptcha extends Captcha
+{
+    /**
+     * pre-fill code into textfield
+     *
+     * @var boolean
+     */
+    protected $pre_filled = false;
+
+    private $code;
+    private $a;
+    private $b;
+    private $op;
+
+    private function getMathCode()
+    {
+        $this->code = '';
+        $operators = ['+','-','*','/'];
+        $this->a = mt_rand(0, 50);
+        $this->op = $operators[ mt_rand(0, count($operators)-1) ];
+
+        $ret = null;
+        do {
+            $this->b = mt_rand(1, 10);
+            eval('$ret = '.$this->a.$this->op.$this->b.';');
+        } while (!is_int($ret));
+
+        $_SESSION['math_captcha_code'][$this->getName()] = $this->a.$this->op.$this->b;
+
+        if (mt_rand(0, 1) == 0) {
+            $this->code .= '<span class="nohm">'.mt_rand(1, 10).$operators[ mt_rand(0, count($operators)-1) ].'</span>';
+        }
+        $this->code .= $this->a;
+        if (mt_rand(0, 1) == 0) {
+            $this->code .= '<span class="nohm">'.$operators[ mt_rand(0, count($operators)-1) ].mt_rand(1, 10).'</span>';
+        }
+        $this->code .= $this->op;
+        if (mt_rand(0, 1) == 0) {
+            $this->code .= '<span class="nohm">'.mt_rand(1, 10).$operators[ mt_rand(0, count($operators)-1) ].'</span>';
+        }
+        $this->code .= $this->b;
+        if (mt_rand(0, 1) == 0) {
+            $this->code .= '<span class="nohm">'.$operators[ mt_rand(0, count($operators)-1) ].mt_rand(1, 10).'</span>';
+        }
+
+        return $this->code;
+    }
+
+    /**
+     * pre_render hook
+     *
+     * @param Form $form form object
+     */
+    public function preRender(Form $form)
+    {
+        if ($this->pre_rendered == true) {
+            return;
+        }
+        $id = $this->getHtmlId();
+        $this->addJs("\$('#{$id} .nohm','#{$form->getId()}').css({'display': 'none'});");
+
+        parent::preRender($form);
+    }
+
+    /**
+     * render_field hook
+     *
+     * @param Form $form form object
+     *
+     * @return string        the element html
+     */
+    public function renderField(Form $form)
+    {
+        $id = $this->getHtmlId();
+        $attributes = $this->getAttributes();
+        $this->getMathCode();
+        $codeval = '';
+        if ($this->pre_filled == true) {
+            eval('$codeval = '.$this->a.$this->op.$this->b.';');
+        }
+        $output = "<div id=\"{$id}\" {$attributes}>{$this->code}<br />";
+        $tag = new TagElement(
+            [
+                'tag' => 'input',
+                'type' => 'text',
+                'name' => $this->name."[code]",
+                'value' => $codeval,
+            ]
+        );
+        $output .= $tag->renderTag();
+        $output .= "</div>\n";
+        return $output;
+    }
+
+    /**
+     * validate hook
+     *
+     * @return boolean TRUE if element is valid
+     */
+    public function valid()
+    {
+        if ($this->already_validated == true) {
+            return true;
+        }
+        if (isset($this->value['already_validated']) && $this->value['already_validated'] == true) {
+            return true;
+        }
+
+        $_sessval = null;
+        eval('$_sessval = '.$_SESSION['math_captcha_code'][$this->getName()].';');
+        if (isset($this->value['code']) && $this->value['code'] == $_sessval) {
+            return true;
+        }
+
+        $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
+        return false;
+    }
+}

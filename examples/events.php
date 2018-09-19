@@ -15,7 +15,7 @@ function eventsform_submit(&$form) {
   return $form_values;
 }
 
-$form = FAPI\form_builder::get_form('eventsform');
+$form = FAPI\FormBuilder::getForm('eventsform');
 
 if( isset($_REQUEST['partial']) ){
   print $form->render();
@@ -37,9 +37,9 @@ if( isset($_REQUEST['partial']) ){
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->is_submitted()): ?>
+    <?php if ($form->isSubmitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
-      <pre><?php var_dump($form->get_submit_results());?></pre>
+      <pre><?php var_dump($form->getSubmitResults());?></pre>
       <p>Thanks for submitting the form.</p>
     <?php else: ?>
       <?php print $form->render(); ?>

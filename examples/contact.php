@@ -46,7 +46,7 @@ function contactform_submit(&$form) {
 //  $form->get_field('fieldset')->remove_field('message');
 // }
 
-$form = FAPI\form_builder::get_form('contactform');
+$form = FAPI\FormBuilder::getForm('contactform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,10 +69,10 @@ $form = FAPI\form_builder::get_form('contactform');
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->is_submitted()): ?>
+    <?php if ($form->isSubmitted()): ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
-      <pre><?php var_export($form->get_submit_results());?></pre>
+      <pre><?php var_export($form->getSubmitResults());?></pre>
       <pre><?php var_export($form->values());?></pre>
     <?php else: ?>
       <?php print $form->render(); ?>
