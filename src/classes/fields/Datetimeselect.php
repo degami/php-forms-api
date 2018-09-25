@@ -60,7 +60,7 @@ class Datetimeselect extends ComposedField
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -91,7 +91,7 @@ class Datetimeselect extends ComposedField
     }
 
     /**
-     * preprocess hook . it simply calls the sub elements preprocess
+     * {@inheritdoc} . it simply calls the sub elements preprocess
      *
      * @param string $process_type preprocess type
      */
@@ -102,7 +102,7 @@ class Datetimeselect extends ComposedField
     }
 
     /**
-     * process hook . it simply calls the sub elements process
+     * {@inheritdoc} . it simply calls the sub elements process
      *
      * @param array $values value to set
      */
@@ -113,7 +113,7 @@ class Datetimeselect extends ComposedField
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */
@@ -143,7 +143,7 @@ class Datetimeselect extends ComposedField
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

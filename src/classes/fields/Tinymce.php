@@ -50,7 +50,7 @@ class Tinymce extends Textarea
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */

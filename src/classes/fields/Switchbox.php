@@ -56,7 +56,7 @@ class Switchbox extends Radios
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -92,7 +92,7 @@ class Switchbox extends Radios
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

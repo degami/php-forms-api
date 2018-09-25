@@ -21,7 +21,7 @@ class Submit extends Clickable
 {
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

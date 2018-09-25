@@ -19,7 +19,7 @@ class Selectmenu extends Select
 {
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */

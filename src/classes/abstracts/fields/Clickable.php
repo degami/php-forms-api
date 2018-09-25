@@ -51,7 +51,7 @@ abstract class Clickable extends Action
     }
 
     /**
-     * process hook
+     * {@inheritdoc}
      *
      * @param mixed $value value to set
      */
@@ -71,7 +71,7 @@ abstract class Clickable extends Action
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

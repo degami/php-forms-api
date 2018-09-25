@@ -55,7 +55,7 @@ class Autocomplete extends Textfield
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */

@@ -21,7 +21,7 @@ class Sortable extends SortableContainer
 {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param string $name  field name
      * @param mixed  $field field to add, can be an array or a field subclass
@@ -35,7 +35,7 @@ class Sortable extends SortableContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param string $name field name
      * @param mixed $_p UNUSED
@@ -48,7 +48,7 @@ class Sortable extends SortableContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -73,7 +73,7 @@ class Sortable extends SortableContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

@@ -20,7 +20,7 @@ class Range extends Number
 {
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

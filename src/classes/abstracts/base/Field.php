@@ -582,60 +582,60 @@ abstract class Field extends Element implements FieldInterface
         }
 
         $eventjs = "\$('#{$id}','#{$form->getId()}').on('{$event['event']}',function(evt){
-      evt.preventDefault();
-      var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
-      var jsondata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
-      var postdata = new FormData();
-      postdata.append('form_id', '{$form->getId()}');
-      postdata.append('jsondata', JSON.stringify(jsondata));
-      \$('#{$form->getId()} input,#{$form->getId()} select,#{$form->getId()} textarea').each(function(index, elem){
-        var \$this = \$(this);
-        if( \$this.serialize() != '' ){
-          var elem = \$this.serialize().split('=',2);
-          postdata.append(elem[0], elem[1]);
-        }else if( \$this.prop('tagName').toLowerCase() == 'input' && \$this.attr('type').toLowerCase() == 'file' ){
-          postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
-        }
-      });
-      var \$loading = \$('<div id=\"{$id}-event-loading\"></div>')
+                      evt.preventDefault();
+                      var \$target = ".((isset($event['target']) && !empty($event['target'])) ? "\$('#".$event['target']."')" : "\$('#{$id}').parent()").";
+                      var jsondata = { 'name':\$('#{$id}').attr('name'), 'value':\$('#{$id}').val(),'callback':'{$event['callback']}' };
+                      var postdata = new FormData();
+                      postdata.append('form_id', '{$form->getId()}');
+                      postdata.append('jsondata', JSON.stringify(jsondata));
+                      \$('#{$form->getId()} input,#{$form->getId()} select,#{$form->getId()} textarea').each(function(index, elem){
+                        var \$this = \$(this);
+                        if( \$this.serialize() != '' ){
+                          var elem = \$this.serialize().split('=',2);
+                          postdata.append(elem[0], elem[1]);
+                        }else if( \$this.prop('tagName').toLowerCase() == 'input' && \$this.attr('type').toLowerCase() == 'file' ){
+                          postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
+                        }
+                      });
+                      var \$loading = \$('<div id=\"{$id}-event-loading\"></div>')
                       .appendTo(\$target)
                       .css({'font-size':'0.5em'})
                       .progressbar({value: false});
-      \$.data(\$target[0],'loading', \$loading.attr('id'));
-      \$.ajax({
-        type: \"POST\",
-        contentType: false,
-        processData: false,
-        url: \"{$this->getAjaxUrl()}{$question_ampersand}partial=true&triggering_element={$this->getHtmlId()}\",
-        data: postdata,
-        success: function( data ){
-          var response;
-          if(typeof data =='object') { response = data; }
-          else { response = \$.parseJSON(data); }
-          ".((!empty($event['method']) && $event['method'] == 'replace') ? "\$target.html('');":"")."
-          ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
-          if( \$.trim(response.js) != '' ){ eval( response.js ); };
+                      \$.data(\$target[0],'loading', \$loading.attr('id'));
+                      \$.ajax({
+                        type: \"POST\",
+                        contentType: false,
+                        processData: false,
+                        url: \"{$this->getAjaxUrl()}{$question_ampersand}partial=true&triggering_element={$this->getHtmlId()}\",
+                        data: postdata,
+                        success: function( data ){
+                          var response;
+                          if(typeof data =='object') { response = data; }
+                          else { response = \$.parseJSON(data); }
+                          ".((!empty($event['method']) && $event['method'] == 'replace') ? "\$target.html('');":"")."
+                          ".((!empty($event['effect']) && $event['effect'] == 'fade') ? "\$target.hide(); \$(response.html).appendTo(\$target); \$target.fadeIn('fast');":"\$(response.html).appendTo(\$target);")."
+                          if( \$.trim(response.js) != '' ){ eval( response.js ); };
 
-          var element_onsuccess = \$.data( \$('#{$id}','#{$form->getId()}')[0], 'element_onsuccess' );
-          if( !!(element_onsuccess && element_onsuccess.constructor && element_onsuccess.call && element_onsuccess.apply) ){
-            element_onsuccess();
-          }
-        },
-        error: function ( jqXHR, textStatus, errorThrown ){
-          var element_onerror = \$.data( \$('#{$id}','#{$form->getId()}')[0], 'element_onerror' );
-          if( !!(element_onerror && element_onerror.constructor && element_onerror.call && element_onerror.apply) ){
-            element_onerror();
-          }
+                          var element_onsuccess = \$.data( \$('#{$id}','#{$form->getId()}')[0], 'element_onsuccess' );
+                          if( !!(element_onsuccess && element_onsuccess.constructor && element_onsuccess.call && element_onsuccess.apply) ){
+                            element_onsuccess();
+                          }
+                        },
+                        error: function ( jqXHR, textStatus, errorThrown ){
+                          var element_onerror = \$.data( \$('#{$id}','#{$form->getId()}')[0], 'element_onerror' );
+                          if( !!(element_onerror && element_onerror.constructor && element_onerror.call && element_onerror.apply) ){
+                            element_onerror();
+                          }
 
-          if(\$.trim(errorThrown) != '') alert(textStatus+': '+errorThrown);
-        },
-        complete: function( jqXHR, textStatus ){
-          var loading = \$.data(\$target[0],'loading');
-          \$('#'+loading).remove();
-        }
-      });
-      return false;
-    });";
+                          if(\$.trim(errorThrown) != '') alert(textStatus+': '+errorThrown);
+                        },
+                        complete: function( jqXHR, textStatus ){
+                          var loading = \$.data(\$target[0],'loading');
+                          \$('#'+loading).remove();
+                        }
+                      });
+                      return false;
+                    });";
         return $eventjs;
     }
 

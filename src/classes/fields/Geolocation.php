@@ -66,7 +66,7 @@ class Geolocation extends ComposedField
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -82,7 +82,7 @@ class Geolocation extends ComposedField
     }
 
     /**
-     * preprocess hook . it simply calls the sub elements preprocess
+     * {@inheritdoc} . it simply calls the sub elements preprocess
      *
      * @param string $process_type preprocess type
      */
@@ -93,7 +93,7 @@ class Geolocation extends ComposedField
     }
 
     /**
-     * process hook . it simply calls the sub elements process
+     * {@inheritdoc} . it simply calls the sub elements process
      *
      * @param array $values value to set
      */
@@ -104,7 +104,7 @@ class Geolocation extends ComposedField
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */
@@ -136,7 +136,7 @@ class Geolocation extends ComposedField
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

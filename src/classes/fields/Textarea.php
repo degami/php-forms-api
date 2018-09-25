@@ -35,7 +35,7 @@ class Textarea extends Field
     protected $resizable = false;
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -52,7 +52,7 @@ class Textarea extends Field
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -87,7 +87,7 @@ class Textarea extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

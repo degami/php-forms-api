@@ -35,7 +35,7 @@ class Fieldset extends FieldsContainer
     protected $collapsed = false;
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -81,7 +81,7 @@ class Fieldset extends FieldsContainer
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

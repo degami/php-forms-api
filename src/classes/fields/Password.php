@@ -42,7 +42,7 @@ class Password extends Field
     protected $with_strength_check = false;
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -97,7 +97,7 @@ class Password extends Field
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -151,7 +151,7 @@ class Password extends Field
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean check if element is valid
      */
@@ -170,7 +170,7 @@ class Password extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

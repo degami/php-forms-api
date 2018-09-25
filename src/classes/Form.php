@@ -543,7 +543,7 @@ class Form extends Element
     }
 
     /**
-     * alter request hook
+     * {@inheritdoc}
      *
      * @param array $request request array
      */
@@ -1124,7 +1124,7 @@ class Form extends Element
 
 
     /**
-     * pre-render hook. using this hook form elements can modify the form element
+     * {@inheritdoc}. using this hook form elements can modify the form element
      */
     public function preRender()
     {

@@ -28,7 +28,7 @@ class OrderedFunctions extends DataBag
     private $type;
 
     /**
-     * [class constructor
+     * class constructor
      *
      * @param array  $array         initially contained elements
      * @param string $type          type of elements
@@ -36,7 +36,8 @@ class OrderedFunctions extends DataBag
      */
     public function __construct(array $array, $type, $sort_callback = null)
     {
-        parent::__construct($array);
+        $this->position = -1;
+        $this->data = $array;
         $this->type = $type;
         $this->sort_callback = $sort_callback;
         $this->sort();

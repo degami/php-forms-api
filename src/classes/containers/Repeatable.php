@@ -65,7 +65,7 @@ class Repeatable extends FieldsContainerMultiple
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param $name
      *
@@ -81,7 +81,7 @@ class Repeatable extends FieldsContainerMultiple
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param array $request
      *
@@ -112,7 +112,7 @@ class Repeatable extends FieldsContainerMultiple
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param mixed $values
      */
@@ -135,7 +135,7 @@ class Repeatable extends FieldsContainerMultiple
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @return array|mixed
      */
@@ -157,7 +157,7 @@ class Repeatable extends FieldsContainerMultiple
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @return array|mixed
      */
@@ -168,7 +168,7 @@ class Repeatable extends FieldsContainerMultiple
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param \Degami\PHPFormsApi\Form $form
      */

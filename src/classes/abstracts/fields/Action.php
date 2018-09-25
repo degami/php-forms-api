@@ -29,7 +29,7 @@ abstract class Action extends Field
     protected $js_button = false;
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -46,7 +46,7 @@ abstract class Action extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is not a value
      */

@@ -34,7 +34,7 @@ class File extends Field
     protected $destination;
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -83,7 +83,7 @@ class File extends Field
     }
 
     /**
-     * process hook
+     * {@inheritdoc}
      *
      * @param mixed  $value value to set
      */
@@ -157,7 +157,7 @@ class File extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

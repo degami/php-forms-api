@@ -35,7 +35,7 @@ class Recaptcha extends Captcha
 
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -50,7 +50,7 @@ class Recaptcha extends Captcha
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */
@@ -94,7 +94,7 @@ class Recaptcha extends Captcha
     }
 
     /**
-     * alter_request hook
+     * {@inheritdoc}
      *
      * @param array $request request array
      */

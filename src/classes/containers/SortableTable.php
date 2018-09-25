@@ -28,7 +28,7 @@ class SortableTable extends SortableContainer
     protected $table_header = [];
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -60,7 +60,7 @@ class SortableTable extends SortableContainer
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

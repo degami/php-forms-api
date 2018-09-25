@@ -57,7 +57,7 @@ class Slider extends Select
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -93,7 +93,7 @@ class Slider extends Select
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

@@ -45,7 +45,7 @@ class BulkTable extends TableContainer
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      * @throws \Exception
@@ -88,7 +88,7 @@ class BulkTable extends TableContainer
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

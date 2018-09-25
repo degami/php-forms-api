@@ -66,7 +66,7 @@ class MathCaptcha extends Captcha
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -82,7 +82,7 @@ class MathCaptcha extends Captcha
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -112,7 +112,7 @@ class MathCaptcha extends Captcha
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */

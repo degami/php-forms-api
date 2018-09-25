@@ -54,7 +54,7 @@ class Maskedfield extends Textfield
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -69,7 +69,7 @@ class Maskedfield extends Textfield
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean this TRUE if this element conforms to mask
      */

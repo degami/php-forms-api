@@ -66,7 +66,7 @@ class Dateselect extends Field
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -99,7 +99,7 @@ class Dateselect extends Field
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -172,7 +172,7 @@ class Dateselect extends Field
     }
 
     /**
-     * process hook
+     * {@inheritdoc}
      *
      * @param array $value value to set
      */
@@ -190,7 +190,7 @@ class Dateselect extends Field
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */
@@ -212,7 +212,7 @@ class Dateselect extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

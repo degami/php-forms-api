@@ -133,7 +133,7 @@ class Leafletlocation extends Geolocation
 
 
     /**
-     * preprocess hook . it simply calls the sub elements preprocess
+     * {@inheritdoc} . it simply calls the sub elements preprocess
      *
      * @param string $process_type preprocess type
      */
@@ -144,7 +144,7 @@ class Leafletlocation extends Geolocation
 
 
     /**
-     * process hook . it simply calls the sub elements process
+     * {@inheritdoc} . it simply calls the sub elements process
      *
      * @param array $values value to set
      */
@@ -165,7 +165,7 @@ class Leafletlocation extends Geolocation
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -220,7 +220,7 @@ class Leafletlocation extends Geolocation
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

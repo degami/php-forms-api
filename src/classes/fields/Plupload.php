@@ -48,7 +48,7 @@ class Plupload extends Field
     protected $xap_url = ''; // url Moxie.xap
 
     /**
-     * process hook
+     * {@inheritdoc}
      *
      * @param mixed $value value to set
      */
@@ -58,7 +58,7 @@ class Plupload extends Field
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -185,7 +185,7 @@ class Plupload extends Field
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -203,7 +203,7 @@ class Plupload extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

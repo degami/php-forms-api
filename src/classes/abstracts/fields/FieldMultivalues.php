@@ -78,7 +78,7 @@ abstract class FieldMultivalues extends Field
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */
@@ -110,7 +110,7 @@ abstract class FieldMultivalues extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

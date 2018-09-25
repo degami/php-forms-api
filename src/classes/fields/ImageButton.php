@@ -50,7 +50,7 @@ class ImageButton extends Clickable
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -77,7 +77,7 @@ class ImageButton extends Clickable
     }
 
     /**
-     * alter_request hook
+     * {@inheritdoc}
      *
      * @param array $request request array
      */

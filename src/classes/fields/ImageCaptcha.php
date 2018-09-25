@@ -197,7 +197,7 @@ class ImageCaptcha extends Captcha
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
@@ -227,7 +227,7 @@ class ImageCaptcha extends Captcha
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */

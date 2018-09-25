@@ -27,7 +27,7 @@ abstract class Captcha extends Field
     protected $already_validated = false;
 
     /**
-     * process hook
+     * {@inheritdoc}
      *
      * @param mixed $values value to set
      */
@@ -50,7 +50,7 @@ abstract class Captcha extends Field
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is not a value
      */
@@ -60,7 +60,7 @@ abstract class Captcha extends Field
     }
 
     /**
-     * after_validate hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */

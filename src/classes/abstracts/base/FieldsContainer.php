@@ -154,7 +154,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * preprocess hook
+     * {@inheritdoc}
      *
      * @param string $process_type preprocess type
      */
@@ -207,7 +207,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -225,7 +225,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * validate hook
+     * {@inheritdoc}
      *
      * @return boolean TRUE if element is valid
      */
@@ -269,7 +269,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */
@@ -279,7 +279,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * alter_request hook
+     * {@inheritdoc}
      *
      * @param array $request request array
      */
@@ -292,7 +292,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * after_validate hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */

@@ -103,7 +103,7 @@ class Multiselect extends Select
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

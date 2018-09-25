@@ -19,7 +19,7 @@ class Spinner extends Number
 {
   
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */

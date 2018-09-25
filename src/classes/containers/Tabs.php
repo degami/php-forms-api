@@ -21,7 +21,7 @@ class Tabs extends FieldsContainerMultiple
 {
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -37,7 +37,7 @@ class Tabs extends FieldsContainerMultiple
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

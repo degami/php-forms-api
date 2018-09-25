@@ -99,7 +99,7 @@ class TableContainer extends FieldsContainerMultiple
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -113,7 +113,7 @@ class TableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

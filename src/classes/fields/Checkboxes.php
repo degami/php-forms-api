@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 class Checkboxes extends FieldMultivalues
 {
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

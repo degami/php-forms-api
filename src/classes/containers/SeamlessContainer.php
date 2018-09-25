@@ -20,7 +20,7 @@ class SeamlessContainer extends FieldsContainer
 {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

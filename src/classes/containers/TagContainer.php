@@ -42,7 +42,7 @@ class TagContainer extends FieldsContainer
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

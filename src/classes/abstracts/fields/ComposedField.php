@@ -18,7 +18,7 @@ use Degami\PHPFormsApi\Containers\TagContainer;
 abstract class ComposedField extends TagContainer
 {
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

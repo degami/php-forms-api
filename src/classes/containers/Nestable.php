@@ -154,7 +154,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param string $name
      * @param mixed $field
@@ -186,7 +186,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param mixed $values
      */
@@ -234,7 +234,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @return array
      */
@@ -251,7 +251,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param \Degami\PHPFormsApi\Form $form
      *
@@ -293,7 +293,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param \Degami\PHPFormsApi\Form $form
      */

@@ -67,7 +67,7 @@ class Datepicker extends Textfield
     protected $disabled_dates = []; // an array of date strings compliant to $date_format
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -112,7 +112,7 @@ class Datepicker extends Textfield
     }
 
     /**
-     * is_a_value hook
+     * {@inheritdoc}
      *
      * @return boolean this is a value
      */

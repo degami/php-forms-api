@@ -44,7 +44,7 @@ class Accordion extends FieldsContainerMultiple
 
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -65,7 +65,7 @@ class Accordion extends FieldsContainerMultiple
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

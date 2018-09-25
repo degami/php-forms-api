@@ -35,7 +35,7 @@ class Reset extends Action
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

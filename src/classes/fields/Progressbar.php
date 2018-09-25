@@ -34,7 +34,7 @@ class Progressbar extends Markup
     protected $show_label = false;
 
     /**
-     * pre_render hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      */
@@ -61,7 +61,7 @@ class Progressbar extends Markup
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *

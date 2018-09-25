@@ -52,7 +52,7 @@ class Datalist extends FieldMultivalues
     }
 
     /**
-     * render_field hook
+     * {@inheritdoc}
      *
      * @param Form $form form object
      *
