@@ -5,8 +5,8 @@
  * @package degami/php-forms-api
  */
 /* #########################################################
-   ####                    FIELDS                       ####
-   ######################################################### */
+####                    FIELDS                       ####
+######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
@@ -49,7 +49,7 @@ class Autocomplete extends Textfield
         if (!isset($options['attributes']['class'])) {
             $options['attributes']['class'] = '';
         }
-        $options['attributes']['class'].=' autocomplete';
+        $options['attributes']['class'] .= ' autocomplete';
 
         parent::__construct($options, $name);
     }
@@ -66,23 +66,23 @@ class Autocomplete extends Textfield
         }
         $id = $this->getHtmlId();
 
-        $this->addJs(
-            "
-      \$('#{$id}','#{$form->getId()}')
-      .bind( 'keydown', function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
-          event.preventDefault();
-        }
-      })
-      .autocomplete({
-        source: ".((!empty($this->options)) ? json_encode($this->options) : "'{$this->autocomplete_path}'").",
-        minLength: {$this->min_length},
-        focus: function() {
-          return false;
-        }
-      });
-    "
-        );
+        $this->addJs("
+          \$('#{$id}','#{$form->getId()}')
+          .bind( 'keydown', function( event ) {
+            if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
+              event.preventDefault();
+            }
+          })
+          .autocomplete({
+            source: " . ((!empty($this->options)) ?
+            json_encode($this->options) :
+            "'{$this->autocomplete_path}'") . ",
+            minLength: {$this->min_length},
+            focus: function() {
+              return false;
+            }
+          });
+        ");
 
         parent::preRender($form);
     }

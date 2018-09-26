@@ -82,30 +82,23 @@ class Datepicker extends Textfield
         $changeYear = ($this->change_year == true) ? 'true'  :'false';
 
         $this->addJs(
-            preg_replace(
-                "/\s+/",
-                " ",
-                str_replace(
-                    "\n",
-                    "",
-                    "".
-                    ((count($this->disabled_dates)>0) ?
-                      "var disabled_dates_array_{$form->getId()}_{$id} = ".
-                        json_encode((array) $this->disabled_dates).";" : "").
-                        "\$('#{$id}','#{$form->getId()}').datepicker({
-                          dateFormat: '{$this->date_format}',
-                          ".((count($this->disabled_dates)>0) ? "beforeShowDay: function(date){
-                            var string = $.datepicker.formatDate('{$this->date_format}', date);
-                            return [ disabled_dates_array_{$form->getId()}_{$id}.indexOf(string) == -1 ];
-                            },": "")."
-                          changeMonth: {$changeMonth},
-                          changeYear: {$changeYear},
-                          minDate: \"{$this->mindate}\",
-                          maxDate: \"{$this->maxdate}\",
-                          yearRange: \"{$this->yearrange}\"
-                        });"
-                )
-            )
+            ((count($this->disabled_dates)>0) ?
+                "var disabled_dates_array_{$form->getId()}_{$id} = ".
+                json_encode((array) $this->disabled_dates).";":
+                ""
+            ).
+            "\$('#{$id}','#{$form->getId()}').datepicker({
+              dateFormat: '{$this->date_format}',
+              ".((count($this->disabled_dates)>0) ? "beforeShowDay: function(date){
+                var string = $.datepicker.formatDate('{$this->date_format}', date);
+                return [ disabled_dates_array_{$form->getId()}_{$id}.indexOf(string) == -1 ];
+                },": "")."
+              changeMonth: {$changeMonth},
+              changeYear: {$changeYear},
+              minDate: \"{$this->mindate}\",
+              maxDate: \"{$this->maxdate}\",
+              yearRange: \"{$this->yearrange}\"
+            });"
         );
 
         parent::preRender($form);

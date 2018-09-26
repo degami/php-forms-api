@@ -292,13 +292,21 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function addJs($js)
+    public function addJs($js, $as_is = false)
     {
-        if (is_array($js)) {
-            $js = array_filter(array_map(['minify_js', $this], $js));
-            $this->js = array_merge($js, $this->js);
-        } elseif (is_string($js) && trim($js) != '') {
-            $this->js[] = $this->minifyJs($js);
+        if ($as_is) {
+            if (is_array($js)) {
+                $this->js = array_merge($js, $this->js);
+            } elseif (is_string($js) && trim($js) != '') {
+                $this->js[] = $js;
+            }
+        } else {
+            if (is_array($js)) {
+                $js = array_filter(array_map(['minify_js', $this], $js));
+                $this->js = array_merge($js, $this->js);
+            } elseif (is_string($js) && trim($js) != '') {
+                $this->js[] = $this->minifyJs($js);
+            }
         }
 
         return $this;

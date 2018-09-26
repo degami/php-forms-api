@@ -48,19 +48,26 @@ if (!defined('FORMS_SESSION_TIMEOUT')) {
     define('FORMS_SESSION_TIMEOUT', 7200);
 }
 if (!defined('FORMS_ERRORS_ICON')) {
-    define('FORMS_ERRORS_ICON', '<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>');
+    define(
+        'FORMS_ERRORS_ICON',
+        '<span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>'
+    );
 }
 if (!defined('FORMS_ERRORS_TEMPLATE')) {
-    define('FORMS_ERRORS_TEMPLATE', '<div class="ui-state-error ui-corner-all errorsbox">'.FORMS_ERRORS_ICON.'<ul>%s</ul></div>');
+    define(
+        'FORMS_ERRORS_TEMPLATE',
+        '<div class="ui-state-error ui-corner-all errorsbox">' . FORMS_ERRORS_ICON . '<ul>%s</ul></div>'
+    );
 }
 if (!defined('FORMS_HIGHLIGHTS_ICON')) {
-    define('FORMS_HIGHLIGHTS_ICON', '<span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>');
+    define(
+        'FORMS_HIGHLIGHTS_ICON',
+        '<span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>'
+    );
 }
 if (!defined('FORMS_HIGHLIGHTS_TEMPLATE')) {
-    define('FORMS_HIGHLIGHTS_TEMPLATE', '<div class="ui-state-highlight ui-corner-all highlightsbox">'.FORMS_HIGHLIGHTS_ICON.'<ul>%s</ul></div>');
-}
-
-if ((function_exists('session_status') && session_status() != PHP_SESSION_NONE) || trim(session_id()) != '') {
-    ini_set('session.gc_maxlifetime', FORMS_SESSION_TIMEOUT);
-    session_set_cookie_params(FORMS_SESSION_TIMEOUT);
+    define(
+        'FORMS_HIGHLIGHTS_TEMPLATE',
+        '<div class="ui-state-highlight ui-corner-all highlightsbox">' . FORMS_HIGHLIGHTS_ICON . '<ul>%s</ul></div>'
+    );
 }

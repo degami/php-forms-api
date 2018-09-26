@@ -526,7 +526,7 @@ class Form extends Element
      * get the form submit results optionally by submit function name
      *
      * @param  string $submit_function submit function name
-     * @return mixed                   function(s) return value or function(s) data sent to stdout if not returning anything
+     * @return mixed function(s) return value or function(s) data sent to stdout if not returning anything
      */
     public function getSubmitResults($submit_function = '')
     {
@@ -588,7 +588,8 @@ class Form extends Element
                     $field->process(null);
                 }
             } elseif ($field instanceof FieldMultivalues) {
-                // no value on request[name] && field is a multivalue (eg. checkboxes ?) - process anyway with an empty value
+                // no value on request[name] && field is a multivalue (eg. checkboxes ?)
+                // process anyway with an empty value
                 $field->process([]);
             }
         }
@@ -710,7 +711,8 @@ class Form extends Element
                             $submitresult = ob_get_contents();
                         }
                         ob_end_clean();
-                        $this->submit_functions_results[FormBuilder::getDefinitionFunctionName($submit_function)] = $submitresult;
+                        $deffunctionname = FormBuilder::getDefinitionFunctionName($submit_function);
+                        $this->submit_functions_results[$deffunctionname] = $submitresult;
                     }
                 }
             }
@@ -739,7 +741,9 @@ class Form extends Element
                 $this->valid = false;
                 $this->addError($this->getText('Form is invalid or has expired'), __FUNCTION__);
                 if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
-                    if ($_SESSION['form_token'][$_REQUEST['form_token']] >= ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT)) {
+                    if ($_SESSION['form_token'][$_REQUEST['form_token']] >=
+                            ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT)
+                    ) {
                         $this->valid = true;
                         $this->setErrors([]);
                         if (!Form::isPartial()) {
@@ -766,9 +770,20 @@ class Form extends Element
             if ($this->isFinalStep()) {
                 foreach ($this->validate as $validate_function) {
                     if (function_exists($validate_function)) {
-                        if (($error = $validate_function($this, (strtolower($this->method) == 'post') ? $_POST : $_GET)) !== true) {
+                        $error = $validate_function(
+                            $this,
+                            (strtolower($this->method) == 'post') ?
+                                $_POST :
+                                $_GET
+                        );
+                        if ($error !== true) {
                             $this->valid = false;
-                            $this->addError(is_string($error) ? $this->getText($error) : $this->getText('Error. Form is not valid'), $validate_function);
+                            $this->addError(
+                                is_string($error) ?
+                                    $this->getText($error) :
+                                    $this->getText('Error. Form is not valid'),
+                                $validate_function
+                            );
                         }
                     }
                 }
@@ -901,7 +916,9 @@ class Form extends Element
                 }
             } else {
                 if ($name != null) {
-                    if ($field instanceof Field && in_array($field->getType(), $field_types) && $field->getName() == $name) {
+                    if ($field instanceof Field && in_array($field->getType(), $field_types) &&
+                        $field->getName() == $name
+                    ) {
                         $out[] = $field;
                     }
                 } elseif ($field instanceof Field && in_array($field->getType(), $field_types)) {
@@ -1214,8 +1231,8 @@ class Form extends Element
             $callback = $jsondata->callback;
             if (is_callable($callback)) {
                 /**
- * @var Field $target_elem
-*/
+                 * @var Field $target_elem
+                 */
                 $target_elem = $callback($this);
 
                 $html = $target_elem->render($this);
@@ -1290,14 +1307,17 @@ class Form extends Element
                     $output['html'] .= $this->getPrefix();
                     $output['html'] .= $highlights;
                     $output['html'] .= $errors;
-                    $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
+                    $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\"";
+                    $output['html'] .= "method=\"{$this->method}\"{$attributes}>\n";
                     $output['html'] .= $fields_html;
                     $output['html'] .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
                     if (!$this->no_token) {
-                        $output['html'] .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+                        $output['html'] .= "<input type=\"hidden\" name=\"form_token\"".
+                        " value=\"{$this->form_token}\" />\n";
                     }
                     if ($this->getNumSteps() > 1) {
-                        $output['html'] .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
+                        $output['html'] .= "<input type=\"hidden\" name=\"current_step\" ".
+                        "value=\"{$this->current_step}\" />\n";
                     }
                     $output['html'] .= "</form>\n";
                     $output['html'] .= $this->getSuffix();
@@ -1320,7 +1340,8 @@ class Form extends Element
                     $output .= $this->getPrefix();
                     $output .= $highlights;
                     $output .= $errors;
-                    $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" method=\"{$this->method}\"{$attributes}>\n";
+                    $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\"";
+                    $output .= "method=\"{$this->method}\"{$attributes}>\n";
                     $output .= $fields_html;
                     $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
                     if (!$this->no_token) {
@@ -1431,7 +1452,8 @@ class Form extends Element
 
                 if (is_object($func)) {
                     $filename = $func->getFileName();
-                    $start_line = $func->getStartLine() - 1; // it's actually - 1, otherwise you wont get the function() block
+                    $start_line = $func->getStartLine() - 1; // it's actually - 1,
+                                                             // otherwise you wont get the function() block
                     $end_line = $func->getEndLine();
                     $length = $end_line - $start_line;
 
