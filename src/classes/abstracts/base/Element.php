@@ -289,6 +289,7 @@ abstract class Element extends BaseElement
      * add js to element
      *
      * @param string / array $js javascript to add
+     * @param boolean $as_is no "minification"
      *
      * @return Element
      */
@@ -531,6 +532,13 @@ abstract class Element extends BaseElement
         return '';
     }
 
+    /**
+     * search field by field html id
+     *
+     * @param  FieldContainer|Form  $container container to search into
+     * @param  string               $field_id  field id
+     * @return Field|null                      Field object or null if not found
+     */
     protected static function searchFieldById($container, $field_id)
     {
         /**

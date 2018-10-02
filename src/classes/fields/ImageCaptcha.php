@@ -82,6 +82,11 @@ class ImageCaptcha extends Captcha
      */
     private $code;
 
+    /**
+     * gets a random text
+     *
+     * @return string text
+     */
     private function getRandomText()
     {
         $this->code = '';
@@ -95,12 +100,23 @@ class ImageCaptcha extends Captcha
         return $this->code;
     }
 
+    /**
+     * gets a random color
+     *
+     * @param  resource $im image resource
+     * @return integer
+     */
     private function getRandomColor($im)
     {
         // never white, never black
         return imagecolorallocate($im, mt_rand(20, 185), mt_rand(20, 185), mt_rand(20, 185));
     }
 
+    /**
+     * adds noise to image
+     *
+     * @param resource $im image resource
+     */
     private function addNoise($im)
     {
         for ($i = 0; $i < $this->image_width; $i++) {
@@ -113,6 +129,11 @@ class ImageCaptcha extends Captcha
         }
     }
 
+    /**
+     * adds arcs to image
+     *
+     * @param resource $im image resource
+     */
     private function addArcs($im)
     {
         for ($i = 0; $i < 50; $i++) {
@@ -131,6 +152,11 @@ class ImageCaptcha extends Captcha
         }
     }
 
+    /**
+     * gets image as base64 string
+     *
+     * @return string image representation as base64 string
+     */
     private function getImageString()
     {
         $text = $this->getRandomText();

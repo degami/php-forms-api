@@ -18,26 +18,24 @@ use Degami\PHPFormsApi\Form;
 class Switchbox extends Radios
 {
 
-    /**
-     * @var string $no_label
-     */
+    /** @var mixed "no" value */
     protected $no_value;
 
-    /**
-     * @var string $no_label
-     */
+    /** @var string "no" label */
     protected $no_label;
 
-    /**
-     * @var string $yes_label
-     */
+    /** @var mixed "yes" value */
     protected $yes_value;
 
-    /**
-     * @var string $yes_label
-     */
+    /** @var string "yes" label */
     protected $yes_label;
 
+    /**
+     * class constructor
+     *
+     * @param array  $options build options
+     * @param string $name    field name
+     */
     public function __construct(array $options = [], $name = null)
     {
         $this->no_value = 0;

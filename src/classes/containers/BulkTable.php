@@ -17,6 +17,8 @@ use Degami\PHPFormsApi\Form;
  */
 class BulkTable extends TableContainer
 {
+
+    /** @var array available operations list */
     protected $operations = [];
 
     /**
@@ -114,6 +116,12 @@ class BulkTable extends TableContainer
         return $prefix.$out.$suffix;
     }
 
+    /**
+     * {@inheritdocs}
+     *
+     * @param mixed $values value to set
+     * @return null
+     */
     public function process($values)
     {
         foreach ($values[$this->getName()]['rows'] as $k => $row) {

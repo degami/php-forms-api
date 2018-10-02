@@ -20,16 +20,25 @@ use \Exception;
  */
 class Repeatable extends FieldsContainerMultiple
 {
+    /** @var integer number of initial repetitions */
     protected $num_reps = 1;
 
+    /** @var array fields to repeat */
     private $repetable_fields = [];
+
+    /** @var array field order */
     private $repetable_insert_field_order = [];
 
+    /**
+     * {@inheritdocs}
+     *
+     * @param array  $options options
+     * @param string|null $name field name
+     */
     public function __construct(array $options = [], $name = null)
     {
         parent::__construct($options, $name);
     }
-
 
     /**
      * Override add_field
@@ -68,8 +77,9 @@ class Repeatable extends FieldsContainerMultiple
      * {@inheritdoc}
      *
      * @param $name
+     * @param integer $partitions_index unused
      *
-     * @return $this
+     * @return Repatable
      */
     public function removeField($name, $partitions_index = 0)
     {
@@ -241,6 +251,12 @@ class Repeatable extends FieldsContainerMultiple
     }
 
 
+    /**
+     * {@inheritdocs}
+     *
+     * @param Form $form form object
+     * @return string|tag_element the field html
+     */
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();

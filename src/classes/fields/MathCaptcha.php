@@ -26,11 +26,23 @@ class MathCaptcha extends Captcha
      */
     protected $pre_filled = false;
 
+    /** @var string challenge code */
     private $code;
+
+    /** @var integer first operator */
     private $a;
+
+    /** @var integer second operator */
     private $b;
+
+    /** @var string operation */
     private $op;
 
+    /**
+     * get a math challege code
+     *
+     * @return string challenge string
+     */
     private function getMathCode()
     {
         $this->code = '';

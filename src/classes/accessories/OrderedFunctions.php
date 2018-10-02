@@ -18,13 +18,10 @@ use Degami\PHPFormsApi\Abstracts\Base\DataBag;
 class OrderedFunctions extends DataBag
 {
 
-    /**
-     * sort function name
-     *
-     * @var null
-     */
+    /** @var null|string sort function name */
     private $sort_callback = null;
 
+    /** @var string type */
     private $type;
 
     /**

@@ -346,6 +346,11 @@ abstract class Field extends Element implements FieldInterface
         return strtolower(!empty($this->id) ? $this->getId() : $this->getName());
     }
 
+    /**
+     * get css class name for field
+     *
+     * @return string css class name
+     */
     public function getElementClassName()
     {
         return strtolower(substr(get_class($this), strrpos(get_class($this), '\\') + 1));

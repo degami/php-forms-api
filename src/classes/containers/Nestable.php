@@ -22,15 +22,34 @@ class Nestable extends FieldsContainer
 {
     use Containers;
 
+    /** @var integer level */
     public $level = 0;
+
+    /** @var integer number of children */
     public $childnum = 0;
+
+    /** @var string tag for list */
     public $tag = 'ol';
+
+    /** @var string css class for list */
     public $tagclass = 'dd-list';
+
+    /** @var array children */
     public $children = [];
+
+    /** @var TagContainer panel */
     public $fields_panel = null;
+
+    /** @var integer maximum depth */
     public $maxDepth = 5;
+
+    /** @var integer group counter */
     public static $group_counter = 0;
+
+    /** @var boolean css has been rendered flag */
     public static $css_rendered = false;
+
+    /** @var integer group */
     public $group = 0;
 
     /**
@@ -218,6 +237,13 @@ class Nestable extends FieldsContainer
         return false;
     }
 
+    /**
+     * create values array
+     *
+     * @param  array   $tree          tree
+     * @param  Nestable $nestablefield field
+     * @return array    values array
+     */
     private static function createValuesArray($tree, Nestable $nestablefield)
     {
         $out = [];

@@ -29,7 +29,7 @@ interface FieldsContainerInterface
     /**
      * remove field from form
      *
-     * @param string $field field name
+     * @param string $name field name
      */
     public function removeField($name);
 

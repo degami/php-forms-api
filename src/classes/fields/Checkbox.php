@@ -19,6 +19,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
  */
 class Checkbox extends Field
 {
+    /** @var string where (after or before) to print text */
     protected $text_position = 'after';
 
     /**

@@ -12,12 +12,15 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 
-/*
-* the "Multiselect select" field class
-*/
+/**
+ * the "Multiselect select" field class
+ */
 class Multiselect extends Select
 {
+    /** @var array options on the left side */
     private $leftOptions;
+
+    /** @var array options on the right side */
     private $rightOptions;
 
     /**
@@ -50,6 +53,12 @@ class Multiselect extends Select
         $this->setAttribute('style', 'width: 100%;');
     }
 
+
+    /**
+     * {@inheritdocs}
+     *
+     * @param Form $form form object
+     */
     public function preRender(Form $form)
     {
         if ($this->pre_rendered == true) {
@@ -83,6 +92,11 @@ class Multiselect extends Select
         parent::preRender($form);
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @param array $value value to set
+     */
     public function process($value = [])
     {
         parent::process($value);

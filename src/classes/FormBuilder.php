@@ -179,6 +179,13 @@ class FormBuilder
         return $out;
     }
 
+    /**
+     * guess form field type by value
+     *
+     * @param  mixed        $value        value to find field to
+     * @param  string|null  $element_name element name
+     * @return array                      form field info
+     */
     public static function guessFormType($value, $element_name = null)
     {
         $default_value = $value;
@@ -275,6 +282,14 @@ class FormBuilder
         return [ 'type' => $type, 'validate' => $validate, 'default_value' => $default_value ];
     }
 
+    /**
+     * get a form to represent given object
+     *
+     * @param  Form   $form        initial form object
+     * @param  array &$form_state  form state
+     * @param  mixed  $object      object to represent
+     * @return Form                form object
+     */
     public static function objFormDefinition(Form $form, &$form_state, $object)
     {
         $form->setFormId(get_class($object));

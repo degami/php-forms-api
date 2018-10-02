@@ -33,6 +33,12 @@ class Color extends Field
         }
     }
 
+    /**
+     * check if string is an RGB representation
+     *
+     * @param  string $str string to check
+     * @return boolean     true if string is RGB
+     */
     private function isRGB($str)
     {
         return preg_match("/^#?([a-f\d]{3}([a-f\d]{3})?)$/i", $str);

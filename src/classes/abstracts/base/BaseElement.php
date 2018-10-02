@@ -145,6 +145,7 @@ abstract class BaseElement
      *
      * @param  mixed $key   key
      * @param  mixed $elem  element
+     * @param  string $path path
      * @return mixed        element as an array
      */
     private static function intToArray($key, $elem, $path = '/')

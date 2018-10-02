@@ -834,7 +834,7 @@ class Form extends Element
     /**
      * remove field from form
      *
-     * @param string  $field field name
+     * @param string  $name field name
      * @param integer $step  field step
      *
      * @return Form
@@ -1110,6 +1110,7 @@ class Form extends Element
     /**
      * sets inline error preference
      *
+     * @param boolean $inline_errors error preference
      * @return Form
      */
     public function setInlineErrors($inline_errors)

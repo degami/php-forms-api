@@ -20,26 +20,13 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 class Accordion extends FieldsContainerMultiple
 {
 
-    /**
-     * height style
-     *
-     * @var string
-     */
+    /** @var string height style */
     protected $height_style = 'auto';
 
-    /**
-     * active tab
-     *
-     * @var integer
-     */
+    /** @var integer active tab */
     protected $active = '0';
 
-
-    /**
-     * collapsible
-     *
-     * @var boolean
-     */
+    /** @var boolean collapsible */
     protected $collapsible = false;
 
 
@@ -134,6 +121,11 @@ class Accordion extends FieldsContainerMultiple
         return $tag;
     }
 
+    /**
+     * adds a new accordion
+     *
+     * @param string $title accordion title
+     */
     public function addAccordion($title)
     {
         return $this->addPartition($title);

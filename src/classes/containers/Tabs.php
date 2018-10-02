@@ -104,6 +104,11 @@ class Tabs extends FieldsContainerMultiple
         return $tag;
     }
 
+    /**
+     * add a new tab
+     *
+     * @param string $title tab title
+     */
     public function addTab($title)
     {
         return $this->addPartition($title);

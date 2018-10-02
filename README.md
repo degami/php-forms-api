@@ -26,7 +26,7 @@ Requirements:
 
 ## Roadmap
 
- * **Finish the Documentation!**
+ * **Finish the Documentation!** - you can also use phpdoc to generate a nice one ( phpdoc -d src -t docs --template=clean )
  * ~~Finish implementation of options such as _disabled_, _attributes_,~~
  * ~~Offer a wider range of examples~~
  * ~~Complete the javascript functionality for collapsible fieldsets and the

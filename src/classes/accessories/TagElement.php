@@ -18,27 +18,48 @@ use Degami\PHPFormsApi\Abstracts\Base\BaseElement;
  */
 class TagElement extends BaseElement implements TagInterface
 {
+
+    /** @var array tags that needs to be closed */
     public static $closed_tags = [
         'textarea','select','option','optgroup','datalist','button','fieldset','legend',
         'div', 'span', 'table', 'thead', 'tbody', 'tr', 'td','h3','ul','li',
     ];
 
+    /** @var array tags that do not need value attribute */
     public static $novalue_tags = [
         'textarea','select','optgroup','datalist','fieldset','legend',
         'div', 'span', 'table', 'thead', 'tbody', 'tr', 'td','h3','ul','li',
     ];
 
+    /** @var string tag */
     protected $tag;
-    protected $type;
-    protected $name;
-    protected $id;
-    protected $value;
-    protected $text;
-    protected $children;
-    protected $reserved_attributes = ['type','name', 'id','value'];
-    protected $has_close = null;
-    protected $value_needed = true;
 
+    /** @var string input type */
+    protected $type;
+
+    /** @var string input name */
+    protected $name;
+
+    /** @var string html id attribute */
+    protected $id;
+
+    /** @var mixed "value" attribute value */
+    protected $value;
+
+    /** @var string text */
+    protected $text;
+
+    /** @var array tag children */
+    protected $children;
+
+    /** @var array reserved attributes */
+    protected $reserved_attributes = ['type','name', 'id','value'];
+
+    /** @var null|boolean tag needs closing tag */
+    protected $has_close = null;
+
+    /** @var boolean tag needs value attribute */
+    protected $value_needed = true;
 
     /**
      * class constructor
@@ -101,11 +122,21 @@ class TagElement extends BaseElement implements TagInterface
         }
     }
 
+    /**
+     * get css class name
+     *
+     * @return string css class name
+     */
     public function getElementClassName()
     {
         return strtolower($this->tag == 'input' ? $this->type : $this->tag);
     }
 
+    /**
+     * gets html tag string
+     *
+     * @return string tag html representation
+     */
     public function renderTag()
     {
         static::executeAlter("/.*?_before_render_".$this->tag."_alter$/i", [&$this]);
@@ -124,6 +155,12 @@ class TagElement extends BaseElement implements TagInterface
         ($this->has_close ? $this->renderChildren()."</{$this->tag}>" : "");
     }
 
+    /**
+     * add child to tag
+     *
+     * @param TagElement|string $child child to add
+     * @return TagElement
+     */
     public function addChild($child)
     {
         $this->children[] = $child;
@@ -131,6 +168,11 @@ class TagElement extends BaseElement implements TagInterface
         return $this;
     }
 
+    /**
+     * gets tag children html representation
+     *
+     * @return string tag children html representation
+     */
     private function renderChildren()
     {
         $out = "";
