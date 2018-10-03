@@ -51,7 +51,7 @@ class Markup extends Field
      *
      * @return boolean this field is always valid
      */
-    public function valid()
+    public function isValid()
     {
         return true;
     }

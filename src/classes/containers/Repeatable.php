@@ -126,7 +126,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @param mixed $values
      */
-    public function process($values)
+    public function processValue($values)
     {
         $valuestoprocess = array_values($values[ $this->getName() ]);
 
@@ -137,11 +137,11 @@ class Repeatable extends FieldsContainerMultiple
             $matches = null;
             if (preg_match("/".$this->getName()."\[([0-9]+)\]\[(.*?)\]/", $field->getName(), $matches)) {
                 if (isset($valuestoprocess[ $matches[1] ][ $matches[2] ])) {
-                    $field->process($valuestoprocess[ $matches[1] ][ $matches[2] ]);
+                    $field->processValue($valuestoprocess[ $matches[1] ][ $matches[2] ]);
                 }
             }
         }
-        //parent::process($values);
+        //parent::processValue($values);
     }
 
     /**
@@ -171,7 +171,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @return array|mixed
      */
-    public function values()
+    public function getValues()
     {
         return $this->getValue();
     }
@@ -197,7 +197,7 @@ class Repeatable extends FieldsContainerMultiple
                 $field
                     ->setId($this->getName().'_{x}_'.$field->getName())
                     ->setName($this->getName().'[{x}]['.$field->getName().']');
-                $repetatable_fields .= $field->render($fake_form);
+                $repetatable_fields .= $field->renderHTML($fake_form);
             }
             $repetatable_fields .= "<a href=\"#\" class=\"remove-btn btn\" name=\"{$id}-remove-{x}\">&times;</a>\n";
             $repetatable_fields .= "</div></div>";
@@ -313,7 +313,7 @@ class Repeatable extends FieldsContainerMultiple
             $repeatablerow->addChild("<input type=\"hidden\" name=\"{$id}-numreps\" value=\"{$this->num_reps}\" />\n");
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
-                $repeatablerow->addChild($field->render($form));
+                $repeatablerow->addChild($field->renderHTML($form));
             }
             $repeatablerow->addChild("<a href=\"#\"
                                             class=\"remove-btn btn\" 

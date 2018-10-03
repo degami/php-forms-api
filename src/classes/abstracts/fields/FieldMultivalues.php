@@ -82,7 +82,7 @@ abstract class FieldMultivalues extends Field
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid()
+    public function isValid()
     {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
 
@@ -106,7 +106,7 @@ abstract class FieldMultivalues extends Field
                 }
             }
         }
-        return parent::valid();
+        return parent::isValid();
     }
 
     /**

@@ -73,9 +73,13 @@ $ignored_files = array(
     'recaptchalib.php',
     'ajax_url.php',
 );
-foreach ( glob('*.php') as $dirent) {
-    if($dirent[0] == '.' || !preg_match("/.*?\.(html?|php)$/i", $dirent)) continue;
-    if( in_array($dirent, $ignored_files) ) continue;
+foreach (glob('*.php') as $dirent) {
+    if ($dirent[0] == '.' || !preg_match("/.*?\.(html?|php)$/i", $dirent)) {
+        continue;
+    }
+    if (in_array($dirent, $ignored_files)) {
+        continue;
+    }
     echo '<li><a href="'.$dirent.'" target="_blank">'.$dirent.'</a></li>';
 }
 

@@ -93,7 +93,7 @@ class Optgroup extends Element
      *
      * @return string        the optgroup html
      */
-    public function render(Select $form_field)
+    public function renderHTML(Select $form_field)
     {
         $this->no_translation = $form_field->no_translation;
         $tag = new TagElement(
@@ -107,7 +107,7 @@ class Optgroup extends Element
             ]
         );
         foreach ($this->options as $option) {
-            $tag->addChild($option->render($form_field));
+            $tag->addChild($option->renderHTML($form_field));
         }
         return $tag;
     }

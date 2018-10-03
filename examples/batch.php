@@ -2,19 +2,20 @@
 require_once '../vendor/autoload.php';
 include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
+
 session_start();
 
 $form = FAPI\FormBuilder::getForm('batchoperationsform');
 
-if( isset($_REQUEST['partial']) ){
-  print $form->render();
-}else{
-?><!DOCTYPE html>
+if (isset($_REQUEST['partial'])) {
+    print $form->render();
+} else {
+    ?><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>Example contact form</title>
-  <?php include "header.php";?>
+    <?php include "header.php";?>
 </head>
 
 <body>

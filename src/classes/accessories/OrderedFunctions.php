@@ -81,7 +81,7 @@ class OrderedFunctions extends DataBag
     public function hasValue($value)
     {
         // return in_array($value, $this->data);
-        return in_array($value, $this->values());
+        return in_array($value, $this->getValues());
     }
 
     /**
@@ -100,7 +100,7 @@ class OrderedFunctions extends DataBag
      *
      * @return array element values
      */
-    public function values()
+    public function getValues()
     {
         // return array_values($this->data);
         $out = [];

@@ -138,13 +138,13 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return array form values
      */
-    public function values()
+    public function getValues()
     {
         $output = [];
         foreach ($this->getFields() as $name => $field) {
             /** @var Field $field */
             if ($field->isAValue() == true) {
-                $output[$name] = $field->values();
+                $output[$name] = $field->getValues();
                 if (is_array($output[$name]) && empty($output[$name])) {
                     unset($output[$name]);
                 }
@@ -158,11 +158,11 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param string $process_type preprocess type
      */
-    public function preprocess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess")
     {
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
-            $field->preprocess($process_type);
+            $field->preProcess($process_type);
         }
     }
 
@@ -171,12 +171,12 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param mixed $values value to set
      */
-    public function process($values)
+    public function processValue($values)
     {
         foreach ($this->getFields() as $name => $field) {
             /** @var Field $field */
             if ($field instanceof FieldsContainer) {
-                $this->getField($name)->process($values);
+                $this->getField($name)->processValue($values);
             } elseif (preg_match_all('/(.*?)(\[(.*?)\])+/i', $name, $matches, PREG_SET_ORDER)) {
                 if (isset($values[ $matches[0][1] ])) {
                     $value = $values[ $matches[0][1] ];
@@ -186,22 +186,22 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
                         }
                     }
                 }
-                $field->process($value);
+                $field->processValue($value);
             } elseif (isset($values[$name])) {
-                $this->getField($name)->process($values[$name]);
+                $this->getField($name)->processValue($values[$name]);
             } elseif ($field instanceof Checkbox) {
                 // no value on request[name] && field is a checkbox - process anyway with an empty value
-                $this->getField($name)->process(null);
+                $this->getField($name)->processValue(null);
             } elseif ($field instanceof Select) {
                 if ($field->isMultiple()) {
-                    $this->getField($name)->process([]);
+                    $this->getField($name)->processValue([]);
                 } else {
-                    $this->getField($name)->process(null);
+                    $this->getField($name)->processValue(null);
                 }
             } elseif ($field instanceof FieldMultivalues) {
                 // no value on request[name] && field is a multivalue
                 // (eg. checkboxes ?) - process anyway with an empty value
-                $this->getField($name)->process([]);
+                $this->getField($name)->processValue([]);
             }
         }
     }
@@ -229,12 +229,12 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid()
+    public function isValid()
     {
         $valid = true;
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
-            if (!$field->valid()) {
+            if (!$field->isValid()) {
                 // not returnig FALSE to let all the fields to be validated
                 $valid = false;
             }
@@ -260,11 +260,11 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * resets the fields
      */
-    public function reset()
+    public function resetField()
     {
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
-            $field->reset();
+            $field->resetField();
         }
     }
 

@@ -47,21 +47,21 @@ interface FieldInterface
      *
      * @param mixed $value value to set
      */
-    public function process($value);
+    public function processValue($value);
 
     /**
      * check element validity
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid();
+    public function isValid();
 
     /**
      * return form elements values into this element
      *
      * @return array form values
      */
-    public function values();
+    public function getValues();
 
     /**
      * which element should return the add_field() function

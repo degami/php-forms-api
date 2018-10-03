@@ -1,18 +1,20 @@
 <?php
-define('RECAPTCHA_PUBLIC_KEY','');
-define('RECAPTCHA_PRIVATE_KEY','');
+define('RECAPTCHA_PUBLIC_KEY', '');
+define('RECAPTCHA_PRIVATE_KEY', '');
 
 require_once '../vendor/autoload.php';
 include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
+
 session_start();
 
-function multistepform_submit(&$form) {
-  $form_values = $form->values()->toArray();
+function multistepform_submit(&$form)
+{
+    $form_values = $form->values()->toArray();
   // var_export($form);
   // get submission triggering element
   //var_dump($form->get_triggering_element());
-  return $form_values;
+    return $form_values;
   // Reset the form if you want it to display again.
   // $form->reset();
 }
@@ -24,7 +26,7 @@ $form = FAPI\FormBuilder::getForm('multistepform');
   <meta charset="utf-8" />
   <title>Example multistep form</title>
 
-  <?php include "header.php";?>
+    <?php include "header.php";?>
 
   <script type="text/javascript" src="http://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
   <script type="text/javascript"><?php
@@ -33,7 +35,7 @@ $form = FAPI\FormBuilder::getForm('multistepform');
     $form->pre_render(); // call all elements pre_render, so they can attach js to the form element
     print $form->generate_js();
 */
-  ?></script>
+    ?></script>
 </head>
 
 <body>
@@ -44,11 +46,11 @@ $form = FAPI\FormBuilder::getForm('multistepform');
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->isSubmitted()): ?>
+    <?php if ($form->isSubmitted()) : ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
       <pre><?php var_export($form->getSubmitResults());?></pre>
-    <?php else: ?>
+    <?php else : ?>
       <?php print $form->render(); ?>
     <?php endif; ?>
 

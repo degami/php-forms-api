@@ -152,7 +152,7 @@ class FormBuilder
     public static function renderForm($form_id)
     {
         $form = FormBuilder::getForm($form_id);
-        return $form->render();
+        return $form->renderHTML();
     }
 
     /**

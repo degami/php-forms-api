@@ -207,14 +207,14 @@ class Gmaplocation extends Geolocation
      *
      * @param string $process_type preprocess type
      */
-    public function preprocess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess")
     {
         parent::preprocess($process_type);
         if ($this->with_geocode == true) {
-            $this->geocode_box->preprocess($process_type);
+            $this->geocode_box->preProcess($process_type);
         }
         if ($this->with_reverse == true) {
-            $this->reverse_geocode_box->preprocess($process_type);
+            $this->reverse_geocode_box->preProcess($process_type);
         }
     }
 
@@ -224,14 +224,14 @@ class Gmaplocation extends Geolocation
      *
      * @param array $values value to set
      */
-    public function process($values)
+    public function processValue($values)
     {
-        parent::process($values);
+        parent::processValue($values);
         if ($this->with_geocode == true) {
-            $this->geocode_box->process($values[$this->getName().'_geocodebox']);
+            $this->geocode_box->processValue($values[$this->getName().'_geocodebox']);
         }
         if ($this->with_reverse == true) {
-            $this->reverse_geocode_box->process($values[$this->getName().'_reverse_geocodebox']);
+            $this->reverse_geocode_box->processValue($values[$this->getName().'_reverse_geocodebox']);
         }
     }
 
@@ -240,14 +240,14 @@ class Gmaplocation extends Geolocation
      *
      * @return array field value
      */
-    public function values()
+    public function getValues()
     {
         $out = parent::values();
         if ($this->with_geocode == true) {
-            $out += [ 'geocodebox' => $this->geocode_box->values() ];
+            $out += [ 'geocodebox' => $this->geocode_box->getValues() ];
         }
         if ($this->with_reverse == true) {
-            $out += [ 'reverse_geocodebox' => $this->reverse_geocode_box->values() ];
+            $out += [ 'reverse_geocodebox' => $this->reverse_geocode_box->getValues() ];
         }
         return $out;
     }
@@ -312,7 +312,7 @@ class Gmaplocation extends Geolocation
         if ($this->with_map == true) {
             $this->addCss("#{$form->getId()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
             $this->addJs("
-                var {$id}_latlng = {lat: ".$this->latitude->values().", lng: ".$this->longitude->values()."};
+                var {$id}_latlng = {lat: ".$this->latitude->getValues().", lng: ".$this->longitude->getValues()."};
         
                 var {$id}_map = new google.maps.Map(document.getElementById('{$id}-map'), {
                   center: {$id}_latlng,
@@ -326,7 +326,7 @@ class Gmaplocation extends Geolocation
                   animation: google.maps.Animation.DROP,
                   position: {$id}_latlng,
                   title: '".(($this->markertitle == null) ?
-                            "lat: ".$this->latitude->values().", lng: ".$this->longitude->values() :
+                            "lat: ".$this->latitude->getValues().", lng: ".$this->longitude->getValues() :
                             $this->markertitle)."'
                 });
                 \$.data( \$('#{$id}-map')[0] , 'map_obj', {$id}_map);
@@ -457,7 +457,7 @@ class Gmaplocation extends Geolocation
         }
 
         if ($this->with_geocode == true) {
-            $output .= $this->geocode_box->render($form); // ."<button id=\"{$id}_searchbox_btn\">".$this->get_text('search')."</button>";
+            $output .= $this->geocode_box->renderHTML($form); // ."<button id=\"{$id}_searchbox_btn\">".$this->get_text('search')."</button>";
         }
 
         if ($this->with_map == true) {
@@ -465,15 +465,15 @@ class Gmaplocation extends Geolocation
             $output .= "<div id=\"{$id}-map\" {$mapattributes}></div>\n";
         }
 
-        $output .= $this->latitude->render($form);
-        $output .= $this->longitude->render($form);
+        $output .= $this->latitude->renderHTML($form);
+        $output .= $this->longitude->renderHTML($form);
 
         if ($this->with_current_location == true) {
-            $output .= $this->current_location_btn->render($form);
+            $output .= $this->current_location_btn->renderHTML($form);
         }
 
         if ($this->with_reverse == true) {
-            $output .= $this->reverse_geocode_box->render($form);
+            $output .= $this->reverse_geocode_box->renderHTML($form);
         }
 
         $output .= "</{$this->tag}>\n";

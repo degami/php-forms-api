@@ -155,7 +155,7 @@ class Password extends Field
      *
      * @return boolean check if element is valid
      */
-    public function valid()
+    public function isValid()
     {
         if ($this->with_confirm == true) {
             if (!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value) {
@@ -166,7 +166,7 @@ class Password extends Field
                 }
             }
         }
-        return parent::valid();
+        return parent::isValid();
     }
 
     /**

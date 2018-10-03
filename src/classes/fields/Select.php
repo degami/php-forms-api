@@ -136,7 +136,7 @@ class Select extends FieldMultivalues
         }
         foreach ($this->options as $key => $value) {
             /** @var \Degami\PHPFormsApi\Fields\Option $value */
-            $output .= $value->render($this);
+            $output .= $value->renderHTML($this);
         }
         $output .= "</select>\n";
         return $output;

@@ -137,7 +137,7 @@ class Leafletlocation extends Geolocation
      *
      * @param string $process_type preprocess type
      */
-    public function preprocess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess")
     {
         parent::preprocess($process_type);
     }
@@ -148,9 +148,9 @@ class Leafletlocation extends Geolocation
      *
      * @param array $values value to set
      */
-    public function process($values)
+    public function processValue($values)
     {
-        parent::process($values);
+        parent::processValue($values);
     }
 
     /**
@@ -158,7 +158,7 @@ class Leafletlocation extends Geolocation
      *
      * @return array field value
      */
-    public function values()
+    public function getValues()
     {
         $out = parent::values();
         return $out;
@@ -177,7 +177,10 @@ class Leafletlocation extends Geolocation
         $id = $this->getHtmlId();
 
         $this->addCss("#{$form->getId()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
-        $this->addJs("var {$id}_latlng = {lat: ".$this->latitude->values().", lng: ".$this->longitude->values()."};
+        $this->addJs("var {$id}_latlng = {
+                                            lat: ".$this->latitude->getValues().", 
+                                            lng: ".$this->longitude->getValues()."
+                                        };
           var {$id}_map = L.map('{$id}-map').setView([{$id}_latlng.lat,{$id}_latlng.lng],{$this->zoom});
           L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
               attribution: 
@@ -265,8 +268,8 @@ class Leafletlocation extends Geolocation
         $mapattributes = ' class="leafletmap"';
         $output .= "<div id=\"{$id}-map\" {$mapattributes}></div>\n";
 
-        $output .= $this->latitude->render($form);
-        $output .= $this->longitude->render($form);
+        $output .= $this->latitude->renderHTML($form);
+        $output .= $this->longitude->renderHTML($form);
 
 
         $output .= "</{$this->tag}>\n";

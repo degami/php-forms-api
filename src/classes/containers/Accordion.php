@@ -113,7 +113,7 @@ class Accordion extends FieldsContainerMultiple
 
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
-                $inner->addChild($field->render($form));
+                $inner->addChild($field->renderHTML($form));
             }
             $tag->addChild($inner);
         }

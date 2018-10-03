@@ -160,7 +160,7 @@ class Timeselect extends Field
      *
      * @param array $value value to set
      */
-    public function process($value)
+    public function processValue($value)
     {
         $this->value = [
         'hours' => $value['hours'],
@@ -178,7 +178,7 @@ class Timeselect extends Field
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid()
+    public function isValid()
     {
         $check = true;
         $check &= ($this->value['hours']>=0 && $this->value['hours']<=23);
@@ -199,7 +199,7 @@ class Timeselect extends Field
                 return false;
             }
         }
-        return parent::valid();
+        return parent::isValid();
     }
 
     /**
@@ -219,7 +219,7 @@ class Timeselect extends Field
      */
     public function valueString()
     {
-        $value = $this->values();
+        $value = $this->getValues();
         $out = (($value['hours'] < 10) ? '0':'').((int) $value['hours']);
 
         if ($this->granularity!='hours') {

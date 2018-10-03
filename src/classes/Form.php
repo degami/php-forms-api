@@ -417,17 +417,17 @@ class Form extends Element
      *
      * @return array form values
      */
-    public function values()
+    public function getValues()
     {
         // Warning: some messy logic in calling process->submit->values
         if (!$this->processed) {
-            $this->process();
+            $this->processValue();
         }
         $output = [];
         for ($step = 0; $step <= $this->getNumSteps(); $step++) {
             foreach ($this->getFields($step) as $name => $field) {
                 if ($field->isAValue() == true) {
-                    $output[$name] = $field->values();
+                    $output[$name] = $field->getValues();
                     if (is_array($output[$name]) && empty($output[$name])) {
                         unset($output[$name]);
                     }
@@ -436,6 +436,17 @@ class Form extends Element
         }
 
         return new FormValues($output);
+    }
+
+    /**
+     * return form elements (all the steps) values
+     *
+     * @return array form values
+     * @deprecated
+     */
+    public function values()
+    {
+        return $this->getValues();
     }
 
     /**
@@ -448,7 +459,7 @@ class Form extends Element
         $output = [];
         foreach ($this->getFields($this->current_step) as $name => $field) {
             if ($field->isAValue() == true) {
-                $output[$name] = $field->values();
+                $output[$name] = $field->getValues();
                 if (is_array($output[$name]) && empty($output[$name])) {
                     unset($output[$name]);
                 }
@@ -457,14 +468,13 @@ class Form extends Element
         return $output;
     }
 
-
     /**
      * resets the form
      */
-    public function reset()
+    public function resetField()
     {
         foreach ($this->getFields() as $name => $field) {
-            $field->reset();
+            $field->resetField();
             if (strtolower($this->method) == 'post') {
                 unset($_POST[$name]);
             } else {
@@ -498,6 +508,14 @@ class Form extends Element
         $this->valid = null;
         $this->current_step = 0;
         $this->submit_functions_results = [];
+    }
+
+    /**
+     * resets the form
+     */
+    public function reset()
+    {
+        $this->resetField();
     }
 
     /**
@@ -564,7 +582,7 @@ class Form extends Element
     {
         foreach ($this->getFields($step) as $name => $field) {
             if ($field instanceof FieldsContainer) {
-                $field->process($request);
+                $field->processValue($request);
             } elseif (preg_match_all('/(.*?)(\[(.*?)\])+/i', $name, $matches, PREG_SET_ORDER)) {
                 $value = null;
                 if (isset($request[ $matches[0][1] ])) {
@@ -575,22 +593,22 @@ class Form extends Element
                         }
                     }
                 }
-                $field->process($value);
+                $field->processValue($value);
             } elseif (isset($request[$name])) {
-                $field->process($request[$name]);
+                $field->processValue($request[$name]);
             } elseif ($field instanceof Checkbox || $field instanceof Radios) {
                 // no value on request[name] && field is a checkbox or radios group - process anyway with an empty value
-                $field->process(null);
+                $field->processValue(null);
             } elseif ($field instanceof Select) {
                 if ($field->isMultiple()) {
-                    $field->process([]);
+                    $field->processValue([]);
                 } else {
-                    $field->process(null);
+                    $field->processValue(null);
                 }
             } elseif ($field instanceof FieldMultivalues) {
                 // no value on request[name] && field is a multivalue (eg. checkboxes ?)
                 // process anyway with an empty value
-                $field->process([]);
+                $field->processValue([]);
             }
         }
     }
@@ -605,7 +623,7 @@ class Form extends Element
         $files = $this->getStepFieldsByTypeAndName('file', null, $this->current_step);
         if (!empty($files)) {
             foreach ($files as $filefield) {
-                $request[$filefield->getName()] = $filefield->values();
+                $request[$filefield->getName()] = $filefield->getValues();
                 $request[$filefield->getName()]['uploaded'] = $filefield->isUploaded();
             }
         }
@@ -613,7 +631,7 @@ class Form extends Element
         $recaptchas = $this->getStepFieldsByTypeAndName('recaptcha', null, $this->current_step);
         if (!empty($recaptchas)) {
             foreach ($recaptchas as $recaptchafield) {
-                $request[$recaptchafield->getName()] = $recaptchafield->values();
+                $request[$recaptchafield->getName()] = $recaptchafield->getValues();
                 $request[$recaptchafield->getName()]['already_validated'] = $recaptchafield->isAlreadyValidated();
             }
         }
@@ -629,7 +647,7 @@ class Form extends Element
      *
      * @param array $values the request values array
      */
-    public function process($values = [])
+    public function processValue($values = [])
     {
         $has_session = FormBuilder::sessionPresent();
         if ($has_session) {
@@ -683,10 +701,10 @@ class Form extends Element
         if ($this->processed == true) {
             for ($step = 0; $step <= $this->current_step; $step++) {
                 foreach ($this->getFields($step) as $name => $field) {
-                    $field->preprocess();
+                    $field->preProcess();
                 }
             }
-            if (!Form::isPartial() && !$this->submitted && $this->valid() && $this->isFinalStep()) {
+            if (!Form::isPartial() && !$this->submitted && $this->isValid() && $this->isFinalStep()) {
                 $this->submitted = true;
 
                 if ($has_session && isset($_SESSION[$this->form_id])) {
@@ -695,7 +713,7 @@ class Form extends Element
 
                 for ($step = 0; $step < $this->getNumSteps(); $step++) {
                     foreach ($this->getFields($step) as $name => $field) {
-                        $field->postprocess();
+                        $field->postProcess();
                     }
                 }
 
@@ -719,13 +737,23 @@ class Form extends Element
         }
     }
 
+    /**
+     * starts the form processing, validating and submitting
+     *
+     * @param array $values the request values array
+     * @deprecated
+     */
+    public function process($values = [])
+    {
+        $this->processValue($values);
+    }
 
     /**
      * check if form is valid / NULL if form is on the first render
      *
      * @return boolean form is valid
      */
-    public function valid()
+    public function isValid()
     {
         if ($this->validated) {
             return $this->valid;
@@ -754,7 +782,7 @@ class Form extends Element
             }
             for ($step = 0; $step <= $this->current_step; $step++) {
                 foreach ($this->getFields($step) as $field) {
-                    if (!$field->valid()) {
+                    if (!$field->isValid()) {
                         $this->valid = false;
                     }
                 }
@@ -1164,7 +1192,7 @@ class Form extends Element
      * @param  string $override_output_type output type
      * @return string                       the form html
      */
-    public function render($override_output_type = null)
+    public function renderHTML($override_output_type = null)
     {
         $output = '';
         $errors = '';
@@ -1173,7 +1201,7 @@ class Form extends Element
 
         // render needs the form to be processed
         if (!$this->processed) {
-            $this->process();
+            $this->processValue();
         }
 
         if (!is_string($override_output_type)) {
@@ -1185,7 +1213,7 @@ class Form extends Element
             $output_type = 'html';
         }
 
-        if ($this->valid() === false) {
+        if ($this->isValid() === false) {
             $errors = $this->showErrors();
             $this->setAttribute('class', trim($this->getAttribute('class').' with-errors'));
             if (!$this->errorsInline()) {
@@ -1217,8 +1245,8 @@ class Form extends Element
 
 
         foreach ($this->getFields($this->current_step) as $name => $field) {
-            if (is_object($field) && method_exists($field, 'render')) {
-                $fields_html .= $field->render($this);
+            if (is_object($field) && method_exists($field, 'renderHTML')) {
+                $fields_html .= $field->renderHTML($this);
             }
         }
 
@@ -1236,7 +1264,7 @@ class Form extends Element
                  */
                 $target_elem = $callback($this);
 
-                $html = $target_elem->render($this);
+                $html = $target_elem->renderHTML($this);
 
                 if (count($target_elem->getCss()) > 0) {
                     $html .= '<style>'.implode("\n", $target_elem->getCss())."</style>";
@@ -1368,6 +1396,18 @@ class Form extends Element
     }
 
     /**
+     * renders the form
+     *
+     * @param  string $override_output_type output type
+     * @return string                       the form html
+     * @deprecated
+     */
+    public function render($override_output_type = null)
+    {
+        return $this->renderHTML($override_output_type);
+    }
+
+    /**
      * generate the js string
      *
      * @return string the js into a jquery sandbox
@@ -1405,7 +1445,7 @@ class Form extends Element
     public function __toString()
     {
         try {
-            return $this->render();
+            return $this->renderHTML();
         } catch (Exception $e) {
             return $e->getMessage()."\n".$e->getTraceAsString();
         }

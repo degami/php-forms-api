@@ -95,10 +95,10 @@ class Datetimeselect extends ComposedField
      *
      * @param string $process_type preprocess type
      */
-    public function preprocess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess")
     {
-        $this->date->preprocess($process_type);
-        $this->time->preprocess($process_type);
+        $this->date->preProcess($process_type);
+        $this->time->preProcess($process_type);
     }
 
     /**
@@ -106,10 +106,10 @@ class Datetimeselect extends ComposedField
      *
      * @param array $values value to set
      */
-    public function process($values)
+    public function processValue($values)
     {
-        $this->date->process($values[$this->getName().'_date']);
-        $this->time->process($values[$this->getName().'_time']);
+        $this->date->processValue($values[$this->getName().'_date']);
+        $this->time->processValue($values[$this->getName().'_time']);
     }
 
     /**
@@ -117,9 +117,9 @@ class Datetimeselect extends ComposedField
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid()
+    public function isValid()
     {
-        return $this->date->valid() && $this->time->valid();
+        return $this->date->isValid() && $this->time->isValid();
     }
 
     /**
@@ -136,10 +136,10 @@ class Datetimeselect extends ComposedField
     /**
      * resets the sub elements
      */
-    public function reset()
+    public function resetField()
     {
-        $this->date->reset();
-        $this->time->reset();
+        $this->date->resetField();
+        $this->time->resetField();
     }
 
     /**
@@ -184,8 +184,8 @@ class Datetimeselect extends ComposedField
                 $form->addJs("\$('#{$id}','#{$form->getId()}').tooltip();");
             }
         }
-        $output .= $this->date->render($form);
-        $output .= $this->time->render($form);
+        $output .= $this->date->renderHTML($form);
+        $output .= $this->time->renderHTML($form);
         $output .= "</{$this->tag}>\n";
         return $output;
     }
@@ -195,11 +195,11 @@ class Datetimeselect extends ComposedField
      *
      * @return array field value
      */
-    public function values()
+    public function getValues()
     {
         return [
-            'date'=> $this->date->values(),
-            'time'=> $this->time->values(),
+            'date'=> $this->date->getValues(),
+            'time'=> $this->time->getValues(),
             'datetime' => $this->date->valueString().' '.$this->time->valueString(),
         ];
     }

@@ -257,7 +257,7 @@ class ImageCaptcha extends Captcha
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid()
+    public function isValid()
     {
         if ($this->already_validated == true) {
             return true;

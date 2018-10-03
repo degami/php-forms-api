@@ -73,7 +73,7 @@ class Maskedfield extends Textfield
      *
      * @return boolean this TRUE if this element conforms to mask
      */
-    public function valid()
+    public function isValid()
     {
         $mask = $this->mask;
         $mask = preg_replace("(\[|\]|\(|\))", "\\\1", $mask);
@@ -89,6 +89,6 @@ class Maskedfield extends Textfield
             }
         }
 
-        return parent::valid();
+        return parent::isValid();
     }
 }

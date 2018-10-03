@@ -213,7 +213,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return mixed field value
      */
-    public function values()
+    public function getValues()
     {
         return $this->getValue();
     }
@@ -267,7 +267,7 @@ abstract class Field extends Element implements FieldInterface
     /**
      * resets the field
      */
-    public function reset()
+    public function resetField()
     {
         $this->setValue($this->getDefaultValue());
         $this->pre_rendered = false;
@@ -371,7 +371,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @param mixed $value value to set
      */
-    public function process($value)
+    public function processValue($value)
     {
         $this->setValue($value);
     }
@@ -381,7 +381,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @param string $process_type which list to process
      */
-    public function preprocess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess")
     {
         foreach ($this->{$process_type} as $processor) {
             $processor_func = "process".ucfirst($processor);
@@ -399,9 +399,9 @@ abstract class Field extends Element implements FieldInterface
     /**
      * postprocess field
      */
-    public function postprocess()
+    public function postProcess()
     {
-        $this->preprocess("postprocess");
+        $this->preProcess("postprocess");
     }
 
     /**
@@ -419,7 +419,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return boolean valid state
      */
-    public function valid()
+    public function isValid()
     {
         $this->setErrors([]);
 
@@ -498,7 +498,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string        the field html
      */
-    public function render(Form $form)
+    public function renderHTML(Form $form)
     {
         $id = $this->getHtmlId();
         $output = $this->getElementPrefix();

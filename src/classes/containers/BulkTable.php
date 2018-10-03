@@ -122,7 +122,7 @@ class BulkTable extends TableContainer
      * @param mixed $values value to set
      * @return null
      */
-    public function process($values)
+    public function processValue($values)
     {
         foreach ($values[$this->getName()]['rows'] as $k => $row) {
             if (!isset($row['row_enabled']) || $row['row_enabled'] != 1) {
@@ -138,6 +138,6 @@ class BulkTable extends TableContainer
             call_user_func_array($callable, $args);
         }
 
-        parent::process($values);
+        parent::processValue($values);
     }
 }

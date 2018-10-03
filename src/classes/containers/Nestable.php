@@ -209,9 +209,9 @@ class Nestable extends FieldsContainer
      *
      * @param mixed $values
      */
-    public function process($values)
+    public function processValue($values)
     {
-        parent::process($values);
+        parent::processValue($values);
         if (isset($values[$this->getName()])) {
             $this->value = json_decode($values[$this->getName()], true);
         }
@@ -249,7 +249,7 @@ class Nestable extends FieldsContainer
         $out = [];
         $panel = $nestablefield->getPanelById($tree['id']);
         if ($panel instanceof FieldsContainer) {
-            $out['value'] = $panel->values();
+            $out['value'] = $panel->getValues();
             if (isset($tree['children'])) {
                 foreach ($tree['children'] as $child) {
                     $out['children'][] = Nestable::createValuesArray($child, $nestablefield);
@@ -264,7 +264,7 @@ class Nestable extends FieldsContainer
      *
      * @return array
      */
-    public function values()
+    public function getValues()
     {
         if ($this->value) {
             $out = [];
@@ -297,12 +297,12 @@ class Nestable extends FieldsContainer
             $out .= "<div class=\"dd\" id=\"{$id}\"><{$this->tag}{$attributes}>";
         }
         $out .= '<li class="dd-item level-'.$this->level.' child-'.$this->childnum.'" data-id="'.$id.'">';
-        $out .= $this->fields_panel->render($form);
+        $out .= $this->fields_panel->renderHTML($form);
         if ($this->hasChildren()) {
             $out .= "<{$this->tag} {$attributes}>";
             $children = $this->getChildren();
             foreach ($children as $key => &$child) {
-                $out .= $child->render($form);
+                $out .= $child->renderHTML($form);
             }
             $out .= "</{$this->tag}>";
         }

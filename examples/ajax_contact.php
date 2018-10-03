@@ -2,6 +2,7 @@
 require_once '../vendor/autoload.php';
 include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
+
 session_start();
 
 $form = FAPI\FormBuilder::getForm('contactform_ajax');
@@ -11,7 +12,7 @@ $form = FAPI\FormBuilder::getForm('contactform_ajax');
 <head>
   <meta charset="utf-8" />
   <title>Example contact form</title>
-  <?php include "header.php";?>
+    <?php include "header.php";?>
 </head>
 
 <body>

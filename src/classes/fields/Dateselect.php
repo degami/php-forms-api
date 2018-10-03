@@ -176,7 +176,7 @@ class Dateselect extends Field
      *
      * @param array $value value to set
      */
-    public function process($value)
+    public function processValue($value)
     {
         $this->value = [
         'year' => $value['year'],
@@ -194,7 +194,7 @@ class Dateselect extends Field
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid()
+    public function isValid()
     {
         $year = $this->value['year'];
         $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -208,7 +208,7 @@ class Dateselect extends Field
                 return false;
             }
         }
-        return parent::valid();
+        return parent::isValid();
     }
 
     /**
@@ -256,7 +256,7 @@ class Dateselect extends Field
      */
     public function valueString()
     {
-        $value = $this->values();
+        $value = $this->getValues();
         $out = (($value['year'] < 10) ? '0':'').((int) $value['year']);
         if ($this->granularity!='year') {
             $out .= '-'.(($value['month'] < 10) ? '0':'').((int) $value['month']);

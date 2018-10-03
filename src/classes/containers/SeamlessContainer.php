@@ -43,7 +43,7 @@ class SeamlessContainer extends FieldsContainer
         }
         foreach ($this->getFields() as $name => $field) {
             /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
-            $output .= $field->render($form);
+            $output .= $field->renderHTML($form);
         }
 
         return $output;

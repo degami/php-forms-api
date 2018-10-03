@@ -31,9 +31,9 @@ abstract class Captcha extends Field
      *
      * @param mixed $values value to set
      */
-    public function process($values)
+    public function processValue($values)
     {
-        parent::process($values);
+        parent::processValue($values);
         if (isset($values['already_validated'])) {
             $this->already_validated = $values['already_validated'];
         }
@@ -66,7 +66,7 @@ abstract class Captcha extends Field
      */
     public function afterValidate(Form $form)
     {
-        $session_value =$this->values();
+        $session_value =$this->getValues();
         $session_value['already_validated'] = $this->isAlreadyValidated();
 
         $_SESSION[$form->getId()]['steps'][$form->getCurrentStep()][$this->getName()] = $session_value;

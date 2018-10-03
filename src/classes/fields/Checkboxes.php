@@ -42,7 +42,7 @@ class Checkboxes extends FieldMultivalues
             if ($value instanceof Checkbox) {
                 $value->setName("{$this->name}".(count($this->options)>1 ? "[]":""));
                 $value->setId("{$this->name}-{$key}");
-                $output .= $value->render($form);
+                $output .= $value->renderHTML($form);
             } else {
                 if (is_array($value) && isset($value['attributes'])) {
                     $attributes = $value['attributes'];

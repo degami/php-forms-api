@@ -86,10 +86,10 @@ class Geolocation extends ComposedField
      *
      * @param string $process_type preprocess type
      */
-    public function preprocess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess")
     {
-        $this->latitude->preprocess($process_type);
-        $this->longitude->preprocess($process_type);
+        $this->latitude->preProcess($process_type);
+        $this->longitude->preProcess($process_type);
     }
 
     /**
@@ -97,10 +97,10 @@ class Geolocation extends ComposedField
      *
      * @param array $values value to set
      */
-    public function process($values)
+    public function processValue($values)
     {
-        $this->latitude->process($values[$this->getName().'_latitude']);
-        $this->longitude->process($values[$this->getName().'_longitude']);
+        $this->latitude->processValue($values[$this->getName().'_latitude']);
+        $this->longitude->processValue($values[$this->getName().'_longitude']);
     }
 
     /**
@@ -108,9 +108,9 @@ class Geolocation extends ComposedField
      *
      * @return boolean TRUE if element is valid
      */
-    public function valid()
+    public function isValid()
     {
-        return $this->latitude->valid() && $this->longitude->valid();
+        return $this->latitude->isValid() && $this->longitude->isValid();
     }
 
 
@@ -129,10 +129,10 @@ class Geolocation extends ComposedField
     /**
      * resets the sub elements
      */
-    public function reset()
+    public function resetField()
     {
-        $this->latitude->reset();
-        $this->longitude->reset();
+        $this->latitude->resetField();
+        $this->longitude->resetField();
     }
 
     /**
@@ -177,8 +177,8 @@ class Geolocation extends ComposedField
                 $form->addJs("\$('#{$id}','#{$form->getId()}').tooltip();");
             }
         }
-        $output .= $this->latitude->render($form);
-        $output .= $this->longitude->render($form);
+        $output .= $this->latitude->renderHTML($form);
+        $output .= $this->longitude->renderHTML($form);
         $output .= "</{$this->tag}>\n";
         return $output;
     }
@@ -188,11 +188,11 @@ class Geolocation extends ComposedField
      *
      * @return array field value
      */
-    public function values()
+    public function getValues()
     {
         return [
-            'latitude'=> $this->latitude->values(),
-            'longitude'=> $this->longitude->values(),
+            'latitude'=> $this->latitude->getValues(),
+            'longitude'=> $this->longitude->getValues(),
         ];
     }
 }

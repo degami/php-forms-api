@@ -97,9 +97,9 @@ class Multiselect extends Select
      *
      * @param array $value value to set
      */
-    public function process($value = [])
+    public function processValue($value = [])
     {
-        parent::process($value);
+        parent::processValue($value);
 
         $this->leftOptions = $this->options;
         $this->rightOptions = [];
@@ -151,7 +151,7 @@ class Multiselect extends Select
         }
         foreach ($this->leftOptions as $key => $value) {
             /** @var \Degami\PHPFormsApi\Fields\Option $value */
-            $output .= $value->render($this);
+            $output .= $value->renderHTML($this);
         }
         $output .= "</select>\n</td><td style=\"width: 10%\" align=\"center\">";
 
@@ -168,7 +168,7 @@ class Multiselect extends Select
                         '</option>';
         }
         foreach ($this->rightOptions as $key => $value) {
-            $output .= $value->render($this);
+            $output .= $value->renderHTML($this);
         }
         $output .= "</select>\n</td></tr></table>";
         return $output;

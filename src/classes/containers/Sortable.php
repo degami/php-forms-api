@@ -143,7 +143,7 @@ class Sortable extends SortableContainer
 
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
-                $inner_inline->addChild($field->render($form));
+                $inner_inline->addChild($field->renderHTML($form));
             }
             $inner_inline->addChild(
                 new TagElement(

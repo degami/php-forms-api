@@ -55,19 +55,19 @@ abstract class Clickable extends Action
      *
      * @param mixed $value value to set
      */
-    public function process($value)
+    public function processValue($value)
     {
-        parent::process($value);
+        parent::processValue($value);
         $this->clicked = true;
     }
 
     /**
      * reset this element
      */
-    public function reset()
+    public function resetField()
     {
         $this->clicked = false;
-        parent::reset();
+        parent::resetField();
     }
 
     /**

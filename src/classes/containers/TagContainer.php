@@ -75,7 +75,7 @@ class TagContainer extends FieldsContainer
         }
         foreach ($this->getFields() as $name => $field) {
             /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
-            $tag->addChild($field->render($form));
+            $tag->addChild($field->renderHTML($form));
         }
         return $tag;
     }

@@ -179,7 +179,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
             if ($out == true) {
                 continue;
             }
-            $out |= !$field->valid();
+            $out |= !$field->isValid();
         }
         return $out;
     }

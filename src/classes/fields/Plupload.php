@@ -52,7 +52,7 @@ class Plupload extends Field
      *
      * @param mixed $value value to set
      */
-    public function process($value)
+    public function processValue($value)
     {
         $this->value = json_decode($value);
     }

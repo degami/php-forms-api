@@ -182,7 +182,7 @@ class SortableTable extends SortableContainer
                 /**
                  * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
                  */
-                $fieldhtml = $field->render($form);
+                $fieldhtml = $field->renderHTML($form);
                 if (trim($fieldhtml) != '') {
                     $trow->addChild(
                         new TagElement(

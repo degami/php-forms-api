@@ -2,31 +2,33 @@
 require_once '../vendor/autoload.php';
 include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
+
 session_start();
 
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
-function eventsform_submit(&$form) {
-  $form_values = $form->values();
+function eventsform_submit(&$form)
+{
+    $form_values = $form->values();
   //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.
   // $form->reset();
-  return $form_values;
+    return $form_values;
 }
 
 $form = FAPI\FormBuilder::getForm('eventsform');
 
-if( isset($_REQUEST['partial']) ){
-  print $form->render();
-}else{
-?><!DOCTYPE html>
+if (isset($_REQUEST['partial'])) {
+    print $form->render();
+} else {
+    ?><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>Example contact form</title>
 
-  <?php include "header.php";?>
+    <?php include "header.php";?>
 </head>
 
 <body>
@@ -37,11 +39,11 @@ if( isset($_REQUEST['partial']) ){
   </div>
   <div id="page">
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
-    <?php if ($form->isSubmitted()): ?>
+    <?php if ($form->isSubmitted()) : ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <pre><?php var_dump($form->getSubmitResults());?></pre>
       <p>Thanks for submitting the form.</p>
-    <?php else: ?>
+    <?php else : ?>
       <?php print $form->render(); ?>
     <?php endif; ?>
 
@@ -49,5 +51,5 @@ if( isset($_REQUEST['partial']) ){
   </div>
 </body>
 </html>
-<?php
+    <?php
 }

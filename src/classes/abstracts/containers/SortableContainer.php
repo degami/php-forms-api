@@ -50,7 +50,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
      *
      * @return array form values
      */
-    public function values()
+    public function getValues()
     {
         $output = [];
 
@@ -61,7 +61,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
             $field = $info['field'];
             /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
             if ($field->isAValue() == true) {
-                $output[$name] = $field->values();
+                $output[$name] = $field->getValues();
                 if (is_array($output[$name]) && empty($output[$name])) {
                     unset($output[$name]);
                 }
@@ -75,16 +75,16 @@ abstract class SortableContainer extends FieldsContainerMultiple
      *
      * @param mixed $values value to set
      */
-    public function process($values)
+    public function processValue($values)
     {
         foreach ($this->getFields() as $name => $field) {
             /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
             $partitionindex = $this->getPartitionIndex($field->getName());
 
             if ($field instanceof FieldsContainer) {
-                $this->getField($name)->process($values);
+                $this->getField($name)->processValue($values);
             } elseif (isset($values[$name])) {
-                $this->getField($name)->process($values[$name]);
+                $this->getField($name)->processValue($values[$name]);
             }
 
             $this->deltas[$name] = isset($values[$this->getHtmlId().'-delta-'.$partitionindex]) ?

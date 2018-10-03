@@ -60,7 +60,7 @@ class Option extends Element
      *
      * @return string        the option html
      */
-    public function render(Select $form_field)
+    public function renderHTML(Select $form_field)
     {
         $this->no_translation = $form_field->no_translation;
         $field_value = $form_field->getValue();

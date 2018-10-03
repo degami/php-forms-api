@@ -87,7 +87,7 @@ class File extends Field
      *
      * @param mixed  $value value to set
      */
-    public function process($value)
+    public function processValue($value)
     {
         $this->value = [
             'filepath' => (isset($value['filepath'])) ?
@@ -106,7 +106,7 @@ class File extends Field
         if (isset($value['uploaded'])) {
             $this->uploaded = $value['uploaded'];
         }
-        if ($this->valid()) {
+        if ($this->isValid()) {
             if (@move_uploaded_file($_FILES[$this->getName()]['tmp_name'], $this->value['filepath']) == true) {
                 $this->uploaded = true;
             }
@@ -148,12 +148,12 @@ class File extends Field
      *
      * @return boolean this field is always valid
      */
-    public function valid()
+    public function isValid()
     {
         if ($this->uploaded) {
             return true;
         }
-        return parent::valid();
+        return parent::isValid();
     }
 
     /**

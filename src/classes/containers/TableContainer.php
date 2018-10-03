@@ -227,7 +227,7 @@ class TableContainer extends FieldsContainerMultiple
                 /**
                  * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
                  */
-                $fieldhtml = $field->render($form);
+                $fieldhtml = $field->renderHTML($form);
                 if (trim($fieldhtml) != '') {
                     $td_attributes = '';
                     if (!empty($table_matrix[$rows][$cols])) {
