@@ -5,8 +5,8 @@
  * @package degami/php-forms-api
  */
 /* #########################################################
-// ACCESSORIES                     ####
-// */
+   ####                 ACCESSORIES                     ####
+   ######################################################### */
 
 namespace Degami\PHPFormsApi\Accessories;
 
@@ -19,16 +19,33 @@ use Degami\PHPFormsApi\Abstracts\Base\BaseElement;
 class TagElement extends BaseElement implements TagInterface
 {
 
-    /** @var array tags that needs to be closed */
-    public static $closed_tags = [
-        'textarea','select','option','optgroup','datalist','button','fieldset','legend',
-        'div', 'span', 'table', 'thead', 'tbody', 'tr', 'td','h3','ul','li',
+    /** @var array tags that do not need to be closed */
+    public static $void_tags = [
+        'area',
+        'base',
+        'br',
+        'col',
+        'command',
+        'embed',
+        'hr',
+        'img',
+        'input',
+        'keygen',
+        'link',
+        'meta',
+        'param',
+        'source',
+        'track',
+        'wbr',
     ];
 
-    /** @var array tags that do not need value attribute */
-    public static $novalue_tags = [
-        'textarea','select','optgroup','datalist','fieldset','legend',
-        'div', 'span', 'table', 'thead', 'tbody', 'tr', 'td','h3','ul','li',
+    /** @var array tags that have a value attribute */
+    public static $with_value_tags = [
+        'button',
+        'input',
+        'option',
+        'progress',
+        'param',
     ];
 
     /** @var string tag */
@@ -87,11 +104,11 @@ class TagElement extends BaseElement implements TagInterface
             unset($options['reserved_attributes']);
         }
 
-        if (in_array($this->tag, static::$novalue_tags)) {
+        if (!in_array($this->tag, static::$with_value_tags)) {
             $this->value_needed = false;
         }
 
-        if (in_array($this->tag, static::$closed_tags)) {
+        if (!in_array($this->tag, static::$void_tags)) {
             $this->has_close = true;
         }
 
@@ -143,8 +160,7 @@ class TagElement extends BaseElement implements TagInterface
         $reserved_attributes = "";
         foreach ($this->reserved_attributes as $key) {
             if (property_exists(get_class($this), $key) &&
-                (!empty($this->{$key}) || $key == 'value' &&
-                $this->getValueNeeded())
+                (!empty($this->{$key}) || $key == 'value' && $this->getValueNeeded())
             ) {
                 $reserved_attributes .= ' '.$key.'="'.$this->{$key}.'"';
             }
