@@ -62,12 +62,7 @@ trait Tools
             if (is_array($value)) {
                 $return = array_merge(
                     $return,
-                    call_user_func_array(
-                        [__CLASS__,
-                        'arrayFlatten'
-                        ],
-                        [$value]
-                    )
+                    call_user_func_array([__CLASS__,'arrayFlatten'], [$value])
                 );
             } else {
                 $return[$key] = $value;
@@ -90,12 +85,7 @@ trait Tools
             if (is_array($value)) {
                 $return = array_merge(
                     $return,
-                    call_user_func_array(
-                        [__CLASS__,
-                        'arrayGetValues'
-                        ],
-                        [ $search_key, $value ]
-                    )
+                    call_user_func_array([__CLASS__,'arrayGetValues'], [ $search_key, $value ])
                 );
             } elseif ($key == $search_key) {
                 $return[] = $value;
