@@ -56,6 +56,13 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      */
     public function add($data)
     {
+        if (!is_array($data)) {
+            if (!empty($data)) {
+                $data = [$data];
+            } else {
+                $data = [];
+            }
+        }
         foreach ($data as $k => $v) {
             if (is_numeric($k)) {
                 $k = '_value'.$k;
@@ -174,7 +181,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      */
     public function __set($key, $value)
     {
-        if ($key === 'data' || $key == 'position') {
+        if ($key == 'data' || $key == 'position') {
             throw new \Exception('Cannot define "'.$key.'" property');
         }
         $this->data[$key] = (is_array($value)) ? new static($value) : $value;
@@ -199,6 +206,28 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
         unset($this->data[$name]);
     }
 
+    /**
+     * __sleep magic method
+     *
+     * @return array
+     */
+    public function __sleep()
+    {
+        return ['data'];
+    }
+
+    /**
+     * set_state magic method
+     *
+     * @param $an_array
+     *
+     * @return DataBag
+     */
+    public static function __set_state($an_array)
+    {
+        $obj = new static($an_array);
+        return $obj;
+    }
 
     /**
      * gets data iterator
@@ -270,6 +299,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     public function toArray()
     {
         $out = [];
+        $this->checkDataArr();
         foreach ($this->data as $key => $value) {
             $out[$key] = ($value instanceof DataBag) ? $value->toArray() : $value;
         }
@@ -304,5 +334,21 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     public function count()
     {
         return count($this->data);
+    }
+
+    /**
+     * check "data" property to be an array
+     * @return DataBag
+     */
+    protected function checkDataArr()
+    {
+        if (!is_array($this->data)) {
+            if (!empty($this->data)) {
+                $this->data = [ '_value0' => $this->data ];
+            } else {
+                $this->data = [];
+            }
+        }
+        return $this;
     }
 }

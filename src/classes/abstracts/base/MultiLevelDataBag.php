@@ -1,16 +1,17 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: mirko
- * Date: 11/10/18
- * Time: 9.46
+ * PHP FORMS API
+ *
+ * @package degami/php-forms-api
  */
+/* #########################################################
+   ####                      BASE                       ####
+   ######################################################### */
 
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
-class MultiLevelDataBag extends DataBag
+abstract class MultiLevelDataBag extends DataBag
 {
-
     /**
      * element parent
      *
@@ -58,31 +59,12 @@ class MultiLevelDataBag extends DataBag
      */
     public function __set($key, $value)
     {
+        if ($key == 'data' || $key == 'position' || $key == 'parent') {
+            throw new \Exception('Cannot define "'.$key.'" property');
+        }
+        $this->checkDataArr();
         $this->data[$key] = (is_array($value)) ? new static($value, $this) : $value;
         return $this;
-    }
-
-    /**
-     * __sleep magic method
-     *
-     * @return array
-     */
-    public function __sleep()
-    {
-        return ['data'];
-    }
-
-    /**
-     * set_state magic method
-     *
-     * @param $an_array
-     *
-     * @return \Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag
-     */
-    public static function __set_state($an_array)
-    {
-        $obj = new static($an_array);
-        return $obj;
     }
 
     /**
@@ -100,8 +82,5 @@ class MultiLevelDataBag extends DataBag
     /**
      * data changed event hook
      */
-    private function onChange()
-    {
-        // your code here
-    }
+    abstract public function onChange();
 }

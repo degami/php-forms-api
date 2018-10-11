@@ -17,4 +17,10 @@ use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
  */
 class FormValues extends MultiLevelDataBag
 {
+    /**
+     * onChange hook
+     */
+    public function onChange()
+    {
+    }
 }
