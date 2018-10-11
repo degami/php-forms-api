@@ -137,6 +137,10 @@ class MathCaptcha extends Captcha
             return true;
         }
 
+        if (!isset($_SESSION['math_captcha_code'][$this->getName()])) {
+            return true;
+        }
+
         $_sessval = null;
         eval('$_sessval = '.$_SESSION['math_captcha_code'][$this->getName()].';');
         if (isset($this->value['code']) && $this->value['code'] == $_sessval) {

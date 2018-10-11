@@ -11,7 +11,6 @@
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
 use \Iterator;
-use \IteratorAggregate;
 use \ArrayIterator;
 use \ArrayAccess;
 use \Countable;
@@ -36,6 +35,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      * @var array
      */
     protected $data = [];
+
 
     /**
      * class constructor
@@ -170,12 +170,35 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      * @param string $key key
      * @param mixed $value data to set
      * @return DataBag
+     * @throws \Exception
      */
     public function __set($key, $value)
     {
+        if ($key === 'data' || $key == 'position') {
+            throw new \Exception('Cannot define "'.$key.'" property');
+        }
         $this->data[$key] = (is_array($value)) ? new static($value) : $value;
         return $this;
     }
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->data[$name]);
+    }
+
+    /**
+     * @param $name
+     */
+    public function __unset($name)
+    {
+        unset($this->data[$name]);
+    }
+
 
     /**
      * gets data iterator
@@ -205,7 +228,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      */
     public function offsetSet($offset, $value)
     {
-        $this->{$offset} = $value;
+        return $this->__set($offset, $value);
     }
 
     /**
@@ -215,7 +238,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      */
     public function offsetExists($offset)
     {
-        return isset($this->data[$offset]);
+        return $this->__isset($offset);
     }
 
     /**
@@ -225,7 +248,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      */
     public function offsetUnset($offset)
     {
-        unset($this->data[$offset]);
+        $this->__unset($offset);
     }
 
     /**
@@ -236,7 +259,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      */
     public function offsetGet($offset)
     {
-        return isset($this->data[$offset]) ? $this->data[$offset] : null;
+        return $this->__get($offset);
     }
 
     /**

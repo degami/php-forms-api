@@ -10,11 +10,11 @@
 
 namespace Degami\PHPFormsApi\Accessories;
 
-use Degami\PHPFormsApi\Abstracts\Base\DataBag;
+use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
 
 /**
  * a class to hold form fields submitted values
  */
-class FormValues extends DataBag
+class FormValues extends MultiLevelDataBag
 {
 }

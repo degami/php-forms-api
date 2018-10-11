@@ -36,7 +36,7 @@ $form = FAPI\FormBuilder::getForm('datesform');
     <pre style="font-size:10px;"><?php $form->process(); ?></pre>
     <?php if ($form->isSubmitted()) : ?>
       <!-- if the form was reset during the submit handler we would never see this -->
-      <pre><?php var_export($form->getSubmitResults());?></pre>
+      <pre><?php print_r($form->getSubmitResults());?></pre>
       <p>Thanks for submitting the form.</p>
     <?php else : ?>
       <?php print $form->render(); ?>

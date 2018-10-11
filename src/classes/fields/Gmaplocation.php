@@ -313,7 +313,7 @@ class Gmaplocation extends Geolocation
             $this->addCss("#{$form->getId()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
             $this->addJs("
                 var {$id}_latlng = {lat: ".$this->latitude->getValues().", lng: ".$this->longitude->getValues()."};
-        
+
                 var {$id}_map = new google.maps.Map(document.getElementById('{$id}-map'), {
                   center: {$id}_latlng,
                   mapTypeId: {$this->maptype},
@@ -331,7 +331,7 @@ class Gmaplocation extends Geolocation
                 });
                 \$.data( \$('#{$id}-map')[0] , 'map_obj', {$id}_map);
                 \$.data( \$('#{$id}-map')[0] , 'marker_obj', {$id}_marker);
-        
+
                 google.maps.event.addListener({$id}_marker, 'dragend', function() {
                   var mapdiv = {$id}_marker.map.getDiv();
                   \$('input[name=\"{$id}_latitude\"]','#'+\$(mapdiv).parent().
@@ -358,7 +358,7 @@ class Gmaplocation extends Geolocation
             $this->addJs("var {$id}_geocoder = new google.maps.Geocoder;
                 \$('#{$id}').bind('lat_lon_updated',function(evt){
                   var latlng = {
-                    lat: parseFloat( \$('input[name=\"{$id}_latitude\"]','#{$id}').val() ), 
+                    lat: parseFloat( \$('input[name=\"{$id}_latitude\"]','#{$id}').val() ),
                     lng: parseFloat( \$('input[name=\"{$id}_longitude\"]','#{$id}').val() )
                   };
                   {$id}_geocoder.geocode({'location': latlng}, function(results, status) {

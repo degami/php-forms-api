@@ -53,7 +53,7 @@ $form = FAPI\FormBuilder::objectForm($classObject);
     <?php if ($form->isSubmitted()) : ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
-      <pre><?php var_export($form->getSubmitResults());?></pre>
+      <pre><?php print_r($form->getSubmitResults());?></pre>
     <?php else : ?>
       <?php print $form->render(); ?>
     <?php endif; ?>

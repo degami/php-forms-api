@@ -24,7 +24,9 @@ function contactform_submit(&$form)
     $out = [];
     foreach ($form_values->fieldset as $key => $value) {
         $out[$key] = $value;
-    }  return $out;  return implode(
+    }
+    return $out;
+    return implode(
         ' - ',
         [
         $form_values->fieldset->name,
@@ -33,6 +35,7 @@ function contactform_submit(&$form)
         ]
     );
     return $form_values;
+
     $form->addHighlight('Message sent!');
     print_r($form_values);
     //var_dump($form->get_triggering_element());
@@ -70,8 +73,8 @@ $form = FAPI\FormBuilder::getForm('contactform');
     <?php if ($form->isSubmitted()) : ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
-      <pre><?php var_export($form->getSubmitResults());?></pre>
-      <pre><?php var_export($form->values());?></pre>
+      <pre><?php print_r($form->getSubmitResults());?></pre>
+      <pre><?php print_r($form->values());?></pre>
     <?php else : ?>
       <?php print $form->render(); ?>
     <?php endif; ?>

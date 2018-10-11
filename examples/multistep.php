@@ -11,7 +11,7 @@ session_start();
 function multistepform_submit(&$form)
 {
     $form_values = $form->values()->toArray();
-  // var_export($form);
+  // print_r($form);
   // get submission triggering element
   //var_dump($form->get_triggering_element());
     return $form_values;
@@ -49,7 +49,7 @@ $form = FAPI\FormBuilder::getForm('multistepform');
     <?php if ($form->isSubmitted()) : ?>
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
-      <pre><?php var_export($form->getSubmitResults());?></pre>
+      <pre><?php print_r($form->getSubmitResults());?></pre>
     <?php else : ?>
       <?php print $form->render(); ?>
     <?php endif; ?>
