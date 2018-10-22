@@ -10,7 +10,7 @@ session_start();
 // as this is not a real example I'm just outputting the values for now.
 function datesform_submit(&$form)
 {
-    $form_values = $form->values();
+    $form_values = $form->getValues();
     return $form_values->toArray();
   //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.

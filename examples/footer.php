@@ -3,14 +3,12 @@ use Degami\PHPFormsApi as FAPI;
 
 ?>
 
-    <pre style="font-size:10px;"><?php // print_r($form); ?></pre>
-
 <?php
     $has_session = FAPI\FormBuilder::sessionPresent();
 if ($has_session) : ?>
     <div class="sessioninfo">
       <div class="sessiontitle">Session Info</div>
-      <pre class="sessionbody"><?php print_r($_SESSION); ?></pre>
+      <pre class="sessionbody"><?php print_r($form->getSessionBag()->toArray());// print_r($form); ?><?php print_r($_SESSION); ?></pre>
     </div>
 <?php endif; ?>
 

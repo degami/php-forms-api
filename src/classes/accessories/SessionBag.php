@@ -21,7 +21,6 @@ class SessionBag extends MultiLevelDataBag
 
     /**
      * class constructor
-     *
      * @param mixed $data data to add
      */
     public function __construct($data = [], $parent = null)
@@ -70,5 +69,34 @@ class SessionBag extends MultiLevelDataBag
             $_SESSION['sessionbag_identifier'] = $session_identifier;
         }
         return $session_identifier;
+    }
+
+    /**
+     * ensures array tree is present as on path parameter
+     *
+     * @param  string $path      tree path
+     * @param  string $delimiter delimiter
+     * @return boolean
+     */
+    public function ensurePath($path, $delimiter = '/')
+    {
+        if (!is_string($path) || trim($path) == '') {
+            return false;
+        }
+        $path = explode($delimiter, $path);
+        $ptr = &$this;
+        if (!is_array($path)) {
+            $path = [$path];
+        }
+        foreach ($path as $key => $value) {
+            if (trim($value) == '') {
+                continue;
+            }
+            if (!isset($ptr->{$value})) {
+                $ptr->{$value} = [];
+            }
+            $ptr = &$ptr->{$value};
+        }
+        return true;
     }
 }

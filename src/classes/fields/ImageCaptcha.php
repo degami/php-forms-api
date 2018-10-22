@@ -95,7 +95,8 @@ class ImageCaptcha extends Captcha
             $this->code .= substr($this->characters, mt_rand() % (strlen($this->characters)), 1);
         }
 
-        $_SESSION['image_captcha_code'][$this->getName()] = $this->code;
+        $this->getSessionBag()->ensurePath("/image_captcha_code");
+        $this->getSessionBag()->image_captcha_code->{$this->getName()} = $this->code;
 
         return $this->code;
     }
@@ -265,7 +266,8 @@ class ImageCaptcha extends Captcha
         if (isset($this->value['already_validated']) && $this->value['already_validated'] == true) {
             return true;
         }
-        if (isset($this->value['code']) && $this->value['code'] == $_SESSION['image_captcha_code'][$this->getName()]) {
+        
+        if (isset($this->value['code']) && $this->value['code'] == $this->getSessionBag()->image_captcha_code->{$this->getName()}) {
             return true;
         }
 

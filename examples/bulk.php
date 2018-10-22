@@ -10,7 +10,7 @@ session_start();
 // as this is not a real example I'm just outputting the values for now.
 function bulkform_submit(&$form)
 {
-    $form_values = $form->values()->toArray();
+    $form_values = $form->getValues()->toArray();
 //  $form->add_highlight('Bulk operation done!');
 //  $form->reset();
 

@@ -16,6 +16,7 @@ use Degami\PHPFormsApi\Accessories\OrderedFunctions;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Fields\Checkbox;
+use Degami\PHPFormsApi\Accessories\SessionBag;
 
 /**
  * the field element class.
@@ -146,6 +147,13 @@ abstract class Field extends Element implements FieldInterface
     protected $ajax_url = null;
 
     /**
+     * Session Bag Object
+     *
+     * @var SessionBag
+     */
+    private $session_bag = null;
+
+    /**
      * class constructor
      *
      * @param array  $options build options
@@ -166,6 +174,8 @@ abstract class Field extends Element implements FieldInterface
                 $this->{$name} = $value;
             }
         }
+
+        $this->session_bag = new SessionBag();
 
         if (!isset($this->attributes['class'])) {
             $this->attributes['class'] = $this->getElementClassName();
@@ -206,6 +216,16 @@ abstract class Field extends Element implements FieldInterface
         // let others alter the field
         static::executeAlter("/.*?_".static::getClassNameString()."_alter$/i", [&$options, &$name]);
         return new static($options, $name);
+    }
+
+    /**
+     * get Session Bag
+     *
+     * @return SessionBag
+     */
+    public function getSessionBag()
+    {
+        return $this->session_bag;
     }
 
     /**

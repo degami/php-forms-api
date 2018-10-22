@@ -16,7 +16,7 @@ function validate_multiple_by($string, $length = 1)
 
 function nestableform_submit(&$form)
 {
-    $form_values = $form->values();
+    $form_values = $form->getValues();
   // print_r($form);
   // get submission triggering element
 

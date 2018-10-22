@@ -14,7 +14,7 @@ session_start();
 // as this is not a real example I'm just outputting the values for now.
 function repeatableform_submit(&$form)
 {
-    $form_values = $form->values()->toArray();
+    $form_values = $form->getValues()->toArray();
     return $form_values;
 }
 
@@ -50,7 +50,7 @@ $form = FAPI\FormBuilder::getForm('repeatableform');
       <!-- if the form was reset during the submit handler we would never see this -->
       <p>Thanks for submitting the form.</p>
       <pre><?php print_r($form->getSubmitResults());?></pre>
-      <pre><?php print_r($form->values());?></pre>
+      <pre><?php print_r($form->getValues());?></pre>
     <?php else : ?>
       <?php print $form->render(); ?>
     <?php endif; ?>

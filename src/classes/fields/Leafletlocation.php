@@ -160,7 +160,7 @@ class Leafletlocation extends Geolocation
      */
     public function getValues()
     {
-        $out = parent::values();
+        $out = parent::getValues();
         return $out;
     }
 

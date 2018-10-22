@@ -13,7 +13,7 @@ $form->process();
 // as this is not a real example I'm just outputting the values for now.
 function contactform_ajax_submit(&$form)
 {
-    $form_values = $form->values();
+    $form_values = $form->getValues();
     return $form_values;
   //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.

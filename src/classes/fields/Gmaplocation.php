@@ -242,7 +242,7 @@ class Gmaplocation extends Geolocation
      */
     public function getValues()
     {
-        $out = parent::values();
+        $out = parent::getValues();
         if ($this->with_geocode == true) {
             $out += [ 'geocodebox' => $this->geocode_box->getValues() ];
         }

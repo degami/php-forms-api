@@ -10,6 +10,7 @@
 
 namespace Degami\PHPFormsApi;
 
+use Degami\PHPFormsApi\Accessories\SessionBag;
 use \Exception;
 
 /**
@@ -17,7 +18,6 @@ use \Exception;
  */
 class FormBuilder
 {
-
     /**
      * Check if session is present
      *
@@ -27,6 +27,21 @@ class FormBuilder
     {
         return defined('PHP_VERSION_ID') && PHP_VERSION_ID > 54000 ?
           session_status() != PHP_SESSION_NONE : trim(session_id()) != '';
+    }
+
+    /**
+     * get Session Bag
+     *
+     * @return SessionBag
+     */
+    public static function getSessionBag()
+    {
+        /** @var SessionBag */
+        static $session_bag = null;
+        if (!$session_bag instanceof SessionBag) {
+            $session_bag = new SessionBag();
+        }
+        return $session_bag;
     }
 
     /**
@@ -113,7 +128,10 @@ class FormBuilder
 
             $form = $form_obj;
             $form->setDefinitionFunction($function_name);
-            $_SESSION['form_definition'][$form->getId()] = $form->toArray();
+            if (!isset(self::getSessionBag()->form_definition)) {
+                self::getSessionBag()->form_definition = [];
+            }
+            self::getSessionBag()->form_definition[$form->getId()] = $form->toArray();
         }
 
         $after = memory_get_usage();
@@ -169,8 +187,8 @@ class FormBuilder
                 $out['input_values'] = $array; //array_merge($out, $array);
                 $out['input_values']['__values_container'] = $key; //array_merge($out, $array);
 
-                if (isset($array['form_id']) && isset($_SESSION['form_definition'][ $array['form_id'] ])) {
-                    $out['input_form_definition'] = $_SESSION['form_definition'][ $array['form_id'] ];
+                if (isset($array['form_id']) && isset(self::getSessionBag()->form_definition[ $array['form_id'] ])) {
+                    $out['input_form_definition'] = self::getSessionBag()->form_definition[ $array['form_id'] ];
                 }
 
                 break;

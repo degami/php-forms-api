@@ -10,7 +10,7 @@ session_start();
 // as this is not a real example I'm just outputting the values for now.
 function pluploadform_submit(&$form)
 {
-    $form_values = $form->values();
+    $form_values = $form->getValues();
     if (is_array($form_values['files_upload']) && count($form_values['files_upload'])>0) {
         print $value->temppath . " => ".getcwd() . DIRECTORY_SEPARATOR . $value->name."\n";
         rename($value->temppath, getcwd() . DIRECTORY_SEPARATOR . $value->name);

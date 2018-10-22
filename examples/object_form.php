@@ -7,7 +7,7 @@ session_start();
 
 function myclass_submit(&$form)
 {
-    $form_values = $form->values()->toArray();
+    $form_values = $form->getValues()->toArray();
     $form->addHighlight('Object submitted.');
     return $form_values;
 }
@@ -21,7 +21,7 @@ class MyClass
     public $birthday;
     public $number;
 
-    function __construct($name, $surname, $birthday, $number)
+    public function __construct($name, $surname, $birthday, $number)
     {
         $this->id = 1;
         $this->name = $name;

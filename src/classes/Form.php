@@ -26,6 +26,7 @@ use Degami\PHPFormsApi\Fields\Checkbox;
 use Degami\PHPFormsApi\Fields\Radios;
 use Degami\PHPFormsApi\Fields\Select;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
+use Degami\PHPFormsApi\Accessories\SessionBag;
 
 /**
  * the form object class
@@ -168,13 +169,19 @@ class Form extends Element
      */
     private $submit_functions_results = [];
 
-
     /**
      * "do not process form token" flag
      *
      * @var boolean
      */
     private $no_token = false;
+
+    /**
+     * Session Bag Object
+     *
+     * @var SessionBag
+     */
+    private $session_bag = null;
 
     /**
      * class constructor
@@ -184,7 +191,7 @@ class Form extends Element
     public function __construct($options = [])
     {
         $this->build_options = $options;
-
+        $this->session_bag = new SessionBag();
         $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
         $this->container_class = FORMS_DEFAULT_FORM_CONTAINER_CLASS;
 
@@ -234,8 +241,19 @@ class Form extends Element
         $has_session = FormBuilder::sessionPresent();
         if ($has_session) {
             $this->form_token = sha1(mt_rand(0, 1000000));
-            $_SESSION['form_token'][$this->form_token] = $_SERVER['REQUEST_TIME'];
+            $this->getSessionBag()->ensurePath("/form_token");
+            $this->getSessionBag()->form_token->{$this->form_token} = $_SERVER['REQUEST_TIME'];
         }
+    }
+
+    /**
+     * get Session Bag
+     *
+     * @return SessionBag
+     */
+    public function getSessionBag()
+    {
+        return $this->session_bag;
     }
 
     /**
@@ -493,11 +511,12 @@ class Form extends Element
         unset($_REQUEST['form_id']);
         unset($_REQUEST['form_token']);
 
-        if (isset($_SESSION[$this->form_id])) {
-            unset($_SESSION[$this->form_id]);
+        if (isset($this->getSessionBag()->{$this->form_id})) {
+            unset($this->getSessionBag()->{$this->form_id});
         }
-        if (isset($_SESSION['form_definition'][$this->form_id])) {
-            unset($_SESSION['form_definition'][$this->form_id]);
+
+        if (isset($this->getSessionBag()->form_definition[$this->form_id])) {
+            unset($this->getSessionBag()->form_definition[$this->form_id]);
         }
 
         $this->processed = false;
@@ -638,7 +657,10 @@ class Form extends Element
 
         $has_session = FormBuilder::sessionPresent();
         if ($has_session) {
-            $_SESSION[$this->form_id]['steps'][$this->current_step] = $request;
+            $this->getSessionBag()->ensurePath("/{$this->form_id}/steps");
+            $this->getSessionBag()->{$this->form_id}->steps->add([
+               $this->current_step => $request
+            ]);
         }
     }
 
@@ -651,9 +673,10 @@ class Form extends Element
     {
         $has_session = FormBuilder::sessionPresent();
         if ($has_session) {
-            foreach ($_SESSION['form_token'] as $key => $time) {
+            $this->getSessionBag()->ensurePath("/form_token");
+            foreach ($this->getSessionBag()->form_token as $key => $time) {
                 if ($time < ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT)) {
-                    unset($_SESSION['form_token'][$key]);
+                    unset($this->getSessionBag()->form_token[$key]);
                 }
             }
         }
@@ -683,8 +706,8 @@ class Form extends Element
                 }
                 // insert values into fields
                 for ($step = 0; $step < $this->current_step; $step++) {
-                    if ($has_session && isset($_SESSION[$this->form_id]['steps'][$step])) {
-                        $this->injectValues($_SESSION[$this->form_id]['steps'][$step], $step);
+                    if ($has_session && isset($this->getSessionBag()->{$this->form_id}->steps['_value'.$step])) {
+                        $this->injectValues($this->getSessionBag()->{$this->form_id}->steps['_value'.$step], $step);
                     }
                 }
 
@@ -707,8 +730,8 @@ class Form extends Element
             if (!Form::isPartial() && !$this->submitted && $this->isValid() && $this->isFinalStep()) {
                 $this->submitted = true;
 
-                if ($has_session && isset($_SESSION[$this->form_id])) {
-                    unset($_SESSION[$this->form_id]);
+                if ($has_session && isset($this->getSessionBag()->{$this->form_id})) {
+                    unset($this->getSessionBag()->{$this->form_id});
                 }
 
                 for ($step = 0; $step < $this->getNumSteps(); $step++) {
@@ -768,14 +791,14 @@ class Form extends Element
             if ($has_session && !$this->no_token) {
                 $this->valid = false;
                 $this->addError($this->getText('Form is invalid or has expired'), __FUNCTION__);
-                if (isset($_REQUEST['form_token']) && isset($_SESSION['form_token'][$_REQUEST['form_token']])) {
-                    if ($_SESSION['form_token'][$_REQUEST['form_token']] >=
+                if (isset($_REQUEST['form_token']) && isset($this->getSessionBag()->form_token->{$_REQUEST['form_token']})) {
+                    if ($this->getSessionBag()->form_token->{$_REQUEST['form_token']} >=
                             ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT)
                     ) {
                         $this->valid = true;
                         $this->setErrors([]);
                         if (!Form::isPartial()) {
-                            unset($_SESSION['form_token'][$_REQUEST['form_token']]);
+                            unset($this->getSessionBag()->form_token->{$_REQUEST['form_token']});
                         }
                     }
                 }

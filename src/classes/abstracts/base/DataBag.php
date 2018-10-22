@@ -36,14 +36,34 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      */
     protected $data = [];
 
+    /**
+     * prefix for numeric keys
+     *
+     * @var string
+     */
+    protected $numeric_keys_prefix = '_value';
 
     /**
      * class constructor
      *
      * @param mixed $data data to add
      */
-    public function __construct($data)
+    public function __construct($data, $options = [])
     {
+        if ($options == null) {
+            $options = [];
+        }
+
+        unset($options['data']);
+        unset($options['position']);
+
+        foreach ($options as $name => $value) {
+            $name = trim($name);
+            if (property_exists(get_class($this), $name)) {
+                $this->{$name} = $value;
+            }
+        }
+
         $this->position = -1;
         $this->add($data);
     }
@@ -65,7 +85,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
         }
         foreach ($data as $k => $v) {
             if (is_numeric($k)) {
-                $k = '_value'.$k;
+                $k = $this->numeric_keys_prefix.$k;
             }
             $this->{$k} = $v;
         }
@@ -301,7 +321,9 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
         $out = [];
         $this->checkDataArr();
         foreach ($this->data as $key => $value) {
-            $out[$key] = ($value instanceof DataBag) ? $value->toArray() : $value;
+            $out[$key] = (is_object($value) && method_exists($value, 'toArray')) ?
+                            $value->toArray() :
+                            $value;
         }
         return $out;
     }

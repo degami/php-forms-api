@@ -56,7 +56,8 @@ class MathCaptcha extends Captcha
             eval('$ret = '.$this->a.$this->op.$this->b.';');
         } while (!is_int($ret));
 
-        $_SESSION['math_captcha_code'][$this->getName()] = $this->a.$this->op.$this->b;
+        $this->getSessionBag()->ensurePath("/math_captcha_code");
+        $this->getSessionBag()->math_captcha_code->{$this->getName()} = $this->a.$this->op.$this->b;
 
         if (mt_rand(0, 1) == 0) {
             $this->code .= '<span class="nohm">'.mt_rand(1, 10).$operators[ mt_rand(0, count($operators)-1) ].'</span>';
@@ -137,17 +138,19 @@ class MathCaptcha extends Captcha
             return true;
         }
 
-        if (!isset($_SESSION['math_captcha_code'][$this->getName()])) {
+        if (!isset($this->getSessionBag()->math_captcha_code->{$this->getName()})) {
             return true;
         }
 
         $_sessval = null;
-        eval('$_sessval = '.$_SESSION['math_captcha_code'][$this->getName()].';');
-        if (isset($this->value['code']) && $this->value['code'] == $_sessval) {
-            return true;
-        }
+        if (trim($this->getSessionBag()->math_captcha_code->{$this->getName()}) != '') {
+            eval('$_sessval = '.$this->getSessionBag()->math_captcha_code->{$this->getName()}.';');
+            if (isset($this->value['code']) && $this->value['code'] == $_sessval) {
+                return true;
+            }
 
-        $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
-        return false;
+            $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
+            return false;
+        }
     }
 }

@@ -16,7 +16,7 @@ function validate_multiple_by($string, $length = 1)
 
 function showall_submit(&$form)
 {
-    $form_values = $form->values()->toArray();
+    $form_values = serialize($form->getValues());
   // print_r($form);
   // get submission triggering element
 
@@ -28,7 +28,7 @@ function showall_submit(&$form)
 
 function showall_validate(&$form)
 {
-    $form_values = $form->values();
+    $form_values = $form->getValues();
     if ($form_values['fieldset']['name'] == 'aaa' && $form_values['tabs']['slider']==2) {
         return "You shall not pass!!!";
     }

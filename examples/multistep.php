@@ -10,7 +10,7 @@ session_start();
 
 function multistepform_submit(&$form)
 {
-    $form_values = $form->values()->toArray();
+    $form_values = $form->getValues()->toArray();
   // print_r($form);
   // get submission triggering element
   //var_dump($form->get_triggering_element());

@@ -69,6 +69,7 @@ abstract class Captcha extends Field
         $session_value =$this->getValues();
         $session_value['already_validated'] = $this->isAlreadyValidated();
 
-        $_SESSION[$form->getId()]['steps'][$form->getCurrentStep()][$this->getName()] = $session_value;
+        $this->getSessionBag()->ensurePath("/{$form->getId()}/steps/{$form->getCurrentStep()}");
+        $this->getSessionBag()->{$form->getId()}->steps->{$form->getCurrentStep()}->{$this->getName()} = $session_value;
     }
 }
