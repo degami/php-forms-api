@@ -791,7 +791,9 @@ class Form extends Element
             if ($has_session && !$this->no_token) {
                 $this->valid = false;
                 $this->addError($this->getText('Form is invalid or has expired'), __FUNCTION__);
-                if (isset($_REQUEST['form_token']) && isset($this->getSessionBag()->form_token->{$_REQUEST['form_token']})) {
+                if (isset($_REQUEST['form_token']) &&
+                    isset($this->getSessionBag()->form_token->{$_REQUEST['form_token']})
+                ) {
                     if ($this->getSessionBag()->form_token->{$_REQUEST['form_token']} >=
                             ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT)
                     ) {

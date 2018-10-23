@@ -267,7 +267,9 @@ class ImageCaptcha extends Captcha
             return true;
         }
         
-        if (isset($this->value['code']) && $this->value['code'] == $this->getSessionBag()->image_captcha_code->{$this->getName()}) {
+        if (isset($this->value['code']) &&
+            $this->value['code'] == $this->getSessionBag()->image_captcha_code->{$this->getName()}
+        ) {
             return true;
         }
 
