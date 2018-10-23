@@ -134,6 +134,16 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
+     * get data
+     *
+     * @return array data
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
      * get current element
      *
      * @return mixed current element
