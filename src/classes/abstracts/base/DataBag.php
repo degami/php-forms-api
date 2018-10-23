@@ -204,7 +204,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
         if ($key == 'data' || $key == 'position') {
             throw new \Exception('Cannot define "'.$key.'" property');
         }
-        $this->data[$key] = (is_array($value)) ? new static($value) : $value;
+        $this->data[$key] = $value;
         return $this;
     }
 
@@ -370,6 +370,18 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
             } else {
                 $this->data = [];
             }
+        }
+        return $this;
+    }
+
+    /**
+     * drops "data" contents
+     * @return DataBag
+     */
+    public function clear()
+    {
+        foreach ($this->getKeys() as $key) {
+            $this->__unset($key);
         }
         return $this;
     }

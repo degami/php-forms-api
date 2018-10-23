@@ -4,9 +4,12 @@
 require_once '../vendor/autoload.php';
 include_once "forms.php";
 
+use Degami\PHPFormsApi as FAPI;
+
 if (isset($_GET['clearsession'])) {
-    session_destroy();
-    session_start();
+    FAPI\FormBuilder::getSessionBag(true)->clear();
+//    session_destroy();
+//    session_start();
 }
 ?><style>
   a{

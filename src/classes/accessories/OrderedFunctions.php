@@ -33,8 +33,7 @@ class OrderedFunctions extends DataBag
      */
     public function __construct(array $array, $type, $sort_callback = null)
     {
-        $this->position = -1;
-        $this->data = $array;
+        parent::__construct($array);
         $this->type = $type;
         $this->sort_callback = $sort_callback;
         $this->sort();

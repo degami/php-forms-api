@@ -32,17 +32,22 @@ class SessionBag extends MultiLevelDataBag
     }
 
     /**
-     * sets data
-     *
-     * @param string $key key
-     * @param mixed $value data to set
-     * @return DataBag
+     * {@inheritdoc}
      */
     public function __set($key, $value)
     {
         parent::__set($key, $value);
         $this->notifyChange();
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __unset($key)
+    {
+        parent::__unset($key);
+        $this->notifyChange();
     }
 
     /**
@@ -98,5 +103,15 @@ class SessionBag extends MultiLevelDataBag
             $ptr = &$ptr->{$value};
         }
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clear()
+    {
+        parent::clear();
+        session_destroy();
+        session_start();
     }
 }

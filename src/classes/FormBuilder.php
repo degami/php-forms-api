@@ -34,11 +34,11 @@ class FormBuilder
      *
      * @return SessionBag
      */
-    public static function getSessionBag()
+    public static function getSessionBag($refresh = false)
     {
         /** @var SessionBag */
         static $session_bag = null;
-        if (!$session_bag instanceof SessionBag) {
+        if (!$session_bag instanceof SessionBag || $refresh == true) {
             $session_bag = new SessionBag();
         }
         return $session_bag;
@@ -128,9 +128,7 @@ class FormBuilder
 
             $form = $form_obj;
             $form->setDefinitionFunction($function_name);
-            if (!isset(self::getSessionBag()->form_definition)) {
-                self::getSessionBag()->form_definition = [];
-            }
+            self::getSessionBag()->ensurePath('/form_definition');
             self::getSessionBag()->form_definition[$form->getId()] = $form->toArray();
         }
 

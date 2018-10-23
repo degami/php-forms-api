@@ -1,4 +1,5 @@
 <?php
+ob_start();
 define('RECAPTCHA_PUBLIC_KEY', '');
 define('RECAPTCHA_PRIVATE_KEY', '');
 

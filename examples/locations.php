@@ -1,4 +1,5 @@
 <?php
+ob_start();
 @require_once('googlekeys.php');
 if (!defined('GOOGLE_API_KEY')) {
     define('GOOGLE_API_KEY', '<google maps key here>');
