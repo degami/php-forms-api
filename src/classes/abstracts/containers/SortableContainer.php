@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -36,7 +41,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
     protected $deltas = [];
 
     /**
-     * get handle position (left/right)
+     * Get handle position (left/right)
      *
      * @return string handle position
      */
@@ -46,7 +51,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * return form elements values into this element
+     * Return form elements values into this element
      *
      * @return array form values
      */
@@ -94,7 +99,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * get an array of fields with the relative delta (ordering) information
+     * Get an array of fields with the relative delta (ordering) information
      *
      * @return array fields with delta
      */

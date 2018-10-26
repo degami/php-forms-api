@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -80,9 +85,11 @@ class Tabs extends FieldsContainerMultiple
             }
 
             $addclass_tab = ' class="tabel '.($this->partitionHasErrors($tabindex, $form) ? 'has-errors' : '').'"';
-            $tab_links->addChild("<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".
+            $tab_links->addChild(
+                "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".
                                         $this->getText($this->partitions[$tabindex]['title']).
-                                        "</a></li>");
+                "</a></li>"
+            );
 
             $inner = new TagElement(
                 [

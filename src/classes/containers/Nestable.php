@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -22,7 +27,7 @@ class Nestable extends FieldsContainer
 {
     use Containers;
 
-    /** @var integer level */
+    /** @var integer level*/
     public $level = 0;
 
     /** @var integer number of children */
@@ -56,7 +61,7 @@ class Nestable extends FieldsContainer
      * Nestable constructor.
      *
      * @param array $options
-     * @param null $name
+     * @param null  $name
      *
      * @throws \Exception
      */
@@ -85,7 +90,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * get level
+     * Get level
      *
      * @return int
      */
@@ -132,7 +137,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * get children count
+     * Get children count
      *
      * @return int
      */
@@ -152,7 +157,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * get a child
+     * Get a child
      *
      * @param $numchild
      *
@@ -164,7 +169,8 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * get all children
+     * Get all children
+     *
      * @return array
      */
     public function &getChildren()
@@ -176,7 +182,7 @@ class Nestable extends FieldsContainer
      * {@inheritdoc}
      *
      * @param string $name
-     * @param mixed $field
+     * @param mixed  $field
      *
      * @return $this|\Degami\PHPFormsApi\Abstracts\Base\Field
      * @throws \Exception
@@ -195,7 +201,7 @@ class Nestable extends FieldsContainer
     /**
      * remove field from form
      *
-     * @param string $name field name
+     * @param  string $name field name
      * @return Nestable
      */
     public function removeField($name)
@@ -218,7 +224,8 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * get a panel
+     * Get a panel
+     *
      * @param $nestableid
      *
      * @return bool|\Degami\PHPFormsApi\Containers\TagContainer|null
@@ -240,7 +247,7 @@ class Nestable extends FieldsContainer
     /**
      * create values array
      *
-     * @param  array   $tree          tree
+     * @param  array    $tree          tree
      * @param  Nestable $nestablefield field
      * @return array    values array
      */
@@ -330,7 +337,8 @@ class Nestable extends FieldsContainer
         }
         $id = $this->getHtmlId();
         if ($this->getLevel() == 0) {
-            $this->addJs("\$('#{$id}','#{$form->getId()}').data('output', \$('#{$id}-output'));
+            $this->addJs(
+                "\$('#{$id}','#{$form->getId()}').data('output', \$('#{$id}-output'));
             \$('#{$id}','#{$form->getId()}').nestable({group: {$this->group}, maxDepth: {$this->maxDepth} })
             .on('change', function(e){
                 var list   = e.length ? e : $(e.target),
@@ -341,7 +349,8 @@ class Nestable extends FieldsContainer
                     output.val('JSON browser support required for this.');
                 }
             })
-            .trigger('change');");
+            .trigger('change');"
+            );
 
             if (!Nestable::$css_rendered) {
                 $this->addCss(

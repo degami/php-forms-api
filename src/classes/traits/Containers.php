@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                     TRAITS                      ####
@@ -36,7 +41,7 @@ trait Containers
     protected $fields = [];
 
     /**
-     * get the fields array by reference
+     * Get the fields array by reference
      *
      * @return array        the array of field elements
      */
@@ -46,7 +51,7 @@ trait Containers
     }
 
     /**
-     * get parent namespace
+     * Get parent namespace
      *
      * @return string  parent namespace
      */
@@ -57,7 +62,7 @@ trait Containers
     }
 
     /**
-     * returns a field object instance
+     * Returns a field object instance
      *
      * @param string $name  field name
      * @param mixed  $field field to add, can be an array or a field subclass

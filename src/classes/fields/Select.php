@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -27,7 +32,7 @@ class Select extends FieldMultivalues
     protected $multiple = false;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -72,7 +77,7 @@ class Select extends FieldMultivalues
     }
 
     /**
-     * return field multiple attribute
+     * Return field multiple attribute
      *
      * @return boolean field is multiple
      */
@@ -82,9 +87,9 @@ class Select extends FieldMultivalues
     }
 
     /**
-     * set field multiple attribute
+     * Set field multiple attribute
      *
-     * @param boolean $multiple multiple attribute
+     * @param  boolean $multiple multiple attribute
      * @return Select
      */
     public function setMultiple($multiple = true)
@@ -94,7 +99,7 @@ class Select extends FieldMultivalues
     }
 
     /**
-     * return field value
+     * Return field value
      *
      * @return mixed field value
      */

@@ -1,12 +1,17 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
-####                    FIELDS                       ####
-######################################################### */
+   ####                    FIELDS                       ####
+   ######################################################### */
 
 namespace Degami\PHPFormsApi\Fields;
 
@@ -39,7 +44,7 @@ class Autocomplete extends Textfield
     protected $min_length = 3;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -66,7 +71,8 @@ class Autocomplete extends Textfield
         }
         $id = $this->getHtmlId();
 
-        $this->addJs("
+        $this->addJs(
+            "
           \$('#{$id}','#{$form->getId()}')
           .bind( 'keydown', function( event ) {
             if ( event.keyCode === $.ui.keyCode.TAB && \$( this ).autocomplete( 'instance' ).menu.active ) {
@@ -82,7 +88,8 @@ class Autocomplete extends Textfield
               return false;
             }
           });
-        ");
+        "
+        );
 
         parent::preRender($form);
     }

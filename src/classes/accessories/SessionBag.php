@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                      BASE                       ####
@@ -20,7 +25,8 @@ class SessionBag extends MultiLevelDataBag
 {
 
     /**
-     * class constructor
+     * Class constructor
+     *
      * @param mixed $data data to add
      */
     public function __construct($data = [], $parent = null)
@@ -59,7 +65,7 @@ class SessionBag extends MultiLevelDataBag
     }
 
     /**
-     * get session identified
+     * Get session identified
      *
      * @return string
      */

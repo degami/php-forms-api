@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -35,9 +40,9 @@ class TableContainer extends FieldsContainerMultiple
     protected $col_row_attributes = [];
 
     /**
-     * set table header array
+     * Set table header array
      *
-     * @param array $table_header table header elements array
+     * @param  array $table_header table header elements array
      * @return TableContainer
      */
     public function setTableHeader(array $table_header)
@@ -47,7 +52,7 @@ class TableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * get table header array
+     * Get table header array
      *
      * @return array table header array
      */
@@ -57,9 +62,9 @@ class TableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * set rows / cols attributes array
+     * Set rows / cols attributes array
      *
-     * @param array $col_row_attributes attributes array
+     * @param  array $col_row_attributes attributes array
      * @return TableContainer
      */
     public function setColRowAttributes(array $col_row_attributes)
@@ -69,7 +74,7 @@ class TableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * get rows / cols attributes array
+     * Get rows / cols attributes array
      *
      * @return array attributes array
      */
@@ -88,7 +93,7 @@ class TableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * return number of table rows
+     * Return number of table rows
      *
      * @return integer number of table rows
      */

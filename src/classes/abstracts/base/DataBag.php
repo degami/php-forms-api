@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                      BASE                       ####
@@ -16,35 +21,35 @@ use \ArrayAccess;
 use \Countable;
 
 /**
- * a class to hold form fields submitted values
+ * A class to hold form fields submitted values
  */
 
 abstract class DataBag implements Iterator, ArrayAccess, Countable
 {
 
     /**
-     * current position
+     * Current position
      *
      * @var integer
      */
     protected $position = -1;
 
     /**
-     * data to be stored
+     * Data to be stored
      *
      * @var array
      */
     protected $data = [];
 
     /**
-     * prefix for numeric keys
+     * Prefix for numeric keys
      *
      * @var string
      */
     protected $numeric_keys_prefix = '_value';
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param mixed $data data to add
      */
@@ -71,7 +76,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     /**
      * adds data to the element
      *
-     * @param mixed $data data to add
+     * @param  mixed $data data to add
      * @return DataBag
      */
     public function add($data)
@@ -124,7 +129,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * get data keys
+     * Get data keys
      *
      * @return array data keys
      */
@@ -134,7 +139,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * get data
+     * Get data
      *
      * @return array data
      */
@@ -144,7 +149,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * get current element
+     * Get current element
      *
      * @return mixed current element
      */
@@ -158,7 +163,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * get current position key
+     * Get current position key
      *
      * @return string key
      */
@@ -191,7 +196,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * gets data by key
+     * Gets data by key
      *
      * @param  string $key key
      * @return mixed data
@@ -202,10 +207,10 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * sets data
+     * Sets data
      *
-     * @param string $key key
-     * @param mixed $value data to set
+     * @param  string $key   key
+     * @param  mixed  $value data to set
      * @return DataBag
      * @throws \Exception
      */
@@ -247,7 +252,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * set_state magic method
+     * Set_state magic method
      *
      * @param $an_array
      *
@@ -260,7 +265,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * gets data iterator
+     * Gets data iterator
      *
      * @return ArrayIterator
      */
@@ -270,7 +275,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * gets data keys
+     * Gets data keys
      *
      * @return array data keys
      */
@@ -280,10 +285,10 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * set data by key
+     * Set data by key
      *
-     * @param  string $offset key
-     * @param  mixed $value data to set
+     * @param string $offset key
+     * @param mixed  $value  data to set
      */
     public function offsetSet($offset, $value)
     {
@@ -292,6 +297,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
 
     /**
      * check if data exists bu key
+     *
      * @param  string $offset key to check
      * @return boolean data exists
      */
@@ -303,7 +309,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     /**
      * removes data by key
      *
-     * @param  string $offset key to delete
+     * @param string $offset key to delete
      */
     public function offsetUnset($offset)
     {
@@ -311,7 +317,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * gets data by key
+     * Gets data by key
      *
      * @param  string $offset key to get
      * @return mixed|null
@@ -322,7 +328,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * gets data as array
+     * Gets data as array
      *
      * @return array
      */
@@ -339,7 +345,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * gets an array with the selected keys
+     * Gets an array with the selected keys
      *
      * @param  array $keys keys to get
      * @return array
@@ -359,7 +365,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * gets data size
+     * Gets data size
      *
      * @return integer
      */
@@ -370,6 +376,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
 
     /**
      * check "data" property to be an array
+     *
      * @return DataBag
      */
     protected function checkDataArr()
@@ -386,6 +393,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
 
     /**
      * drops "data" contents
+     *
      * @return DataBag
      */
     public function clear()

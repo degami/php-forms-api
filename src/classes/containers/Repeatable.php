@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -32,8 +37,8 @@ class Repeatable extends FieldsContainerMultiple
     /**
      * {@inheritdocs}
      *
-     * @param array  $options options
-     * @param string|null $name field name
+     * @param array       $options options
+     * @param string|null $name    field name
      */
     public function __construct(array $options = [], $name = null)
     {
@@ -43,8 +48,8 @@ class Repeatable extends FieldsContainerMultiple
     /**
      * Override add_field
      *
-     * @param string $name
-     * @param mixed  $field
+     * @param string  $name
+     * @param mixed   $field
      * @param integer $partitions_index
      *
      * @return $this|mixed
@@ -217,34 +222,42 @@ class Repeatable extends FieldsContainerMultiple
                 $js = '';
             }
 
-            $this->addCss("#{$id} .repeatable-row{ 
+            $this->addCss(
+                "#{$id} .repeatable-row{ 
                 margin: 10px 0; 
                 padding: 10px; 
                 border: solid 1px #cecece; 
                 position: relative; 
-            }");
-            $this->addCss("#{$id} .repeatable-row .remove-btn{
+            }"
+            );
+            $this->addCss(
+                "#{$id} .repeatable-row .remove-btn{
                 position: absolute; 
                 top: 5px; 
                 right: 10px; 
                 z-index: 10;
-            }");
+            }"
+            );
 
-            $this->addJs("\$('#{$id}').delegate('.remove-btn','click',function(evt){
+            $this->addJs(
+                "\$('#{$id}').delegate('.remove-btn','click',function(evt){
                 evt.preventDefault();
                 \$(this).closest('.repeatable-row').remove();
                 var \$target = $('.fields-target:eq(0)');
                 var newrownum = \$target.find('.repeatable-row').length;
                 \$('input[name=\"{$id}-numreps\"]').val(newrownum);
-              });");
-            $this->addJs("\$('.btnaddmore', '#{$id}').click(function(evt){
+              });"
+            );
+            $this->addJs(
+                "\$('.btnaddmore', '#{$id}').click(function(evt){
                 evt.preventDefault();
                 var \$target = \$('.fields-target:eq(0)');
                 var newrownum = \$target.find('.repeatable-row').length;
                 \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target );
                 \$('input[name=\"{$id}-numreps\"]').val(newrownum);
                 {$js}
-              });");
+              });"
+            );
         }
 
         return parent::preRender($form);
@@ -254,7 +267,7 @@ class Repeatable extends FieldsContainerMultiple
     /**
      * {@inheritdocs}
      *
-     * @param Form $form form object
+     * @param  Form $form form object
      * @return string|tag_element the field html
      */
     public function renderField(Form $form)
@@ -315,9 +328,11 @@ class Repeatable extends FieldsContainerMultiple
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
                 $repeatablerow->addChild($field->renderHTML($form));
             }
-            $repeatablerow->addChild("<a href=\"#\"
+            $repeatablerow->addChild(
+                "<a href=\"#\"
                                             class=\"remove-btn btn\" 
-                                            name=\"{$id}-remove-{$partitionindex}\">&times;</a>\n");
+                                            name=\"{$id}-remove-{$partitionindex}\">&times;</a>\n"
+            );
         }
 
         $tag->addChild(

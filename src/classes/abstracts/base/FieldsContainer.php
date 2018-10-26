@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -27,7 +32,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     use Containers;
 
     /**
-     * get the form fields by type
+     * Get the form fields by type
      *
      * @param  array $field_types field types
      * @return array              fields in the element
@@ -52,7 +57,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * get the step fields by type and name
+     * Get the step fields by type and name
      *
      * @param  array  $field_types field types
      * @param  string $name        field name
@@ -69,9 +74,10 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
             if ($field instanceof FieldsContainer) {
                 $out = array_merge($out, $field->getFieldsByTypeAndName($field_types, $name));
             } else {
-                if ($field instanceof Field &&
-                    in_array($field->getType(), $field_types) &&
-                    $field->getName() == $name) {
+                if ($field instanceof Field
+                    && in_array($field->getType(), $field_types)
+                    && $field->getName() == $name
+                ) {
                     $out[] = $field;
                 }
             }
@@ -80,7 +86,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * get field by name
+     * Get field by name
      *
      * @param  string $field_name field name
      * @return Element subclass field object
@@ -93,8 +99,8 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * add field to form
      *
-     * @param string $name  field name
-     * @param mixed  $field field to add, can be an array or a field subclass
+     * @param  string $name  field name
+     * @param  mixed  $field field to add, can be an array or a field subclass
      * @throws \Exception
      * @return Field
      */
@@ -121,7 +127,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * remove field from form
      *
-     * @param string $name field name
+     * @param  string $name field name
      * @return FieldsContainer
      */
     public function removeField($name)
@@ -134,7 +140,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * return form elements values into this element
+     * Return form elements values into this element
      *
      * @return array form values
      */
@@ -161,7 +167,9 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     public function preProcess($process_type = "preprocess")
     {
         foreach ($this->getFields() as $field) {
-            /** @var Field $field */
+            /**
+ * @var Field $field
+*/
             $field->preProcess($process_type);
         }
     }

@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -31,7 +36,7 @@ class Switchbox extends Radios
     protected $yes_label;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -67,23 +72,29 @@ class Switchbox extends Radios
 
 
         foreach ($this->options as $key => $value) {
-            $this->addJs("\$('#{$id}-{$key}','#{$form->getId()}')
+            $this->addJs(
+                "\$('#{$id}-{$key}','#{$form->getId()}')
                 .click(function(evt){
                   \$(this).closest('label').addClass('ui-state-active');
                   \$('#{$id} input[type=\"radio\"]').not(this).closest('label').removeClass('ui-state-active');
-                 });");
+                 });"
+            );
         }
 
-        $this->addCss("#{$id} .label-switch{ 
+        $this->addCss(
+            "#{$id} .label-switch{ 
                                 text-align: center; 
                                 display: inline-block; 
                                 width: 50%; 
                                 padding-top: 10px; 
                                 padding-bottom: 10px; 
                                 box-sizing: border-box;
-                            }");
-        $this->addJs("\$('#{$id}','#{$form->getId()}').find('input[type=\"radio\"]:checked')
-                         .closest('label').addClass('ui-state-active');");
+                            }"
+        );
+        $this->addJs(
+            "\$('#{$id}','#{$form->getId()}').find('input[type=\"radio\"]:checked')
+                         .closest('label').addClass('ui-state-active');"
+        );
         //$this->add_css("#{$id} .label-switch input{ display: none; }");
         $this->addJs("\$('#{$id} input[type=\"radio\"]','#{$form->getId()}').hide();");
         parent::preRender($form);

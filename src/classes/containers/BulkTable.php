@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -22,7 +27,7 @@ class BulkTable extends TableContainer
     protected $operations = [];
 
     /**
-     * get defined operations
+     * Get defined operations
      *
      * @return array $operations array of callable
      */
@@ -34,9 +39,9 @@ class BulkTable extends TableContainer
     /**
      * add operation to operations array
      *
-     * @param string $key   key
-     * @param string $label label
-     * @param mixed  $operation operation
+     * @param  string $key       key
+     * @param  string $label     label
+     * @param  mixed  $operation operation
      * @return BulkTable
      */
     public function addOperation($key, $label, $operation)
@@ -49,7 +54,7 @@ class BulkTable extends TableContainer
     /**
      * {@inheritdoc}
      *
-     * @param Form $form form object
+     * @param  Form $form form object
      * @throws \Exception
      */
     public function preRender(Form $form)
@@ -79,12 +84,18 @@ class BulkTable extends TableContainer
             );
         }
 
-        $this->addJs("\$('.btn.selAll','#{$id}_actions').click(function(evt){evt.preventDefault();
-        \$('.checkbox-row','#{$id}').each(function(index,elem){ $(elem)[0].checked = true; }); });");
-        $this->addJs("\$('.btn.deselAll','#{$id}_actions').click(function(evt){evt.preventDefault();
-        \$('.checkbox-row','#{$id}').each(function(index,elem){ $(elem)[0].checked = false; }); });");
-        $this->addJs("\$('.btn.inverSel','#{$id}_actions').click(function(evt){evt.preventDefault();
-        \$('.checkbox-row','#{$id}').each(function(index,elem){ \$(elem)[0].checked = !\$(elem)[0].checked; }); });");
+        $this->addJs(
+            "\$('.btn.selAll','#{$id}_actions').click(function(evt){evt.preventDefault();
+        \$('.checkbox-row','#{$id}').each(function(index,elem){ $(elem)[0].checked = true; }); });"
+        );
+        $this->addJs(
+            "\$('.btn.deselAll','#{$id}_actions').click(function(evt){evt.preventDefault();
+        \$('.checkbox-row','#{$id}').each(function(index,elem){ $(elem)[0].checked = false; }); });"
+        );
+        $this->addJs(
+            "\$('.btn.inverSel','#{$id}_actions').click(function(evt){evt.preventDefault();
+        \$('.checkbox-row','#{$id}').each(function(index,elem){ \$(elem)[0].checked = !\$(elem)[0].checked; }); });"
+        );
 
         parent::preRender($form);
     }
@@ -119,7 +130,7 @@ class BulkTable extends TableContainer
     /**
      * {@inheritdocs}
      *
-     * @param mixed $values value to set
+     * @param  mixed $values value to set
      * @return null
      */
     public function processValue($values)

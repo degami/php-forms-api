@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                     BASE                        ####
@@ -16,7 +21,7 @@ use Degami\PHPFormsApi\Form;
 use \Exception;
 
 /**
- * base element class
+ * Base element class
  * every form element classes inherits from this class
  *
  * @abstract
@@ -26,14 +31,14 @@ abstract class BaseElement
     use Tools;
 
     /**
-     * element attributes array
+     * Element attributes array
      *
      * @var array
      */
     protected $attributes = [];
 
     /**
-     * set html attributes
+     * Set html attributes
      *
      * @param string $name  attribute name
      * @param string $value attribute value
@@ -48,7 +53,7 @@ abstract class BaseElement
     }
 
     /**
-     * set html attributes
+     * Set html attributes
      *
      * @param array $attributes attributes array
      *
@@ -62,7 +67,7 @@ abstract class BaseElement
     }
 
     /**
-     * get attribute value if present. FALSE on failure
+     * Get attribute value if present. false on failure
      *
      * @param  string $name attribute name
      * @return string       attribute description
@@ -73,10 +78,11 @@ abstract class BaseElement
     }
 
     /**
-     * returns the element html attributes string
+     * Returns the element html attributes string
      *
-     * @param  array $reserved_arr  array of attributes name that will be
-     *                              skipped if present in the attributes array
+     * @param  array $reserved_arr array of attributes name that will be
+     *                             skipped if present in the attributes
+     *                             array
      * @return string               the html attributes string
      */
     public function getAttributes($reserved_arr = ['type','name','id','value'])
@@ -85,7 +91,7 @@ abstract class BaseElement
     }
 
     /**
-     * returns the html attributes string
+     * Returns the html attributes string
      *
      * @param  array $attributes_arr attributes array
      * @param  array $reserved_arr   array of attributes name that will be
@@ -117,7 +123,7 @@ abstract class BaseElement
     }
 
     /**
-     * get attributes array
+     * Get attributes array
      *
      * @return array attributes array
      */
@@ -127,7 +133,7 @@ abstract class BaseElement
     }
 
     /**
-     * to array
+     * To array
      *
      * @return array array representation for the element properties
      */
@@ -143,8 +149,8 @@ abstract class BaseElement
     /**
      * intToArray private method
      *
-     * @param  mixed $key   key
-     * @param  mixed $elem  element
+     * @param  mixed  $key  key
+     * @param  mixed  $elem element
      * @param  string $path path
      * @return mixed        element as an array
      */

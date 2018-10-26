@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                 ACCESSORIES                     ####
@@ -79,7 +84,7 @@ class TagElement extends BaseElement implements TagInterface
     protected $value_needed = true;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array $options build options
      */
@@ -140,7 +145,7 @@ class TagElement extends BaseElement implements TagInterface
     }
 
     /**
-     * get css class name
+     * Get css class name
      *
      * @return string css class name
      */
@@ -150,7 +155,7 @@ class TagElement extends BaseElement implements TagInterface
     }
 
     /**
-     * gets html tag string
+     * Gets html tag string
      *
      * @return string tag html representation
      */
@@ -159,8 +164,8 @@ class TagElement extends BaseElement implements TagInterface
         static::executeAlter("/.*?_before_render_".$this->tag."_alter$/i", [&$this]);
         $reserved_attributes = "";
         foreach ($this->reserved_attributes as $key) {
-            if (property_exists(get_class($this), $key) &&
-                (!empty($this->{$key}) || $key == 'value' && $this->getValueNeeded())
+            if (property_exists(get_class($this), $key)
+                && (!empty($this->{$key}) || $key == 'value' && $this->getValueNeeded())
             ) {
                 $reserved_attributes .= ' '.$key.'="'.$this->{$key}.'"';
             }
@@ -174,7 +179,7 @@ class TagElement extends BaseElement implements TagInterface
     /**
      * add child to tag
      *
-     * @param TagElement|string $child child to add
+     * @param  TagElement|string $child child to add
      * @return TagElement
      */
     public function addChild($child)
@@ -185,7 +190,7 @@ class TagElement extends BaseElement implements TagInterface
     }
 
     /**
-     * gets tag children html representation
+     * Gets tag children html representation
      *
      * @return string tag children html representation
      */

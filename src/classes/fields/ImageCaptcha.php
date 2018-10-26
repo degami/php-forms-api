@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -83,7 +88,7 @@ class ImageCaptcha extends Captcha
     private $code;
 
     /**
-     * gets a random text
+     * Gets a random text
      *
      * @return string text
      */
@@ -102,7 +107,7 @@ class ImageCaptcha extends Captcha
     }
 
     /**
-     * gets a random color
+     * Gets a random color
      *
      * @param  resource $im image resource
      * @return integer
@@ -154,7 +159,7 @@ class ImageCaptcha extends Captcha
     }
 
     /**
-     * gets image as base64 string
+     * Gets image as base64 string
      *
      * @return string image representation as base64 string
      */
@@ -267,8 +272,8 @@ class ImageCaptcha extends Captcha
             return true;
         }
         
-        if (isset($this->value['code']) &&
-            $this->value['code'] == $this->getSessionBag()->image_captcha_code->{$this->getName()}
+        if (isset($this->value['code'])
+            && $this->value['code'] == $this->getSessionBag()->image_captcha_code->{$this->getName()}
         ) {
             return true;
         }

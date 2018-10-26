@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                 ACCESSORIES                     ####
@@ -30,7 +35,7 @@ class FormBuilder
     }
 
     /**
-     * get Session Bag
+     * Get Session Bag
      *
      * @return SessionBag
      */
@@ -45,7 +50,7 @@ class FormBuilder
     }
 
     /**
-     * returns the form_id
+     * Returns the form_id
      *
      * @param  callable $function_name the function name
      * @return string                   the form_id
@@ -62,7 +67,7 @@ class FormBuilder
     }
 
     /**
-     * returns callable function name string
+     * Returns callable function name string
      *
      * @param  callable $function_name callable element
      * @return string                 the function name
@@ -85,7 +90,7 @@ class FormBuilder
     }
 
     /**
-     * returns a form object.
+     * Returns a form object.
      * This function calls the form definitor function passing an
      * initial empty form object and the form state
      *
@@ -139,7 +144,7 @@ class FormBuilder
     }
 
     /**
-     * get a new form object
+     * Get a new form object
      *
      * @param string $form_id form_id (and also form definitor function name)
      *
@@ -159,7 +164,7 @@ class FormBuilder
     }
 
     /**
-     * returns rendered form's html string
+     * Returns rendered form's html string
      *
      * @param  string $form_id form_id (and also form definitor function name)
      * @return string          form html
@@ -198,8 +203,8 @@ class FormBuilder
     /**
      * guess form field type by value
      *
-     * @param  mixed        $value        value to find field to
-     * @param  string|null  $element_name element name
+     * @param  mixed       $value        value to find field to
+     * @param  string|null $element_name element name
      * @return array                      form field info
      */
     public static function guessFormType($value, $element_name = null)
@@ -233,7 +238,6 @@ class FormBuilder
                 break;
             case 'datetime':
                 $type = 'datetime';
-
                 /** @var \DateTime $default_value */
                 $default_value = [
                     'year'    => $default_value->format('Y'),
@@ -243,7 +247,6 @@ class FormBuilder
                     'minutes' => $default_value->format('i'),
                     'seconds' => $default_value->format('s'),
                 ];
-
                 break;
             case 'date':
                 $type = 'date';
@@ -299,11 +302,11 @@ class FormBuilder
     }
 
     /**
-     * get a form to represent given object
+     * Get a form to represent given object
      *
-     * @param  Form   $form        initial form object
-     * @param  array &$form_state  form state
-     * @param  mixed  $object      object to represent
+     * @param  Form  $form        initial form object
+     * @param  array &$form_state form state
+     * @param  mixed $object      object to represent
      * @return Form                form object
      */
     public static function objFormDefinition(Form $form, &$form_state, $object)
@@ -314,8 +317,8 @@ class FormBuilder
         $fieldset = $form->addField(
             get_class($object),
             [
-            'type' => 'fieldset',
-            'title' => get_class($object),
+                'type' => 'fieldset',
+                'title' => get_class($object),
             ]
         );
 
@@ -324,10 +327,10 @@ class FormBuilder
             $fieldset->addField(
                 $k,
                 [
-                'type' => $type,
-                'title' => $k,
-                'validate' => $validate,
-                'default_value' => $default_value,
+                    'type' => $type,
+                    'title' => $k,
+                    'validate' => $validate,
+                    'default_value' => $default_value,
                 ]
             );
         }
@@ -335,16 +338,14 @@ class FormBuilder
         $form
         ->addField(
             'submit',
-            [
-            'type' => 'submit',
-            ]
+            ['type' => 'submit']
         );
 
         return $form;
     }
 
     /**
-     * returns a form object representing the object parameter
+     * Returns a form object representing the object parameter
      *
      * @param object $object the object to map
      *
@@ -360,8 +361,8 @@ class FormBuilder
             [__CLASS__, 'objFormDefinition'],
             $form_state,
             [
-            'submit' => [strtolower(get_class($object).'_submit')],
-            'validate' => [strtolower(get_class($object).'_validate')],
+                'submit' => [strtolower(get_class($object).'_submit')],
+                'validate' => [strtolower(get_class($object).'_validate')],
             ]
         );
         return $form;

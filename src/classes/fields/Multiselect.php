@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -24,7 +29,7 @@ class Multiselect extends Select
     private $rightOptions;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -65,7 +70,8 @@ class Multiselect extends Select
             return;
         }
         $id = $this->getHtmlId();
-        $this->addJs("\$('#{$id}_move_right, #{$id}_move_left','#{$form->getId()}')
+        $this->addJs(
+            "\$('#{$id}_move_right, #{$id}_move_left','#{$form->getId()}')
             .click(function(evt){
               evt.preventDefault();
               var \$this = \$(this);
@@ -82,12 +88,15 @@ class Multiselect extends Select
                     var \$elem = \$(elem); \$elem.appendTo(\$from);
                 });
               }
-            });");
+            });"
+        );
 
-        $this->addJs("\$('#{$form->getId()}').submit(function(evt){
+        $this->addJs(
+            "\$('#{$form->getId()}').submit(function(evt){
             var \$to = \$('#{$id}_to','#{$form->getId()}');
             \$to.find('option').each(function(index,elem){elem.selected=true;});
-        });");
+        });"
+        );
 
         parent::preRender($form);
     }

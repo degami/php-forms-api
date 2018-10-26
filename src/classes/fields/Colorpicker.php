@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -20,7 +25,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 class Colorpicker extends Field
 {
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -47,7 +52,7 @@ class Colorpicker extends Field
     /**
      * {@inheritdoc}
      *
-     * @param Form $form form object
+     * @param  Form $form form object
      * @return string        the element html
      */
     public function renderField(Form $form)

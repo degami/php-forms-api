@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####              FIELD CONTAINERS                   ####
@@ -32,7 +37,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     protected $partitions = [];
 
     /**
-     * get element partitions
+     * Get element partitions
      *
      * @return array partitions
      */
@@ -42,7 +47,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     }
 
     /**
-     * get number of defined partitions
+     * Get number of defined partitions
      *
      * @return integer partitions number
      */
@@ -54,7 +59,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * add a new partition
      *
-     * @param string $title partition title
+     * @param  string $title partition title
      * @return FieldsContainerMultiple
      */
     public function addPartition($title)
@@ -67,9 +72,9 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * add field to element
      *
-     * @param string  $name             field name
-     * @param mixed   $field            field to add, can be an array or a field subclass
-     * @param integer $partitions_index index of partition to add field to
+     * @param  string  $name             field name
+     * @param  mixed   $field            field to add, can be an array or a field subclass
+     * @param  integer $partitions_index index of partition to add field to
      * @return Field
      * @throws \Exception
      */
@@ -100,20 +105,20 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * remove field from form
      *
-     * @param string  $name            field name
-     * @param integer $partitions_index field partition
+     * @param  string  $name             field name
+     * @param  integer $partitions_index field partition
      * @return FieldsContainerMultiple
      */
     public function removeField($name, $partitions_index = 0)
     {
         unset($this->fields[$name]);
-        if (isset($this->insert_field_order[$partitions_index]) &&
-          ($key = array_search($name, $this->insert_field_order[$partitions_index])) !== false
+        if (isset($this->insert_field_order[$partitions_index])
+            && ($key = array_search($name, $this->insert_field_order[$partitions_index])) !== false
         ) {
             unset($this->insert_field_order[$partitions_index][$key]);
         }
-        if (isset($this->partitions[$partitions_index]['fieldnames']) &&
-          ($key = array_search($name, $this->partitions[$partitions_index]['fieldnames'])) !== false
+        if (isset($this->partitions[$partitions_index]['fieldnames'])
+            && ($key = array_search($name, $this->partitions[$partitions_index]['fieldnames'])) !== false
         ) {
             unset($this->partitions[$partitions_index]['fieldnames'][$key]);
         }
@@ -121,7 +126,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     }
 
     /**
-     * get partition fields array
+     * Get partition fields array
      *
      * @param  integer $partitions_index partition index
      * @return array             partition fields array
@@ -137,10 +142,10 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     }
 
     /**
-     * set partition fields array
+     * Set partition fields array
      *
-     * @param array   $fields           array of new fields to set for partition
-     * @param integer $partition_index partition index
+     * @param  array   $fields          array of new fields to set for partition
+     * @param  integer $partition_index partition index
      * @return FieldsContainerMultiple
      * @throws \Exception
      */
@@ -165,8 +170,8 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * check if partition has errors
      *
-     * @param integer $partitions_index partition index
-     * @param Form    $form             form object
+     * @param  integer $partitions_index partition index
+     * @param  Form    $form             form object
      * @return boolean           partition has errors
      */
     public function partitionHasErrors($partitions_index, Form $form)
@@ -185,7 +190,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     }
 
     /**
-     * get partition index containint specified field name
+     * Get partition index containint specified field name
      *
      * @param  string $field_name field name
      * @return integer            partition index, -1 on failure

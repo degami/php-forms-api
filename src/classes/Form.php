@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                      FORM                       ####
@@ -184,7 +189,7 @@ class Form extends Element
     private $session_bag = null;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array $options build options
      */
@@ -247,7 +252,7 @@ class Form extends Element
     }
 
     /**
-     * get Session Bag
+     * Get Session Bag
      *
      * @return SessionBag
      */
@@ -257,7 +262,7 @@ class Form extends Element
     }
 
     /**
-     * set form id
+     * Set form id
      *
      * @param string $form_id set the form id used for getting the submit function name
      *
@@ -270,7 +275,7 @@ class Form extends Element
     }
 
     /**
-     * get the form id
+     * Get the form id
      *
      * @return string form id
      */
@@ -281,7 +286,7 @@ class Form extends Element
 
 
     /**
-     * set the form action attribute
+     * Set the form action attribute
      *
      * @param string $action the form action url
      *
@@ -294,7 +299,7 @@ class Form extends Element
     }
 
     /**
-     * get the form action url
+     * Get the form action url
      *
      * @return string the form action
      */
@@ -304,7 +309,7 @@ class Form extends Element
     }
 
     /**
-     * set the form method
+     * Set the form method
      *
      * @param string $method form method
      *
@@ -317,7 +322,7 @@ class Form extends Element
     }
 
     /**
-     * get the form method
+     * Get the form method
      *
      * @return string form method
      */
@@ -327,7 +332,7 @@ class Form extends Element
     }
 
     /**
-     * set the ajax submit url used for form submission
+     * Set the ajax submit url used for form submission
      *
      * @param string $ajax_submit_url ajax endpoint url
      *
@@ -340,7 +345,7 @@ class Form extends Element
     }
 
     /**
-     * get the ajax form submission url
+     * Get the ajax form submission url
      *
      * @return string the form ajax submission url
      */
@@ -350,7 +355,7 @@ class Form extends Element
     }
 
     /**
-     * set the form render output type
+     * Set the form render output type
      *
      * @param string $output_type output type ( 'html' / 'json' )
      *
@@ -363,7 +368,7 @@ class Form extends Element
     }
 
     /**
-     * get the form render output type
+     * Get the form render output type
      *
      * @return string form output type
      */
@@ -374,7 +379,7 @@ class Form extends Element
 
 
     /**
-     * set no_token flag
+     * Set no_token flag
      *
      * @param boolean $no_token no token flag
      *
@@ -387,7 +392,7 @@ class Form extends Element
     }
 
     /**
-     * get no_token flag
+     * Get no_token flag
      *
      * @return boolean no token flag
      */
@@ -398,7 +403,7 @@ class Form extends Element
 
 
     /**
-     * set the form on_dialog preference
+     * Set the form on_dialog preference
      *
      * @param string $on_dialog the form on_dialog preference
      *
@@ -411,7 +416,7 @@ class Form extends Element
     }
 
     /**
-     * get the form on_dialog preference
+     * Get the form on_dialog preference
      *
      * @return string the form on_dialog preference
      */
@@ -421,7 +426,7 @@ class Form extends Element
     }
 
     /**
-     * get the form token
+     * Get the form token
      *
      * @return string the form token used in form validation and submission process
      */
@@ -431,7 +436,7 @@ class Form extends Element
     }
 
     /**
-     * return form elements (all the steps) values
+     * Return form elements (all the steps) values
      *
      * @return array form values
      */
@@ -457,9 +462,9 @@ class Form extends Element
     }
 
     /**
-     * return form elements (all the steps) values
+     * Return form elements (all the steps) values
      *
-     * @return array form values
+     * @return     array form values
      * @deprecated
      */
     public function values()
@@ -468,7 +473,7 @@ class Form extends Element
     }
 
     /**
-     * get current step elemets values
+     * Get current step elemets values
      *
      * @return array step values
      */
@@ -560,7 +565,7 @@ class Form extends Element
 
 
     /**
-     * get the form submit results optionally by submit function name
+     * Get the form submit results optionally by submit function name
      *
      * @param  string $submit_function submit function name
      * @return mixed function(s) return value or function(s) data sent to stdout if not returning anything
@@ -658,9 +663,11 @@ class Form extends Element
         $has_session = FormBuilder::sessionPresent();
         if ($has_session) {
             $this->getSessionBag()->ensurePath("/{$this->form_id}/steps");
-            $this->getSessionBag()->{$this->form_id}->steps->add([
-               $this->current_step => $request
-            ]);
+            $this->getSessionBag()->{$this->form_id}->steps->add(
+                [
+                $this->current_step => $request
+                ]
+            );
         }
     }
 
@@ -763,7 +770,7 @@ class Form extends Element
     /**
      * starts the form processing, validating and submitting
      *
-     * @param array $values the request values array
+     * @param      array $values the request values array
      * @deprecated
      */
     public function process($values = [])
@@ -791,11 +798,11 @@ class Form extends Element
             if ($has_session && !$this->no_token) {
                 $this->valid = false;
                 $this->addError($this->getText('Form is invalid or has expired'), __FUNCTION__);
-                if (isset($_REQUEST['form_token']) &&
-                    isset($this->getSessionBag()->form_token->{$_REQUEST['form_token']})
+                if (isset($_REQUEST['form_token'])
+                    && isset($this->getSessionBag()->form_token->{$_REQUEST['form_token']})
                 ) {
                     if ($this->getSessionBag()->form_token->{$_REQUEST['form_token']} >=
-                            ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT)
+                        ($_SERVER['REQUEST_TIME'] - FORMS_SESSION_TIMEOUT)
                     ) {
                         $this->valid = true;
                         $this->setErrors([]);
@@ -888,7 +895,7 @@ class Form extends Element
      * remove field from form
      *
      * @param string  $name field name
-     * @param integer $step  field step
+     * @param integer $step field step
      *
      * @return Form
      */
@@ -902,7 +909,7 @@ class Form extends Element
     }
 
     /**
-     * get the number of form steps
+     * Get the number of form steps
      *
      * @return int steps number
      */
@@ -932,7 +939,7 @@ class Form extends Element
     }
 
     /**
-     * get the fields array by reference
+     * Get the fields array by reference
      *
      * @param  integer $step step number
      * @return array        the array of elements for the step specified
@@ -947,7 +954,7 @@ class Form extends Element
     }
 
     /**
-     * get the step fields by type and name
+     * Get the step fields by type and name
      *
      * @param  array|string $field_types field types
      * @param  string       $name        field name
@@ -969,8 +976,8 @@ class Form extends Element
                 }
             } else {
                 if ($name != null) {
-                    if ($field instanceof Field && in_array($field->getType(), $field_types) &&
-                        $field->getName() == $name
+                    if ($field instanceof Field && in_array($field->getType(), $field_types)
+                        && $field->getName() == $name
                     ) {
                         $out[] = $field;
                     }
@@ -983,7 +990,7 @@ class Form extends Element
     }
 
     /**
-     * get the form fields by type (in all the steps)
+     * Get the form fields by type (in all the steps)
      *
      * @param  array $field_types field types
      * @return array              fields in the form
@@ -1002,7 +1009,7 @@ class Form extends Element
     }
 
     /**
-     * get the step fields by type and name (in all the steps)
+     * Get the step fields by type and name (in all the steps)
      *
      * @param  array  $field_types field types
      * @param  string $name        field name
@@ -1022,7 +1029,7 @@ class Form extends Element
     }
 
     /**
-     * get field by name
+     * Get field by name
      *
      * @param string  $field_name field name
      * @param integer $step       step number where to find the field
@@ -1035,7 +1042,7 @@ class Form extends Element
     }
 
     /**
-     * get the submit element which submitted the form
+     * Get the submit element which submitted the form
      *
      * @return action subclass the submitter
      */
@@ -1057,7 +1064,7 @@ class Form extends Element
     }
 
     /**
-     * get the form submit
+     * Get the form submit
      *
      * @return OrderedFunctions form submit function(s)
      */
@@ -1067,7 +1074,7 @@ class Form extends Element
     }
 
     /**
-     * set form submit functions list
+     * Set form submit functions list
      *
      * @param OrderedFunctions $submit set the form submit functions list
      *
@@ -1084,7 +1091,7 @@ class Form extends Element
 
 
     /**
-     * get the form validate
+     * Get the form validate
      *
      * @return OrderedFunctions form validate function(s)
      */
@@ -1094,7 +1101,7 @@ class Form extends Element
     }
 
     /**
-     * set form validate functions list
+     * Set form validate functions list
      *
      * @param OrderedFunctions $validate set the form validate functions list
      *
@@ -1111,7 +1118,7 @@ class Form extends Element
 
 
     /**
-     * get the form id
+     * Get the form id
      *
      * @return string the form id
      */
@@ -1121,7 +1128,7 @@ class Form extends Element
     }
 
     /**
-     * get the current step number
+     * Get the current step number
      *
      * @return integer current step
      */
@@ -1131,7 +1138,7 @@ class Form extends Element
     }
 
     /**
-     * get ajax url
+     * Get ajax url
      *
      * @return string ajax form submit url
      */
@@ -1161,9 +1168,9 @@ class Form extends Element
     }
 
     /**
-     * sets inline error preference
+     * Sets inline error preference
      *
-     * @param boolean $inline_errors error preference
+     * @param  boolean $inline_errors error preference
      * @return Form
      */
     public function setInlineErrors($inline_errors)
@@ -1174,7 +1181,7 @@ class Form extends Element
     }
 
     /**
-     * returns inline error preference
+     * Returns inline error preference
      *
      * @return boolean errors should be presented inline after every elemen
      */
@@ -1184,7 +1191,7 @@ class Form extends Element
     }
 
     /**
-     * returns inline error preference
+     * Returns inline error preference
      *
      * @return boolean errors should be presented inline after every elemen
      */
@@ -1423,8 +1430,8 @@ class Form extends Element
     /**
      * renders the form
      *
-     * @param  string $override_output_type output type
-     * @return string                       the form html
+     * @param      string $override_output_type output type
+     * @return     string                       the form html
      * @deprecated
      */
     public function render($override_output_type = null)
@@ -1488,7 +1495,7 @@ class Form extends Element
     }
 
     /**
-     * set the form definition function name
+     * Set the form definition function name
      *
      * @param string $function_name form definition function name
      */
@@ -1499,7 +1506,7 @@ class Form extends Element
     }
 
     /**
-     * get the form definition function body
+     * Get the form definition function body
      *
      * @return string form definition function body
      */

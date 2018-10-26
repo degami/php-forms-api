@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -83,7 +88,7 @@ class Leafletlocation extends Geolocation
     protected $lat_lon_type = 'hidden';
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -154,7 +159,7 @@ class Leafletlocation extends Geolocation
     }
 
     /**
-     * return field value
+     * Return field value
      *
      * @return array field value
      */
@@ -177,7 +182,8 @@ class Leafletlocation extends Geolocation
         $id = $this->getHtmlId();
 
         $this->addCss("#{$form->getId()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
-        $this->addJs("var {$id}_latlng = {
+        $this->addJs(
+            "var {$id}_latlng = {
                                             lat: ".$this->latitude->getValues().", 
                                             lng: ".$this->longitude->getValues()."
                                         };
@@ -204,10 +210,12 @@ class Leafletlocation extends Geolocation
     
           \$.data( \$('#{$id}-map')[0] , 'map_obj', {$id}_map);
           \$.data( \$('#{$id}-map')[0] , 'marker_obj', {$id}_marker);    
-        ");
+        "
+        );
 
         if ($this->lat_lon_type == 'textfield') {
-            $this->addJs("\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
+            $this->addJs(
+                "\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
             .change(function(evt){
                 var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
                 var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
@@ -216,7 +224,8 @@ class Leafletlocation extends Geolocation
     
                 map.panTo(L.latLng(lat, lng));
                 marker.setLatLng(L.latLng(lat, lng));
-            });");
+            });"
+            );
         }
 
         parent::preRender($form);

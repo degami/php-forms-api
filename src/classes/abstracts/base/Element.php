@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                     BASE                        ####
@@ -122,7 +127,7 @@ abstract class Element extends BaseElement
     protected $no_translation = false;
 
     /**
-     * returns initially build options
+     * Returns initially build options
      *
      * @return array build_options
      */
@@ -132,7 +137,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set name
+     * Set name
      *
      * @param string $name element name
      *
@@ -146,7 +151,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get name
+     * Get name
      *
      * @return string element name
      */
@@ -156,7 +161,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set parent
+     * Set parent
      *
      * @param Element $parent element parent
      *
@@ -170,7 +175,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get parent
+     * Get parent
      *
      * @return Element element parent
      */
@@ -180,7 +185,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get weight
+     * Get weight
      *
      * @return int element weight
      */
@@ -204,7 +209,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get defined errors
+     * Get defined errors
      *
      * @return array errors
      */
@@ -224,7 +229,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set element errors
+     * Set element errors
      *
      * @param array $errors errors array
      *
@@ -240,7 +245,7 @@ abstract class Element extends BaseElement
     /**
      * add highlight
      *
-     * @param string $highlight_string       highlight string
+     * @param string $highlight_string highlight string
      *
      * @return Element
      */
@@ -252,7 +257,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get defined highlights
+     * Get defined highlights
      *
      * @return array errors
      */
@@ -272,7 +277,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set element highlights
+     * Set element highlights
      *
      * @param array $highlights highlights array
      *
@@ -288,8 +293,8 @@ abstract class Element extends BaseElement
     /**
      * add js to element
      *
-     * @param string / array $js javascript to add
-     * @param boolean $as_is no "minification"
+     * @param string / array $js    javascript to add
+     * @param boolean        $as_is no "minification"
      *
      * @return Element
      */
@@ -329,7 +334,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get the element's js array
+     * Get the element's js array
      *
      * @return array element's js array
      */
@@ -370,7 +375,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get the element's css array
+     * Get the element's css array
      *
      * @return array element's css array
      */
@@ -388,7 +393,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get element prefix
+     * Get element prefix
      *
      * @return string element prefix
      */
@@ -398,9 +403,9 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set element prefix
+     * Set element prefix
      *
-     * @param string $prefix element prefix
+     * @param  string $prefix element prefix
      * @return Element
      */
     public function setPrefix($prefix)
@@ -411,7 +416,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get element suffix
+     * Get element suffix
      *
      * @return string element suffix
      */
@@ -421,7 +426,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set element suffix
+     * Set element suffix
      *
      * @param  string $suffix element suffix
      * @return Element
@@ -434,7 +439,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get element container_tag
+     * Get element container_tag
      *
      * @return string element container_tag
      */
@@ -444,7 +449,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set element container_tag
+     * Set element container_tag
      *
      * @param string $container_tag element container_tag
      *
@@ -458,7 +463,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get element container_class
+     * Get element container_class
      *
      * @return string element container_class
      */
@@ -468,7 +473,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * set element container_class
+     * Set element container_class
      *
      * @param string $container_class element container_class
      *
@@ -482,7 +487,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get element html prefix
+     * Get element html prefix
      *
      * @return string html for the element prefix
      */
@@ -500,9 +505,9 @@ abstract class Element extends BaseElement
             }
 
             $class = $this->container_class;
-            if ($this->container_inherits_classes &&
-                isset($this->attributes['class']) &&
-                !empty($this->attributes['class'])
+            if ($this->container_inherits_classes
+                && isset($this->attributes['class'])
+                && !empty($this->attributes['class'])
             ) {
                 $class .= ' '.$this->attributes['class'].'-container';
             } else {
@@ -520,7 +525,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * get element html suffix
+     * Get element html suffix
      *
      * @return string html for the element suffix
      */
@@ -535,23 +540,19 @@ abstract class Element extends BaseElement
     /**
      * search field by field html id
      *
-     * @param  FieldContainer|Form  $container container to search into
-     * @param  string               $field_id  field id
+     * @param  FieldContainer|Form $container container to search into
+     * @param  string              $field_id  field id
      * @return Field|null                      Field object or null if not found
      */
     protected static function searchFieldById($container, $field_id)
     {
-        /**
-         * @var Field $container
-         */
+        /** @var Field $container */
         if ($container instanceof FieldsContainer || $container instanceof Form) {
             $fields = ($container instanceof Form) ?
                         $container->getFields($container->getCurrentStep()) :
                         $container->getFields();
             foreach ($fields as $key => $field) {
-                /**
-                 * @var Field $field
-                 */
+                /** @var Field $field */
                 if ($field->getHtmlId() == $field_id) {
                     return $field;
                 } elseif ($field instanceof FieldsContainer) {

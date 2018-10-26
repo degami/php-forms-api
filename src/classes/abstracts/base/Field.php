@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                  FIELD BASE                     ####
@@ -154,7 +159,7 @@ abstract class Field extends Element implements FieldInterface
     private $session_bag = null;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -207,8 +212,8 @@ abstract class Field extends Element implements FieldInterface
     /**
      * class "static" constructor
      *
-     * @param array  $options build options
-     * @param string $name    field name
+     * @param  array  $options build options
+     * @param  string $name    field name
      * @return Field
      */
     public static function getInstance($options = [], $name = null)
@@ -219,7 +224,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get Session Bag
+     * Get Session Bag
      *
      * @return SessionBag
      */
@@ -229,7 +234,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * return field value
+     * Return field value
      *
      * @return mixed field value
      */
@@ -239,7 +244,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * return field value
+     * Return field value
      *
      * @return mixed field value
      */
@@ -249,9 +254,9 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * set field value
+     * Set field value
      *
-     * @param mixed $value value to set
+     * @param  mixed $value value to set
      * @return Field
      */
     public function setValue($value)
@@ -262,7 +267,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get default value
+     * Get default value
      *
      * @return mixed default value
      */
@@ -272,9 +277,9 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * set default value
+     * Set default value
      *
-     * @param mixed $default_value default value
+     * @param  mixed $default_value default value
      * @return Field
      */
     public function setDefaultValue($default_value)
@@ -295,7 +300,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get field type
+     * Get field type
      *
      * @return string field type
      */
@@ -305,7 +310,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get field validate
+     * Get field validate
      *
      * @return OrderedFunctions field validate
      */
@@ -315,7 +320,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get field preprocess
+     * Get field preprocess
      *
      * @return OrderedFunctions field preprocess
      */
@@ -325,7 +330,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get field postprocess
+     * Get field postprocess
      *
      * @return OrderedFunctions field postprocess
      */
@@ -335,7 +340,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get field id
+     * Get field id
      *
      * @return string field id
      */
@@ -345,9 +350,9 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * set field id
+     * Set field id
      *
-     * @param string $id field id
+     * @param  string $id field id
      * @return Field
      */
     public function setId($id)
@@ -357,7 +362,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get field html id
+     * Get field html id
      *
      * @return string the html id attributes
      */
@@ -367,7 +372,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get css class name for field
+     * Get css class name for field
      *
      * @return string css class name
      */
@@ -377,7 +382,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * get field ajax url
+     * Get field ajax url
      *
      * @return string field ajax url
      */

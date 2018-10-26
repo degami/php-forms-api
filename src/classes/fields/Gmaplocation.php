@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -122,7 +127,7 @@ class Gmaplocation extends Geolocation
     protected $with_reverse = false;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param array  $options build options
      * @param string $name    field name
@@ -236,7 +241,7 @@ class Gmaplocation extends Geolocation
     }
 
     /**
-     * return field value
+     * Return field value
      *
      * @return array field value
      */
@@ -311,7 +316,8 @@ class Gmaplocation extends Geolocation
 
         if ($this->with_map == true) {
             $this->addCss("#{$form->getId()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
-            $this->addJs("
+            $this->addJs(
+                "
                 var {$id}_latlng = {lat: ".$this->latitude->getValues().", lng: ".$this->longitude->getValues()."};
 
                 var {$id}_map = new google.maps.Map(document.getElementById('{$id}-map'), {
@@ -339,10 +345,12 @@ class Gmaplocation extends Geolocation
                   \$('input[name=\"{$id}_longitude\"]','#'+\$(mapdiv).parent().
                   attr('id')).val( {$id}_marker.getPosition().lng() );
                   ".(($this->with_reverse == true) ? "\$('#{$id}').trigger('lat_lon_updated');":"")."
-                });");
+                });"
+            );
 
             if ($this->lat_lon_type == 'textfield') {
-                $this->addJs("\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
+                $this->addJs(
+                    "\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
                 .change(function(evt){
                   var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
                   var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
@@ -350,12 +358,14 @@ class Gmaplocation extends Geolocation
                   var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
                   marker.setPosition( new google.maps.LatLng( lat, lng ) );
                   map.panTo( new google.maps.LatLng( lat, lng ) );
-                });");
+                });"
+                );
             }
         }
 
         if ($this->with_reverse == true) {
-            $this->addJs("var {$id}_geocoder = new google.maps.Geocoder;
+            $this->addJs(
+                "var {$id}_geocoder = new google.maps.Geocoder;
                 \$('#{$id}').bind('lat_lon_updated',function(evt){
                   var latlng = {
                     lat: parseFloat( \$('input[name=\"{$id}_latitude\"]','#{$id}').val() ),
@@ -368,13 +378,16 @@ class Gmaplocation extends Geolocation
                       \$('#{$id}_reverse_geocodebox').val('Geocoder failed due to: ' + status);
                     }
                   });
-                });");
+                });"
+            );
 
             if ($this->lat_lon_type == 'textfield') {
-                $this->addJs("\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
+                $this->addJs(
+                    "\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
                 .change(function(evt){
                     \$('#{$id}').trigger('lat_lon_updated');
-                });");
+                });"
+                );
             }
         }
 
@@ -388,7 +401,8 @@ class Gmaplocation extends Geolocation
                     map.panTo( new google.maps.LatLng( lat, lng ) );
                 ";
             }
-            $this->addJs("\$('button.current_location','#{$id}')
+            $this->addJs(
+                "\$('button.current_location','#{$id}')
             .click(function(evt){
               evt.preventDefault();
               var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
@@ -407,7 +421,8 @@ class Gmaplocation extends Geolocation
                   /*handleLocationError();*/
                 });
               }
-            });");
+            });"
+            );
         }
 
         parent::preRender($form);

@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                      BASE                       ####
@@ -20,9 +25,9 @@ abstract class MultiLevelDataBag extends DataBag
     protected $parent = null;
 
     /**
-     * class constructor
+     * Class constructor
      *
-     * @param mixed $data data to add
+     * @param mixed $data   data to add
      * @param mixed $parent element parent object
      */
     public function __construct($data, $parent = null)
@@ -51,10 +56,10 @@ abstract class MultiLevelDataBag extends DataBag
     }
 
     /**
-     * sets data
+     * Sets data
      *
-     * @param string $key key
-     * @param mixed $value data to set
+     * @param  string $key   key
+     * @param  mixed  $value data to set
      * @return DataBag
      */
     public function __set($key, $value)

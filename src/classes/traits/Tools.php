@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                     TRAITS                      ####
@@ -72,7 +77,7 @@ trait Tools
     }
 
     /**
-     * get array values by key
+     * Get array values by key
      *
      * @param  string $search_key key to search
      * @param  array  $array      where to search
@@ -155,7 +160,7 @@ trait Tools
     }
 
     /**
-     * returns the translated version of the input text ( when available ) depending on current element configuration
+     * Returns the translated version of the input text ( when available ) depending on current element configuration
      *
      * @param  string $text input text
      * @return string       text to return (translated or not)
@@ -169,7 +174,7 @@ trait Tools
     }
 
     /**
-     * get a string representing the called class
+     * Get a string representing the called class
      *
      * @return string
      */
@@ -195,7 +200,7 @@ trait Tools
      * and if found executes it passing the arguments
      *
      * @param string $regexp regular Expression to find function
-     * @param mixed $args arguments array
+     * @param mixed  $args   arguments array
      */
     public static function executeAlter($regexp, $args)
     {
@@ -213,7 +218,7 @@ trait Tools
     /**
      * checks if variable is suitable for use with foreach
      *
-     * @param mixed $var element to check
+     * @param  mixed $var element to check
      * @return bool
      */
     public static function isForeacheable($var)
@@ -224,7 +229,7 @@ trait Tools
     /**
      * Take a string_like_this and return a StringLikeThis
      *
-     * @param string
+     * @param  string
      * @return string
      */
     public static function snakeCaseToPascalCase($input)
@@ -235,7 +240,7 @@ trait Tools
     /**
      * Take a StringLikeThis and return string_like_this
      *
-     * @param string
+     * @param  string
      * @return string
      */
     public function pascalCaseToSnakeCase($input)

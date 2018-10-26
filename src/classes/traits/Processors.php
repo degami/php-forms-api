@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                     TRAITS                      ####
@@ -61,61 +66,64 @@ trait Processors
             [__CLASS__, 'processXss'],
             [
                 $string,
-                implode("|", [
-                  'a',
-                  'abbr',
-                  'acronym',
-                  'address',
-                  'b',
-                  'bdo',
-                  'big',
-                  'blockquote',
-                  'br',
-                  'caption',
-                  'cite',
-                  'code',
-                  'col',
-                  'colgroup',
-                  'dd',
-                  'del',
-                  'dfn',
-                  'div',
-                  'dl',
-                  'dt',
-                  'em',
-                  'h1',
-                  'h2',
-                  'h3',
-                  'h4',
-                  'h5',
-                  'h6',
-                  'hr',
-                  'i',
-                  'img',
-                  'ins',
-                  'kbd',
-                  'li',
-                  'ol',
-                  'p',
-                  'pre',
-                  'q',
-                  'samp',
-                  'small',
-                  'span',
-                  'strong',
-                  'sub',
-                  'sup',
-                  'table',
-                  'tbody',
-                  'td',
-                  'tfoot',
-                  'th',
-                  'thead',
-                  'tr',
-                  'tt',
-                  'ul',
-                  'var',
-                ])
+                implode(
+                    "|",
+                    [
+                        'a',
+                        'abbr',
+                        'acronym',
+                        'address',
+                        'b',
+                        'bdo',
+                        'big',
+                        'blockquote',
+                        'br',
+                        'caption',
+                        'cite',
+                        'code',
+                        'col',
+                        'colgroup',
+                        'dd',
+                        'del',
+                        'dfn',
+                        'div',
+                        'dl',
+                        'dt',
+                        'em',
+                        'h1',
+                        'h2',
+                        'h3',
+                        'h4',
+                        'h5',
+                        'h6',
+                        'hr',
+                        'i',
+                        'img',
+                        'ins',
+                        'kbd',
+                        'li',
+                        'ol',
+                        'p',
+                        'pre',
+                        'q',
+                        'samp',
+                        'small',
+                        'span',
+                        'strong',
+                        'sub',
+                        'sup',
+                        'table',
+                        'tbody',
+                        'td',
+                        'tfoot',
+                        'th',
+                        'thead',
+                        'tr',
+                        'tt',
+                        'ul',
+                        'var',
+                    ]
+                )
             ]
         );
     }
@@ -167,13 +175,13 @@ trait Processors
 
         return preg_replace_callback(
             '%
-        (
-        <(?=[^a-zA-Z!/])  # a lone <
-        |                 # or
-        <[^>]*(>|$)       # a string that starts with a <, up until the > or the end of the string
-        |                 # or
-        >                 # just a >
-        )%x',
+            (
+            <(?=[^a-zA-Z!/])  # a lone <
+            |                 # or
+            <[^>]*(>|$)       # a string that starts with a <, up until the > or the end of the string
+            |                 # or
+            >                 # just a >
+            )%x',
             [__CLASS__, '_filterXssSplit'],
             $string
         );
@@ -234,7 +242,7 @@ trait Processors
             ' ',
             call_user_func_array(
                 [__CLASS__,
-                '_filterXssAttributes'
+                    '_filterXssAttributes'
                 ],
                 [$attrlist]
             )
@@ -297,7 +305,7 @@ trait Processors
                     if (preg_match('/^"([^"]*)"(\s+|$)/', $attr, $match)) {
                         $thisval = call_user_func_array(
                             [__CLASS__,
-                            '_filterXssBadProtocol'
+                                '_filterXssBadProtocol'
                             ],
                             [ $match[1] ]
                         );
@@ -314,13 +322,13 @@ trait Processors
                     if (preg_match("/^'([^']*)'(\s+|$)/", $attr, $match)) {
                         $thisval = call_user_func_array(
                             [__CLASS__,
-                            '_filterXssBadProtocol'
+                                '_filterXssBadProtocol'
                             ],
                             [ $match[1] ]
                         );
 
                         if (!$skip) {
-                              $attrarr[] = "$attrname='$thisval'";
+                            $attrarr[] = "$attrname='$thisval'";
                         }
                         $working = 1;
                         $mode = 0;
@@ -330,14 +338,12 @@ trait Processors
 
                     if (preg_match("%^([^\s\"']+)(\s+|$)%", $attr, $match)) {
                         $thisval = call_user_func_array(
-                            [__CLASS__,
-                            '_filterXssBadProtocol'
-                            ],
+                            [__CLASS__,'_filterXssBadProtocol'],
                             [ $match[1] ]
                         );
 
                         if (!$skip) {
-                              $attrarr[] = "$attrname=\"$thisval\"";
+                            $attrarr[] = "$attrname=\"$thisval\"";
                         }
                         $working = 1;
                         $mode = 0;
@@ -398,7 +404,7 @@ trait Processors
         return call_user_func_array(
             [__CLASS__, 'processPlain'],
             [
-            call_user_func_array([__CLASS__, '_stripDangerousProtocols'], [ $string ])
+                call_user_func_array([__CLASS__, '_stripDangerousProtocols'], [ $string ])
             ]
         );
     }
@@ -414,21 +420,23 @@ trait Processors
         static $allowed_protocols;
 
         if (!isset($allowed_protocols)) {
-            $allowed_protocols = array_flip([
-              'ftp',
-              'http',
-              'https',
-              'irc',
-              'mailto',
-              'news',
-              'nntp',
-              'rtsp',
-              'sftp',
-              'ssh',
-              'tel',
-              'telnet',
-              'webcal'
-            ]);
+            $allowed_protocols = array_flip(
+                [
+                    'ftp',
+                    'http',
+                    'https',
+                    'irc',
+                    'mailto',
+                    'news',
+                    'nntp',
+                    'rtsp',
+                    'sftp',
+                    'ssh',
+                    'tel',
+                    'telnet',
+                    'webcal'
+                ]
+            );
         }
 
         // Iteratively remove any invalid protocol found.

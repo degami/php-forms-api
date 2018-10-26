@@ -1,8 +1,13 @@
 <?php
 /**
  * PHP FORMS API
+ * PHP Version 5.5
  *
- * @package degami/php-forms-api
+ * @category Utils
+ * @package  Degami\PHPFormsApi
+ * @author   Mirko De Grandis <degami@github.com>
+ * @license  MIT https://opensource.org/licenses/mit-license.php
+ * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
    ####                    FIELDS                       ####
@@ -34,7 +39,7 @@ class Option extends Element
     protected $key;
 
     /**
-     * class constructor
+     * Class constructor
      *
      * @param string $key     key
      * @param string $label   label
@@ -91,7 +96,7 @@ class Option extends Element
     }
 
     /**
-     * get the element key
+     * Get the element key
      *
      * @return mixed the element key
      */
@@ -101,9 +106,9 @@ class Option extends Element
     }
 
     /**
-     * set the element key
+     * Set the element key
      *
-     * @param mixed $key element key
+     * @param  mixed $key element key
      * @return Option
      */
     public function setKey($key)
@@ -114,7 +119,7 @@ class Option extends Element
     }
 
     /**
-     * get the element label
+     * Get the element label
      *
      * @return mixed the element label
      */
@@ -124,9 +129,9 @@ class Option extends Element
     }
 
     /**
-     * set the element label
+     * Set the element label
      *
-     * @param mixed $label element label
+     * @param  mixed $label element label
      * @return Option
      */
     public function setLabel($label)
