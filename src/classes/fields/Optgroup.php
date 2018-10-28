@@ -47,6 +47,8 @@ class Optgroup extends Element
      */
     public function __construct($label, $options)
     {
+        parent::__construct();
+
         $this->label = $label;
 
         if (isset($options['options'])) {

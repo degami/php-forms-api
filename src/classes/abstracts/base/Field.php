@@ -166,6 +166,8 @@ abstract class Field extends Element implements FieldInterface
      */
     public function __construct($options = [], $name = null)
     {
+        parent::__construct();
+
         if ($options == null) {
             $options = [];
         }
@@ -501,7 +503,7 @@ abstract class Field extends Element implements FieldInterface
      */
     public function showErrors()
     {
-        return (!$this->hasErrors()) ? '' : "<li>".implode("</li><li>", $this->getErrors())."</li>";
+        return $this->notifications->renderHTML('error');
     }
 
     /**

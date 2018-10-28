@@ -17,6 +17,7 @@ namespace Degami\PHPFormsApi\Abstracts\Base;
 
 use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Form;
+use Degami\PHPFormsApi\Accessories\NotificationsBag;
 
 /**
  * base element class
@@ -33,98 +34,119 @@ abstract class Element extends BaseElement
      *
      * @var string
      */
-    protected $name = null;
+    protected $name;
 
     /**
      * element parent
      *
      * @var Element subclass
      */
-    protected $parent = null;
+    protected $parent;
 
     /**
      * element weight
      *
      * @var integer
      */
-    protected $weight = 0;
+    protected $weight;
 
     /**
      * element container tag
      *
      * @var string
      */
-    protected $container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
+    protected $container_tag;
 
     /**
      * element container html class
      *
      * @var string
      */
-    protected $container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
+    protected $container_class;
 
     /**
      * element label class
      *
      * @var string
      */
-    protected $label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
+    protected $label_class;
 
     /**
      * element container inherits classes
      *
      * @var boolean
      */
-    protected $container_inherits_classes = false;
+    protected $container_inherits_classes;
 
     /**
      * element errors array
      *
      * @var array
      */
-    protected $notifications = [ 'error' => [], 'highlight'=>[] ];
+    protected $notifications;
 
     /**
      * element js array
      *
      * @var array
      */
-    protected $js = [];
+    protected $js;
 
     /**
      * element css array
      *
      * @var array
      */
-    protected $css = [];
+    protected $css;
 
     /**
      * element prefix
      *
      * @var string
      */
-    protected $prefix = '';
+    protected $prefix;
 
     /**
      * element suffix
      *
      * @var string
      */
-    protected $suffix = '';
+    protected $suffix;
 
     /**
      * element build options
      *
      * @var null
      */
-    protected $build_options = null;
+    protected $build_options;
 
     /**
      * element no translation flag. if true form::translate_string won't be applied
      *
      * @var FALSE
      */
-    protected $no_translation = false;
+    protected $no_translation;
+
+    /**
+     * Class constructor
+     */
+    public function __construct($options = [], $name = null)
+    {
+        $this->name = null;
+        $this->parent = null;
+        $this->weight = 0;
+        $this->container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
+        $this->container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
+        $this->label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
+        $this->container_inherits_classes = false;
+        $this->notifications = new NotificationsBag([ 'error' => [], 'highlight'=>[] ]);
+        $this->js = [];
+        $this->css = [];
+        $this->prefix = '';
+        $this->suffix = '';
+        $this->build_options = null;
+        $this->no_translation = false;
+    }
 
     /**
      * Returns initially build options
@@ -215,7 +237,7 @@ abstract class Element extends BaseElement
      */
     public function getErrors()
     {
-        return $this->notifications['error'];
+        return $this->notifications['error']->toArray();
     }
 
     /**
@@ -263,7 +285,7 @@ abstract class Element extends BaseElement
      */
     public function getHighlights()
     {
-        return $this->notifications['highlight'];
+        return $this->notifications['highlight']->toArray();
     }
 
     /**

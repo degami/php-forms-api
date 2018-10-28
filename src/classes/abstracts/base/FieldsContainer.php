@@ -167,9 +167,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     public function preProcess($process_type = "preprocess")
     {
         foreach ($this->getFields() as $field) {
-            /**
- * @var Field $field
-*/
+            /** @var Field $field */
             $field->preProcess($process_type);
         }
     }

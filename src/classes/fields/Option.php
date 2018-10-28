@@ -47,6 +47,8 @@ class Option extends Element
      */
     public function __construct($key, $label, $options = [])
     {
+        parent::__construct();
+
         $this->key = trim($key);
         $this->label = $label;
 

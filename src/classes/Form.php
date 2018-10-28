@@ -195,6 +195,8 @@ class Form extends Element
      */
     public function __construct($options = [])
     {
+        parent::__construct();
+
         $this->build_options = $options;
         $this->session_bag = new SessionBag();
         $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
@@ -1154,7 +1156,7 @@ class Form extends Element
      */
     public function showErrors()
     {
-        return (!$this->hasErrors()) ? '' : "<li>".implode('</li><li>', $this->getErrors())."</li>";
+        return $this->notifications->renderHTML('error');
     }
 
     /**
@@ -1164,7 +1166,7 @@ class Form extends Element
      */
     public function showHighlights()
     {
-        return (!$this->hasHighlights()) ? '' : "<li>".implode('</li><li>', $this->getHighlights())."</li>";
+        return $this->notifications->renderHTML('highlight');
     }
 
     /**
