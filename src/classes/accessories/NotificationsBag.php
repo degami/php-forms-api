@@ -10,7 +10,7 @@
  * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
-   ####                      BASE                       ####
+   ####                 ACCESSORIES                     ####
    ######################################################### */
 
 namespace Degami\PHPFormsApi\Accessories;
@@ -54,7 +54,7 @@ class NotificationsBag extends MultiLevelDataBag
     }
 
     /**
-     * stores data to session
+     * onChange hook
      */
     public function onChange()
     {

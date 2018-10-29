@@ -139,7 +139,7 @@ abstract class Element extends BaseElement
         $this->container_class = FORMS_DEFAULT_FIELD_CONTAINER_CLASS;
         $this->label_class = FORMS_DEFAULT_FIELD_LABEL_CLASS;
         $this->container_inherits_classes = false;
-        $this->notifications = new NotificationsBag([ 'error' => [], 'highlight'=>[] ]);
+        $this->notifications = new NotificationsBag([ 'error' => [], 'highlight'=> [] ]);
         $this->js = [];
         $this->css = [];
         $this->prefix = '';

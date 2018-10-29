@@ -10,7 +10,7 @@
  * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
-   ####                      BASE                       ####
+   ####                 ACCESSORIES                     ####
    ######################################################### */
 
 namespace Degami\PHPFormsApi\Accessories;
