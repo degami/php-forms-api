@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the date select group field class
+ * The date select group field class
  */
 class Dateselect extends Field
 {

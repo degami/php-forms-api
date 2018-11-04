@@ -112,7 +112,7 @@ class Tabs extends FieldsContainerMultiple
     }
 
     /**
-     * add a new tab
+     * Add a new tab
      *
      * @param string $title tab title
      */

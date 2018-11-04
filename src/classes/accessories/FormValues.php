@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Accessories;
 use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
 
 /**
- * a class to hold form fields submitted values
+ * A class to hold form fields submitted values
  */
 class FormValues extends MultiLevelDataBag
 {

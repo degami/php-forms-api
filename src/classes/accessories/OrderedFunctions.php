@@ -77,7 +77,7 @@ class OrderedFunctions extends DataBag
     }
 
     /**
-     * check if element is present
+     * Check if element is present
      *
      * @param  mixed $value value to search
      * @return boolean       TRUE if $value was found
@@ -89,7 +89,7 @@ class OrderedFunctions extends DataBag
     }
 
     /**
-     * check if key is in the array keys
+     * Check if key is in the array keys
      *
      * @param  integer $key key to search
      * @return boolean       TRUE if key was found
@@ -119,7 +119,7 @@ class OrderedFunctions extends DataBag
     }
 
     /**
-     * adds a new element to array elements
+     * Adds a new element to array elements
      *
      * @param mixed $value element to add
      */
@@ -141,7 +141,7 @@ class OrderedFunctions extends DataBag
     }
 
     /**
-     * element to array
+     * Element to array
      *
      * @return array element to array
      */

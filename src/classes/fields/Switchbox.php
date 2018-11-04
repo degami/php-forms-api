@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the switch selection field class
+ * The switch selection field class
  */
 class Switchbox extends Radios
 {

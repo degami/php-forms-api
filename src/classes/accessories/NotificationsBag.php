@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Accessories;
 use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
 
 /**
- * a class to hold form and fields notifications
+ * A class to hold form and fields notifications
  */
 
 class NotificationsBag extends MultiLevelDataBag
@@ -50,7 +50,12 @@ class NotificationsBag extends MultiLevelDataBag
         if (!isset($this->{$group}) || $this->{$group}->count() == 0) {
             return '';
         }
-        return "<li class=\"{$group}-item\">".implode("</li><li class=\"{$group}-item\">", $this->{$group}->toArray())."</li>";
+        return "<li class=\"{$group}-item\">".
+                    implode(
+                        "</li><li class=\"{$group}-item\">",
+                        $this->{$group}->toArray()
+                    ).
+                    "</li>";
     }
 
     /**

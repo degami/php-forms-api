@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 
 /**
- * the optgroup element class
+ * The optgroup element class
  */
 class Optgroup extends Element
 {
@@ -33,7 +33,7 @@ class Optgroup extends Element
     protected $options;
 
     /**
-     * element label
+     * Element label
      *
      * @var string
      */
@@ -72,7 +72,7 @@ class Optgroup extends Element
     }
 
     /**
-     * check if key is present into element options array
+     * Check if key is present into element options array
      *
      * @param  mixed $needle element to find
      * @return boolean         TRUE if element is present
@@ -83,7 +83,7 @@ class Optgroup extends Element
     }
 
     /**
-     * add option
+     * Add option
      *
      * @param Option $option option to add
      */

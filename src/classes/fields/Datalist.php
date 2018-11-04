@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 
 /**
- * the "autocomplete" text input field class
+ * The "autocomplete" text input field class
  */
 class Datalist extends FieldMultivalues
 {

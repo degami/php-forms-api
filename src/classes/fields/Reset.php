@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Action;
 
 /**
- * the reset button field class
+ * The reset button field class
  */
 class Reset extends Action
 {

@@ -20,13 +20,13 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Clickable;
 
 /**
- * the button field class
+ * The button field class
  */
 class Button extends Clickable
 {
 
     /**
-     * element label
+     * Element label
      *
      * @var string
      */

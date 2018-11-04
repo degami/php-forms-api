@@ -32,14 +32,14 @@ interface FieldInterface
     public function isAValue(); // tells if component value is passed on the parent values() function call
 
     /**
-     * pre-render hook
+     * Pre-render hook
      *
      * @param Form $form form object
      */
     public function preRender(Form $form);
 
     /**
-     * the function that actually renders the html field
+     * The function that actually renders the html field
      *
      * @param Form $form form object
      *
@@ -48,14 +48,14 @@ interface FieldInterface
     public function renderField(Form $form); // renders html
 
     /**
-     * process / set field value
+     * Process / set field value
      *
      * @param mixed $value value to set
      */
     public function processValue($value);
 
     /**
-     * check element validity
+     * Check element validity
      *
      * @return boolean TRUE if element is valid
      */

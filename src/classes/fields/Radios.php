@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 
 /**
- * the radios group field class
+ * The radios group field class
  */
 class Radios extends FieldMultivalues
 {

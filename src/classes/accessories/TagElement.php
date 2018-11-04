@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Interfaces\TagInterface;
 use Degami\PHPFormsApi\Abstracts\Base\BaseElement;
 
 /**
- * a class to render form fields tags
+ * A class to render form fields tags
  */
 class TagElement extends BaseElement implements TagInterface
 {
@@ -177,7 +177,7 @@ class TagElement extends BaseElement implements TagInterface
     }
 
     /**
-     * add child to tag
+     * Add child to tag
      *
      * @param  TagElement|string $child child to add
      * @return TagElement

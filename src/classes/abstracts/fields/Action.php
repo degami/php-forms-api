@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the "actionable" field element class (a button, a submit or a reset)
+ * The "actionable" field element class (a button, a submit or a reset)
  *
  * @abstract
  */

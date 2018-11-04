@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the datepicker text input field class
+ * The datepicker text input field class
  */
 class Datepicker extends Textfield
 {

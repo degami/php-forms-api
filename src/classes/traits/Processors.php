@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi\Traits;
 
 /**
- * processor functions
+ * Processor functions
  */
 trait Processors
 {
@@ -129,7 +129,7 @@ trait Processors
     }
 
     /**
-     * check if $text's character encoding is utf8
+     * Check if $text's character encoding is utf8
      *
      * @param  string $text text to check
      * @return boolean       is utf8

@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the number input field class
+ * The number input field class
  */
 class Number extends Field
 {

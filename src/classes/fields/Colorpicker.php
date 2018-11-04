@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the colorpicker input field class
+ * The colorpicker input field class
  */
 class Colorpicker extends Field
 {
@@ -39,7 +39,7 @@ class Colorpicker extends Field
     }
 
     /**
-     * check if string is an RGB representation
+     * Check if string is an RGB representation
      *
      * @param  string $str string to check
      * @return boolean     true if string is RGB

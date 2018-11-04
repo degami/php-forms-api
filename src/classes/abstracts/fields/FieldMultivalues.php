@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Fields\Option;
 use Degami\PHPFormsApi\Fields\Optgroup;
 
 /**
- * the multivalues field class (a select, a radios or a checkboxes group)
+ * The multivalues field class (a select, a radios or a checkboxes group)
  *
  * @abstract
  */
@@ -45,7 +45,7 @@ abstract class FieldMultivalues extends Field
     }
 
     /**
-     * check if key is present into haystack
+     * Check if key is present into haystack
      *
      * @param  mixed $needle   element to find
      * @param  array $haystack where to find it
@@ -72,7 +72,7 @@ abstract class FieldMultivalues extends Field
     }
 
     /**
-     * check if key is present into element options
+     * Check if key is present into element options
      *
      * @param  mixed $needle element to find
      * @return boolean TRUE if element is found

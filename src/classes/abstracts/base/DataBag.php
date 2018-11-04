@@ -74,7 +74,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * adds data to the element
+     * Adds data to the element
      *
      * @param  mixed $data data to add
      * @return DataBag
@@ -98,7 +98,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * delete data by key
+     * Delete data by key
      *
      * @param  string $key key of data to remove
      * @return DataBag
@@ -110,7 +110,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * check if data is contained
+     * Check if data is contained
      *
      * @param  string $key key of data to check
      * @return boolean
@@ -121,7 +121,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * rewind pointer position
+     * Rewind pointer position
      */
     public function rewind()
     {
@@ -174,7 +174,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * increment current position
+     * Increment current position
      */
     public function next()
     {
@@ -182,7 +182,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * check if current position is valud
+     * Check if current position is valud
      *
      * @return boolean current position is valid
      */
@@ -296,7 +296,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * check if data exists bu key
+     * Check if data exists bu key
      *
      * @param  string $offset key to check
      * @return boolean data exists
@@ -375,7 +375,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * check "data" property to be an array
+     * Check "data" property to be an array
      *
      * @return DataBag
      */
@@ -392,7 +392,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
-     * drops "data" contents
+     * Drops "data" contents
      *
      * @return DataBag
      */

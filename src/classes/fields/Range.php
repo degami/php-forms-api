@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the range input field class
+ * The range input field class
  */
 class Range extends Number
 {

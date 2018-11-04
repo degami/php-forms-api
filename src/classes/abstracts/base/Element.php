@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\NotificationsBag;
 
 /**
- * base element class
+ * Base element class
  * every form element classes inherits from this class
  *
  * @abstract
@@ -30,98 +30,98 @@ abstract class Element extends BaseElement
     use Tools;
 
     /**
-     * element name
+     * Element name
      *
      * @var string
      */
     protected $name;
 
     /**
-     * element parent
+     * Element parent
      *
      * @var Element subclass
      */
     protected $parent;
 
     /**
-     * element weight
+     * Element weight
      *
      * @var integer
      */
     protected $weight;
 
     /**
-     * element container tag
+     * Element container tag
      *
      * @var string
      */
     protected $container_tag;
 
     /**
-     * element container html class
+     * Element container html class
      *
      * @var string
      */
     protected $container_class;
 
     /**
-     * element label class
+     * Element label class
      *
      * @var string
      */
     protected $label_class;
 
     /**
-     * element container inherits classes
+     * Element container inherits classes
      *
      * @var boolean
      */
     protected $container_inherits_classes;
 
     /**
-     * element errors array
+     * Element errors array
      *
      * @var array
      */
     protected $notifications;
 
     /**
-     * element js array
+     * Element js array
      *
      * @var array
      */
     protected $js;
 
     /**
-     * element css array
+     * Element css array
      *
      * @var array
      */
     protected $css;
 
     /**
-     * element prefix
+     * Element prefix
      *
      * @var string
      */
     protected $prefix;
 
     /**
-     * element suffix
+     * Element suffix
      *
      * @var string
      */
     protected $suffix;
 
     /**
-     * element build options
+     * Element build options
      *
      * @var null
      */
     protected $build_options;
 
     /**
-     * element no translation flag. if true form::translate_string won't be applied
+     * Element no translation flag. if true form::translate_string won't be applied
      *
      * @var FALSE
      */
@@ -217,7 +217,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * add error
+     * Add error
      *
      * @param string $error_string           error string
      * @param string $validate_function_name validation function name
@@ -241,7 +241,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * check if element has errors
+     * Check if element has errors
      *
      * @return boolean there are errors
      */
@@ -265,7 +265,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * add highlight
+     * Add highlight
      *
      * @param string $highlight_string highlight string
      *
@@ -289,7 +289,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * check if element has highlights
+     * Check if element has highlights
      *
      * @return boolean there are highlights
      */
@@ -313,7 +313,7 @@ abstract class Element extends BaseElement
     }
 
     /**
-     * add js to element
+     * Add js to element
      *
      * @param string / array $js    javascript to add
      * @param boolean        $as_is no "minification"
@@ -379,7 +379,7 @@ abstract class Element extends BaseElement
 
 
     /**
-     * add css to element
+     * Add css to element
      *
      * @param  string / array $css css to add
      * @return Element

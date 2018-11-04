@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Abstracts\Base;
 abstract class MultiLevelDataBag extends DataBag
 {
     /**
-     * element parent
+     * Element parent
      *
      * @var DataBag
      */

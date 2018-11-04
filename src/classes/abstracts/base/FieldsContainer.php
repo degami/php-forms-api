@@ -97,7 +97,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * add field to form
+     * Add field to form
      *
      * @param  string $name  field name
      * @param  mixed  $field field to add, can be an array or a field subclass
@@ -173,7 +173,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * process (set) the fields value
+     * Process (set) the fields value
      *
      * @param mixed $values value to set
      */

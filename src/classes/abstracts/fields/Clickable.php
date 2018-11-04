@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi\Abstracts\Fields;
 
 /**
- * the "clickable" field element (a button or a submit )
+ * The "clickable" field element (a button or a submit )
  *
  * @abstract
  */
@@ -46,7 +46,7 @@ abstract class Clickable extends Action
     }
 
     /**
-     * check if this button was clicked
+     * Check if this button was clicked
      *
      * @return boolean if this element was clicked
      */

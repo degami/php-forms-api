@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the spinner number input field class
+ * The spinner number input field class
  */
 class Spinner extends Number
 {

@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the progressbar field class
+ * The progressbar field class
  */
 class Progressbar extends Markup
 {

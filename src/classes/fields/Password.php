@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the password input field class
+ * The password input field class
  */
 class Password extends Field
 {

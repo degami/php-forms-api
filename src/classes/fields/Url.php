@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the url input field class
+ * The url input field class
  */
 class Url extends Field
 {

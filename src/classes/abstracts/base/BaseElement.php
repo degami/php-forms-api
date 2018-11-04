@@ -147,7 +147,7 @@ abstract class BaseElement
     }
 
     /**
-     * intToArray private method
+     * The intToArray private method
      *
      * @param  mixed  $key  key
      * @param  mixed  $elem element

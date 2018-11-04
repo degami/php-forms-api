@@ -84,7 +84,7 @@ class TableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * add a new table row
+     * Add a new table row
      */
     public function addRow()
     {

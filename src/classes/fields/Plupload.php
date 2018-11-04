@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the pupload field class
+ * The pupload field class
  */
 class Plupload extends Field
 {

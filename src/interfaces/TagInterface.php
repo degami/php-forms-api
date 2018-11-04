@@ -22,7 +22,7 @@ interface TagInterface
 {
 
     /**
-     * add child to tag
+     * Add child to tag
      *
      * @param mixed $child tag to add, can be a tag object or a string
      */

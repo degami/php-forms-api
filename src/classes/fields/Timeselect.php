@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the time select group field class
+ * The time select group field class
  */
 class Timeselect extends Field
 {

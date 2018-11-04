@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 
 /**
- * the checkboxes group field class
+ * The checkboxes group field class
  */
 class Checkboxes extends FieldMultivalues
 {

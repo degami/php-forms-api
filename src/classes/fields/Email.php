@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the email input field class
+ * The email input field class
  */
 class Email extends Field
 {

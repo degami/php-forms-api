@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the "Multiselect select" field class
+ * The "Multiselect select" field class
  */
 class Multiselect extends Select
 {

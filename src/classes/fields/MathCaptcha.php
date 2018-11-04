@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
 
 /**
- * the image captcha field class
+ * The image captcha field class
  */
 class MathCaptcha extends Captcha
 {

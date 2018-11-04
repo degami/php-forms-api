@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the "masked" text input field class
+ * The "masked" text input field class
  */
 class Maskedfield extends Textfield
 {

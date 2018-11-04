@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
 
 /**
- * the datetime select group field class
+ * The datetime select group field class
  */
 class Datetimeselect extends ComposedField
 {

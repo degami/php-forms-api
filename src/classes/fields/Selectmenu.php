@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the "selectmenu" select field class
+ * The "selectmenu" select field class
  */
 class Selectmenu extends Select
 {

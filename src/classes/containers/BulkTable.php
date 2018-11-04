@@ -37,7 +37,7 @@ class BulkTable extends TableContainer
     }
 
     /**
-     * add operation to operations array
+     * Add operation to operations array
      *
      * @param  string $key       key
      * @param  string $label     label

@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Accessories;
 use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
 
 /**
- * a class to hold session values
+ * A class to hold session values
  */
 
 class SessionBag extends MultiLevelDataBag

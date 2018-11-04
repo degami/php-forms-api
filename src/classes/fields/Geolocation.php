@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
 
 /**
- * the geolocation field class
+ * The geolocation field class
  */
 class Geolocation extends ComposedField
 {

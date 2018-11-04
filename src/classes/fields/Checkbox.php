@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the single checkbox input field class
+ * The single checkbox input field class
  */
 class Checkbox extends Field
 {

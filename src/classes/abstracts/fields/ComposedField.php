@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Abstracts\Fields;
 use Degami\PHPFormsApi\Containers\TagContainer;
 
 /**
- * the composed field class
+ * The composed field class
  */
 abstract class ComposedField extends TagContainer
 {

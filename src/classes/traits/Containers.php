@@ -34,7 +34,7 @@ trait Containers
     protected $insert_field_order = [];
 
     /**
-     * element fields
+     * Element fields
      *
      * @var array
      */
@@ -122,7 +122,7 @@ trait Containers
     }
 
     /**
-     * check if field is a field container
+     * Check if field is a field container
      *
      * @param Field $field field instance
      *

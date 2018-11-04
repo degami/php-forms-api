@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Accessories\SessionBag;
 use \Exception;
 
 /**
- * the form builder class
+ * The form builder class
  */
 class FormBuilder
 {
@@ -177,7 +177,7 @@ class FormBuilder
     }
 
     /**
-     * prepares the form_state array
+     * Prepares the form_state array
      *
      * @param  string $form_id the form_id
      * @return array           the form_state array

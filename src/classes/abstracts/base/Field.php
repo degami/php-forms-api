@@ -24,7 +24,7 @@ use Degami\PHPFormsApi\Fields\Checkbox;
 use Degami\PHPFormsApi\Accessories\SessionBag;
 
 /**
- * the field element class.
+ * The field element class.
  *
  * @abstract
  */
@@ -54,21 +54,21 @@ abstract class Field extends Element implements FieldInterface
     protected $postprocess = [];
 
     /**
-     * element js events list
+     * Element js events list
      *
      * @var array
      */
     protected $event = [];
 
     /**
-     * element size
+     * Element size
      *
      * @var integer
      */
     protected $size = 20;
 
     /**
-     * element type
+     * Element type
      *
      * @var string
      */
@@ -89,42 +89,42 @@ abstract class Field extends Element implements FieldInterface
     protected $tooltip = false;
 
     /**
-     * element id
+     * Element id
      *
      * @var null
      */
     protected $id = null;
 
     /**
-     * element title
+     * Element title
      *
      * @var null
      */
     protected $title = null;
 
     /**
-     * element description
+     * Element description
      *
      * @var null
      */
     protected $description = null;
 
     /**
-     * element disabled
+     * Element disabled
      *
      * @var boolean
      */
     protected $disabled = false;
 
     /**
-     * element default value
+     * Element default value
      *
      * @var null
      */
     protected $default_value = null;
 
     /**
-     * element value
+     * Element value
      *
      * @var null
      */
@@ -145,7 +145,7 @@ abstract class Field extends Element implements FieldInterface
     protected $required_position = 'after';
 
     /**
-     * element ajax url
+     * Element ajax url
      *
      * @var null
      */
@@ -394,7 +394,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * process (set) the field value
+     * Process (set) the field value
      *
      * @param mixed $value value to set
      */
@@ -442,7 +442,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * check if field is valid using the validate functions list
+     * Check if field is valid using the validate functions list
      *
      * @return boolean valid state
      */
@@ -507,7 +507,7 @@ abstract class Field extends Element implements FieldInterface
     }
 
     /**
-     * pre_render. this function will be overloaded by subclasses where needed
+     * Pre render. this function will be overloaded by subclasses where needed
      *
      * @param Form $form form object
      */

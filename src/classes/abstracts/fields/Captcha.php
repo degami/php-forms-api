@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the captcha field class
+ * The captcha field class
  */
 abstract class Captcha extends Field
 {
@@ -45,7 +45,7 @@ abstract class Captcha extends Field
     }
 
     /**
-     * check if element is already validated
+     * Check if element is already validated
      *
      * @return boolean TRUE if element has already been validated
      */

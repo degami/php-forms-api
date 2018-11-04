@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the hidden input field class
+ * The hidden input field class
  */
 class Hidden extends Field
 {

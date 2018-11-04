@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 
 /**
- * the select field class
+ * The select field class
  */
 class Select extends FieldMultivalues
 {

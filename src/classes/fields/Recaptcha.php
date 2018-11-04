@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
 
 /**
- * the recaptcha field class
+ * The recaptcha field class
  */
 class Recaptcha extends Captcha
 {

@@ -100,7 +100,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * add child
+     * Add child
      *
      * @param null $tag
      * @param null $tagclass
@@ -147,7 +147,7 @@ class Nestable extends FieldsContainer
     }
 
     /**
-     * check if there are children
+     * Check if there are children
      *
      * @return bool
      */

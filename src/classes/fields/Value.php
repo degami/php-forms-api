@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the value field class
+ * The value field class
  * this field is not rendered as part of the form, but the value is passed on form submission
  */
 class Value extends Field

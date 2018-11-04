@@ -146,7 +146,7 @@ trait Tools
 
     /**
      * translate strings, using a function named "__()" if is defined.
-     * the function should take a string written in english as parameter and return the translated version
+     * The function should take a string written in english as parameter and return the translated version
      *
      * @param  string $string string to translate
      * @return string         the translated version
@@ -196,7 +196,7 @@ trait Tools
     }
 
     /**
-     * check if a function name in the "user" space match the regexp
+     * Check if a function name in the "user" space match the regexp
      * and if found executes it passing the arguments
      *
      * @param string $regexp regular Expression to find function
@@ -216,7 +216,7 @@ trait Tools
     }
 
     /**
-     * checks if variable is suitable for use with foreach
+     * Checks if variable is suitable for use with foreach
      *
      * @param  mixed $var element to check
      * @return bool

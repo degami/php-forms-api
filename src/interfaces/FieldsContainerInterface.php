@@ -24,7 +24,7 @@ interface FieldsContainerInterface
 {
 
     /**
-     * add field to form
+     * Add field to form
      *
      * @param string $name  field name
      * @param mixed  $field field to add, can be an array or a field subclass

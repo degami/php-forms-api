@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
 /**
- * the markup field class.
+ * The markup field class.
  * this is not a value
  */
 class Markup extends Field

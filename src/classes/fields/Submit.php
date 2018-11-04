@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Clickable;
 
 /**
- * the submit input type field class
+ * The submit input type field class
  */
 class Submit extends Clickable
 {

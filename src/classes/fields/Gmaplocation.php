@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the google maps geolocation field class
+ * The google maps geolocation field class
  */
 class Gmaplocation extends Geolocation
 {

@@ -76,7 +76,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
     }
 
     /**
-     * process (set) the fields value
+     * Process (set) the fields value
      *
      * @param mixed $values value to set
      */

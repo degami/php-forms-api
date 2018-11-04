@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the file input field class
+ * The file input field class
  */
 class File extends Field
 {
@@ -119,7 +119,7 @@ class File extends Field
     }
 
     /**
-     * check if file was uploaded
+     * Check if file was uploaded
      *
      * @return boolean TRUE if file was uploaded
      */

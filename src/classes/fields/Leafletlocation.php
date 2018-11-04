@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the leaflet maps geolocation field class
+ * The leaflet maps geolocation field class
  */
 class Leafletlocation extends Geolocation
 {

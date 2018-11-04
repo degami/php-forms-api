@@ -34,7 +34,7 @@ use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 use Degami\PHPFormsApi\Accessories\SessionBag;
 
 /**
- * the form object class
+ * The form object class
  */
 class Form extends Element
 {
@@ -545,7 +545,7 @@ class Form extends Element
     }
 
     /**
-     * check if form is submitted
+     * Check if form is submitted
      *
      * @return boolean form is submitted
      */
@@ -556,7 +556,7 @@ class Form extends Element
 
 
     /**
-     * check if form is processed
+     * Check if form is processed
      *
      * @return boolean form is processed
      */
@@ -781,7 +781,7 @@ class Form extends Element
     }
 
     /**
-     * check if form is valid / NULL if form is on the first render
+     * Check if form is valid / NULL if form is on the first render
      *
      * @return boolean form is valid
      */
@@ -865,7 +865,7 @@ class Form extends Element
     }
 
     /**
-     * add field to form
+     * Add field to form
      *
      * @param string  $name  field name
      * @param mixed   $field field to add, can be an array or a field subclass
@@ -921,7 +921,7 @@ class Form extends Element
     }
 
     /**
-     * check if current is the final step
+     * Check if current is the final step
      *
      * @return boolean this is the final step
      */
@@ -931,7 +931,7 @@ class Form extends Element
     }
 
     /**
-     * check if this request is a "partial" ( used in elements ajax requests )
+     * Check if this request is a "partial" ( used in elements ajax requests )
      *
      * @return boolean [description]
      */

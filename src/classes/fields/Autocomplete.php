@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the "autocomplete" text input field class
+ * The "autocomplete" text input field class
  */
 class Autocomplete extends Textfield
 {

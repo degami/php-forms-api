@@ -129,7 +129,7 @@ class Accordion extends FieldsContainerMultiple
     }
 
     /**
-     * adds a new accordion
+     * Adds a new accordion
      *
      * @param string $title accordion title
      */

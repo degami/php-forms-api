@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 
 /**
- * the "slider" select field class
+ * The "slider" select field class
  */
 class Slider extends Select
 {

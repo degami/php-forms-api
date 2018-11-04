@@ -19,7 +19,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
- * the option element class
+ * The option element class
  */
 class Option extends Element
 {

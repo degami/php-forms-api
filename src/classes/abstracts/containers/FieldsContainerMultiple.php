@@ -30,7 +30,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     use Containers;
 
     /**
-     * element subelements
+     * Element subelements
      *
      * @var array
      */
@@ -57,7 +57,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     }
 
     /**
-     * add a new partition
+     * Add a new partition
      *
      * @param  string $title partition title
      * @return FieldsContainerMultiple
@@ -70,7 +70,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     }
 
     /**
-     * add field to element
+     * Add field to element
      *
      * @param  string  $name             field name
      * @param  mixed   $field            field to add, can be an array or a field subclass
@@ -168,7 +168,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     }
 
     /**
-     * check if partition has errors
+     * Check if partition has errors
      *
      * @param  integer $partitions_index partition index
      * @param  Form    $form             form object
