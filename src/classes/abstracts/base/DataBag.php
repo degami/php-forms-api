@@ -21,7 +21,7 @@ use \ArrayAccess;
 use \Countable;
 
 /**
- * A class to hold form fields submitted values
+ * A class to hold data
  */
 
 abstract class DataBag implements Iterator, ArrayAccess, Countable
@@ -52,6 +52,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      * Class constructor
      *
      * @param mixed $data data to add
+     * @param array $options construct options
      */
     public function __construct($data, $options = [])
     {
@@ -224,6 +225,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
+     * __isset magic method
      * @param $name
      *
      * @return bool
@@ -234,6 +236,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
     }
 
     /**
+     * __unset magic method
      * @param $name
      */
     public function __unset($name)

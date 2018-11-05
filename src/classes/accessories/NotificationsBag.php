@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Accessories;
 use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
 
 /**
- * A class to hold form and fields notifications
+ * A class to hold notifications
  */
 
 class NotificationsBag extends MultiLevelDataBag

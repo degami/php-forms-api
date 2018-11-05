@@ -15,6 +15,10 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
+/**
+ * A class to hold data
+ */
+
 abstract class MultiLevelDataBag extends DataBag
 {
     /**
@@ -37,6 +41,8 @@ abstract class MultiLevelDataBag extends DataBag
     }
 
     /**
+     * Gets parent element
+     *
      * @return \Degami\PHPFormsApi\Abstracts\Base\DataBag
      */
     public function getParent()
@@ -45,6 +51,8 @@ abstract class MultiLevelDataBag extends DataBag
     }
 
     /**
+     * Sets parent element
+     *
      * @param \Degami\PHPFormsApi\Abstracts\Base\DataBag $parent
      *
      * @return MultiLevelDataBag
@@ -69,7 +77,19 @@ abstract class MultiLevelDataBag extends DataBag
         }
         $this->checkDataArr();
         $this->data[$key] = (is_array($value)) ? new static($value, $this) : $value;
+        $this->notifyChange();
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param mixed $key key of element to remove
+     */
+    public function __unset($key)
+    {
+        parent::__unset($key);
+        $this->notifyChange();
     }
 
     /**

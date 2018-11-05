@@ -36,6 +36,7 @@ class FormBuilder
 
     /**
      * Get Session Bag
+     * @param boolean $refresh force refresh
      *
      * @return SessionBag
      */

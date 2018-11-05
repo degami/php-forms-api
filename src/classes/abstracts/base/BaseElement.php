@@ -141,20 +141,20 @@ abstract class BaseElement
     {
         $values = get_object_vars($this);
         foreach ($values as $key => $val) {
-            $values[$key] = static::intToArray($key, $val);
+            $values[$key] = static::toArrayVal($key, $val);
         }
         return $values;
     }
 
     /**
-     * The intToArray private method
+     * The toArrayVal private method
      *
      * @param  mixed  $key  key
      * @param  mixed  $elem element
      * @param  string $path path
      * @return mixed        element as an array
      */
-    private static function intToArray($key, $elem, $path = '/')
+    private static function toArrayVal($key, $elem, $path = '/')
     {
         if ($key === 'parent') {
             return "-- link to parent --";
@@ -164,7 +164,7 @@ abstract class BaseElement
             $elem = $elem->toArray();
         } elseif (is_array($elem)) {
             foreach ($elem as $k => $val) {
-                $elem[$k] = static::intToArray($k, $val, $path.$key.'/');
+                $elem[$k] = static::toArrayVal($k, $val, $path.$key.'/');
             }
         }
         return $elem;

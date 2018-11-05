@@ -129,6 +129,8 @@ abstract class Element extends BaseElement
 
     /**
      * Class constructor
+     * @param array $options constructor options
+     * @param string $name element name
      */
     public function __construct($options = [], $name = null)
     {

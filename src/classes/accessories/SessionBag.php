@@ -28,6 +28,7 @@ class SessionBag extends MultiLevelDataBag
      * Class constructor
      *
      * @param mixed $data data to add
+     * @param MultiLevelDataBag $parent parent node
      */
     public function __construct($data = [], $parent = null)
     {
@@ -35,25 +36,6 @@ class SessionBag extends MultiLevelDataBag
             $data = unserialize($_SESSION[self::getSessionIdentifier()]);
         }
         parent::__construct($data, $parent);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __set($key, $value)
-    {
-        parent::__set($key, $value);
-        $this->notifyChange();
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __unset($key)
-    {
-        parent::__unset($key);
-        $this->notifyChange();
     }
 
     /**
