@@ -17,8 +17,9 @@ namespace Degami\PHPFormsApi\Abstracts\Base;
 
 /**
  * A class to hold data
+ *
+ * @abstract
  */
-
 abstract class MultiLevelDataBag extends DataBag
 {
     /**
@@ -32,7 +33,7 @@ abstract class MultiLevelDataBag extends DataBag
      * Class constructor
      *
      * @param mixed $data   data to add
-     * @param mixed $parent element parent object
+     * @param DataBag $parent element parent object
      */
     public function __construct($data, $parent = null)
     {
@@ -53,8 +54,7 @@ abstract class MultiLevelDataBag extends DataBag
     /**
      * Sets parent element
      *
-     * @param \Degami\PHPFormsApi\Abstracts\Base\DataBag $parent
-     *
+     * @param DataBag $parent
      * @return MultiLevelDataBag
      */
     public function setParent($parent)
@@ -68,7 +68,7 @@ abstract class MultiLevelDataBag extends DataBag
      *
      * @param  string $key   key
      * @param  mixed  $value data to set
-     * @return DataBag
+     * @return MultiLevelDataBag
      */
     public function __set($key, $value)
     {

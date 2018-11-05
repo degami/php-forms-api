@@ -185,7 +185,7 @@ class FormBuilder
      */
     public static function getRequestValues($form_id)
     {
-        $out = ['input_values' => [] , 'input_form_definition'=>null];
+        $out = ['input_values' => [] , 'input_form_definition' => null];
         foreach (['_POST' => $_POST,'_GET' => $_GET,'_REQUEST' => $_REQUEST] as $key => $array) {
             if (!empty($array['form_id']) && $array['form_id'] == $form_id) {
                 $out['input_values'] = $array; //array_merge($out, $array);

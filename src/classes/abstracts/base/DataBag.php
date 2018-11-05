@@ -22,8 +22,9 @@ use \Countable;
 
 /**
  * A class to hold data
+ *
+ * @abstract
  */
-
 abstract class DataBag implements Iterator, ArrayAccess, Countable
 {
 
