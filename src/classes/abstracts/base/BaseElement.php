@@ -194,6 +194,13 @@ abstract class BaseElement
                     $this->{$name} = $value;
                     return $this;
                 }
+                // no break
+            case 'has':
+                $name = $this->PascalCaseToSnakeCase(trim(strtolower(substr($method, 3))));
+                if (property_exists(get_class($this), $name)) {
+                    return true;
+                }
+                return false;
         }
         throw new Exception("Invalid method ".get_class($this)."::".$method."(".print_r($args, 1).")");
     }

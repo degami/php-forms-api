@@ -20,7 +20,7 @@ use Degami\PHPFormsApi\Form;
 /**
  * fields container interface
  */
-interface FieldsContainerInterface
+interface FieldsContainerInterface extends FieldInterface
 {
 
     /**

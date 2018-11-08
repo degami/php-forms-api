@@ -1,6 +1,7 @@
 <?php
 use Degami\PHPFormsApi as FAPI;
 
+if (isset($_GET['debug'])):
 $has_session = FAPI\FormBuilder::sessionPresent();
 if ($has_session) : ?>
     <div class="sessioninfo">
@@ -11,3 +12,4 @@ if ($has_session) : ?>
 
     <div class="functiontitle">function body</div>
     <pre class="functionbody"><?php print $form->getDefinitionBody();?></pre>
+<?php endif;
