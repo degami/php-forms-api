@@ -1301,11 +1301,7 @@ class Form extends Element
 
                 $js = '';
                 if (count($target_elem->getJs()) > 0) {
-                    $js = "(function($){\n".
-                    "\t$(document).ready(function(){\n".
-                    "\t\t".implode(";\n\t\t", $target_elem->getJs()).";\n".
-                    "\t});\n".
-                    "})(jQuery);";
+                    $js = $this->encapsulateJs($target_elem->getJs());
                 }
 
                 return json_encode([ 'html' => $html, 'js' => $js ]);
@@ -1456,11 +1452,7 @@ class Form extends Element
             }
 
             $this->js_generated = true;
-            return "(function($){\n".
-            "\t$(document).ready(function(){\n".
-            "\t\t".implode(";\n\t\t", $js).";\n".
-            "\t});\n".
-            "})(jQuery);";
+            return $this->encapsulateJs($js);
         }
         return "";
     }
@@ -1537,5 +1529,14 @@ class Form extends Element
             var_dump($e->getMessage());
         }
         return $body;
+    }
+
+    private function encapsulateJs($js_array, $jquery_var_name = 'jQuery')
+    {
+        return "(function(\$){\n".
+        "\t$(document).ready(function(){\n".
+        "\t\t".implode(";\n\t\t", $js_array).";\n".
+        "\t});\n".
+        "})({$jquery_var_name});";
     }
 }
