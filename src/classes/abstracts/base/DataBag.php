@@ -19,6 +19,7 @@ use \Iterator;
 use \ArrayIterator;
 use \ArrayAccess;
 use \Countable;
+use Degami\PHPFormsApi\Traits\Tools;
 
 /**
  * A class to hold data
@@ -27,6 +28,7 @@ use \Countable;
  */
 abstract class DataBag implements Iterator, ArrayAccess, Countable
 {
+    use Tools;
 
     /**
      * Current position
@@ -64,12 +66,7 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
         unset($options['data']);
         unset($options['position']);
 
-        foreach ($options as $name => $value) {
-            $name = trim($name);
-            if (property_exists(get_class($this), $name)) {
-                $this->{$name} = $value;
-            }
-        }
+        $this->setClassProperties($options);
 
         $this->position = -1;
         $this->add($data);

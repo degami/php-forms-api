@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Accessories;
 
+use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Interfaces\TagInterface;
 use Degami\PHPFormsApi\Abstracts\Base\BaseElement;
 
@@ -23,6 +24,7 @@ use Degami\PHPFormsApi\Abstracts\Base\BaseElement;
  */
 class TagElement extends BaseElement implements TagInterface
 {
+    use Tools;
 
     /** @var array tags that do not need to be closed */
     public static $void_tags = [
@@ -132,12 +134,7 @@ class TagElement extends BaseElement implements TagInterface
             }
         }
 
-        foreach ($options as $name => $value) {
-            $name = trim($name);
-            if (property_exists(get_class($this), $name)) {
-                $this->{$name} = $value;
-            }
-        }
+        $this->setClassProperties($options);
 
         if (!isset($this->attributes['class'])) {
             $this->attributes['class'] = $this->getElementClassName();

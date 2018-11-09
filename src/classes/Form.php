@@ -202,12 +202,7 @@ class Form extends Element
         $this->container_tag = FORMS_DEFAULT_FORM_CONTAINER_TAG;
         $this->container_class = FORMS_DEFAULT_FORM_CONTAINER_CLASS;
 
-        foreach ($options as $name => $value) {
-            $name = trim($name);
-            if (property_exists(get_class($this), $name)) {
-                $this->{$name} = $value;
-            }
-        }
+        $this->setClassProperties($options);
 
         $hassubmitter = false;
         foreach ($this->submit as $s) {

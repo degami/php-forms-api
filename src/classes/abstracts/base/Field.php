@@ -175,12 +175,7 @@ abstract class Field extends Element implements FieldInterface
 
         $this->name = $name;
 
-        foreach ($options as $name => $value) {
-            $name = trim($name);
-            if (property_exists(get_class($this), $name)) {
-                $this->{$name} = $value;
-            }
-        }
+        $this->setClassProperties($options);
 
         $this->session_bag = new SessionBag();
 

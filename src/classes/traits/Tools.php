@@ -20,6 +20,22 @@ namespace Degami\PHPFormsApi\Traits;
  */
 trait Tools
 {
+
+    /**
+     * Set class properties. Used on constructors
+     *
+     * @param array $options values to set
+     */
+    private function setClassProperties($options)
+    {
+        foreach ($options as $name => $value) {
+            $name = trim($name);
+            if (property_exists(get_class($this), $name)) {
+                $this->{$name} = $value;
+            }
+        }
+    }
+
     /**
      * format byte size
      *
