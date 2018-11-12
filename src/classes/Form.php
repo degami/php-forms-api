@@ -1272,7 +1272,6 @@ class Form extends Element
             array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->getFields($this->current_step));
         }
 
-
         foreach ($this->getFields($this->current_step) as $name => $field) {
             if (is_object($field) && method_exists($field, 'renderHTML')) {
                 $fields_html .= $field->renderHTML($this);
@@ -1313,16 +1312,7 @@ class Form extends Element
         if (!empty($this->ajax_submit_url) && $this->getOutputType() == 'json' && $output_type == 'html') {
             // print initial js for ajax form
 
-            $output = "<script type=\"text/javascript\">"
-            .preg_replace(
-                "/\s+/",
-                " ",
-                str_replace(
-                    "\n",
-                    "",
-                    "(function(\$){
-          \$(document).ready(function(){
-            var {$this->getId()}_attachFormBehaviours = function (){
+            $initial_js = ["var {$this->getId()}_attachFormBehaviours = function (){
               \$('#{$this->getId()}').submit(function(evt){
                 evt.preventDefault();
                 \$.post( \"{$this->getAjaxUrl()}\", \$('#{$this->getId()}').serialize(), function( data ) {
@@ -1338,44 +1328,43 @@ class Form extends Element
                 });
                 return false;
               });
-            };
-            \$.getJSON('{$this->getAjaxUrl()}',function(response){
+            };",
+            "\$.getJSON('{$this->getAjaxUrl()}',function(response){
               \$(response.html).appendTo( \$('#{$this->getId()}-formcontainer') );
               if( \$.trim(response.js) != '' ){
                 eval( response.js );
               };
               {$this->getId()}_attachFormBehaviours();
-            });
-          });
-        })(jQuery);"
-                )
-            ).
-            "</script>\n".
-            "<div id=\"{$this->getId()}-formcontainer\"></div>";
+            });"];
+
+            $output = "<script type=\"text/javascript\">".
+                        $this->encapsulateJs(array_map([$this, minifyJs], $initial_js)).
+                        "</script>\n".
+                        "<div id=\"{$this->getId()}-formcontainer\"></div>";
         } else {
+            $form_tag_html = $this->getElementPrefix();
+            $form_tag_html .= $this->getPrefix();
+            $form_tag_html .= $highlights;
+            $form_tag_html .= $errors;
+            $form_tag_html .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\"";
+            $form_tag_html .= "method=\"{$this->method}\"{$attributes}>\n";
+            $form_tag_html .= $fields_html;
+            $form_tag_html .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
+            if (!$this->no_token) {
+                $form_tag_html .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
+            }
+            if ($this->getNumSteps() > 1) {
+                $form_tag_html .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
+            }
+            $form_tag_html .= "</form>\n";
+            $form_tag_html .= $this->getSuffix();
+            $form_tag_html .= $this->getElementSuffix();
+
             switch ($output_type) {
                 case 'json':
                     $output = ['html'=>'','js'=>'','is_submitted'=>$this->isSubmitted()];
 
-                    $output['html']  = $this->getElementPrefix();
-                    $output['html'] .= $this->getPrefix();
-                    $output['html'] .= $highlights;
-                    $output['html'] .= $errors;
-                    $output['html'] .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\"";
-                    $output['html'] .= "method=\"{$this->method}\"{$attributes}>\n";
-                    $output['html'] .= $fields_html;
-                    $output['html'] .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
-                    if (!$this->no_token) {
-                        $output['html'] .= "<input type=\"hidden\" name=\"form_token\"".
-                        " value=\"{$this->form_token}\" />\n";
-                    }
-                    if ($this->getNumSteps() > 1) {
-                        $output['html'] .= "<input type=\"hidden\" name=\"current_step\" ".
-                        "value=\"{$this->current_step}\" />\n";
-                    }
-                    $output['html'] .= "</form>\n";
-                    $output['html'] .= $this->getSuffix();
-                    $output['html'] .= $this->getElementSuffix();
+                    $output['html']  = $form_tag_html;
 
                     if (count($this->getCss())>0) {
                         $output['html'] .= "<style>".implode("\n", $this->getCss())."</style>";
@@ -1390,21 +1379,8 @@ class Form extends Element
 
                 case 'html':
                 default:
-                    $output = $this->getElementPrefix();
-                    $output .= $this->getPrefix();
-                    $output .= $highlights;
-                    $output .= $errors;
-                    $output .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\"";
-                    $output .= "method=\"{$this->method}\"{$attributes}>\n";
-                    $output .= $fields_html;
-                    $output .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
-                    if (!$this->no_token) {
-                        $output .= "<input type=\"hidden\" name=\"form_token\" value=\"{$this->form_token}\" />\n";
-                    }
-                    if ($this->getNumSteps() > 1) {
-                        $output .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
-                    }
-                    $output .= "</form>\n";
+                    $output = $form_tag_html;
+
                     if (count($this->getCss())>0) {
                         $output .= "<style>".implode("\n", $this->getCss())."</style>";
                     }
@@ -1412,8 +1388,6 @@ class Form extends Element
                     if (!empty($js)) {
                         $output .= "\n<script type=\"text/javascript\">\n".$js."\n</script>\n";
                     }
-                    $output .= $this->getSuffix();
-                    $output .= $this->getElementSuffix();
                     break;
             }
         }
@@ -1533,6 +1507,10 @@ class Form extends Element
 
     private function encapsulateJs($js_array, $jquery_var_name = 'jQuery')
     {
+        if (!is_array($js_array)) {
+            $js_array = [$js_array];
+        }
+
         return "(function(\$){\n".
         "\t$(document).ready(function(){\n".
         "\t\t".implode(";\n\t\t", $js_array).";\n".
