@@ -123,7 +123,7 @@ class TableContainer extends FieldsContainerMultiple
      * @param Form $form form object
      *
      * @return string        the element html
-     * @throws \Exception
+     * @throws FormException
      */
     public function renderField(Form $form)
     {

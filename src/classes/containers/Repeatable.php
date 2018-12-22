@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Containers;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
 use Degami\PHPFormsApi\Accessories\TagElement;
-use \Exception;
+use Degami\PHPFormsApi\Exceptions\FormException;
 
 /**
  * a field container with a repeatable group of fields
@@ -53,14 +53,14 @@ class Repeatable extends FieldsContainerMultiple
      * @param integer $partitions_index
      *
      * @return $this|mixed
-     * @throws \Exception
+     * @throws FormException
      */
     public function addField($name, $field, $partitions_index = 0)
     {
         $field = $this->getFieldObj($name, $field);
 
         if ($this->isFieldContainer($field)) {
-            throw new Exception('Can\'t nest field_containers into repeteables');
+            throw new FormException('Can\'t nest field_containers into repeteables');
         }
 
         $this->repetable_fields[$name] = $field;
@@ -100,7 +100,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @param array $request
      *
-     * @throws \Exception
+     * @throws FormException
      */
     public function alterRequest(&$request)
     {
@@ -223,18 +223,18 @@ class Repeatable extends FieldsContainerMultiple
             }
 
             $this->addCss(
-                "#{$id} .repeatable-row{ 
-                margin: 10px 0; 
-                padding: 10px; 
-                border: solid 1px #cecece; 
-                position: relative; 
+                "#{$id} .repeatable-row{
+                margin: 10px 0;
+                padding: 10px;
+                border: solid 1px #cecece;
+                position: relative;
             }"
             );
             $this->addCss(
                 "#{$id} .repeatable-row .remove-btn{
-                position: absolute; 
-                top: 5px; 
-                right: 10px; 
+                position: absolute;
+                top: 5px;
+                right: 10px;
                 z-index: 10;
             }"
             );
@@ -330,7 +330,7 @@ class Repeatable extends FieldsContainerMultiple
             }
             $repeatablerow->addChild(
                 "<a href=\"#\"
-                                            class=\"remove-btn btn\" 
+                                            class=\"remove-btn btn\"
                                             name=\"{$id}-remove-{$partitionindex}\">&times;</a>\n"
             );
         }

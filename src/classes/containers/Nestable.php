@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Containers;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Traits\Containers;
-use \Exception;
+use Degami\PHPFormsApi\Exceptions\FormException;
 
 /**
  * a nestable field container
@@ -63,7 +63,7 @@ class Nestable extends FieldsContainer
      * @param array $options
      * @param null  $name
      *
-     * @throws \Exception
+     * @throws FormException
      */
     public function __construct($options = [], $name = null)
     {
@@ -106,7 +106,7 @@ class Nestable extends FieldsContainer
      * @param null $tagclass
      *
      * @return mixed
-     * @throws \Exception
+     * @throws FormException
      */
     public function addChild($tag = null, $tagclass = null)
     {
@@ -185,13 +185,13 @@ class Nestable extends FieldsContainer
      * @param mixed  $field
      *
      * @return $this|\Degami\PHPFormsApi\Abstracts\Base\Field
-     * @throws \Exception
+     * @throws FormException
      */
     public function addField($name, $field)
     {
         $field = $this->getFieldObj($name, $field);
         if ($this->isFieldContainer($field)) {
-            throw new Exception("Can't add a fields_container to a tree_container.", 1);
+            throw new FormException("Can't add a fields_container to a tree_container.", 1);
         }
 
         $this->fields_panel->addField($name, $field);
@@ -318,7 +318,7 @@ class Nestable extends FieldsContainer
         if ($this->getLevel() == 0) {
             $out .= "</{$this->tag}>
                     </div>
-                    <textarea name=\"{$this->getName()}\" id=\"{$id}-output\" 
+                    <textarea name=\"{$this->getName()}\" id=\"{$id}-output\"
                               style=\"display: none; width: 100%; height: 200px;\"></textarea>";
         }
 
@@ -360,10 +360,10 @@ class Nestable extends FieldsContainer
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
 .dd-list .dd-list { padding-left: 30px; }
 .dd-collapsed .dd-list { display: none; }
-.dd-item,.dd-empty,.dd-placeholder { display: block; position: relative; margin: 10px 0 0 0; padding: 0; 
+.dd-item,.dd-empty,.dd-placeholder { display: block; position: relative; margin: 10px 0 0 0; padding: 0;
                                         min-height: 20px; font-size: 13px; line-height: 20px; }
 
-.dd-handle { display: block; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold; 
+.dd-handle { display: block; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold;
                 border: 1px solid #ccc;
     background: #fafafa;
     background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
@@ -375,16 +375,16 @@ class Nestable extends FieldsContainer
 }
 .dd-handle:hover { color: #2ea8e5; background: #fff; }
 
-.dd-item > button { display: block; position: relative; cursor: pointer; z-index: 20; float: left; width: 25px; 
-                    height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; 
-                    border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center; 
+.dd-item > button { display: block; position: relative; cursor: pointer; z-index: 20; float: left; width: 25px;
+                    height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden;
+                    border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center;
                     font-weight: bold; }
-.dd-item > button:before { content: \'+\'; display: block; position: absolute; width: 100%; text-align: center; 
+.dd-item > button:before { content: \'+\'; display: block; position: absolute; width: 100%; text-align: center;
                             text-indent: 0; }
 .dd-item > button[data-action="collapse"]:before { content: \'-\'; }
 
 .dd-placeholder,
-.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #f2fbff; border: 1px dashed #b6bcbf; 
+.dd-empty { margin: 5px 0; padding: 0; min-height: 30px; background: #f2fbff; border: 1px dashed #b6bcbf;
             box-sizing: border-box; -moz-box-sizing: border-box; display: block; }
 .dd-empty {
     border: 1px dashed #bbb; min-height: 100px; background-color: #e5e5e5;
@@ -406,7 +406,7 @@ class Nestable extends FieldsContainer
 }
 
 .dd-panel{ position: relative; }
-.dd-content { display: block; min-height: 30px; margin: 5px 0; padding: 5px 10px 5px 40px; color: #333; 
+.dd-content { display: block; min-height: 30px; margin: 5px 0; padding: 5px 10px 5px 40px; color: #333;
                 text-decoration: none; font-weight: bold; border: 1px solid #ccc;
     background: #fafafa;
     background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
@@ -420,7 +420,7 @@ class Nestable extends FieldsContainer
 .dd-dragel > .dd-item > .dd-panel > .dd-content { margin: 0; }
 .dd-item > button { margin-left: 30px; }
 
-.dd-handle { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%; 
+.dd-handle { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%;
                 white-space: nowrap; overflow: hidden;
   border: 1px solid #aaa;
   background: #ddd;
@@ -431,7 +431,7 @@ class Nestable extends FieldsContainer
   border-bottom-right-radius: 0;
   height: 100%;
 }
-.dd-handle:before { content: \'≡\'; display: block; position: absolute; left: 0; top: 3px; width: 100%; 
+.dd-handle:before { content: \'≡\'; display: block; position: absolute; left: 0; top: 3px; width: 100%;
                     text-align: center; text-indent: 0; color: #fff; font-size: 20px; font-weight: normal; }
 .dd-handle:hover { background: #ddd; }
 '

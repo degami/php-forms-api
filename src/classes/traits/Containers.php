@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Traits;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
-use \Exception;
+use Degami\PHPFormsApi\Exceptions\FormException;
 
 /**
  * containers specific functions
@@ -68,31 +68,22 @@ trait Containers
      * @param mixed  $field field to add, can be an array or a field subclass
      *
      * @return Field instance
-     * @throws \Exception
+     * @throws FormException
      */
     public function getFieldObj($name, $field)
     {
         if (is_array($field)) {
-            $field_type = $this->parentNameSpace() .
-                            "\\Fields\\" .
-                            (isset($field['type']) ?
+            $parentNS = $this->parentNameSpace();
+            $element_type = isset($field['type']) ?
                                 $this->snakeCaseToPascalCase($field['type']) :
-                              'textfield'
-                            );
-            $container_type = $this->parentNameSpace() .
-                                "\\Containers\\" .
-                                (isset($field['type']) ?
-                                    $this->snakeCaseToPascalCase($field['type']) :
-                                  'textfield'
-                                );
-            $root_type = $this->parentNameSpace() .
-                            "\\" .
-                            (isset($field['type']) ?
-                                $this->snakeCaseToPascalCase($field['type']) :
-                              'textfield'
-                            );
+                              'textfield';
+
+            $field_type = $parentNS . "\\Fields\\" . $element_type;
+            $container_type = $parentNS . "\\Containers\\" . $element_type;
+            $root_type = $parentNS . "\\" . $element_type;
+
             if (!class_exists($field_type) && !class_exists($container_type) && !class_exists($root_type)) {
-                throw new Exception(
+                throw new FormException(
                     "Error adding field. Class \"$field_type\", \"$container_type\", \"$root_type\" not found",
                     1
                 );
@@ -115,7 +106,7 @@ trait Containers
         } elseif ($field instanceof Field) {
             $field->setName($name);
         } else {
-            throw new Exception("Error adding field. Array or field subclass expected, ".gettype($field)." given", 1);
+            throw new FormException("Error adding field. Array or field subclass expected, ".gettype($field)." given", 1);
         }
 
         return $field;

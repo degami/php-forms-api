@@ -31,7 +31,7 @@ class Sortable extends SortableContainer
      * @param  string $name  field name
      * @param  mixed  $field field to add, can be an array or a field subclass
      * @param  null   $_p    unused
-     * @throws \Exception
+     * @throws FormException
      */
     public function addField($name, $field, $_p = null)
     {

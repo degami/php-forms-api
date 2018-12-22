@@ -76,7 +76,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * @param  mixed   $field            field to add, can be an array or a field subclass
      * @param  integer $partitions_index index of partition to add field to
      * @return Field
-     * @throws \Exception
+     * @throws FormException
      */
     public function addField($name, $field, $partitions_index = 0)
     {
@@ -147,7 +147,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * @param  array   $fields          array of new fields to set for partition
      * @param  integer $partition_index partition index
      * @return FieldsContainerMultiple
-     * @throws \Exception
+     * @throws FormException
      */
     public function setPartitionFields($fields, $partition_index = 0)
     {

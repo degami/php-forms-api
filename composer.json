@@ -33,7 +33,8 @@
       "Degami\\PHPFormsApi\\Abstracts\\Fields\\": "src/classes/abstracts/fields",
       "Degami\\PHPFormsApi\\Accessories\\": "src/classes/accessories",
       "Degami\\PHPFormsApi\\Containers\\": "src/classes/containers",
-      "Degami\\PHPFormsApi\\Fields\\": "src/classes/fields"
+      "Degami\\PHPFormsApi\\Fields\\": "src/classes/fields",
+      "Degami\\PHPFormsApi\\Exceptions\\": "src/classes/exceptions"
     }
   }
 }

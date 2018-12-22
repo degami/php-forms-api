@@ -20,6 +20,7 @@ use \ArrayIterator;
 use \ArrayAccess;
 use \Countable;
 use Degami\PHPFormsApi\Traits\Tools;
+use Degami\PHPFormsApi\Exceptions\FormException;
 
 /**
  * A class to hold data
@@ -211,12 +212,12 @@ abstract class DataBag implements Iterator, ArrayAccess, Countable
      * @param  string $key   key
      * @param  mixed  $value data to set
      * @return DataBag
-     * @throws \Exception
+     * @throws FormException
      */
     public function __set($key, $value)
     {
         if ($key == 'data' || $key == 'position') {
-            throw new \Exception('Cannot define "'.$key.'" property');
+            throw new FormException('Cannot define "'.$key.'" property');
         }
         $this->data[$key] = $value;
         return $this;

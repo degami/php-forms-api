@@ -55,7 +55,7 @@ class BulkTable extends TableContainer
      * {@inheritdoc}
      *
      * @param  Form $form form object
-     * @throws \Exception
+     * @throws FormException
      */
     public function preRender(Form $form)
     {

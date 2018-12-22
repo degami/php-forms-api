@@ -101,7 +101,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param  string $name  field name
      * @param  mixed  $field field to add, can be an array or a field subclass
-     * @throws \Exception
+     * @throws FormException
      * @return Field
      */
     public function addField($name, $field)

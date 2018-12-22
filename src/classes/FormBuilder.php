@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi;
 
 use Degami\PHPFormsApi\Accessories\SessionBag;
-use \Exception;
+use Degami\PHPFormsApi\Exceptions\FormException;
 
 /**
  * The form builder class
@@ -100,7 +100,7 @@ class FormBuilder
      * @param array    $form_options additional form constructor options
      *
      * @return Form             a new form object
-     * @throws \Exception
+     * @throws FormException
      */
     public static function buildForm($callable, &$form_state, $form_options = [])
     {
@@ -126,7 +126,7 @@ class FormBuilder
                 )
             );
             if (! $form_obj instanceof Form) {
-                throw new Exception(
+                throw new FormException(
                     "Function {$function_name} does not return a valid form object",
                     1
                 );
@@ -150,7 +150,7 @@ class FormBuilder
      * @param string $form_id form_id (and also form definitor function name)
      *
      * @return Form         a new form object
-     * @throws \Exception
+     * @throws FormException
      */
     public static function getForm($form_id)
     {
@@ -169,7 +169,7 @@ class FormBuilder
      *
      * @param  string $form_id form_id (and also form definitor function name)
      * @return string          form html
-     * @throws \Exception
+     * @throws FormException
      */
     public static function renderForm($form_id)
     {
@@ -351,7 +351,7 @@ class FormBuilder
      * @param object $object the object to map
      *
      * @return Form form object
-     * @throws \Exception
+     * @throws FormException
      */
     public static function objectForm($object)
     {

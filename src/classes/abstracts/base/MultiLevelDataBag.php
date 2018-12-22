@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
+use Degami\PHPFormsApi\Exceptions\FormException;
+
 /**
  * A class to hold data
  *
@@ -73,7 +75,7 @@ abstract class MultiLevelDataBag extends DataBag
     public function __set($key, $value)
     {
         if ($key == 'data' || $key == 'position' || $key == 'parent') {
-            throw new \Exception('Cannot define "'.$key.'" property');
+            throw new FormException('Cannot define "'.$key.'" property');
         }
         $this->checkDataArr();
         $this->data[$key] = (is_array($value)) ? new static($value, $this) : $value;

@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Abstracts\Base;
 use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Accessories\OrderedFunctions;
 use Degami\PHPFormsApi\Form;
-use \Exception;
+use Degami\PHPFormsApi\Exceptions\FormException;
 
 /**
  * Base element class
@@ -176,7 +176,7 @@ abstract class BaseElement
      * @param  string $method
      * @param  array  $args
      * @return mixed
-     * @throws \Exception
+     * @throws FormException
      */
     public function __call($method, $args)
     {
@@ -202,6 +202,6 @@ abstract class BaseElement
                 }
                 return false;
         }
-        throw new Exception("Invalid method ".get_class($this)."::".$method."(".print_r($args, 1).")");
+        throw new FormException("Invalid method ".get_class($this)."::".$method."(".print_r($args, 1).")");
     }
 }
