@@ -10,7 +10,7 @@
  * @link     https://github.com/degami/php-forms-api
  */
 /* #########################################################
-   ####              FIELD CONTAINERS                   ####
+   ####                  EXCEPTIONS                     ####
    ######################################################### */
 
 namespace Degami\PHPFormsApi\Exceptions;
