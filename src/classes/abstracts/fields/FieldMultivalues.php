@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Abstracts\Fields;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Fields\Option;
 use Degami\PHPFormsApi\Fields\Optgroup;
+use Degami\PHPFormsApi\Abstracts\Fields\Optionable;
 
 /**
  * The multivalues field class (a select, a radios or a checkboxes group)
@@ -26,13 +27,22 @@ use Degami\PHPFormsApi\Fields\Optgroup;
  */
 abstract class FieldMultivalues extends Field
 {
-
     /**
      * options array
      *
      * @var array
      */
     protected $options = [];
+
+    /**
+     * Adds an option to options array
+     *
+     * @param mixed $option option
+     */
+    public function addOption($option)
+    {
+        $this->options[] = $option;
+    }
 
     /**
      * Get elements options array by reference

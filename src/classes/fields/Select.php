@@ -17,6 +17,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
+use Degami\PHPFormsApi\Abstracts\Fields\Optionable;
 
 /**
  * The select field class
@@ -41,17 +42,17 @@ class Select extends FieldMultivalues
     {
         if (isset($options['options'])) {
             foreach ($options['options'] as $k => $o) {
-                if ($o instanceof Option || $o instanceof Optgroup) {
+                if ($o instanceof Optionable) {
                     $o->setParent($this);
-                    $this->options[] = $o;
+                    $this->addOption($o);
                 } elseif (is_array($o)) {
                     $option = new Optgroup($k, ['options' => $o]);
                     $option->setParent($this);
-                    $this->options[] = $option;
+                    $this->addOption($option);
                 } else {
                     $option = new Option($k, $o);
                     $option->setParent($this);
-                    $this->options[] = $option;
+                    $this->addOption($option);
                 }
             }
             unset($options['options']);

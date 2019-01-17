@@ -16,21 +16,14 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Abstracts\Base\Element;
+use Degami\PHPFormsApi\Abstracts\Fields\Optionable;
 use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The option element class
  */
-class Option extends Element
+class Option extends Optionable
 {
-
-    /**
-     * option label
-     *
-     * @var string
-     */
-    protected $label;
-
     /**
      * option key
      *
@@ -47,17 +40,8 @@ class Option extends Element
      */
     public function __construct($key, $label, $options = [])
     {
-        parent::__construct();
-
-        $this->key = trim($key);
-        $this->label = $label;
-
-        foreach ($options as $key => $value) {
-            $key = trim($key);
-            if (property_exists(get_class($this), $key)) {
-                $this->{$key} = $value;
-            }
-        }
+        $this->setKey(trim($key));
+        parent::__construct($label, $options);
     }
 
     /**
@@ -116,29 +100,6 @@ class Option extends Element
     public function setKey($key)
     {
         $this->key = $key;
-
-        return $this;
-    }
-
-    /**
-     * Get the element label
-     *
-     * @return mixed the element label
-     */
-    public function getLabel()
-    {
-        return $this->label;
-    }
-
-    /**
-     * Set the element label
-     *
-     * @param  mixed $label element label
-     * @return Option
-     */
-    public function setLabel($label)
-    {
-        $this->label = $label;
 
         return $this;
     }

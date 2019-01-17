@@ -16,28 +16,21 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Abstracts\Base\Element;
+use Degami\PHPFormsApi\Abstracts\Fields\Optionable;
 use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 
 /**
  * The optgroup element class
  */
-class Optgroup extends Element
+class Optgroup extends Optionable
 {
-
     /**
      * options array
      *
      * @var array
      */
     protected $options;
-
-    /**
-     * Element label
-     *
-     * @var string
-     */
-    protected $label;
 
     /**
      * Class constructor
@@ -47,28 +40,18 @@ class Optgroup extends Element
      */
     public function __construct($label, $options)
     {
-        parent::__construct();
-
-        $this->label = $label;
-
         if (isset($options['options'])) {
             foreach ($options['options'] as $key => $value) {
                 if ($value instanceof Option) {
                     $this->addOption($value);
                     $value->setParent($this);
-                } else {
+                } elseif (is_scalar($key) && is_scalar($value)) {
                     $this->addOption(new Option($key, $value));
                 }
             }
             unset($options['options']);
         }
-
-        foreach ($options as $key => $value) {
-            $key = trim($key);
-            if (property_exists(get_class($this), $key)) {
-                $this->{$key} = $value;
-            }
-        }
+        parent::__construct($label, $options);
     }
 
     /**
