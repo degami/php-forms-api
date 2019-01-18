@@ -87,7 +87,7 @@ class Tabs extends FieldsContainerMultiple
             $addclass_tab = ' class="tabel '.($this->partitionHasErrors($tabindex, $form) ? 'has-errors' : '').'"';
             $tab_links->addChild(
                 "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".
-                                        $this->getText($this->partitions[$tabindex]['title']).
+                    $this->getText($this->partitions[$tabindex]['title']).
                 "</a></li>"
             );
 

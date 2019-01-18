@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 use Degami\PHPFormsApi\Abstracts\Fields\Optionable;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The select field class
@@ -131,20 +132,35 @@ class Select extends FieldMultivalues
             $this->attributes['disabled']='disabled';
         }
         $attributes = $this->getAttributes();
-
-        $extra = ($this->multiple) ? ' multiple="multiple" size="'.$this->size.'" ' : '';
         $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
-        $output .= "<select name=\"{$field_name}\" id=\"{$id}\" {$extra} {$attributes}>\n";
+
+        $tag = new TagElement(
+            [
+                'tag' => 'select',
+                'id' => $id,
+                'name' => $field_name,
+                'value' => htmlspecialchars($this->value),
+                'attributes' => $this->attributes + (
+                    ($this->multiple) ? ['multiple' => 'multiple','size' => $this->size] : []
+                ),
+            ]
+        );
+
         if (isset($this->attributes['placeholder']) && !empty($this->attributes['placeholder'])) {
-            $output .= '<option disabled '.(isset($this->default_value) ? '' : 'selected').'>'.
-                        $this->attributes['placeholder'].
-                        '</option>';
+            $tag->addChild(
+                '<option disabled '.(isset($this->default_value) ? '' : 'selected').'>'.
+                    $this->attributes['placeholder'].
+                '</option>'
+            );
         }
+
         foreach ($this->options as $key => $value) {
             /** @var \Degami\PHPFormsApi\Fields\Option $value */
-            $output .= $value->renderHTML($this);
+            $tag->addChild(
+                $value->renderHTML($this)
+            );
         }
-        $output .= "</select>\n";
-        return $output;
+
+        return $tag;
     }
 }

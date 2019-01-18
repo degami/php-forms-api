@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\PHPFormsApi\Accessories\TagList;
 
 /**
  * The file input field class
@@ -61,18 +62,17 @@ class File extends Field
             $this->attributes['disabled']='disabled';
         }
 
-        $output = '';
-        $tag = new TagElement(
+        $tag = new TagList();
+        $tag->addChild(new TagElement(
             [
                 'tag' => 'input',
                 'type' => 'hidden',
                 'name' => $this->name,
                 'value' => $this->name,
             ]
-        );
-        $output .= $tag->renderTag();
+        ));
 
-        $tag = new TagElement(
+        $tag->addChild(new TagElement(
             [
                 'tag' => 'input',
                 'type' => 'file',
@@ -81,10 +81,9 @@ class File extends Field
                 'value_needed' => false,
                 'attributes' => $this->attributes + ['size' => $this->size],
             ]
-        );
-        $output .= $tag->renderTag();
+        ));
 
-        return $output;
+        return $tag;
     }
 
     /**

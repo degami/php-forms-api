@@ -17,6 +17,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The progressbar field class
@@ -75,18 +76,35 @@ class Progressbar extends Markup
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $attributes = $this->getAttributes();
 
         if ($this->show_label == true) {
             $this->addCss("#{$form->getId()} #{$id}.ui-progressbar {position: relative;}");
             $this->addCss("#{$form->getId()} #{$id} .progress-label {position: absolute;left: 50%;top: 4px;}");
         }
 
-        return "<div id=\"{$id}\" {$attributes}>".
-                (($this->show_label == true) ?
-                    "<div class=\"progress-label\"></div>":
-                    ""
-                ).
-                "</div>\n";
+        $tag = new TagElement(
+            [
+                'tag' => 'div',
+                'type' => null,
+                'id' => $id,
+                'text' => null,
+                'attributes' => $this->attributes,
+                'has_close' => true,
+            ]
+        );
+
+        if ($this->show_label == true) {
+            $tag->addChild(new TagElement(
+                [
+                    'tag' => 'div',
+                    'type' => null,
+                    'id' => null,
+                    'text' => null,
+                    'attributes' => ['class' => 'progress-label'],
+                    'has_close' => true,
+                ]
+            ));
+        }
+        return $tag;
     }
 }

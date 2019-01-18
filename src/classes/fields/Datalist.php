@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
+use Degami\PHPFormsApi\Accessories\TagList;
 
 /**
  * The "autocomplete" text input field class
@@ -80,8 +81,8 @@ class Datalist extends FieldMultivalues
             $this->value = '';
         }
 
-        $output = "";
-        $tag = new TagElement(
+        $tag = new TagList();
+        $tag->addChild(new TagElement(
             [
                 'tag' => 'input',
                 'type' => 'text',
@@ -90,10 +91,9 @@ class Datalist extends FieldMultivalues
                 'value' => htmlspecialchars($this->value),
                 'attributes' => $this->attributes + ['size' => $this->size, 'list' => $this->name."-data"],
             ]
-        );
-        $output .= $tag->renderTag();
+        ));
 
-        $tag = new TagElement(
+        $dlist = new TagElement(
             [
                 'tag' => 'datalist',
                 'type' => null,
@@ -104,7 +104,7 @@ class Datalist extends FieldMultivalues
         );
         foreach ($this->options as $key => $opt) {
             /** @var \Degami\PHPFormsApi\Fields\Option $opt */
-            $tag->addChild(
+            $dlist->addChild(
                 new TagElement(
                     [
                         'tag' => 'option',
@@ -116,8 +116,8 @@ class Datalist extends FieldMultivalues
                 )
             );
         }
-        $output .= $tag->renderTag();
+        $tag->addChild($dlist);
 
-        return $output;
+        return $tag;
     }
 }

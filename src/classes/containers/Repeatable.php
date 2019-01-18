@@ -329,9 +329,7 @@ class Repeatable extends FieldsContainerMultiple
                 $repeatablerow->addChild($field->renderHTML($form));
             }
             $repeatablerow->addChild(
-                "<a href=\"#\"
-                                            class=\"remove-btn btn\"
-                                            name=\"{$id}-remove-{$partitionindex}\">&times;</a>\n"
+                "<a href=\"#\" class=\"remove-btn btn\" name=\"{$id}-remove-{$partitionindex}\">&times;</a>\n"
             );
         }
 
