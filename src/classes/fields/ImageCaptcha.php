@@ -172,7 +172,7 @@ class ImageCaptcha extends Captcha
         $white = imagecolorallocate($im, 255, 255, 255);
         $grey = imagecolorallocate($im, 128, 128, 128);
 
-        $font = dirname(dirname(__FILE__)).'/fonts/Lato-Regular.ttf';
+        $font = dirname(dirname(dirname(__FILE__))).'/fonts/Lato-Regular.ttf';
         imagefilledrectangle($im, 0, 0, $this->image_width, $this->image_height, $white);
 
         $x = 5;
@@ -238,24 +238,46 @@ class ImageCaptcha extends Captcha
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $attributes = $this->getAttributes();
+//        $attributes = $this->getAttributes();
         $imagestring = $this->getImageString();
         $codeval = $this->pre_filled == true ? $this->code : '';
 
-        $output = "<div {$attributes}><img src=\"".$imagestring."\" border=\"0\"><br />";
         $tag = new TagElement(
+            [
+                'tag' => 'div',
+                'id' => $id,
+                'attributes' => $this->attributes,
+            ]
+        );
+        $tag->addChild(new TagElement(
+            [
+                'tag' => 'img',
+                'attributes' => ['src' => $imagestring, 'border' => 0],
+            ]
+        ));
+        $tag->addChild(new TagElement(
             [
                 'tag' => 'input',
                 'type' => 'text',
-                'id' => $id,
                 'name' => $this->name."[code]",
                 'value' => $codeval,
             ]
-        );
-        $output .= $tag->renderTag();
-        $output .= "</div>\n";
+        ));
+        return $tag;
 
-        return $output;
+//        $output = "<div {$attributes}><img src=\"".$imagestring."\" border=\"0\"><br />";
+//        $tag = new TagElement(
+//            [
+//                'tag' => 'input',
+//                'type' => 'text',
+//                'id' => $id,
+//                'name' => $this->name."[code]",
+//                'value' => $codeval,
+//            ]
+//        );
+//        $output .= $tag->renderTag();
+//        $output .= "</div>\n";
+//        return $output;
     }
 
     /**

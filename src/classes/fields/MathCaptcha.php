@@ -115,18 +115,24 @@ class MathCaptcha extends Captcha
         if ($this->pre_filled == true) {
             eval('$codeval = '.$this->a.$this->op.$this->b.';');
         }
-        $output = "<div id=\"{$id}\" {$attributes}>{$this->code}<br />";
+
         $tag = new TagElement(
+            [
+                'tag' => 'div',
+                'id' => $id,
+                'attributes' => $this->attributes,
+                'text' => $this->code,
+            ]
+        );
+        $tag->addChild(new TagElement(
             [
                 'tag' => 'input',
                 'type' => 'text',
                 'name' => $this->name."[code]",
                 'value' => $codeval,
             ]
-        );
-        $output .= $tag->renderTag();
-        $output .= "</div>\n";
-        return $output;
+        ));
+        return $tag;
     }
 
     /**
