@@ -16,6 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The google maps geolocation field class
@@ -438,10 +439,7 @@ class Gmaplocation extends Geolocation
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $attributes = $this->getAttributes();
-
         $this->tag = 'div';
-        $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
 
         $required = ($this->validate->hasValue('required')) ? '<span class="required">*</span>' : '';
         $requiredafter = $requiredbefore = $required;
@@ -453,45 +451,66 @@ class Gmaplocation extends Geolocation
             $requiredafter = ' '.$requiredafter;
         }
 
+        if (!empty($this->title) && $this->tooltip == true && !in_array('title', array_keys($this->attributes))) {
+            $this->attributes['title'] = strip_tags($this->getText($this->title).$required);
+        }
+
+        $tag = new TagElement(
+            [
+                'tag' => $this->tag,
+                'id' => $id,
+                'attributes' => $this->attributes,
+            ]
+        );
+
         if (!empty($this->title)) {
             if ($this->tooltip == false) {
                 $this->label_class .= " label-" .$this->getElementClassName();
                 $this->label_class = trim($this->label_class);
-                $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-                $output .= "<label for=\"{$id}\" {$label_class}>{$requiredbefore}".
-                            $this->getText($this->title).
-                            "{$requiredafter}</label>\n";
+                $tag_label = new TagElement(
+                    [
+                        'tag' => 'label',
+                        'attributes' => [
+                          'for' => $id,
+                          'class' => $this->label_class,
+                          'text' => $requiredbefore
+                        ],
+                    ]
+                );
+                $tag_label->addChild($this->getText($this->title));
+                $tag_label->addChild($requiredafter);
+                $tag->addChild($tag_label);
             } else {
-                if (!in_array('title', array_keys($this->attributes))) {
-                    $this->attributes['title'] = strip_tags($this->getText($this->title).$required);
-                }
-
                 $id = $this->getHtmlId();
                 $form->addJs("\$('#{$id}','#{$form->getId()}').tooltip();");
             }
         }
 
         if ($this->with_geocode == true) {
-            $output .= $this->geocode_box->renderHTML($form); // ."<button id=\"{$id}_searchbox_btn\">".$this->get_text('search')."</button>";
+            $tag->addChild($this->geocode_box->renderHTML($form));
         }
 
         if ($this->with_map == true) {
-            $mapattributes = ' class="gmap"';
-            $output .= "<div id=\"{$id}-map\" {$mapattributes}></div>\n";
+            $tag->addChild(new TagElement(
+                [
+                    'tag' => 'div',
+                    'id' => "{$id}-map",
+                    'attributes' => ['class' => 'gmap'],
+                ]
+            ));
         }
 
-        $output .= $this->latitude->renderHTML($form);
-        $output .= $this->longitude->renderHTML($form);
+        $tag->addChild($this->latitude->renderHTML($form));
+        $tag->addChild($this->longitude->renderHTML($form));
 
         if ($this->with_current_location == true) {
-            $output .= $this->current_location_btn->renderHTML($form);
+            $tag->addChild($this->current_location_btn->renderHTML($form));
         }
 
         if ($this->with_reverse == true) {
-            $output .= $this->reverse_geocode_box->renderHTML($form);
+            $tag->addChild($this->reverse_geocode_box->renderHTML($form));
         }
 
-        $output .= "</{$this->tag}>\n";
-        return $output;
+        return $tag;
     }
 }

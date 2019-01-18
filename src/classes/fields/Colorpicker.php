@@ -73,16 +73,21 @@ class Colorpicker extends Field
             $this->value = '';
         }
 
-        $output = "
-        <div id=\"{$id}\">
-            <div class=\"clearfix\">
+        $tag = new TagElement(
+            [
+                'tag' => 'div',
+                'id' => $id,
+            ]
+        );
+
+        $tag->addChild("<div class=\"clearfix\">
                 <div id=\"{$id}-red\"></div>
                 <div id=\"{$id}-green\"></div>
                 <div id=\"{$id}-blue\"></div>
                 <div id=\"{$id}-swatch\" class=\"ui-widget-content ui-corner-all\"></div>
-        </div>";
+        </div>");
 
-        $tag = new TagElement(
+        $tag->addChild(new TagElement(
             [
                 'tag' => 'input',
                 'type' => 'text',
@@ -90,10 +95,9 @@ class Colorpicker extends Field
                 'value' => htmlspecialchars($this->value),
                 'attributes' => $this->attributes + ['size' => $this->size, 'onFocus' => "blur();" ],
             ]
-        );
-        $output .= $tag->renderTag();
-        $output .= "</div>\n";
-        return $output;
+        ));
+
+        return $tag;
     }
 
     /**

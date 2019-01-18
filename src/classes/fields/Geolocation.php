@@ -17,6 +17,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The geolocation field class
@@ -153,7 +154,6 @@ class Geolocation extends ComposedField
         $attributes = $this->getAttributes();
 
         $this->tag = 'div';
-        $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
 
         $required = ($this->validate->hasValue('required')) ? '<span class="required">*</span>' : '';
         $requiredafter = $requiredbefore = $required;
@@ -165,27 +165,44 @@ class Geolocation extends ComposedField
             $requiredafter = ' '.$requiredafter;
         }
 
+        if (!empty($this->title) && $this->tooltip == true && !in_array('title', array_keys($this->attributes))) {
+            $this->attributes['title'] = strip_tags($this->getText($this->title).$required);
+        }
+
+        $tag = new TagElement(
+            [
+                'tag' => $this->tag,
+                'id' => $id,
+                'attributes' => $this->attributes,
+            ]
+        );
+
         if (!empty($this->title)) {
             if ($this->tooltip == false) {
                 $this->label_class .= " label-" .$this->getElementClassName();
                 $this->label_class = trim($this->label_class);
-                $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-                $output .= "<label for=\"{$id}\" {$label_class}>{$requiredbefore}".
-                            $this->getText($this->title).
-                            "{$requiredafter}</label>\n";
-            } else {
-                if (!in_array('title', array_keys($this->attributes))) {
-                    $this->attributes['title'] = strip_tags($this->getText($this->title).$required);
-                }
 
+                $tag_label = new TagElement(
+                    [
+                        'tag' => 'label',
+                        'attributes' => [
+                          'for' => $id,
+                          'class' => $this->label_class,
+                          'text' => $requiredbefore
+                        ],
+                    ]
+                );
+                $tag_label->addChild($this->getText($this->title));
+                $tag_label->addChild($requiredafter);
+                $tag->addChild($tag_label);
+            } else {
                 $id = $this->getHtmlId();
                 $form->addJs("\$('#{$id}','#{$form->getId()}').tooltip();");
             }
         }
-        $output .= $this->latitude->renderHTML($form);
-        $output .= $this->longitude->renderHTML($form);
-        $output .= "</{$this->tag}>\n";
-        return $output;
+        $tag->addChild($this->latitude->renderHTML($form));
+        $tag->addChild($this->longitude->renderHTML($form));
+        return $tag;
     }
 
     /**

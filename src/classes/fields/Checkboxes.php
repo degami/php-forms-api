@@ -38,7 +38,13 @@ class Checkboxes extends FieldMultivalues
             $this->default_value = [ $this->default_value ];
         }
 
-        $output = '<div class="options">';
+        $tag = new TagElement(
+            [
+                'tag' => 'div',
+                'attributes' => ['class' => 'options'],
+            ]
+        );
+
         if ($this->disabled == true) {
             $this->attributes['disabled']='disabled';
         }
@@ -47,7 +53,7 @@ class Checkboxes extends FieldMultivalues
             if ($value instanceof Checkbox) {
                 $value->setName("{$this->name}".(count($this->options)>1 ? "[]":""));
                 $value->setId("{$this->name}-{$key}");
-                $output .= $value->renderHTML($form);
+                $tag->addChild($value->renderHTML($form));
             } else {
                 if (is_array($value) && isset($value['attributes'])) {
                     $attributes = $value['attributes'];
@@ -58,8 +64,13 @@ class Checkboxes extends FieldMultivalues
                     $value = $value['value'];
                 }
 
-                $output .= "<label class=\"label-checkbox\" for=\"{$id}-{$key}\">";
-                $tag = new TagElement(
+                $tag_label = new TagElement(
+                    [
+                        'tag' => 'label',
+                        'attributes' => ['for' => "{$id}-{$key}", 'class' => "label-checkbox"],
+                    ]
+                );
+                $tag_label->addChild(new TagElement(
                     [
                         'tag' => 'input',
                         'type' => 'checkbox',
@@ -76,12 +87,11 @@ class Checkboxes extends FieldMultivalues
                         ),
                         'text' => $value,
                     ]
-                );
-                $output .= $tag->renderTag();
-                $output .= "</label>\n";
+                ));
+                $tag->addChild($tag_label);
             }
         }
-        $output .= '</div>';
-        return $output;
+
+        return $tag;
     }
 }

@@ -16,6 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The switch selection field class
@@ -110,27 +111,53 @@ class Switchbox extends Radios
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $output = "<div class=\"options ui-widget-content ui-corner-all\" id=\"{$id}\">";
+        $tag = new TagElement(
+            [
+                'tag' => 'div',
+                'id' => $id,
+                'attributes' => ['class' => 'options ui-widget-content ui-corner-all'],
+            ]
+        );
+
         if ($this->disabled == true) {
             $this->attributes['disabled']='disabled';
         }
 
         foreach ($this->options as $key => $value) {
-            $attributes = $this->getAttributes();
+            $attributes = $this->attributes;
             if (is_array($value) && isset($value['attributes'])) {
-                $attributes = $this->getAttributesString($value['attributes'], ['type','name','id','value']);
+                $attributes = $value['attributes'];
             }
             if (is_array($value)) {
                 $value = $value['value'];
             }
 
-            $checked = ($this->value == $key) ? ' checked="checked"' : '';
-            $output .= "<label class=\"label-switch ui-widget ui-state-default\" 
-                          id=\"{$id}-{$key}-button\" for=\"{$id}-{$key}\">
-                        <input type=\"radio\" id=\"{$id}-{$key}\" name=\"{$this->name}\" 
-                          value=\"{$key}\" {$checked} {$attributes} />{$value}</label>";
+            $tag_label = new TagElement(
+                [
+                    'tag' => 'label',
+                    'attributes' => [
+                      'id' => "{$id}-{$key}-button",
+                      'for' => "{$id}-{$key}",
+                      'class' => "label-switch ui-widget ui-state-default"
+                    ],
+                ]
+            );
+            $tag_label->addChild(new TagElement(
+                [
+                    'tag' => 'input',
+                    'type' => 'radio',
+                    'id' => "{$id}-{$key}",
+                    'name' => "{$this->name}",
+                    'value' => $key,
+                    'attributes' => array_merge(
+                        $attributes,
+                        (($this->value == $key) ? ['checked' => 'checked'] : [])
+                    ),
+                    'text' => $value,
+                ]
+            ));
+            $tag->addChild($tag_label);
         }
-        $output .= "</div>";
-        return $output;
+        return $tag;
     }
 }

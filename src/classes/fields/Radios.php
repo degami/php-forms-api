@@ -35,7 +35,13 @@ class Radios extends FieldMultivalues
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $output = '<div class="options">';
+        $tag = new TagElement(
+            [
+                'tag' => 'div',
+                'attributes' => ['class' => 'options'],
+            ]
+        );
+
         if ($this->disabled == true) {
             $this->attributes['disabled']='disabled';
         }
@@ -51,8 +57,13 @@ class Radios extends FieldMultivalues
                 $value = $value['value'];
             }
 
-            $output .= "<label class=\"label-radio\" for=\"{$id}-{$key}\">";
-            $tag = new TagElement(
+            $tag_label = new TagElement(
+                [
+                    'tag' => 'label',
+                    'attributes' => ['for' => "{$id}-{$key}", 'class' => "label-radio"],
+                ]
+            );
+            $tag_label->addChild(new TagElement(
                 [
                     'tag' => 'input',
                     'type' => 'radio',
@@ -62,11 +73,9 @@ class Radios extends FieldMultivalues
                     'attributes' => array_merge($attributes, ($this->value == $key) ? ['checked' => 'checked'] : []),
                     'text' => $value,
                 ]
-            );
-            $output .= $tag->renderTag();
-            $output .= "</label>\n";
+            ));
+            $tag->addChild($tag_label);
         }
-        $output .= '</div>';
-        return $output;
+        return $tag;
     }
 }
