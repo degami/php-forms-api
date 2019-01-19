@@ -148,54 +148,6 @@ class Datetime extends ComposedField
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @param Form $form form object
-     *
-     * @return string        the element html
-     */
-    public function renderField(Form $form)
-    {
-        $id = $this->getHtmlId();
-        $attributes = $this->getAttributes();
-
-        $this->tag = 'div';
-        $output = "<{$this->tag} id=\"{$id}\"{$attributes}>\n";
-
-        $required = ($this->validate->hasValue('required')) ? '<span class="required">*</span>' : '';
-        $requiredafter = $requiredbefore = $required;
-        if ($this->required_position == 'before') {
-            $requiredafter = '';
-            $requiredbefore = $requiredbefore.' ';
-        } else {
-            $requiredbefore = '';
-            $requiredafter = ' '.$requiredafter;
-        }
-
-        if (!empty($this->title)) {
-            if ($this->tooltip == false) {
-                $this->label_class .= " label-" .$this->getElementClassName();
-                $this->label_class = trim($this->label_class);
-                $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
-                $output .= "<label for=\"{$id}\" {$label_class}>{$requiredbefore}".
-                            $this->getText($this->title).
-                            "{$requiredafter}</label>\n";
-            } else {
-                if (!in_array('title', array_keys($this->attributes))) {
-                    $this->attributes['title'] = strip_tags($this->getText($this->title).$required);
-                }
-
-                $id = $this->getHtmlId();
-                $form->addJs("\$('#{$id}','#{$form->getId()}').tooltip();");
-            }
-        }
-        $output .= $this->date->renderHTML($form);
-        $output .= $this->time->renderHTML($form);
-        $output .= "</{$this->tag}>\n";
-        return $output;
-    }
-
-    /**
      * Return field value
      *
      * @return array field value
