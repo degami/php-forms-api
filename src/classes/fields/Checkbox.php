@@ -66,24 +66,20 @@ class Checkbox extends Field
             $this->attributes['checked'] = 'checked';
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'label',
-                'attributes' => ['for' => $id, 'class' => $this->label_class],
-                'text' => (($this->text_position == 'before') ? $this->getText($this->title) : ''),
-            ]
-        );
-        $tag->addChild(new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'checkbox',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => $this->default_value,
-                'attributes' => $this->attributes,
-                'text' => (($this->text_position != 'before') ? $this->getText($this->title) : ''),
-            ]
-        ));
+        $tag = new TagElement([
+            'tag' => 'label',
+            'attributes' => ['for' => $id, 'class' => $this->label_class],
+            'text' => (($this->text_position == 'before') ? $this->getText($this->title) : ''),
+        ]);
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'checkbox',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => $this->default_value,
+            'attributes' => $this->attributes,
+            'text' => (($this->text_position != 'before') ? $this->getText($this->title) : ''),
+        ]));
         return $tag;
     }
 

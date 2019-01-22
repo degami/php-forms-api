@@ -242,42 +242,22 @@ class ImageCaptcha extends Captcha
         $imagestring = $this->getImageString();
         $codeval = $this->pre_filled == true ? $this->code : '';
 
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'id' => $id,
-                'attributes' => $this->attributes,
-            ]
-        );
-        $tag->addChild(new TagElement(
-            [
-                'tag' => 'img',
-                'attributes' => ['src' => $imagestring, 'border' => 0],
-            ]
-        ));
-        $tag->addChild(new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'text',
-                'name' => $this->name."[code]",
-                'value' => $codeval,
-            ]
-        ));
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
+        $tag->addChild(new TagElement([
+            'tag' => 'img',
+            'attributes' => ['src' => $imagestring, 'border' => 0],
+        ]));
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'text',
+            'name' => $this->name."[code]",
+            'value' => $codeval,
+        ]));
         return $tag;
-
-//        $output = "<div {$attributes}><img src=\"".$imagestring."\" border=\"0\"><br />";
-//        $tag = new TagElement(
-//            [
-//                'tag' => 'input',
-//                'type' => 'text',
-//                'id' => $id,
-//                'name' => $this->name."[code]",
-//                'value' => $codeval,
-//            ]
-//        );
-//        $output .= $tag->renderTag();
-//        $output .= "</div>\n";
-//        return $output;
     }
 
     /**

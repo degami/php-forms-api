@@ -274,20 +274,16 @@ class Repeatable extends FieldsContainerMultiple
     {
         $id = $this->getHtmlId();
 
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'id' => $id,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
-        $target = new TagElement(
-            [
-                'tag' => 'div',
-                'attributes' => ['class' => 'fields-target'],
-            ]
-        );
+        $target = new TagElement([
+            'tag' => 'div',
+            'attributes' => ['class' => 'fields-target'],
+        ]);
 
         $tag->addChild($target);
 
@@ -307,23 +303,24 @@ class Repeatable extends FieldsContainerMultiple
                 array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
             }
 
-            $inner = new TagElement(
-                [
-                    'tag' => 'div',
-                    'id' => $id.'-row-'.$partitionindex,
-                ]
-            );
+            $inner = new TagElement([
+                'tag' => 'div',
+                'id' => $id.'-row-'.$partitionindex,
+            ]);
             $target->addChild($inner);
 
-            $repeatablerow = new TagElement(
-                [
-                    'tag' => 'div',
-                    'attributes' => ['class' => 'repeatable-row'],
-                ]
-            );
+            $repeatablerow = new TagElement([
+                'tag' => 'div',
+                'attributes' => ['class' => 'repeatable-row'],
+            ]);
             $inner->addChild($repeatablerow);
 
-            $repeatablerow->addChild("<input type=\"hidden\" name=\"{$id}-numreps\" value=\"{$this->num_reps}\" />\n");
+            $repeatablerow->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'hidden',
+                'name' => $id.'-numreps',
+                'value' => $this->num_reps,
+            ]));
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
                 $repeatablerow->addChild($field->renderHTML($form));
@@ -333,18 +330,14 @@ class Repeatable extends FieldsContainerMultiple
             );
         }
 
-        $tag->addChild(
-            new TagElement(
-                [
-                    'tag' => 'button',
-                    'id' => $id.'-btn-addmore',
-                    'attributes' => ['class' => 'btn btnaddmore'],
-                    'text' => $this->getText('+'),
-                    'has_close' => true,
-                    'value_needed' => false,
-                ]
-            )
-        );
+        $tag->addChild(new TagElement([
+            'tag' => 'button',
+            'id' => $id.'-btn-addmore',
+            'attributes' => ['class' => 'btn btnaddmore'],
+            'text' => $this->getText('+'),
+            'has_close' => true,
+            'value_needed' => false,
+        ]));
 
         return $tag;
     }

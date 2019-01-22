@@ -68,13 +68,11 @@ class Accordion extends FieldsContainerMultiple
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'id' => $id,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
         foreach ($this->partitions as $accordionindex => $accordion) {
             $insertorder = array_flip($this->insert_field_order[$accordionindex]);
@@ -91,33 +89,26 @@ class Accordion extends FieldsContainerMultiple
             if (count($partition_fields) > 0) {
                 array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
             }
-            $tag->addChild(
-                new TagElement(
-                    [
-                        'tag' => 'h3',
-                        'text' => $this->getText($this->partitions[$accordionindex]['title']),
-                        'attributes' => [
-                            'class' => 'tabel '.(
-                                $this->partitionHasErrors($accordionindex, $form) ?
-                                'has-errors' : ''
-                            )
-                        ],
-                    ]
-                )
-            );
-            $inner = new TagElement(
-                [
-                    'tag' => 'div',
-                    'id' => $id.'-tab-inner-'.$accordionindex,
-                    'attributes' => [
-                        'class' => 'tab-inner'.(
-                            $this->partitionHasErrors($accordionindex, $form) ?
-                            ' has-errors' : ''
-                        )
-                    ],
-                ]
-            );
-
+            $tag->addChild(new TagElement([
+                'tag' => 'h3',
+                'text' => $this->getText($this->partitions[$accordionindex]['title']),
+                'attributes' => [
+                    'class' => 'tabel '.(
+                        $this->partitionHasErrors($accordionindex, $form) ?
+                        'has-errors' : ''
+                    )
+                ],
+            ]));
+            $inner = new TagElement([
+                'tag' => 'div',
+                'id' => $id.'-tab-inner-'.$accordionindex,
+                'attributes' => [
+                    'class' => 'tab-inner'.(
+                        $this->partitionHasErrors($accordionindex, $form) ?
+                        ' has-errors' : ''
+                    )
+                ],
+            ]);
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
                 $inner->addChild($field->renderHTML($form));

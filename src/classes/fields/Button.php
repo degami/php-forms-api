@@ -60,17 +60,15 @@ class Button extends Clickable
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'button',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => $this->value,
-                'text' => $this->getText($this->label),
-                'attributes' => $this->attributes,
-                'has_close' => true,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'button',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => $this->value,
+            'text' => $this->getText($this->label),
+            'attributes' => $this->attributes,
+            'has_close' => true,
+        ]);
         return $tag;
     }
 }

@@ -59,16 +59,14 @@ class Email extends Field
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'email',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => $this->value,
-                'attributes' => $this->attributes + ['size' => $this->size],
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'input',
+            'type' => 'email',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => $this->value,
+            'attributes' => $this->attributes + ['size' => $this->size],
+        ]);
         return $tag;
     }
 

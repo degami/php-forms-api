@@ -150,55 +150,37 @@ class TableContainer extends FieldsContainerMultiple
             $rows++;
         }
 
-        $tag = new TagElement(
-            [
+        $tag = new TagElement([
             'tag' => 'table',
             'id' => $id,
             'attributes' => $this->attributes,
-            ]
-        );
+        ]);
 
         if (!empty($this->table_header)) {
             if (!is_array($this->table_header)) {
                 $this->table_header = [$this->table_header];
             }
 
-            $thead = new TagElement(
-                [
-                    'tag' => 'thead',
-                ]
-            );
+            $thead = new TagElement(['tag' => 'thead']);
             $tag->addChild($thead);
 
             foreach ($this->table_header as $th) {
                 if (is_array($th)) {
-                    $thead->addChild(
-                        new TagElement(
-                            [
-                                'tag' => 'th',
-                                'text' => $this->getText($th['value']),
-                                'attributes' => $th['attributes'],
-                            ]
-                        )
-                    );
+                    $thead->addChild(new TagElement([
+                        'tag' => 'th',
+                        'text' => $this->getText($th['value']),
+                        'attributes' => $th['attributes'],
+                    ]));
                 } else {
-                    $thead->addChild(
-                        new TagElement(
-                            [
-                                'tag' => 'th',
-                                'text' => $this->getText($th),
-                            ]
-                        )
-                    );
+                    $thead->addChild(new TagElement([
+                        'tag' => 'th',
+                        'text' => $this->getText($th),
+                    ]));
                 }
             }
         }
 
-        $tbody = new TagElement(
-            [
-                'tag' => 'tbody',
-            ]
-        );
+        $tbody = new TagElement(['tag' => 'tbody']);
         $tag->addChild($tbody);
 
         $rows = 0;
@@ -207,9 +189,7 @@ class TableContainer extends FieldsContainerMultiple
             $weights = [];
             $order = [];
             foreach ($this->getPartitionFields($trindex) as $key => $elem) {
-                /**
-                 * @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem
-                 */
+                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
                 $weights[$key]  = $elem->getWeight();
                 $order[$key] = $insertorder[$key];
             }
@@ -219,12 +199,10 @@ class TableContainer extends FieldsContainerMultiple
                 $this->setPartitionFields($partition_fields, $trindex);
             }
 
-            $trow = new TagElement(
-                [
-                    'tag' => 'tr',
-                    'id' => $id.'-row-'.$trindex,
-                ]
-            );
+            $trow = new TagElement([
+                'tag' => 'tr',
+                'id' => $id.'-row-'.$trindex,
+            ]);
             $tbody->addChild($trow);
 
             $cols = 0;

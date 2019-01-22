@@ -90,16 +90,14 @@ class Number extends Field
             ];
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'number',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => $this->value,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'input',
+            'type' => 'number',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => $this->value,
+            'attributes' => $this->attributes,
+        ]);
         return $tag;
     }
 

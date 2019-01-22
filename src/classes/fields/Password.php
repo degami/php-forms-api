@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\PHPFormsApi\Accessories\TagList;
 
 /**
  * The password input field class
@@ -119,40 +120,42 @@ class Password extends Field
             $this->attributes['class'] .= ' has-errors';
         }
         if ($this->disabled == true) {
-            $this->attributes['disabled']='disabled';
+            $this->attributes['disabled'] = 'disabled';
         }
-        $output = "";
 
-        $tag = new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'password',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => "",
-                'attributes' => $this->attributes + ['size' => $this->size],
-            ]
-        );
-        $output .= $tag->renderTag();
+        $tag = new TagList();
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'password',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => "",
+            'attributes' => $this->attributes + ['size' => $this->size],
+        ]));
 
         if ($this->with_confirm == true) {
-            $output .= "<label for=\"{$id}-confirm\">".$this->getText($this->confirm_string)."</label>";
-            $tag = new TagElement(
-                [
-                    'tag' => 'input',
-                    'type' => 'password',
-                    'id' => $id.'-confirm',
-                    'name' => $this->name.'_confirm',
-                    'value' => "",
-                    'attributes' => $this->attributes + ['size' => $this->size],
-                ]
-            );
-            $output .= $tag->renderTag();
+            $tag->addChild(new TagElement([
+                'tag' => 'label',
+                'attributes' => ['for' => $id.'-confirm'],
+                'text' => $this->getText($this->confirm_string),
+            ]));
+            $tag->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'password',
+                'id' => $id.'-confirm',
+                'name' => $this->name.'_confirm',
+                'value' => "",
+                'attributes' => $this->attributes + ['size' => $this->size],
+            ]));
         }
         if ($this->with_strength_check) {
-            $output .= "<span id=\"{$id}_result\" class=\"password_strength_checker\"></span>";
+            $tag->addChild(new TagElement([
+                'tag' => 'span',
+                'id' => $id.'_result',
+                'attributes' => ['class' => 'password_strength_checker'],
+            ]));
         }
-        return $output;
+        return $tag;
     }
 
     /**

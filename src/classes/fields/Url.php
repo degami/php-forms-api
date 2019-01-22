@@ -63,16 +63,14 @@ class Url extends Field
             $this->value = '';
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'url',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => htmlspecialchars($this->value),
-                'attributes' => $this->attributes + ['size' => $this->size],
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'input',
+            'type' => 'url',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => htmlspecialchars($this->value),
+            'attributes' => $this->attributes + ['size' => $this->size],
+        ]);
         return $tag;
     }
 

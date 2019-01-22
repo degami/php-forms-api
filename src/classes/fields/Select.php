@@ -134,24 +134,24 @@ class Select extends FieldMultivalues
         $attributes = $this->getAttributes();
         $field_name = ($this->multiple) ? "{$this->name}[]" : $this->name;
 
-        $tag = new TagElement(
-            [
-                'tag' => 'select',
-                'id' => $id,
-                'name' => $field_name,
-                'value' => htmlspecialchars($this->value),
-                'attributes' => $this->attributes + (
-                    ($this->multiple) ? ['multiple' => 'multiple','size' => $this->size] : []
-                ),
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'select',
+            'id' => $id,
+            'name' => $field_name,
+            'value' => htmlspecialchars($this->value),
+            'attributes' => $this->attributes + (
+                ($this->multiple) ? ['multiple' => 'multiple','size' => $this->size] : []
+            ),
+        ]);
 
         if (isset($this->attributes['placeholder']) && !empty($this->attributes['placeholder'])) {
-            $tag->addChild(
-                '<option disabled '.(isset($this->default_value) ? '' : 'selected').'>'.
-                    $this->attributes['placeholder'].
-                '</option>'
-            );
+            $tag->addChild(new TagElement([
+              'tag' => 'option',
+              'attributes' => [
+                'disabled' => 'disabled',
+              ] + (isset($this->default_value) ? [] : ['selected' => 'selected']),
+              'text' => $this->attributes['placeholder'],
+            ]));
         }
 
         foreach ($this->options as $key => $value) {

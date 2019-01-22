@@ -48,16 +48,14 @@ class Hidden extends Field
     {
         $id = $this->getHtmlId();
 
-        $tag = new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'hidden',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => $this->value,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'input',
+            'type' => 'hidden',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => $this->value,
+            'attributes' => $this->attributes,
+        ]);
         return $tag;
     }
 

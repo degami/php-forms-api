@@ -17,6 +17,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The date select group field class
@@ -113,7 +114,6 @@ class Dateselect extends Field
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $output = '';
 
         if (!isset($this->attributes['class'])) {
             $this->attributes['class'] = '';
@@ -124,56 +124,78 @@ class Dateselect extends Field
         if ($this->disabled == true) {
             $this->attributes['disabled']='disabled';
         }
-        $attributes = $this->getAttributes(['type','name','id','size','day','month','year']);
 
-        $output .= "<div id=\"{$id}\" {$attributes}>";
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
         if ($this->granularity!='year' && $this->granularity!='month') {
-            $attributes = ''.($this->disabled == true) ? ' disabled="disabled"':'';
-            if (isset($this->attributes['day']) && is_array($this->attributes['day'])) {
-                if ($this->disabled == true) {
-                    $this->attributes['day']['disabled']='disabled';
-                }
-                $attributes = $this->getAttributesString($this->attributes['day'], ['type','name','id','value']);
+            if (!(isset($this->attributes['day']) && is_array($this->attributes['day']))) {
+                $this->attributes['day'] = [];
             }
-            $output .= "<select name=\"{$this->name}[day]\" {$attributes}>";
+            if ($this->disabled == true) {
+                $this->attributes['day']['disabled']='disabled';
+            }
+            $select_day = new TagElement([
+                'tag' => 'select',
+                'name' => $this->name.'[day]',
+                'attributes' => $this->attributes['day'],
+            ]);
             for ($i=1; $i<=31; $i++) {
-                $selected = ($i == $this->value['day']) ? ' selected="selected"' : '';
-                $output .= "<option value=\"{$i}\" {$selected}>{$i}</option>";
+                $select_day->addChild(new TagElement([
+                    'tag' => 'option',
+                    'value' => $i,
+                    'attributes' => [] + (($i == $this->value['day']) ? ['selected' => 'selected'] : []),
+                    'text' => $i,
+                ]));
             }
-            $output .= "</select>";
+            $tag->addChild($select_day);
         }
         if ($this->granularity!='year') {
-            $attributes = ''.($this->disabled == true) ? ' disabled="disabled"':'';
-            if (isset($this->attributes['month']) && is_array($this->attributes['month'])) {
-                if ($this->disabled == true) {
-                    $this->attributes['month']['disabled']='disabled';
-                }
-                $attributes = $this->getAttributesString($this->attributes['month'], ['type','name','id','value']);
+            if (!(isset($this->attributes['month']) && is_array($this->attributes['month']))) {
+                $this->attributes['month'] = [];
             }
-            $output .= "<select name=\"{$this->name}[month]\" {$attributes}>";
-            for ($i=1; $i<=12; $i++) {
-                $selected = ($i == $this->value['month']) ? ' selected="selected"' : '';
-                $output .= "<option value=\"{$i}\" {$selected}>{$i}</option>";
-            }
-            $output .= "</select>";
-        }
-        $attributes = ''.($this->disabled == true) ? ' disabled="disabled"':'';
-        if (isset($this->attributes['year']) && is_array($this->attributes['year'])) {
             if ($this->disabled == true) {
-                $this->attributes['year']['disabled']='disabled';
+                $this->attributes['month']['disabled']='disabled';
             }
-            $attributes = $this->getAttributesString($this->attributes['year'], ['type','name','id','value']);
+            $select_month = new TagElement([
+                'tag' => 'select',
+                'name' => $this->name.'[month]',
+                'attributes' => $this->attributes['month'],
+            ]);
+            for ($i=1; $i<=12; $i++) {
+                $select_month->addChild(new TagElement([
+                    'tag' => 'option',
+                    'value' => $i,
+                    'attributes' => [] + (($i == $this->value['month']) ? ['selected' => 'selected'] : []),
+                    'text' => $i,
+                ]));
+            }
+            $tag->addChild($select_month);
         }
-        $output .= "<select name=\"{$this->name}[year]\" {$attributes}>";
+        if (!(isset($this->attributes['year']) && is_array($this->attributes['year']))) {
+            $this->attributes['year'] = [];
+        }
+        if ($this->disabled == true) {
+            $this->attributes['year']['disabled']='disabled';
+        }
+        $select_year = new TagElement([
+            'tag' => 'select',
+            'name' => $this->name.'[year]',
+            'attributes' => $this->attributes['year'],
+        ]);
         for ($i=$this->start_year; $i<=$this->end_year; $i++) {
-            $selected = ($i == $this->value['year']) ? ' selected="selected"' : '';
-            $output .= "<option value=\"{$i}\" {$selected}>{$i}</option>";
+            $select_year->addChild(new TagElement([
+                'tag' => 'option',
+                'value' => $i,
+                'attributes' => [] + (($i == $this->value['year']) ? ['selected' => 'selected'] : []),
+                'text' => $i,
+            ]));
         }
-        $output .= "</select>";
-        $output .= "</div>";
-
-        return $output;
+        $tag->addChild($select_year);
+        return $tag;
     }
 
     /**

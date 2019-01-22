@@ -82,39 +82,31 @@ class Datalist extends FieldMultivalues
         }
 
         $tag = new TagList();
-        $tag->addChild(new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'text',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => htmlspecialchars($this->value),
-                'attributes' => $this->attributes + ['size' => $this->size, 'list' => $this->name."-data"],
-            ]
-        ));
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'text',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => htmlspecialchars($this->value),
+            'attributes' => $this->attributes + ['size' => $this->size, 'list' => $this->name."-data"],
+        ]));
 
-        $dlist = new TagElement(
-            [
-                'tag' => 'datalist',
-                'type' => null,
-                'id' => $this->name.'-data',
-                'value_needed' => false,
-                'has_close' => true,
-            ]
-        );
+        $dlist = new TagElement([
+            'tag' => 'datalist',
+            'type' => null,
+            'id' => $this->name.'-data',
+            'value_needed' => false,
+            'has_close' => true,
+        ]);
         foreach ($this->options as $key => $opt) {
             /** @var \Degami\PHPFormsApi\Fields\Option $opt */
-            $dlist->addChild(
-                new TagElement(
-                    [
-                        'tag' => 'option',
-                        'type' => null,
-                        'value' => $opt->getKey(),
-                        'text' => $this->getText($opt->getLabel()),
-                        'has_close' => true,
-                    ]
-                )
-            );
+            $dlist->addChild(new TagElement([
+                'tag' => 'option',
+                'type' => null,
+                'value' => $opt->getKey(),
+                'text' => $this->getText($opt->getLabel()),
+                'has_close' => true,
+            ]));
         }
         $tag->addChild($dlist);
 

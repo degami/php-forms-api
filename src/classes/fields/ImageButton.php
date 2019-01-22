@@ -68,16 +68,14 @@ class ImageButton extends Clickable
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'image',
-                'id' => $id,
-                'name' => $this->name,
-                'value_needed' => false,
-                'attributes' => $this->attributes + ['src' => $this->src, 'alt' => $this->alt],
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'input',
+            'type' => 'image',
+            'id' => $id,
+            'name' => $this->name,
+            'value_needed' => false,
+            'attributes' => $this->attributes + ['src' => $this->src, 'alt' => $this->alt],
+        ]);
         return $tag;
     }
 

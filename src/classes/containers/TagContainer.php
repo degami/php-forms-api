@@ -57,15 +57,13 @@ class TagContainer extends FieldsContainer
     {
         $id = $this->getHtmlId();
 
-        $tag = new TagElement(
-            [
-                'tag' => $this->tag,
-                'id' => $id,
-                'attributes' => $this->attributes,
-                'has_close' => true,
-                'value_needed' => false,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => $this->tag,
+            'id' => $id,
+            'attributes' => $this->attributes,
+            'has_close' => true,
+            'value_needed' => false,
+        ]);
 
         $insertorder = array_flip($this->insert_field_order);
         $weights = [];

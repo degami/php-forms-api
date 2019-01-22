@@ -24,7 +24,6 @@ use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
  */
 class Radios extends FieldMultivalues
 {
-
     /**
      * {@inheritdoc}
      *
@@ -35,15 +34,13 @@ class Radios extends FieldMultivalues
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'attributes' => ['class' => 'options'],
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div',
+            'attributes' => ['class' => 'options'],
+        ]);
 
         if ($this->disabled == true) {
-            $this->attributes['disabled']='disabled';
+            $this->attributes['disabled'] = 'disabled';
         }
 
         foreach ($this->options as $key => $value) {
@@ -57,23 +54,19 @@ class Radios extends FieldMultivalues
                 $value = $value['value'];
             }
 
-            $tag_label = new TagElement(
-                [
-                    'tag' => 'label',
-                    'attributes' => ['for' => "{$id}-{$key}", 'class' => "label-radio"],
-                ]
-            );
-            $tag_label->addChild(new TagElement(
-                [
-                    'tag' => 'input',
-                    'type' => 'radio',
-                    'id' => "{$id}-{$key}",
-                    'name' => $this->name,
-                    'value' => $key,
-                    'attributes' => array_merge($attributes, ($this->value == $key) ? ['checked' => 'checked'] : []),
-                    'text' => $value,
-                ]
-            ));
+            $tag_label = new TagElement([
+                'tag' => 'label',
+                'attributes' => ['for' => "{$id}-{$key}", 'class' => "label-radio"],
+            ]);
+            $tag_label->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'radio',
+                'id' => "{$id}-{$key}",
+                'name' => $this->name,
+                'value' => $key,
+                'attributes' => array_merge($attributes, ($this->value == $key) ? ['checked' => 'checked'] : []),
+                'text' => $value,
+            ]));
             $tag->addChild($tag_label);
         }
         return $tag;

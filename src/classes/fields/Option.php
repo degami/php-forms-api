@@ -68,16 +68,14 @@ class Option extends Optionable
                 $this->attributes['selected'] = 'selected';
             }
         }
-        $tag = new TagElement(
-            [
-                'tag' => 'option',
-                'type' => null,
-                'value' => $this->key,
-                'text' => $this->getText($this->label),
-                'attributes' => $this->attributes + ['class' => false],
-                'has_close' => true,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'option',
+            'type' => null,
+            'value' => $this->key,
+            'text' => $this->getText($this->label),
+            'attributes' => $this->attributes + ['class' => false],
+            'has_close' => true,
+        ]);
         return $tag;
     }
 

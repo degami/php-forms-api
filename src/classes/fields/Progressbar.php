@@ -82,28 +82,24 @@ class Progressbar extends Markup
             $this->addCss("#{$form->getId()} #{$id} .progress-label {position: absolute;left: 50%;top: 4px;}");
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'type' => null,
-                'id' => $id,
-                'text' => null,
-                'attributes' => $this->attributes,
-                'has_close' => true,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div',
+            'type' => null,
+            'id' => $id,
+            'text' => null,
+            'attributes' => $this->attributes,
+            'has_close' => true,
+        ]);
 
         if ($this->show_label == true) {
-            $tag->addChild(new TagElement(
-                [
-                    'tag' => 'div',
-                    'type' => null,
-                    'id' => null,
-                    'text' => null,
-                    'attributes' => ['class' => 'progress-label'],
-                    'has_close' => true,
-                ]
-            ));
+            $tag->addChild(new TagElement([
+                'tag' => 'div',
+                'type' => null,
+                'id' => null,
+                'text' => null,
+                'attributes' => ['class' => 'progress-label'],
+                'has_close' => true,
+            ]));
         }
         return $tag;
     }

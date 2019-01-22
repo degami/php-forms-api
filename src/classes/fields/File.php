@@ -63,25 +63,21 @@ class File extends Field
         }
 
         $tag = new TagList();
-        $tag->addChild(new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'hidden',
-                'name' => $this->name,
-                'value' => $this->name,
-            ]
-        ));
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'hidden',
+            'name' => $this->name,
+            'value' => $this->name,
+        ]));
 
-        $tag->addChild(new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'file',
-                'id' => $id,
-                'name' => $this->name,
-                'value_needed' => false,
-                'attributes' => $this->attributes + ['size' => $this->size],
-            ]
-        ));
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'file',
+            'id' => $id,
+            'name' => $this->name,
+            'value_needed' => false,
+            'attributes' => $this->attributes + ['size' => $this->size],
+        ]));
 
         return $tag;
     }

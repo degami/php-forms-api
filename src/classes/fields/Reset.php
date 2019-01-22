@@ -56,16 +56,14 @@ class Reset extends Action
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'reset',
-                'id' => $id,
-                'name' => $this->name,
-                'value' => $this->getText($this->value),
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'input',
+            'type' => 'reset',
+            'id' => $id,
+            'name' => $this->name,
+            'value' => $this->getText($this->value),
+            'attributes' => $this->attributes,
+        ]);
         return $tag;
     }
 }

@@ -78,16 +78,14 @@ class Textarea extends Field
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'textarea',
-                'id' => $id,
-                'name' => $this->name,
-                'text' => $this->value,
-                'attributes' => $this->attributes + ['cols' => $this->size, 'rows' => $this->rows],
-                'has_close' => true,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'textarea',
+            'id' => $id,
+            'name' => $this->name,
+            'text' => $this->value,
+            'attributes' => $this->attributes + ['cols' => $this->size, 'rows' => $this->rows],
+            'has_close' => true,
+        ]);
         return $tag;
     }
 

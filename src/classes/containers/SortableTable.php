@@ -77,62 +77,40 @@ class SortableTable extends SortableContainer
 
         $handle_position = trim(strtolower($this->getHandlePosition()));
 
-        $tag = new TagElement(
-            [
-                'tag' => 'table',
-                'id' => $id,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'table',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
         if (!empty($this->table_header)) {
             if (!is_array($this->table_header)) {
                 $this->table_header = [$this->table_header];
             }
 
-            $thead = new TagElement(
-                [
-                    'tag' => 'thead',
-                ]
-            );
+            $thead = new TagElement(['tag' => 'thead']);
             $tag->addChild($thead);
 
             if ($handle_position != 'right') {
-                $thead->addChild(
-                    new TagElement(
-                        [
-                            'tag' => 'th',
-                            'text' => '&nbsp;',
-                        ]
-                    )
-                );
+                $thead->addChild(new TagElement([
+                    'tag' => 'th',
+                    'text' => '&nbsp;',
+                ]));
             }
             foreach ($this->table_header as $th) {
-                $thead->addChild(
-                    new TagElement(
-                        [
-                            'tag' => 'th',
-                            'text' => $this->getText($th),
-                        ]
-                    )
-                );
+                $thead->addChild(new TagElement([
+                    'tag' => 'th',
+                    'text' => $this->getText($th),
+                ]));
             }
             if ($handle_position == 'right') {
-                $thead->addChild(
-                    new TagElement(
-                        [
-                            'tag' => 'th', 'text' => '&nbsp;',
-                        ]
-                    )
-                );
+                $thead->addChild(new TagElement([
+                    'tag' => 'th', 'text' => '&nbsp;',
+                ]));
             }
         }
 
-        $tbody = new TagElement(
-            [
-                'tag' => 'tbody',
-            ]
-        );
+        $tbody = new TagElement(['tag' => 'tbody']);
         $tag->addChild($tbody);
 
         foreach ($this->partitions as $trindex => $tr) {
@@ -153,33 +131,27 @@ class SortableTable extends SortableContainer
                 array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
             }
 
-            $trow = new TagElement(
-                [
-                    'tag' => 'tr',
-                    'id' => $id.'-sortable-'.$trindex,
-                    'attributes' => [ 'class' => 'tab-inner ui-state-default'],
-                ]
-            );
+            $trow = new TagElement([
+                'tag' => 'tr',
+                'id' => $id.'-sortable-'.$trindex,
+                'attributes' => [ 'class' => 'tab-inner ui-state-default'],
+            ]);
             $tbody->addChild($trow);
 
             if ($handle_position != 'right') {
-                $td = new TagElement(
-                    [
-                        'tag' => 'td',
-                        'attributes' => [  'width' => 16, 'style' => 'width: 16px;'],
-                        'children' => [
-                            new TagElement(
-                                [
-                                    'tag' => 'span',
-                                    'attributes' => [
-                                        'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
-                                        'style' => 'display: inline-block;'
-                                    ],
-                                ]
-                            )
-                        ],
-                    ]
-                );
+                $td = new TagElement([
+                    'tag' => 'td',
+                    'attributes' => [  'width' => 16, 'style' => 'width: 16px;'],
+                    'children' => [
+                        new TagElement([
+                            'tag' => 'span',
+                            'attributes' => [
+                                'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
+                                'style' => 'display: inline-block;'
+                            ],
+                        ])
+                    ],
+                ]);
                 $trow->addChild($td);
             }
 
@@ -189,46 +161,34 @@ class SortableTable extends SortableContainer
                  */
                 $fieldhtml = $field->renderHTML($form);
                 if (trim($fieldhtml) != '') {
-                    $trow->addChild(
-                        new TagElement(
-                            [
-                                'tag' => 'td',
-                                'children' => [ $fieldhtml ],
-                            ]
-                        )
-                    );
+                    $trow->addChild(new TagElement([
+                        'tag' => 'td',
+                        'children' => [ $fieldhtml ],
+                    ]));
                 }
             }
 
-            $trow->addChild(
-                new TagElement(
-                    [
-                        'tag' => 'input',
-                        'type' => 'hidden',
-                        'name' => $id.'-delta-'.$trindex,
-                        'value' => $trindex,
-                        'has_close' => false,
-                    ]
-                )
-            );
+            $trow->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'hidden',
+                'name' => $id.'-delta-'.$trindex,
+                'value' => $trindex,
+                'has_close' => false,
+            ]));
             if ($handle_position == 'right') {
-                $td = new TagElement(
-                    [
-                        'tag' => 'td',
-                        'attributes' => [  'width' => 16, 'style' => 'width: 16px;'],
-                        'children' => [
-                            new TagElement(
-                                [
-                                    'tag' => 'span',
-                                    'attributes' => [
-                                        'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
-                                        'style' => 'display: inline-block;'
-                                    ],
-                                ]
-                            )
-                        ],
-                    ]
-                );
+                $td = new TagElement([
+                    'tag' => 'td',
+                    'attributes' => [  'width' => 16, 'style' => 'width: 16px;'],
+                    'children' => [
+                        new TagElement([
+                            'tag' => 'span',
+                            'attributes' => [
+                                'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
+                                'style' => 'display: inline-block;'
+                            ],
+                        ])
+                    ],
+                ]);
                 $trow->addChild($td);
             }
         }

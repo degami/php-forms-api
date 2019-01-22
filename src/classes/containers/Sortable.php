@@ -91,13 +91,11 @@ class Sortable extends SortableContainer
 
         $handle_position = trim(strtolower($this->getHandlePosition()));
 
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'id' => $id,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
         foreach ($this->partitions as $partitionindex => $tab) {
             $insertorder = array_flip($this->insert_field_order[$partitionindex]);
@@ -114,65 +112,49 @@ class Sortable extends SortableContainer
                 array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
             }
 
-            $inner = new TagElement(
-                [
-                    'tag' => 'div',
-                    'id' => $id.'-sortable-'.$partitionindex,
-                    'attributes' => ['class' => 'tab-inner ui-state-default'],
-                ]
-            );
+            $inner = new TagElement([
+                'tag' => 'div',
+                'id' => $id.'-sortable-'.$partitionindex,
+                'attributes' => ['class' => 'tab-inner ui-state-default'],
+            ]);
 
             $tag->addChild($inner);
 
             if ($handle_position != 'right') {
-                $inner->addChild(
-                    new TagElement(
-                        [
-                            'tag' => 'span',
-                            'attributes' => [
-                                'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
-                                'style' => 'display: inline-block;'
-                            ],
-                        ]
-                    )
-                );
+                $inner->addChild(new TagElement([
+                    'tag' => 'span',
+                    'attributes' => [
+                        'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
+                        'style' => 'display: inline-block;'
+                    ],
+                ]));
             }
 
-            $inner_inline = new TagElement(
-                [
-                    'tag' => 'div',
-                    'attributes' => ['style' => 'display: inline-block;'],
-                ]
-            );
+            $inner_inline = new TagElement([
+                'tag' => 'div',
+                'attributes' => ['style' => 'display: inline-block;'],
+            ]);
             $inner->addChild($inner_inline);
 
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
                 $inner_inline->addChild($field->renderHTML($form));
             }
-            $inner_inline->addChild(
-                new TagElement(
-                    [
-                        'tag' => 'input',
-                        'type' => 'hidden',
-                        'name' => $id.'-delta-'.$partitionindex,
-                        'value' => $partitionindex,
-                        'has_close' => false,
-                    ]
-                )
-            );
+            $inner_inline->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'hidden',
+                'name' => $id.'-delta-'.$partitionindex,
+                'value' => $partitionindex,
+                'has_close' => false,
+            ]));
             if ($handle_position == 'right') {
-                $inner_inline->addChild(
-                    new TagElement(
-                        [
-                            'tag' => 'span',
-                            'attributes' => [
-                                'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
-                                'style' => 'display: inline-block;float: right;'
-                            ],
-                        ]
-                    )
-                );
+                $inner_inline->addChild(new TagElement([
+                    'tag' => 'span',
+                    'attributes' => [
+                        'class' => 'ui-icon ui-icon-arrowthick-2-n-s',
+                        'style' => 'display: inline-block;float: right;'
+                    ],
+                ]));
             }
         }
         return $tag;

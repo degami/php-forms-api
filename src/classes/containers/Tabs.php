@@ -52,20 +52,13 @@ class Tabs extends FieldsContainerMultiple
     {
         $id = $this->getHtmlId();
 
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'id' => $id,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
-        $tab_links = new TagElement(
-            [
-                'tag' => 'ul',
-            ]
-        );
-
+        $tab_links = new TagElement(['tag' => 'ul']);
         $tag->addChild($tab_links);
     
         foreach ($this->partitions as $tabindex => $tab) {
@@ -84,22 +77,20 @@ class Tabs extends FieldsContainerMultiple
                 array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
             }
 
-            $addclass_tab = ' class="tabel '.($this->partitionHasErrors($tabindex, $form) ? 'has-errors' : '').'"';
-            $tab_links->addChild(
-                "<li{$addclass_tab}><a href=\"#{$id}-tab-inner-{$tabindex}\">".
-                    $this->getText($this->partitions[$tabindex]['title']).
-                "</a></li>"
-            );
+            $tab_links->addChild(new TagElement([
+                'tag' => 'li',
+                'attributes' => ['class' => 'tabel '.($this->partitionHasErrors($tabindex, $form) ? 'has-errors' : '')],
+                'text' => "<a href=\"#{$id}-tab-inner-{$tabindex}\">".
+                            $this->getText($this->partitions[$tabindex]['title'])."</a>"
+            ]));
 
-            $inner = new TagElement(
-                [
-                    'tag' => 'div',
-                    'id' => $id.'-tab-inner-'.$tabindex,
-                    'attributes' => [
-                        'class' => 'tab-inner'.($this->partitionHasErrors($tabindex, $form) ? ' has-errors' : '')
-                    ],
-                ]
-            );
+            $inner = new TagElement([
+                'tag' => 'div',
+                'id' => $id.'-tab-inner-'.$tabindex,
+                'attributes' => [
+                    'class' => 'tab-inner'.($this->partitionHasErrors($tabindex, $form) ? ' has-errors' : '')
+                ],
+            ]);
 
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */

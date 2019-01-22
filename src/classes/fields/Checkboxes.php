@@ -38,12 +38,9 @@ class Checkboxes extends FieldMultivalues
             $this->default_value = [ $this->default_value ];
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'attributes' => ['class' => 'options'],
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div', 'attributes' => ['class' => 'options'],
+        ]);
 
         if ($this->disabled == true) {
             $this->attributes['disabled']='disabled';
@@ -64,30 +61,26 @@ class Checkboxes extends FieldMultivalues
                     $value = $value['value'];
                 }
 
-                $tag_label = new TagElement(
-                    [
-                        'tag' => 'label',
-                        'attributes' => ['for' => "{$id}-{$key}", 'class' => "label-checkbox"],
-                    ]
-                );
-                $tag_label->addChild(new TagElement(
-                    [
-                        'tag' => 'input',
-                        'type' => 'checkbox',
-                        'id' => "{$id}-{$key}",
-                        'name' => "{$this->name}".(count($this->options)>1 ? "[]" : ""),
-                        'value' => $key,
-                        'attributes' => array_merge(
-                            $attributes,
-                            (
-                                is_array($this->default_value) &&
-                                in_array($key, $this->default_value)
-                            ) ?
-                            ['checked' => 'checked'] : []
-                        ),
-                        'text' => $value,
-                    ]
-                ));
+                $tag_label = new TagElement([
+                    'tag' => 'label',
+                    'attributes' => ['for' => "{$id}-{$key}", 'class' => "label-checkbox"],
+                ]);
+                $tag_label->addChild(new TagElement([
+                    'tag' => 'input',
+                    'type' => 'checkbox',
+                    'id' => "{$id}-{$key}",
+                    'name' => "{$this->name}".(count($this->options)>1 ? "[]" : ""),
+                    'value' => $key,
+                    'attributes' => array_merge(
+                        $attributes,
+                        (
+                            is_array($this->default_value) &&
+                            in_array($key, $this->default_value)
+                        ) ?
+                        ['checked' => 'checked'] : []
+                    ),
+                    'text' => $value,
+                ]));
                 $tag->addChild($tag_label);
             }
         }

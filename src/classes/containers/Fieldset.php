@@ -108,30 +108,21 @@ class Fieldset extends FieldsContainer
             array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->getFields());
         }
 
-        $tag = new TagElement(
-            [
+        $tag = new TagElement([
             'tag' => 'fieldset',
             'id' => $id,
             'attributes' => $this->attributes,
-            ]
-        );
+        ]);
         if (!empty($this->title)) {
-            $tag->addChild(
-                new TagElement(
-                    [
-                    'tag' => 'legend',
-                    'text' => $this->getText($this->title),
-                    ]
-                )
-            );
+            $tag->addChild(new TagElement([
+                'tag' => 'legend',
+                'text' => $this->getText($this->title),
+            ]));
         }
-        $inner = new TagElement(
-            [
+        $inner = new TagElement([
             'tag' => 'div',
             'attributes' => ['class' => 'fieldset-inner'],
-            ]
-        );
-
+        ]);
         foreach ($this->getFields() as $name => $field) {
             /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
             $inner->addChild($field->renderHTML($form));

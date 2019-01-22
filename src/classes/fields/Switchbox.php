@@ -111,13 +111,11 @@ class Switchbox extends Radios
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'id' => $id,
-                'attributes' => ['class' => 'options ui-widget-content ui-corner-all'],
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => ['class' => 'options ui-widget-content ui-corner-all'],
+        ]);
 
         if ($this->disabled == true) {
             $this->attributes['disabled']='disabled';
@@ -132,30 +130,26 @@ class Switchbox extends Radios
                 $value = $value['value'];
             }
 
-            $tag_label = new TagElement(
-                [
-                    'tag' => 'label',
-                    'attributes' => [
-                      'id' => "{$id}-{$key}-button",
-                      'for' => "{$id}-{$key}",
-                      'class' => "label-switch ui-widget ui-state-default"
-                    ],
-                ]
-            );
-            $tag_label->addChild(new TagElement(
-                [
-                    'tag' => 'input',
-                    'type' => 'radio',
-                    'id' => "{$id}-{$key}",
-                    'name' => "{$this->name}",
-                    'value' => $key,
-                    'attributes' => array_merge(
-                        $attributes,
-                        (($this->value == $key) ? ['checked' => 'checked'] : [])
-                    ),
-                    'text' => $value,
-                ]
-            ));
+            $tag_label = new TagElement([
+                'tag' => 'label',
+                'attributes' => [
+                  'id' => "{$id}-{$key}-button",
+                  'for' => "{$id}-{$key}",
+                  'class' => "label-switch ui-widget ui-state-default"
+                ],
+            ]);
+            $tag_label->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'radio',
+                'id' => "{$id}-{$key}",
+                'name' => "{$this->name}",
+                'value' => $key,
+                'attributes' => array_merge(
+                    $attributes,
+                    (($this->value == $key) ? ['checked' => 'checked'] : [])
+                ),
+                'text' => $value,
+            ]));
             $tag->addChild($tag_label);
         }
         return $tag;

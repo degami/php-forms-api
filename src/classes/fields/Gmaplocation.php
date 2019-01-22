@@ -455,28 +455,24 @@ class Gmaplocation extends Geolocation
             $this->attributes['title'] = strip_tags($this->getText($this->title).$required);
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => $this->tag,
-                'id' => $id,
-                'attributes' => $this->attributes,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => $this->tag,
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
         if (!empty($this->title)) {
             if ($this->tooltip == false) {
                 $this->label_class .= " label-" .$this->getElementClassName();
                 $this->label_class = trim($this->label_class);
-                $tag_label = new TagElement(
-                    [
-                        'tag' => 'label',
-                        'attributes' => [
-                          'for' => $id,
-                          'class' => $this->label_class,
-                          'text' => $requiredbefore
-                        ],
-                    ]
-                );
+                $tag_label = new TagElement([
+                    'tag' => 'label',
+                    'attributes' => [
+                      'for' => $id,
+                      'class' => $this->label_class,
+                      'text' => $requiredbefore
+                    ],
+                ]);
                 $tag_label->addChild($this->getText($this->title));
                 $tag_label->addChild($requiredafter);
                 $tag->addChild($tag_label);
@@ -491,13 +487,11 @@ class Gmaplocation extends Geolocation
         }
 
         if ($this->with_map == true) {
-            $tag->addChild(new TagElement(
-                [
-                    'tag' => 'div',
-                    'id' => "{$id}-map",
-                    'attributes' => ['class' => 'gmap'],
-                ]
-            ));
+            $tag->addChild(new TagElement([
+                'tag' => 'div',
+                'id' => "{$id}-map",
+                'attributes' => ['class' => 'gmap'],
+            ]));
         }
 
         $tag->addChild($this->latitude->renderHTML($form));

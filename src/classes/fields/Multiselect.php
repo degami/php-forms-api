@@ -16,6 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The "Multiselect select" field class
@@ -135,7 +136,6 @@ class Multiselect extends Select
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $output = '';
 
         if (!isset($this->attributes['class'])) {
             $this->attributes['class'] = '';
@@ -146,40 +146,91 @@ class Multiselect extends Select
         if ($this->disabled == true) {
             $this->attributes['disabled']='disabled';
         }
-        $attributes = $this->getAttributes();
 
-        $extra = ' multiple="multiple" size="'.$this->size.'" ';
         $field_name = "{$this->name}[]";
 
-        $output .= "<table id=\"{$id}-table\" border=0 colspan=0 cellpadding=0><tr><td style=\"width: 45%\">\n";
-        $output .= "<select name=\"{$this->name}_from\" id=\"{$id}_from\" {$extra}{$attributes}>\n";
+        $table = new TagElement([
+          'tag' => 'table',
+          'id' => $id.'-table',
+          'attributes' => [
+            'boder' => 0,
+            'colspan' => 0,
+            'cellpadding' => 0,
+          ],
+        ]);
+
+        $tr1 = new TagElement(['tag' => 'tr']);
+        $table->addChild($tr1);
+
+        $td1 = new TagElement(['tag' => 'td', 'attributes' => ['style' => 'width: 45%']]);
+        $td2 = new TagElement(['tag' => 'td', 'attributes' => ['style' => 'width: 10%']]);
+        $td3 = new TagElement(['tag' => 'td', 'attributes' => ['style' => 'width: 45%']]);
+
+        $tr1->addChild($td1);
+        $tr1->addChild($td2);
+        $tr1->addChild($td3);
+
+        $select_left = new TagElement([
+          'tag' => 'select',
+          'name' => $this->name.'_from',
+          'id' => $id.'_from',
+          'attributes' => $this->attributes + ['size' => $this->size, 'multiple' => 'multiple'],
+        ]);
+
         if (isset($this->attributes['placeholder']) && !empty($this->attributes['placeholder'])) {
-            $output .= '<option disabled '.(isset($this->default_value) ? '' : 'selected').'>'.
-                        $this->attributes['placeholder'].
-                        '</option>';
+            $select_left->addChild(new TagElement([
+              'tag' => 'option',
+              'attributes' => [
+                'disabled' => 'disabled',
+              ] + (isset($this->default_value) ? [] : ['selected' => 'selected']),
+              'text' => $this->attributes['placeholder'],
+            ]));
         }
         foreach ($this->leftOptions as $key => $value) {
             /** @var \Degami\PHPFormsApi\Fields\Option $value */
-            $output .= $value->renderHTML($this);
+            $select_left->addChild($value->renderHTML($this));
         }
-        $output .= "</select>\n</td><td style=\"width: 10%\" align=\"center\">";
+        $td1->addChild($select_left);
 
-        $output .= '<div class="buttons">';
-        $output .= "<button id=\"{$this->name}_move_right\">&gt;&gt;</button><br /><br />";
-        $output .= "<button id=\"{$this->name}_move_left\">&lt;&lt;</button>";
-        $output .= "</div>\n";
+        $buttons = new TagElement([
+          'tag' => 'div', 'attributes' => ['class' => 'buttons'],
+        ]);
+        $buttons->addChild(new TagElement([
+          'tag' => 'button',
+          'id' => $this->name.'_move_right',
+          'text' => '&gt;&gt;',
+        ]))
+        ->addChild(new TagElement(['tag' => 'br']))
+        ->addChild(new TagElement(['tag' => 'br']))
+        ->addChild(new TagElement([
+          'tag' => 'button',
+          'id' => $this->name.'_move_left',
+          'text' => '&lt;&lt;',
+        ]));
+        $td2->addChild($buttons);
 
-        $output .= "</td><td style=\"width: 45%\">
-                          <select name=\"{$field_name}\" id=\"{$id}_to\" {$extra}{$attributes}>\n";
+        $select_right = new TagElement([
+          'tag' => 'select',
+          'name' => $field_name,
+          'id' => $id.'_to',
+          'attributes' => $this->attributes + ['size' => $this->size, 'multiple' => 'multiple'],
+        ]);
+
         if (isset($this->attributes['placeholder']) && !empty($this->attributes['placeholder'])) {
-            $output .= '<option disabled '.(isset($this->default_value) ? '' : 'selected').'>'.
-                        $this->attributes['placeholder'].
-                        '</option>';
+            $select_right->addChild(new TagElement([
+              'tag' => 'option',
+              'attributes' => [
+                'disabled' => 'disabled',
+              ] + (isset($this->default_value) ? [] : ['selected' => 'selected']),
+              'text' => $this->attributes['placeholder'],
+            ]));
         }
         foreach ($this->rightOptions as $key => $value) {
-            $output .= $value->renderHTML($this);
+            /** @var \Degami\PHPFormsApi\Fields\Option $value */
+            $select_right->addChild($value->renderHTML($this));
         }
-        $output .= "</select>\n</td></tr></table>";
-        return $output;
+        $td3->addChild($select_right);
+
+        return $table;
     }
 }

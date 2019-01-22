@@ -116,22 +116,18 @@ class MathCaptcha extends Captcha
             eval('$codeval = '.$this->a.$this->op.$this->b.';');
         }
 
-        $tag = new TagElement(
-            [
-                'tag' => 'div',
-                'id' => $id,
-                'attributes' => $this->attributes,
-                'text' => $this->code,
-            ]
-        );
-        $tag->addChild(new TagElement(
-            [
-                'tag' => 'input',
-                'type' => 'text',
-                'name' => $this->name."[code]",
-                'value' => $codeval,
-            ]
-        ));
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+            'text' => $this->code,
+        ]);
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'text',
+            'name' => $this->name."[code]",
+            'value' => $codeval,
+        ]));
         return $tag;
     }
 

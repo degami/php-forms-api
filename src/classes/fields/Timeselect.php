@@ -17,6 +17,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The time select group field class
@@ -100,7 +101,6 @@ class Timeselect extends Field
     public function renderField(Form $form)
     {
         $id = $this->getHtmlId();
-        $output = '';
 
         if (!isset($this->attributes['class'])) {
             $this->attributes['class'] = '';
@@ -113,57 +113,77 @@ class Timeselect extends Field
         }
         $attributes = $this->getAttributes(['type','name','id','size','hours','minutes','seconds']);
 
-        $output .= "<div id=\"{$id}\" {$attributes}>";
+        $tag = new TagElement([
+            'tag' => 'div',
+            'id' => $id,
+            'attributes' => $this->attributes,
+        ]);
 
-        $attributes = ''.($this->disabled == true) ? ' disabled="disabled"':'';
-        if (isset($this->attributes['hours']) && is_array($this->attributes['hours'])) {
-            if ($this->disabled == true) {
-                $this->attributes['hours']['disabled']='disabled';
-            }
-            $attributes = $this->getAttributesString($this->attributes['hours'], ['type','name','id','value']);
+        if (!(isset($this->attributes['hours']) && is_array($this->attributes['hours']))) {
+            $this->attributes['hours'] = [];
         }
-        $output .= "<select name=\"{$this->name}[hours]\" {$attributes}>";
+        if ($this->disabled == true) {
+            $this->attributes['hours']['disabled']='disabled';
+        }
+        $select_hours = new TagElement([
+            'tag' => 'select',
+            'name' => $this->name.'[hours]',
+            'attributes' => $this->attributes['hours'],
+        ]);
         for ($i=0; $i<=23; $i++) {
-            $selected = ($i == $this->value['hours']) ? ' selected="selected"' : '';
-            $output .= "<option value=\"{$i}\" {$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
+            $select_hours->addChild(new TagElement([
+                'tag' => 'option',
+                'value' => $i,
+                'attributes' => [] + (($i == $this->value['hours']) ? ['selected' => 'selected'] : []),
+                'text' => str_pad($i, 2, "0", STR_PAD_LEFT),
+            ]));
         }
-        $output .= "</select>";
+        $tag->addChild($select_hours);
         if ($this->granularity != 'hours') {
-            $attributes = ''.($this->disabled == true) ? ' disabled="disabled"':'';
-            if (isset($this->attributes['minutes']) && is_array($this->attributes['minutes'])) {
-                if ($this->disabled == true) {
-                    $this->attributes['minutes']['disabled']='disabled';
-                }
-                $attributes = $this->getAttributesString($this->attributes['minutes'], ['type','name','id','value']);
+            if (!(isset($this->attributes['minutes']) && is_array($this->attributes['minutes']))) {
+                $this->attributes['minutes'] = [];
             }
-            $output .= "<select name=\"{$this->name}[minutes]\" {$attributes}>";
+            if ($this->disabled == true) {
+                $this->attributes['minutes']['disabled']='disabled';
+            }
+            $select_minutes = new TagElement([
+                'tag' => 'select',
+                'name' => $this->name.'[minutes]',
+                'attributes' => $this->attributes['minutes'],
+            ]);
             for ($i=0; $i<=59; $i++) {
-                $selected = ($i == $this->value['minutes']) ? ' selected="selected"' : '';
-                $output .= "<option value=\"{$i}\" {$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
+                $select_minutes->addChild(new TagElement([
+                    'tag' => 'option',
+                    'value' => $i,
+                    'attributes' => [] + (($i == $this->value['minutes']) ? ['selected' => 'selected'] : []),
+                    'text' => str_pad($i, 2, "0", STR_PAD_LEFT),
+                ]));
             }
-            $output .= "</select>";
+            $tag->addChild($select_minutes);
             if ($this->granularity != 'minutes') {
-                $attributes = ''.($this->disabled == true) ? ' disabled="disabled"':'';
-                if (isset($this->attributes['seconds']) && is_array($this->attributes['seconds'])) {
-                    if ($this->disabled == true) {
-                        $this->attributes['seconds']['disabled']='disabled';
-                    }
-                    $attributes = $this->getAttributesString(
-                        $this->attributes['seconds'],
-                        ['type','name','id','value']
-                    );
+                if (!(isset($this->attributes['seconds']) && is_array($this->attributes['seconds']))) {
+                    $this->attributes['seconds'] = [];
                 }
-                $output .= "<select name=\"{$this->name}[seconds]\" {$attributes}>";
+                if ($this->disabled == true) {
+                    $this->attributes['seconds']['disabled']='disabled';
+                }
+                $select_seconds = new TagElement([
+                    'tag' => 'select',
+                    'name' => $this->name.'[seconds]',
+                    'attributes' => $this->attributes['seconds'],
+                ]);
                 for ($i=0; $i<=59; $i++) {
-                    $selected = ($i == $this->value['seconds']) ? ' selected="selected"' : '';
-                    $output .= "<option value=\"{$i}\" {$selected}>".str_pad($i, 2, "0", STR_PAD_LEFT)."</option>";
+                    $select_seconds->addChild(new TagElement([
+                        'tag' => 'option',
+                        'value' => $i,
+                        'attributes' => [] + (($i == $this->value['seconds']) ? ['selected' => 'selected'] : []),
+                        'text' => str_pad($i, 2, "0", STR_PAD_LEFT),
+                    ]));
                 }
-                $output .= "</select>";
+                $tag->addChild($select_seconds);
             }
         }
-        $output .= "</div>";
-
-        return $output;
+        return $tag;
     }
 
     /**

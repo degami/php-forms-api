@@ -86,16 +86,14 @@ class Optgroup extends Optionable
     public function renderHTML(Select $form_field)
     {
         $this->no_translation = $form_field->no_translation;
-        $tag = new TagElement(
-            [
-                'tag' => 'optgroup',
-                'type' => null,
-                'id' => null,
-                'attributes' => $this->attributes + [ 'label' => $this->label ],
-                'value_needed' => false,
-                'has_close' => true,
-            ]
-        );
+        $tag = new TagElement([
+            'tag' => 'optgroup',
+            'type' => null,
+            'id' => null,
+            'attributes' => $this->attributes + [ 'label' => $this->label ],
+            'value_needed' => false,
+            'has_close' => true,
+        ]);
         foreach ($this->options as $option) {
             $tag->addChild($option->renderHTML($form_field));
         }
