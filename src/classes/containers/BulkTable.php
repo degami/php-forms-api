@@ -16,6 +16,8 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\Form;
+use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\PHPFormsApi\Accessories\TagList;
 
 /**
  * a table field container
@@ -111,20 +113,54 @@ class BulkTable extends TableContainer
     {
         $id = $this->getHtmlId();
 
-        $prefix = "<div><select name=\"{$this->getName()}[op]\">";
+        $tag = new TagList();
+        $prefix = new TagElement(['tag' => 'div']);
+        $select = new TagElement([
+            'tag' => 'select',
+            'name' => $this->getName().'[op]',
+        ]);
+        $prefix->addChild($select);
+
         foreach ($this->getOperations() as $operation) {
-            $prefix .= "<option value=\"{$operation['key']}\">{$operation['label']}</option>";
+            $select->addChild(new TagElement([
+                'tag' => 'option',
+                'value' => $operation['key'],
+                'text' => $operation['label'],
+            ]));
         }
-        $prefix .= "</select></div>";
 
-        $suffix="<div class=\"bulk_actions\" id=\"{$id}_actions\">";
-        $suffix.="<a href=\"#\" class=\"btn selAll\">".$this->getText('Select all')."</a> - ";
-        $suffix.="<a href=\"#\" class=\"btn deselAll\">".$this->getText('Deselect all')."</a> -";
-        $suffix.="<a href=\"#\" class=\"btn inverSel\">".$this->getText('Invert selection')."</a>";
-        $suffix.="</div>";
+        $tag->addChild($prefix);
 
-        $out = parent::renderField($form);
-        return $prefix.$out.$suffix;
+        $tag->addChild(parent::renderField($form));
+
+        $suffix = new TagElement([
+            'tag' => 'div',
+            'id' => $id.'_actions',
+            'attributes' => ['class' => 'bulk_actions'],
+        ]);
+
+        $suffix
+        ->addChild(new TagElement([
+            'tag' => 'a',
+            'attributes' => ['href' => '#', 'class' => 'btn selAll'],
+            'text' => $this->getText('Select all'),
+        ]))
+        ->addChild(' - ')
+        ->addChild(new TagElement([
+            'tag' => 'a',
+            'attributes' => ['href' => '#', 'class' => 'btn deselAll'],
+            'text' => $this->getText('Deselect all'),
+        ]))
+        ->addChild(' - ')
+        ->addChild(new TagElement([
+            'tag' => 'a',
+            'attributes' => ['href' => '#', 'class' => 'btn inverSel'],
+            'text' => $this->getText('Invert selection'),
+        ]));
+
+        $tag->addChild($suffix);
+
+        return $tag;
     }
 
     /**
