@@ -1346,7 +1346,7 @@ class Form extends Element
             $form_tag_html .= $this->getPrefix();
             $form_tag_html .= $highlights;
             $form_tag_html .= $errors;
-            $form_tag_html .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\"";
+            $form_tag_html .= "<form action=\"{$this->action}\" id=\"{$this->form_id}\" ";
             $form_tag_html .= "method=\"{$this->method}\"{$attributes}>\n";
             $form_tag_html .= $fields_html;
             $form_tag_html .= "<input type=\"hidden\" name=\"form_id\" value=\"{$this->form_id}\" />\n";
