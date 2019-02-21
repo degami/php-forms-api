@@ -189,6 +189,13 @@ class Form extends Element
     private $session_bag = null;
 
     /**
+     * form state array
+     *
+     * @var array
+     */
+    private $form_state = [];
+
+    /**
      * Class constructor
      *
      * @param array $options build options
@@ -669,6 +676,18 @@ class Form extends Element
     }
 
     /**
+     * save form_state array into form object, for use into process function
+     *
+     * @param array &$form_state [description]
+     * @return  Form
+     */
+    public function setFormState(&$form_state = [])
+    {
+        $this->form_state = $form_state;
+        return $this;
+    }
+
+    /**
      * starts the form processing, validating and submitting
      *
      * @param array $values the request values array
@@ -751,7 +770,7 @@ class Form extends Element
                         }
                         $submitresult = '';
                         ob_start();
-                        $submitresult = call_user_func_array($submit_function, [ &$this, $request ]);
+                        $submitresult = call_user_func_array($submit_function, [ &$this, &$this->form_state, $request ]);
                         if ($submitresult == null) {
                             $submitresult = ob_get_contents();
                         }

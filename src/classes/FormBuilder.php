@@ -130,6 +130,8 @@ class FormBuilder
                     "Function {$function_name} does not return a valid form object",
                     1
                 );
+            } else {
+                $form_obj->setFormState($form_state);
             }
 
             $form = $form_obj;

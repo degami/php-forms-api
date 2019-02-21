@@ -19,7 +19,7 @@ session_start();
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
-function contactform_submit(&$form)
+function contactform_submit(&$form, &$form_state)
 {
     $form_values = $form->getValues();
     $out = [];
