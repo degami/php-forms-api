@@ -160,13 +160,16 @@ abstract class BaseElement
             return "-- link to parent --";
         }
 
-        if (is_object($elem) && ($elem instanceof Element ||  $elem instanceof OrderedFunctions)) {
+        if (is_object($elem) && ($elem instanceof Element)) {
             $elem = $elem->toArray();
+        } elseif (is_object($elem) && ($elem instanceof OrderedFunctions || $elem instanceof DataBag)) {
+            $elem = 'instanceof ['.get_class($elem).']';
         } elseif (is_array($elem)) {
             foreach ($elem as $k => $val) {
                 $elem[$k] = static::toArrayVal($k, $val, $path.$key.'/');
             }
         }
+
         return $elem;
     }
 

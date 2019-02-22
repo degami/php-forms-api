@@ -688,6 +688,18 @@ class Form extends Element
     }
 
     /**
+     * To array override
+     *
+     * @return array array representation for the element properties
+     */
+    public function toArray()
+    {
+        $values = parent::toArray();
+        unset($values['form_state']);
+        return $values;
+    }
+
+    /**
      * starts the form processing, validating and submitting
      *
      * @param array $values the request values array
