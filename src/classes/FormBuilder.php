@@ -75,6 +75,17 @@ class FormBuilder
      */
     public static function getDefinitionFunctionName($function_name)
     {
+        return static::getCallablaStringName($function_name);
+    }
+
+    /**
+     * Returns callable function name string
+     *
+     * @param  callable $function_name callable element
+     * @return string                 the function name
+     */
+    public static function getCallablaStringName($function_name)
+    {
         if (is_string($function_name)) {
             return $function_name;
         }

@@ -857,20 +857,17 @@ class Form extends Element
 
             if ($this->isFinalStep()) {
                 foreach ($this->validate as $validate_function) {
-                    if (function_exists($validate_function)) {
-                        $error = $validate_function(
-                            $this,
-                            (strtolower($this->method) == 'post') ?
-                                $_POST :
-                                $_GET
-                        );
+                    if (is_callable($validate_function)) {
+                        $error = call_user_func_array($validate_function, [
+                            &$this,
+                            &$this->form_state,
+                            (strtolower($this->method) == 'post') ? $_POST : $_GET
+                        ]);
                         if ($error !== true) {
                             $this->valid = false;
                             $this->addError(
-                                is_string($error) ?
-                                    $this->getText($error) :
-                                    $this->getText('Error. Form is not valid'),
-                                $validate_function
+                                is_string($error) ? $this->getText($error) : $this->getText('Error. Form is not valid'),
+                                FormBuilder::getCallablaStringName($validate_function)
                             );
                         }
                     }
