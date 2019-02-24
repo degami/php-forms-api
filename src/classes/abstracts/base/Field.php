@@ -180,7 +180,7 @@ abstract class Field extends Element implements FieldInterface
         $this->session_bag = new SessionBag();
 
         if (!isset($this->attributes['class'])) {
-            $this->attributes['class'] = $this->getElementClassName();
+            $this->attributes['class'] = trim(FORMS_FIELD_ADDITIONAL_CLASS.' '.$this->getElementClassName());
         }
 
         if (empty($this->type)) {

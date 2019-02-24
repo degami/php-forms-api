@@ -38,6 +38,9 @@ if (!defined('FORMS_DEFAULT_FIELD_CONTAINER_CLASS')) {
 if (!defined('FORMS_DEFAULT_FIELD_LABEL_CLASS')) {
     define('FORMS_DEFAULT_FIELD_LABEL_CLASS', '');
 }
+if (!defined('FORMS_FIELD_ADDITIONAL_CLASS')) {
+    define('FORMS_FIELD_ADDITIONAL_CLASS', '');
+}
 if (!defined('FORMS_VALIDATE_EMAIL_DNS')) {
     define('FORMS_VALIDATE_EMAIL_DNS', true);
 }
