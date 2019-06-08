@@ -254,12 +254,9 @@ function showallform(FAPI\Form $form, &$form_state)
     'with_confirm' => true,
     'with_strength_check' => true,
     ));
-    $form->getField('fieldset')->addField('markup1', array(
-    'type' => 'markup',
-    'value' => 'Markup 1 before all',
+    $form->getField('fieldset')->addMarkup('Markup 1 before all', array(
     'weight' => -10,
     ));
-
 
     $form->addField('fieldset2', array(
     'type' => 'fieldset',
@@ -819,10 +816,7 @@ function batchoperationsform(FAPI\Form $form, &$form_state)
         $jsondata = json_decode($form_state['input_values']['jsondata']);
         $callback = $jsondata->callback;
         if (isset($form_state['input_form_definition']['fields'][$step]['progressnum']['value']) && $form_state['input_form_definition']['fields'][$step]['progressnum']['value'] >= 100) {
-            $fieldset->addField('done', array(
-            'type' => 'markup',
-            'default_value' => 'finito!',
-            ));
+            $fieldset->addMarkup('finito!');
         } else {
             if (is_callable($callback)) {
                 $fieldset->addJs("setTimeout(function(){ \$('#progress','#{$form->getId()}').trigger('click') },1000);");
@@ -899,7 +893,7 @@ function locationsform(FAPI\Form $form, &$form_state)
     'title' => 'GeoLocation',
     'type' => 'geolocation',
     ))
-    ->addField('hr1', array('type'=>'markup','value'=>'<hr />'))
+    ->addMarkup('<hr />')
     ->addField('map', array(
     'title' => 'MapLocation',
     'type' => 'gmaplocation',
@@ -913,7 +907,7 @@ function locationsform(FAPI\Form $form, &$form_state)
     'maptype' => 'google.maps.MapTypeId.TERRAIN',
     'with_current_location' => true,
     ))
-    ->addField('hr2', array('type'=>'markup','value'=>'<hr />'))
+    ->addMarkup('<hr />')
     ->addField('decode', array(
     'title' => 'GeoDecode',
     'type' => 'gmaplocation',
@@ -926,7 +920,7 @@ function locationsform(FAPI\Form $form, &$form_state)
       'longitude' => -0.0076589,
     ),
     ))
-    ->addField('hr3', array('type'=>'markup','value'=>'<hr />'))
+    ->addMarkup('<hr />')
     ->addField('decode_nomap', array(
     'title' => 'GeoDecode No Map',
     'type' => 'gmaplocation',
@@ -940,7 +934,7 @@ function locationsform(FAPI\Form $form, &$form_state)
       'longitude' => -0.0076589,
     ),
     ))
-    ->addField('hr4', array('type'=>'markup','value'=>'<hr />'))
+    ->addMarkup('<hr />')
     ->addField('leafletmap', array(
     'title' => 'LeafletLocation',
     'type' => 'leafletlocation',
@@ -994,7 +988,7 @@ function repeatableform(FAPI\Form $form, &$form_state)
 
 
     $form
-      ->addField('hr1', array('type'=>'markup','value'=>'<hr />'))
+      ->addMarkup('<hr />')
       ->addField('submit', array(
         'type' => 'submit',
       ));

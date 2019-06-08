@@ -123,4 +123,19 @@ trait Containers
     {
         return $field instanceof FieldsContainer && !($field instanceof ComposedField);
     }
+
+    /**
+     * add markup helper
+     *
+     * @param string $markup markup to add
+     */
+    public function addMarkup($markup, $options = [])
+    {
+        static $lastMarkupIndex = 0;
+        return $this->addField('_markup_'.time().'_'.$lastMarkupIndex++, [
+            'type' => 'markup',
+            'container_tag' => null,
+            'value' => $markup,
+        ] + $options);
+    }
 }
