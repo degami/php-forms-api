@@ -190,7 +190,7 @@ class Nestable extends FieldsContainer
     public function addField($name, $field)
     {
         $field = $this->getFieldObj($name, $field);
-        if ($this->isFieldContainer($field)) {
+        if (!($field instanceof Nestable) && $this->isFieldContainer($field)) {
             throw new FormException("Can't add a fields_container to a tree_container.", 1);
         }
 
