@@ -360,8 +360,10 @@ class Nestable extends FieldsContainer
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
 .dd-list .dd-list { padding-left: 30px; }
 .dd-collapsed .dd-list { display: none; }
-.dd-item,.dd-empty,.dd-placeholder { display: block; position: relative; margin: 10px 0 0 0; padding: 0;
-                                        min-height: 20px; font-size: 13px; line-height: 20px; }
+.dd-item,.dd-empty,.dd-placeholder { 
+    display: block; position: relative; margin: 10px 0 0 0; padding: 2px 0 0 0;
+    min-height: 20px; font-size: 13px; line-height: 20px; 
+}
 
 .dd-handle { display: block; margin: 5px 0; padding: 5px 10px; color: #333; text-decoration: none; font-weight: bold;
                 border: 1px solid #ccc;
