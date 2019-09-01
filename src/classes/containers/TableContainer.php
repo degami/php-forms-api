@@ -40,6 +40,21 @@ class TableContainer extends FieldsContainerMultiple
     protected $col_row_attributes = [];
 
     /**
+     * table header attributes
+     *
+     * @var array
+     */
+    protected $thead_attributes = [];
+
+    /**
+     * table body attributes
+     *
+     * @var array
+     */
+    protected $tbody_attributes = [];
+
+
+    /**
      * Set table header array
      *
      * @param  array $table_header table header elements array
@@ -161,7 +176,10 @@ class TableContainer extends FieldsContainerMultiple
                 $this->table_header = [$this->table_header];
             }
 
-            $thead = new TagElement(['tag' => 'thead']);
+            $thead = new TagElement([
+                'tag' => 'thead',
+                'attributes' => $this->thead_attributes,
+            ]);
             $tag->addChild($thead);
 
             foreach ($this->table_header as $th) {
@@ -180,7 +198,10 @@ class TableContainer extends FieldsContainerMultiple
             }
         }
 
-        $tbody = new TagElement(['tag' => 'tbody']);
+        $tbody = new TagElement([
+            'tag' => 'tbody',
+            'attributes' => $this->tbody_attributes,
+        ]);
         $tag->addChild($tbody);
 
         $rows = 0;
