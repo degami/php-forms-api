@@ -738,7 +738,13 @@ function eventsform(FAPI\Form $form, &$form_state)
     'title' => 'textfields',
     ));
 
-    $num_textfields = isset($form_state['input_form_definition']['fields'][$step]['textfields']['fields']['num_textfields']['value']) ? ($form_state['input_form_definition']['fields'][$step]['textfields']['fields']['num_textfields']['value'] + 1) : 1;
+    $num_textfields = 1; //isset($form_state['input_values']['num_textfields']) ? ($form_state['input_values']['num_textfields'] + 1) : 1;
+
+    foreach ($form_state['input_values'] as $key => $value) {
+        if (preg_match("/^text_[0-9]+$/i", $key)) {
+            $num_textfields++;
+        }
+    }
 
     $fieldset->addField('num_textfields', array(
     'type' => 'hidden',

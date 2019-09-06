@@ -1314,11 +1314,14 @@ class Form extends Element
 
             $jsondata = json_decode($_REQUEST['jsondata']);
             $callback = $jsondata->callback;
+            if (is_string($callback) && @unserialize($callback) != false) {
+                $callback = unserialize($callback);
+            }
             if (is_callable($callback)) {
                 /**
                  * @var Field $target_elem
                  */
-                $target_elem = $callback($this);
+                $target_elem = call_user_func_array($callback, [$this]);
 
                 $html = $target_elem->renderHTML($this);
 
