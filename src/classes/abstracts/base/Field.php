@@ -610,11 +610,11 @@ abstract class Field extends Element implements FieldInterface
         if (isset($event['callback'])) {
             switch (gettype($event['callback'])) {
                 case 'array':
-                    $event['callback'] = serialize($event['callback']);
+                    $event['callback'] = json_encode($event['callback']);
                     break;
                 case 'object':
                     if (is_callable($event['callback'])) {
-                        $event['callback'] = serialize($event['callback']);
+                        $event['callback'] = json_encode($event['callback']);
                     }
                     break;
                 case 'string':
