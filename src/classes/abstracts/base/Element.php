@@ -324,7 +324,7 @@ abstract class Element extends BaseElement
      */
     public function addJs($js, $as_is = false)
     {
-        if (defined('DEBUG')) {
+        if (defined('DEBUG') && DEBUG == true) {
             $as_is = true;
         }
 
