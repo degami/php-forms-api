@@ -324,6 +324,10 @@ abstract class Element extends BaseElement
      */
     public function addJs($js, $as_is = false)
     {
+        if (defined('DEBUG')) {
+            $as_is = true;
+        }
+
         if (!$as_is) {
             if (is_array($js)) {
                 $js = array_filter(array_map(['minify_js', $this], $js));
