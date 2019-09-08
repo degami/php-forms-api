@@ -607,21 +607,6 @@ abstract class Field extends Element implements FieldInterface
         if (preg_match("/\?/i", $this->getAjaxUrl())) {
             $question_ampersand = '&';
         }
-        if (isset($event['callback'])) {
-            switch (gettype($event['callback'])) {
-                case 'array':
-                    $event['callback'] = json_encode($event['callback']);
-                    break;
-                case 'object':
-                    if (is_callable($event['callback'])) {
-                        $event['callback'] = json_encode($event['callback']);
-                    }
-                    break;
-                case 'string':
-                default:
-                    break;
-            }
-        }
 
         $eventjs = "\$('#{$id}','#{$form->getId()}').on('{$event['event']}',function(evt){
           evt.preventDefault();

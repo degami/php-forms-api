@@ -1314,9 +1314,6 @@ class Form extends Element
 
             $jsondata = json_decode($_REQUEST['jsondata']);
             $callback = $jsondata->callback;
-            if (is_string($callback) && json_decode($callback) != null) {
-                $callback = json_decode($callback);
-            }
             if (is_callable($callback)) {
                 /**
                  * @var Field $target_elem
