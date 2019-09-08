@@ -607,7 +607,7 @@ abstract class Field extends Element implements FieldInterface
         if (preg_match("/\?/i", $this->getAjaxUrl())) {
             $question_ampersand = '&';
         }
-        $event['callback'] = serialize($event['callback']);
+        $event['callback'] = base64_encode(serialize($event['callback']));
         $eventjs = "\$('#{$id}','#{$form->getId()}').on('{$event['event']}',function(evt){
           evt.preventDefault();
           var \$target = ".
