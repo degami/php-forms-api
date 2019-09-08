@@ -1313,7 +1313,7 @@ class Form extends Element
             // ajax request - form item event
 
             $jsondata = json_decode($_REQUEST['jsondata']);
-            $callback = $jsondata->callback;
+            $callback = unserialize($jsondata->callback);
             if (is_callable($callback)) {
                 /**
                  * @var Field $target_elem
