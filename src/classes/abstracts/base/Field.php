@@ -166,21 +166,12 @@ abstract class Field extends Element implements FieldInterface
      */
     public function __construct($options = [], $name = null)
     {
-        parent::__construct();
-
-        if ($options == null) {
-            $options = [];
-        }
-        $this->build_options = $options;
-
-        $this->name = $name;
-
-        $this->setClassProperties($options);
+        parent::__construct($options, $name);
 
         $this->session_bag = new SessionBag();
 
         if (!isset($this->attributes['class'])) {
-            $this->attributes['class'] = trim(FORMS_FIELD_ADDITIONAL_CLASS.' '.$this->getElementClassName());
+            $this->setAttribute('class', trim(FORMS_FIELD_ADDITIONAL_CLASS.' '.$this->getElementClassName()));
         }
 
         if (empty($this->type)) {

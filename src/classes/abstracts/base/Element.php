@@ -134,7 +134,11 @@ abstract class Element extends BaseElement
      */
     public function __construct($options = [], $name = null)
     {
-        $this->name = null;
+        if ($options == null) {
+            $options = [];
+        }
+
+        $this->name = $name;
         $this->parent = null;
         $this->weight = 0;
         $this->container_tag = FORMS_DEFAULT_FIELD_CONTAINER_TAG;
@@ -146,8 +150,10 @@ abstract class Element extends BaseElement
         $this->css = [];
         $this->prefix = '';
         $this->suffix = '';
-        $this->build_options = null;
+        $this->build_options = $options;
         $this->no_translation = false;
+
+        $this->setClassProperties($options);
     }
 
     /**
