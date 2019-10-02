@@ -106,6 +106,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      */
     public function setField($field_name, $field)
     {
+        $field->setName($field_name);
         $this->fields[$step][$field_name] = $field;
         return $this;
     }

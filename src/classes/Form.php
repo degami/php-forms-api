@@ -1077,6 +1077,7 @@ class Form extends Element
      */
     public function setField($field_name, $field, $step = 0)
     {
+        $field->setName($field_name);
         $this->fields[$step][$field_name] = $field;
         return $this;
     }
