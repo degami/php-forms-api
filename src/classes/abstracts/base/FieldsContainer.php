@@ -97,6 +97,20 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
+     * Set field
+     *
+     * @param string  $field_name field name
+     * @param Element $field      subclass field object
+     *
+     * @return FieldsContainer
+     */
+    public function setField($field_name, $field)
+    {
+        $this->fields[$step][$field_name] = $field;
+        return $this;
+    }
+
+    /**
      * Add field to form
      *
      * @param  string $name  field name
@@ -109,7 +123,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
         $field = $this->getFieldObj($name, $field);
         $field->setParent($this);
 
-        $this->fields[$name] = $field;
+        $this->setField($name, $field);
         $this->insert_field_order[] = $name;
 
         if (!method_exists($field, 'onAddReturn')) {

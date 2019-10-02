@@ -901,7 +901,7 @@ class Form extends Element
         $field = $this->getFieldObj($name, $field);
         $field->setParent($this);
 
-        $this->fields[$step][$name] = $field;
+        $this->setField($name, $field, $step);
         $this->insert_field_order[] = $name;
 
         if (!method_exists($field, 'onAddReturn')) {
@@ -1064,6 +1064,21 @@ class Form extends Element
     public function getField($field_name, $step = 0)
     {
         return isset($this->fields[$step][$field_name]) ? $this->fields[$step][$field_name] : null;
+    }
+
+    /**
+     * Set field
+     *
+     * @param string  $field_name field name
+     * @param Element $field      subclass field object
+     * @param integer $step       step number where to put the field
+     *
+     * @return Form
+     */
+    public function setField($field_name, $field, $step = 0)
+    {
+        $this->fields[$step][$field_name] = $field;
+        return $this;
     }
 
     /**
