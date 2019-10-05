@@ -138,7 +138,7 @@ class Select extends FieldMultivalues
             'tag' => 'select',
             'id' => $id,
             'name' => $field_name,
-            'value' => htmlspecialchars($this->value),
+//            'value' => htmlspecialchars($this->value),
             'attributes' => $this->attributes + (
                 ($this->multiple) ? ['multiple' => 'multiple','size' => $this->size] : []
             ),
