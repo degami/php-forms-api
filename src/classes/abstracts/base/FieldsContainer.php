@@ -57,7 +57,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     }
 
     /**
-     * Get the step fields by type and name
+     * Get fields by type and name
      *
      * @param  array  $field_types field types
      * @param  string $name        field name
@@ -107,7 +107,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     public function setField($field_name, $field)
     {
         $field->setName($field_name);
-        $this->fields[$step][$field_name] = $field;
+        $this->fields[$field_name] = $field;
         return $this;
     }
 
