@@ -106,7 +106,7 @@ class FormBuilder
      * This function calls the form definitor function passing an
      * initial empty form object and the form state
      *
-     * @param callable $callable     form_id (and also form definitor function name)
+     * @param callable $callable
      * @param array    &$form_state  form state by reference
      * @param array    $form_options additional form constructor options
      *
@@ -118,6 +118,9 @@ class FormBuilder
         $before = memory_get_usage();
 
         $form_id = FormBuilder::getFormId($callable);
+        if (isset($form_options['form_id'])) {
+            $form_id = $form_options['form_id'];
+        }
         $function_name = FormBuilder::getDefinitionFunctionName($callable);
 
         $form = new Form(
@@ -160,33 +163,42 @@ class FormBuilder
     /**
      * Get a new form object
      *
-     * @param string $form_id form_id (and also form definitor function name)
+     * @param  callable $callable form definition callable
+     * @param  string $form_id form_id (optional)
      *
      * @return Form         a new form object
      * @throws FormException
      */
-    public static function getForm($form_id)
+    public static function getForm($callable, $form_id = null)
     {
         $form_state = [];
         $args = func_get_args();
-        // Remove $form_id from the arguments.
+        // Remove $callable and $form_id from the arguments.
         array_shift($args);
+        array_shift($args);
+
         $form_state['build_info']['args'] = $args;
 
-        $form = FormBuilder::buildForm($form_id, $form_state);
+        $form_options = [];
+        if (!is_null($form_id)) {
+            $form_options['form_id'] = $form_id;
+        }
+
+        $form = FormBuilder::buildForm($callable, $form_state, $form_options);
         return $form;
     }
 
     /**
      * Returns rendered form's html string
      *
-     * @param  string $form_id form_id (and also form definitor function name)
+     * @param  callable $callable form definition callable
+     * @param  string $form_id form_id (optional)
      * @return string          form html
      * @throws FormException
      */
-    public static function renderForm($form_id)
+    public static function renderForm($callable, $form_id = null)
     {
-        $form = FormBuilder::getForm($form_id);
+        $form = FormBuilder::getForm($callable, $form_id);
         return $form->renderHTML();
     }
 

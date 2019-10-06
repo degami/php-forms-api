@@ -19,7 +19,7 @@ session_start();
 // Submit function to call when the form is submitted and passes validation.
 // This is where you would send the email (using PHP mail function)
 // as this is not a real example I'm just outputting the values for now.
-function contactform_submit(&$form, &$form_state)
+function my_very_own_contactform_submit(&$form, &$form_state)
 {
     $form_values = $form->getValues();
     $out = [];
@@ -48,7 +48,8 @@ function contactform_submit(&$form, &$form_state)
 //  $form->get_field('fieldset')->remove_field('message');
 // }
 
-$form = FAPI\FormBuilder::getForm('contactform');
+// i just want another form_id for my form
+$form = FAPI\FormBuilder::getForm('contactform', 'my_very_own_contactform');
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
