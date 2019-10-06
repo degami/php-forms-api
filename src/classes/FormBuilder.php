@@ -130,7 +130,7 @@ class FormBuilder
             ] + $form_options
         );
 
-        $form_state += FormBuilder::getRequestValues($function_name);
+        $form_state += FormBuilder::getRequestValues($form_id);
         if (is_callable($callable)) {
             $form_obj = call_user_func_array(
                 $callable,
