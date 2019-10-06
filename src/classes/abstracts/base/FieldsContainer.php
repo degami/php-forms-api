@@ -199,7 +199,9 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
             if ($field instanceof FieldsContainer) {
                 $this->getField($name)->processValue($values);
             } elseif (preg_match_all('/(.*?)(\[(.*?)\])+/i', $name, $matches, PREG_SET_ORDER)) {
-                if (isset($values[ $matches[0][1] ])) {
+                if (isset($values[urlencode($name)])) {
+                    $value = $values[urlencode($name)];
+                } else if (isset($values[ $matches[0][1] ])) {
                     $value = $values[ $matches[0][1] ];
                     foreach ($matches as $match) {
                         if (isset($value[ $match[3] ])) {
