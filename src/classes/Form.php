@@ -732,6 +732,13 @@ class Form extends Element
                 $request = $values;
             }
 
+            // recursive url_decode request elements
+            array_walk_recursive($request, function (&$item, $key) {
+                if (is_scalar($item)) {
+                    $item = urldecode($item);
+                }
+            });
+
             //alter request if needed
             $this->alterRequest($request);
 
