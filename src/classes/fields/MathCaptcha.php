@@ -126,8 +126,14 @@ class MathCaptcha extends Captcha
             'tag' => 'input',
             'type' => 'text',
             'name' => $this->name."[code]",
+            'attributes' => [
+                'class' => FORMS_FIELD_ADDITIONAL_CLASS.' textfield',
+            ],
             'value' => $codeval,
         ]));
+
+        // @todo. if (!FormBuilder::sessionPresent()) add an hidden input with encoded captcha code
+
         return $tag;
     }
 
