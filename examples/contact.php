@@ -4,7 +4,8 @@ require_once '../vendor/autoload.php';
 include_once "forms.php";
 use Degami\PHPFormsApi as FAPI;
 
-session_start();
+define('PHP_FORMS_API_DEBUG', true);
+//session_start();
 
 // function my_textfield_field_alter(&$options, &$name){
 //   $name = 'my_'.$name;

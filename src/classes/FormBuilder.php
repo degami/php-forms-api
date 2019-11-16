@@ -30,8 +30,8 @@ class FormBuilder
      */
     public static function sessionPresent()
     {
-        return defined('PHP_VERSION_ID') && PHP_VERSION_ID > 54000 ?
-          session_status() != PHP_SESSION_NONE : trim(session_id()) != '';
+        return (defined('PHP_VERSION_ID') && PHP_VERSION_ID > 54000) ?
+          (session_status() === PHP_SESSION_ACTIVE) : (trim(session_id()) != '');
     }
 
     /**
@@ -150,8 +150,11 @@ class FormBuilder
 
             $form = $form_obj;
             $form->setDefinitionFunction($function_name);
-            self::getSessionBag()->ensurePath('/form_definition');
-            self::getSessionBag()->form_definition[$form->getId()] = $form->toArray();
+
+            if (self::sessionPresent() && defined('PHP_FORMS_API_DEBUG') && PHP_FORMS_API_DEBUG == true) {
+                self::getSessionBag()->ensurePath('/form_definition');
+                self::getSessionBag()->form_definition[$form->getId()] = $form->toArray();
+            }
         }
 
         $after = memory_get_usage();

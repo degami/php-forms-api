@@ -1,6 +1,6 @@
 <?php
 // if sessions are enabled then the form uses a token for extra security against CSRF
-@session_start();
+//@session_start();
 require_once '../vendor/autoload.php';
 include_once "forms.php";
 

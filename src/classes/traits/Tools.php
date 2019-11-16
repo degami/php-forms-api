@@ -42,7 +42,7 @@ trait Tools
      * @param  integer $size size in bytes
      * @return string       formatted size
      */
-    private static function formatBytes($size)
+    public static function formatBytes($size)
     {
         $units = [' B', ' KB', ' MB', ' GB', ' TB'];
         for ($i = 0; $size >= 1024 && $i < 4; $i++) {

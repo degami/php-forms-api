@@ -16,6 +16,7 @@
 namespace Degami\PHPFormsApi\Accessories;
 
 use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
+use Degami\PHPFormsApi\FormBuilder;
 
 /**
  * A class to hold session values
@@ -70,7 +71,9 @@ class SessionBag extends MultiLevelDataBag
     public function clear()
     {
         parent::clear();
-        session_destroy();
-        session_start();
+        if (FormBuilder::sessionPresent()) {
+            session_destroy();
+            session_start();
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
+use Degami\PHPFormsApi\FormBuilder;
 
 /**
  * The image captcha field class
@@ -100,8 +101,10 @@ class ImageCaptcha extends Captcha
             $this->code .= substr($this->characters, mt_rand() % (strlen($this->characters)), 1);
         }
 
-        $this->getSessionBag()->ensurePath("/image_captcha_code");
-        $this->getSessionBag()->image_captcha_code->{$this->getName()} = $this->code;
+        if (FormBuilder::sessionPresent()) {
+            $this->getSessionBag()->ensurePath("/image_captcha_code");
+            $this->getSessionBag()->image_captcha_code->{$this->getName()} = $this->code;
+        }
 
         return $this->code;
     }
@@ -257,6 +260,18 @@ class ImageCaptcha extends Captcha
             'name' => $this->name."[code]",
             'value' => $codeval,
         ]));
+
+        if (!FormBuilder::sessionPresent()) {
+            $tag->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'hidden',
+                'name' => $this->name."[code_chk]",
+                'attributes' => [
+                    'class' => FORMS_FIELD_ADDITIONAL_CLASS.' hidden',
+                ],
+                'value' => sha1($this->code . substr(md5(static::class), 0, 5)),
+            ]));
+        }
         return $tag;
     }
 
@@ -274,10 +289,18 @@ class ImageCaptcha extends Captcha
             return true;
         }
         
-        if (isset($this->value['code'])
-            && $this->value['code'] == $this->getSessionBag()->image_captcha_code->{$this->getName()}
-        ) {
-            return true;
+        if (!FormBuilder::sessionPresent()) {
+            if (isset($this->value['code']) && isset($this->value['code_chk'])
+                && sha1($this->value['code'].substr(md5(static::class), 0, 5)) == $this->value['code_chk']
+            ) {
+                return true;
+            }
+        } else {
+            if (isset($this->value['code'])
+                && $this->value['code'] == $this->getSessionBag()->image_captcha_code->{$this->getName()}
+            ) {
+                return true;
+            }
         }
 
         $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);

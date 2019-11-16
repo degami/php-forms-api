@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Fields;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
+use Degami\PHPFormsApi\FormBuilder;
 
 /**
  * The image captcha field class
@@ -61,8 +62,10 @@ class MathCaptcha extends Captcha
             eval('$ret = '.$this->a.$this->op.$this->b.';');
         } while (!is_int($ret));
 
-        $this->getSessionBag()->ensurePath("/math_captcha_code");
-        $this->getSessionBag()->math_captcha_code->{$this->getName()} = $this->a.$this->op.$this->b;
+        if (FormBuilder::sessionPresent()) {
+            $this->getSessionBag()->ensurePath("/math_captcha_code");
+            $this->getSessionBag()->math_captcha_code->{$this->getName()} = $this->a.$this->op.$this->b;
+        }
 
         if (mt_rand(0, 1) == 0) {
             $this->code .= '<span class="nohm">'.mt_rand(1, 10).$operators[ mt_rand(0, count($operators)-1) ].'</span>';
@@ -132,6 +135,18 @@ class MathCaptcha extends Captcha
             'value' => $codeval,
         ]));
 
+        if (!FormBuilder::sessionPresent()) {
+            $tag->addChild(new TagElement([
+                'tag' => 'input',
+                'type' => 'hidden',
+                'name' => $this->name."[code_chk]",
+                'attributes' => [
+                    'class' => FORMS_FIELD_ADDITIONAL_CLASS.' hidden',
+                ],
+                'value' => sha1(eval("return {$this->a}{$this->op}{$this->b};") . substr(md5(static::class), 0, 5)),
+            ]));
+        }
+
         // @todo. if (!FormBuilder::sessionPresent()) add an hidden input with encoded captcha code
 
         return $tag;
@@ -151,19 +166,28 @@ class MathCaptcha extends Captcha
             return true;
         }
 
-        if (!isset($this->getSessionBag()->math_captcha_code->{$this->getName()})) {
-            return true;
-        }
-
-        $_sessval = null;
-        if (trim($this->getSessionBag()->math_captcha_code->{$this->getName()}) != '') {
-            eval('$_sessval = '.$this->getSessionBag()->math_captcha_code->{$this->getName()}.';');
-            if (isset($this->value['code']) && $this->value['code'] == $_sessval) {
+        if (!FormBuilder::sessionPresent()) {
+            if (isset($this->value['code']) && isset($this->value['code_chk']) && sha1($this->value['code'].substr(md5(static::class), 0, 5)) == $this->value['code_chk']) {
                 return true;
             }
 
             $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
             return false;
+        } else {
+            if (!isset($this->getSessionBag()->math_captcha_code->{$this->getName()})) {
+                return true;
+            }
+
+            $_sessval = null;
+            if (trim($this->getSessionBag()->math_captcha_code->{$this->getName()}) != '') {
+                eval('$_sessval = '.$this->getSessionBag()->math_captcha_code->{$this->getName()}.';');
+                if (isset($this->value['code']) && $this->value['code'] == $_sessval) {
+                    return true;
+                }
+
+                $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
+                return false;
+            }
         }
     }
 }
