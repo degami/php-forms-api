@@ -148,7 +148,7 @@ class Switchbox extends Radios
                     $attributes,
                     (($this->value == $key) ? ['checked' => 'checked'] : [])
                 ),
-                'text' => $value,
+                'text' => $this->getText($value),
             ]));
             $tag->addChild($tag_label);
         }
