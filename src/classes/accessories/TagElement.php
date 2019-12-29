@@ -195,7 +195,7 @@ class TagElement extends BaseElement implements TagInterface
     {
         $out = "";
         foreach ($this->children as $key => $value) {
-            if ($value instanceof TagElement) {
+            if ($value instanceof TagInterface) {
                 $out .= $value->renderTag();
             } elseif (is_scalar($value)) {
                 $out .= $value;

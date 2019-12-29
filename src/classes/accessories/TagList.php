@@ -49,7 +49,7 @@ class TagList extends BaseElement implements TagInterface
     {
         $out = "";
         foreach ($this->children as $key => $value) {
-            if ($value instanceof TagElement) {
+            if ($value instanceof TagInterface) {
                 $out .= $value->renderTag();
             }
         }
@@ -59,12 +59,12 @@ class TagList extends BaseElement implements TagInterface
     /**
      * Add child to tag
      *
-     * @param  TagElement $child child to add
+     * @param  TagInterface $child child to add
      * @return TagList
      */
     public function addChild($child)
     {
-        if ($child instanceof TagElement) {
+        if ($child instanceof TagInterface) {
             $this->children[] = $child;
         }
         return $this;
