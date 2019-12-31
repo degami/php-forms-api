@@ -28,7 +28,7 @@ class Tinymce extends Textarea
      *
      * @var array
      */
-    private $tinymce_options = [];
+    protected $tinymce_options = [];
 
     /**
      * Get tinymce options array
