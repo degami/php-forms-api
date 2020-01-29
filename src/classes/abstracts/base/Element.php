@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Abstracts\Base;
 use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\NotificationsBag;
+use Degami\Basics\Html\BaseElement;
 
 /**
  * Base element class

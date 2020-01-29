@@ -17,7 +17,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * an accordion field container
@@ -48,10 +48,10 @@ class Accordion extends FieldsContainerMultiple
         $id = $this->getHtmlId();
         $collapsible = ($this->collapsible) ? 'true':'false';
         $this->addJs(
-            "\$('#{$id}','#{$form->getId()}').accordion({  
-            heightStyle: \"{$this->height_style}\", 
-            active: {$this->active}, 
-            collapsible: {$collapsible} 
+            "\$('#{$id}','#{$form->getId()}').accordion({
+            heightStyle: \"{$this->height_style}\",
+            active: {$this->active},
+            collapsible: {$collapsible}
         });"
         );
 

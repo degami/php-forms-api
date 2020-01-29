@@ -17,8 +17,8 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
-use Degami\PHPFormsApi\Accessories\TagElement;
-use Degami\PHPFormsApi\Accessories\TagList;
+use Degami\Basics\Html\TagElement;
+use Degami\Basics\Html\TagList;
 
 /**
  * The file input field class

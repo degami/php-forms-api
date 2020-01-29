@@ -17,7 +17,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Exceptions\FormException;
 
 /**

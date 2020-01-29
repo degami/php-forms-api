@@ -18,7 +18,7 @@ namespace Degami\PHPFormsApi\Abstracts\Fields;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Containers\TagContainer;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The composed field class
@@ -100,7 +100,7 @@ abstract class ComposedField extends TagContainer
                 $form->addJs("\$('#{$id}','#{$form->getId()}').tooltip();");
             }
         }
-        
+
         foreach (get_object_vars($this) as $name => &$property) {
             if ($property instanceof Field) {
                 if ($name == 'parent') {

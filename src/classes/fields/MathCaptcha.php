@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
 use Degami\PHPFormsApi\FormBuilder;
 

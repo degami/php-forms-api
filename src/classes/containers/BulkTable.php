@@ -16,8 +16,8 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\Form;
-use Degami\PHPFormsApi\Accessories\TagElement;
-use Degami\PHPFormsApi\Accessories\TagList;
+use Degami\Basics\Html\TagElement;
+use Degami\Basics\Html\TagList;
 
 /**
  * a table field container

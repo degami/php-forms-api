@@ -17,7 +17,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Abstracts\Fields\Optionable;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The option element class

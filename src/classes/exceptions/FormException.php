@@ -15,7 +15,9 @@
 
 namespace Degami\PHPFormsApi\Exceptions;
 
-class FormException extends \Exception
+use Degami\Basics\Exceptions\BasicException;
+
+class FormException extends BasicException
 {
 
 }

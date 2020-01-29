@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The switch selection field class
@@ -83,12 +83,12 @@ class Switchbox extends Radios
         }
 
         $this->addCss(
-            "#{$id} .label-switch{ 
-                                text-align: center; 
-                                display: inline-block; 
-                                width: 50%; 
-                                padding-top: 10px; 
-                                padding-bottom: 10px; 
+            "#{$id} .label-switch{
+                                text-align: center;
+                                display: inline-block;
+                                width: 50%;
+                                padding-top: 10px;
+                                padding-bottom: 10px;
                                 box-sizing: border-box;
                             }"
         );

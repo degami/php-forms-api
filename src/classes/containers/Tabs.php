@@ -17,7 +17,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * a "tabbed" field container
@@ -60,7 +60,7 @@ class Tabs extends FieldsContainerMultiple
 
         $tab_links = new TagElement(['tag' => 'ul']);
         $tag->addChild($tab_links);
-    
+
         foreach ($this->partitions as $tabindex => $tab) {
             $insertorder = array_flip($this->insert_field_order[$tabindex]);
             $weights = [];
@@ -98,7 +98,7 @@ class Tabs extends FieldsContainerMultiple
             }
             $tag->addChild($inner);
         }
-    
+
         return $tag;
     }
 

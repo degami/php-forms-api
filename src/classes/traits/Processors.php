@@ -15,11 +15,14 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
+use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
+
 /**
  * Processor functions
  */
 trait Processors
 {
+    use BasicToolsTrait;
 
     /**
      * applies trim to text
@@ -461,19 +464,6 @@ trait Processors
         } while ($before != $uri);
 
         return $uri;
-    }
-
-
-    /**
-     * applies plain_text to text
-     *
-     * @param  string $text text to encode
-     * @return string       plain version of $text
-     */
-    public static function processPlain($text)
-    {
-        // if using PHP < 5.2.5 add extra check of strings for valid UTF-8
-        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     }
 
     /**

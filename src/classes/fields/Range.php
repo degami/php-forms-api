@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The range input field class

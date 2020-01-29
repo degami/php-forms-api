@@ -17,7 +17,7 @@ namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * a fieldset field container

@@ -16,9 +16,9 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
-use Degami\PHPFormsApi\Accessories\TagList;
+use Degami\Basics\Html\TagList;
 
 /**
  * The "autocomplete" text input field class

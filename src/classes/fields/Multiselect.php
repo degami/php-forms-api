@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The "Multiselect select" field class
@@ -78,10 +78,10 @@ class Multiselect extends Select
               var \$this = \$(this);
               var \$from = \$('#{$id}_from','#{$form->getId()}');
               var \$to = \$('#{$id}_to','#{$form->getId()}');
-        
+
               if( /_move_right\$/i.test(\$this.attr('id')) ){
-                \$from.find('option:selected').each(function(index,elem){ 
-                    var \$elem = \$(elem); \$elem.appendTo(\$to); 
+                \$from.find('option:selected').each(function(index,elem){
+                    var \$elem = \$(elem); \$elem.appendTo(\$to);
                 });
               }
               if( /_move_left\$/i.test(\$this.attr('id')) ){

@@ -17,7 +17,7 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The tel input field class

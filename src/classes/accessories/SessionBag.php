@@ -15,7 +15,7 @@
 
 namespace Degami\PHPFormsApi\Accessories;
 
-use Degami\PHPFormsApi\Abstracts\Base\MultiLevelDataBag;
+use Degami\Basics\MultiLevelDataBag;
 use Degami\PHPFormsApi\FormBuilder;
 
 /**

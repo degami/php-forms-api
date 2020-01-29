@@ -15,41 +15,14 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
+use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
+
 /**
  * tools functions
  */
 trait Tools
 {
-
-    /**
-     * Set class properties. Used on constructors
-     *
-     * @param array $options values to set
-     */
-    private function setClassProperties($options)
-    {
-        foreach ($options as $name => $value) {
-            $name = trim($name);
-            if (property_exists(get_class($this), $name)) {
-                $this->{$name} = $value;
-            }
-        }
-    }
-
-    /**
-     * format byte size
-     *
-     * @param  integer $size size in bytes
-     * @return string       formatted size
-     */
-    public static function formatBytes($size)
-    {
-        $units = [' B', ' KB', ' MB', ' GB', ' TB'];
-        for ($i = 0; $size >= 1024 && $i < 4; $i++) {
-            $size /= 1024;
-        }
-        return round($size, 2).$units[$i];
-    }
+    use BasicToolsTrait;
 
     /**
      * scan_array private method
@@ -229,43 +202,5 @@ trait Tools
                 call_user_func_array($function_name, $args);
             }
         }
-    }
-
-    /**
-     * Checks if variable is suitable for use with foreach
-     *
-     * @param  mixed $var element to check
-     * @return bool
-     */
-    public static function isForeacheable($var)
-    {
-        return (is_array($var) || ($var instanceof \Traversable));
-    }
-
-    /**
-     * Take a string_like_this and return a StringLikeThis
-     *
-     * @param  string
-     * @return string
-     */
-    public static function snakeCaseToPascalCase($input)
-    {
-        return str_replace(' ', '', ucwords(str_replace('_', ' ', $input)));
-    }
-
-    /**
-     * Take a StringLikeThis and return string_like_this
-     *
-     * @param  string
-     * @return string
-     */
-    public function pascalCaseToSnakeCase($input)
-    {
-        preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
-        $ret = $matches[0];
-        foreach ($ret as &$match) {
-            $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
-        }
-        return implode('_', $ret);
     }
 }

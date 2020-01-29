@@ -16,7 +16,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
-use Degami\PHPFormsApi\Accessories\TagElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The leaflet maps geolocation field class
@@ -185,32 +185,32 @@ class Leafletlocation extends Geolocation
         $this->addCss("#{$form->getId()} #{$id}-map {width: {$this->mapwidth}; height: {$this->mapheight}; }");
         $this->addJs(
             "var {$id}_latlng = {
-                                            lat: ".$this->latitude->getValues().", 
+                                            lat: ".$this->latitude->getValues().",
                                             lng: ".$this->longitude->getValues()."
                                         };
           var {$id}_map = L.map('{$id}-map').setView([{$id}_latlng.lat,{$id}_latlng.lng],{$this->zoom});
           L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-              attribution: 
-                'Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors,'+ 
+              attribution:
+                'Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors,'+
                 '<a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>,'+
                 ' Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>',
               maxZoom: 18,
               id: '{$this->maptype}',
               accessToken: '{$this->accessToken}'
           }).addTo({$id}_map);
-    
+
           var {$id}_marker = L.marker([{$id}_latlng.lat, {$id}_latlng.lng],{
             draggable: true
           }).addTo({$id}_map);
-    
+
           {$id}_marker.on('dragend', function(e){
             {$id}_map.panTo( {$id}_marker.getLatLng() );
             \$('input[name=\"{$id}_latitude\"]','#{$id}').val( {$id}_marker.getLatLng().lat );
             \$('input[name=\"{$id}_longitude\"]','#{$id}').val( {$id}_marker.getLatLng().lng );
           });
-    
+
           \$.data( \$('#{$id}-map')[0] , 'map_obj', {$id}_map);
-          \$.data( \$('#{$id}-map')[0] , 'marker_obj', {$id}_marker);    
+          \$.data( \$('#{$id}-map')[0] , 'marker_obj', {$id}_marker);
         "
         );
 
@@ -222,7 +222,7 @@ class Leafletlocation extends Geolocation
                 var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
                 var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
                 var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
-    
+
                 map.panTo(L.latLng(lat, lng));
                 marker.setLatLng(L.latLng(lat, lng));
             });"

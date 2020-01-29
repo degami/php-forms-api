@@ -17,7 +17,6 @@ namespace Degami\PHPFormsApi\Fields;
 
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
-use Degami\PHPFormsApi\Accessories\TagElement;
 
 /**
  * The geolocation field class

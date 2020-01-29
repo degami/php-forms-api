@@ -15,7 +15,7 @@
 
 namespace Degami\PHPFormsApi\Accessories;
 
-use Degami\PHPFormsApi\Abstracts\Base\DataBag;
+use Degami\Basics\DataBag;
 
 /**
  * class for maintaining ordered list of functions
