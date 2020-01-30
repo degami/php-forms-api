@@ -38,7 +38,15 @@ use Degami\PHPFormsApi\Accessories\SessionBag;
  */
 class Form extends Element
 {
-    use Tools, Validators, Processors, Containers;
+    use Tools, Validators, Processors, Containers {
+        Tools::setClassProperties insteadof Processors;
+        Tools::isForeacheable insteadof Processors;
+        Tools::snakeCaseToPascalCase insteadof Processors;
+        Tools::pascalCaseToSnakeCase insteadof Processors;
+        Tools::slugify insteadof Processors;
+        Tools::formatBytes insteadof Processors;
+        Tools::processPlain insteadof Processors;
+    }
 
     /**
      * form id
