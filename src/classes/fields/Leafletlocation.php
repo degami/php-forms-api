@@ -150,16 +150,6 @@ class Leafletlocation extends Geolocation
 
 
     /**
-     * {@inheritdoc} . it simply calls the sub elements process
-     *
-     * @param array $values value to set
-     */
-    public function processValue($values)
-    {
-        parent::processValue($values);
-    }
-
-    /**
      * Return field value
      *
      * @return array field value

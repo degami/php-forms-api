@@ -133,18 +133,11 @@ class Repeatable extends FieldsContainerMultiple
      */
     public function processValue($values)
     {
-        $valuestoprocess = array_values($values[ $this->getName() ]);
-
         foreach ($this->getFields() as $i => $field) {
             /**
              * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
              */
-            $matches = null;
-            if (preg_match("/".$this->getName()."\[([0-9]+)\]\[(.*?)\]/", $field->getName(), $matches)) {
-                if (isset($valuestoprocess[ $matches[1] ][ $matches[2] ])) {
-                    $field->processValue($valuestoprocess[ $matches[1] ][ $matches[2] ]);
-                }
-            }
+            $field->processValue(static::traverseArray($values, $field->getName()));
         }
         //parent::processValue($values);
     }
