@@ -185,6 +185,16 @@ class Repeatable extends FieldsContainerMultiple
         return $this->getValue();
     }
 
+    /**
+     * {@inheritdocs}
+     */
+    public function isValid()
+    {
+        if ($this->numreps == 0) {
+            return true;
+        }
+        return parent::isValid();
+    }
 
     /**
      * {@inheritdoc}
