@@ -58,10 +58,10 @@ class Datetimeselect extends ComposedField
         $options['container_tag'] = '';
 
         $options['type'] = 'dateselect';
-        $this->date = new Dateselect($options, $name.'_date');
+        $this->date = new Dateselect($options, $this->getSubfieldName('date'));
 
         $options['type'] = 'timeselect';
-        $this->time = new Timeselect($options, $name.'_time');
+        $this->time = new Timeselect($options, $this->getSubfieldName('time'));
     }
 
     /**
@@ -113,8 +113,8 @@ class Datetimeselect extends ComposedField
      */
     public function processValue($values)
     {
-        $this->date->processValue($values[$this->getName().'_date']);
-        $this->time->processValue($values[$this->getName().'_time']);
+        $this->processSubfieldsValues($values, $this->date, 'date');
+        $this->processSubfieldsValues($values, $this->time, 'time');
     }
 
     /**

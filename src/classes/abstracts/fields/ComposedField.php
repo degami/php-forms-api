@@ -47,6 +47,30 @@ abstract class ComposedField extends TagContainer
 
 
     /**
+     * Return subfields name
+     *
+     * @param string $subfieldName
+     * @return string
+     */
+    protected function getSubfieldName($subfieldName)
+    {
+        return $this->getName() . (preg_match("/.*?\[.*?\]$/", $this->getName()) ? '['.$subfieldName.']' : '_'.$subfieldName);
+    }
+
+
+    /**
+     * Process subfield value
+     *
+     * @param array $values
+     * @param Field $subfield
+     * @param string $subfieldName
+     */
+    protected function processSubfieldsValues($values, $subfield, $subfieldName)
+    {
+        $subfield->processValue($this->traverseArray($values, $this->getSubfieldName($subfieldName)));
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @param Form $form form object

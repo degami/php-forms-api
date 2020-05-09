@@ -115,9 +115,9 @@ class Leafletlocation extends Geolocation
             $opt['suffix'] = $this->getText('latitude').' ';
         }
         if ($this->lat_lon_type == 'textfield') {
-            $this->latitude = new Textfield($opt, $name.'_latitude');
+            $this->latitude = new Textfield($opt, $this->getSubfieldName('latitude'));
         } else {
-            $this->latitude = new Hidden($opt, $name.'_latitude');
+            $this->latitude = new Hidden($opt, $this->getSubfieldName('latitude'));
         }
 
         $opt = $options;
@@ -131,9 +131,9 @@ class Leafletlocation extends Geolocation
             $opt['suffix'] = $this->getText('longitude').' ';
         }
         if ($this->lat_lon_type == 'textfield') {
-            $this->longitude = new Textfield($opt, $name.'_longitude');
+            $this->longitude = new Textfield($opt, $this->getSubfieldName('longitude'));
         } else {
-            $this->longitude = new Hidden($opt, $name.'_longitude');
+            $this->longitude = new Hidden($opt, $this->getSubfieldName('longitude'));
         }
     }
 

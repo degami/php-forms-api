@@ -154,9 +154,9 @@ class Gmaplocation extends Geolocation
             $opt['suffix'] = $this->getText('latitude').' ';
         }
         if ($this->lat_lon_type == 'textfield') {
-            $this->latitude = new Textfield($opt, $name.'_latitude');
+            $this->latitude = new Textfield($opt, $this->getSubfieldName('latitude'));
         } else {
-            $this->latitude = new Hidden($opt, $name.'_latitude');
+            $this->latitude = new Hidden($opt, $this->getSubfieldName('latitude'));
         }
 
         $opt = $options;
@@ -170,9 +170,9 @@ class Gmaplocation extends Geolocation
             $opt['suffix'] = $this->getText('longitude').' ';
         }
         if ($this->lat_lon_type == 'textfield') {
-            $this->longitude = new Textfield($opt, $name.'_longitude');
+            $this->longitude = new Textfield($opt, $this->getSubfieldName('longitude'));
         } else {
-            $this->longitude = new Hidden($opt, $name.'_longitude');
+            $this->longitude = new Hidden($opt, $this->getSubfieldName('longitude'));
         }
 
         if ($this->with_geocode == true) {
@@ -184,7 +184,7 @@ class Gmaplocation extends Geolocation
                                     isset($defaults['geocodebox'])) ?
                                     $defaults['geocodebox'] :
                                     '';
-            $this->geocode_box = new Textfield($opt, $name.'_geocodebox');
+            $this->geocode_box = new Textfield($opt, $this->getSubfieldName('geocodebox'));
         }
 
         if ($this->with_reverse == true) {
@@ -195,7 +195,7 @@ class Gmaplocation extends Geolocation
                                     isset($defaults['reverse_geocodebox'])) ?
                                     $defaults['reverse_geocodebox'] :
                                     '';
-            $this->reverse_geocode_box = new Textarea($opt, $name.'_reverse_geocodebox');
+            $this->reverse_geocode_box = new Textarea($opt, $this->getSubfieldName('reverse_geocodebox'));
         }
 
         if ($this->with_current_location == true) {
@@ -204,7 +204,7 @@ class Gmaplocation extends Geolocation
             $opt['size'] = 50;
             $opt['attributes']['class'] = 'current_location';
             $opt['default_value'] = $this->getText('Current Location');
-            $this->current_location_btn = new Button($opt, $name.'_current_location_btn');
+            $this->current_location_btn = new Button($opt, $this->getSubfieldName('current_location_btn'));
         }
     }
 
@@ -233,11 +233,12 @@ class Gmaplocation extends Geolocation
     public function processValue($values)
     {
         parent::processValue($values);
+
         if ($this->with_geocode == true) {
-            $this->geocode_box->processValue($values[$this->getName().'_geocodebox']);
+            $this->processSubfieldsValues($values, $this->geocode_box, 'geocodebox');
         }
         if ($this->with_reverse == true) {
-            $this->reverse_geocode_box->processValue($values[$this->getName().'_reverse_geocodebox']);
+            $this->processSubfieldsValues($values, $this->reverse_geocode_box, 'reverse_geocodebox');
         }
     }
 

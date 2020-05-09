@@ -58,10 +58,10 @@ class Datetime extends ComposedField
         $options['container_tag'] = '';
 
         $options['type'] = 'date';
-        $this->date = new Date($options, $name.'_date');
+        $this->date = new Date($options, $this->getSubfieldName('date'));
 
         $options['type'] = 'time';
-        $this->time = new Time($options, $name.'_time');
+        $this->time = new Time($options, $this->getSubfieldName('time'));
     }
 
     /**
@@ -113,8 +113,8 @@ class Datetime extends ComposedField
      */
     public function processValue($values)
     {
-        $this->date->processValue($values[$this->getName().'_date']);
-        $this->time->processValue($values[$this->getName().'_time']);
+        $this->processSubfieldsValues($values, $this->date, 'date');
+        $this->processSubfieldsValues($values, $this->time, 'time');
     }
 
     /**

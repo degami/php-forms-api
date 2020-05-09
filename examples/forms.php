@@ -895,7 +895,7 @@ function locationsform(FAPI\Form $form, &$form_state)
     google.maps.MapTypeId.TERRAIN
 */
 
-    $form->addField('location', array(
+    $form->addField('location[test]', array(
     'title' => 'GeoLocation',
     'type' => 'geolocation',
     ))

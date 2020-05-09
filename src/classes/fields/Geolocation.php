@@ -62,12 +62,12 @@ class Geolocation extends ComposedField
         $options['type'] = 'textfield';
         $options['suffix'] = $this->getText('latitude').' ';
         $options['default_value'] = (is_array($defaults) && isset($defaults['latitude'])) ? $defaults['latitude'] : 0;
-        $this->latitude = new Textfield($options, $name.'_latitude');
+        $this->latitude = new Textfield($options, $this->getSubfieldName('latitude'));
 
         $options['type'] = 'textfield';
         $options['suffix'] = $this->getText('longitude').' ';
         $options['default_value'] = (is_array($defaults) && isset($defaults['longitude'])) ? $defaults['longitude'] : 0;
-        $this->longitude = new Textfield($options, $name.'_longitude');
+        $this->longitude = new Textfield($options, $this->getSubfieldName('longitude'));
     }
 
     /**
@@ -104,8 +104,8 @@ class Geolocation extends ComposedField
      */
     public function processValue($values)
     {
-        $this->latitude->processValue($values[$this->getName().'_latitude']);
-        $this->longitude->processValue($values[$this->getName().'_longitude']);
+        $this->processSubfieldsValues($values, $this->latitude, 'latitude');
+        $this->processSubfieldsValues($values, $this->longitude, 'longitude');
     }
 
     /**
