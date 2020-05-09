@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
+
+use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
 use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\NotificationsBag;
@@ -28,7 +30,7 @@ use Degami\Basics\Html\BaseElement;
  */
 abstract class Element extends BaseElement
 {
-    use Tools;
+    use BasicToolsTrait, Tools;
 
     /**
      * Element name

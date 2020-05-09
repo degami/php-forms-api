@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
 
@@ -23,6 +24,8 @@ use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
  */
 class Datetime extends ComposedField
 {
+    use BasicToolsTrait;
+
     /**
      * date sub element
      *

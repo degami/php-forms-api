@@ -16,6 +16,7 @@
 namespace Degami\PHPFormsApi;
 
 use \Exception;
+use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
 use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Traits\Processors;
 use Degami\PHPFormsApi\Traits\Validators;
@@ -38,16 +39,7 @@ use Degami\PHPFormsApi\Accessories\SessionBag;
  */
 class Form extends Element
 {
-    use Tools, Validators, Processors, Containers {
-        Tools::setClassProperties insteadof Processors;
-        Tools::isForeacheable insteadof Processors;
-        Tools::snakeCaseToPascalCase insteadof Processors;
-        Tools::pascalCaseToSnakeCase insteadof Processors;
-        Tools::slugify insteadof Processors;
-        Tools::formatBytes insteadof Processors;
-        Tools::processPlain insteadof Processors;
-        Tools::traverseArray insteadof Processors;
-    }
+    use BasicToolsTrait, Tools, Validators, Processors, Containers ;
 
     /**
      * form id

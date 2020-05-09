@@ -15,15 +15,11 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
-use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
-
 /**
  * Processor functions
  */
 trait Processors
 {
-    use BasicToolsTrait;
-
     /**
      * applies trim to text
      *

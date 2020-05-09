@@ -304,8 +304,8 @@ class Gmaplocation extends Geolocation
               var lat = tmp[0];
               var lng = tmp[1];
 
-              \$('input[name=\"{$id}_latitude\"]','#{$id}').val( lat );
-              \$('input[name=\"{$id}_longitude\"]','#{$id}').val( lng );
+              \$('input[name=\"".$this->latitude->getName()."\"]','#{$id}').val( lat );
+              \$('input[name=\"".$this->longitude->getName()."\"]','#{$id}').val( lng );
               ".(($this->with_reverse == true) ? "\$('#{$id}').trigger('lat_lon_updated');":"")."
 
               {$update_map_func}
@@ -342,9 +342,9 @@ class Gmaplocation extends Geolocation
 
                 google.maps.event.addListener({$id}_marker, 'dragend', function() {
                   var mapdiv = {$id}_marker.map.getDiv();
-                  \$('input[name=\"{$id}_latitude\"]','#'+\$(mapdiv).parent().
+                  \$('input[name=\"".$this->latitude->getName()."\"]','#'+\$(mapdiv).parent().
                   attr('id')).val( {$id}_marker.getPosition().lat() );
-                  \$('input[name=\"{$id}_longitude\"]','#'+\$(mapdiv).parent().
+                  \$('input[name=\"".$this->longitude->getName()."\"]','#'+\$(mapdiv).parent().
                   attr('id')).val( {$id}_marker.getPosition().lng() );
                   ".(($this->with_reverse == true) ? "\$('#{$id}').trigger('lat_lon_updated');":"")."
                 });"
@@ -352,12 +352,12 @@ class Gmaplocation extends Geolocation
 
             if ($this->lat_lon_type == 'textfield') {
                 $this->addJs(
-                    "\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
+                    "\$('input[name=\"".$this->latitude->getName()."\"],input[name=\"".$this->longitude->getName()."\"]','#{$id}')
                 .change(function(evt){
                   var map = \$.data( \$('#{$id}-map')[0] , 'map_obj');
                   var marker = \$.data( \$('#{$id}-map')[0] , 'marker_obj');
-                  var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
-                  var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
+                  var lat = \$('input[name=\"".$this->latitude->getName()."\"]','#{$id}').val();
+                  var lng = \$('input[name=\"".$this->longitude->getName()."\"]','#{$id}').val();
                   marker.setPosition( new google.maps.LatLng( lat, lng ) );
                   map.panTo( new google.maps.LatLng( lat, lng ) );
                 });"
@@ -370,8 +370,8 @@ class Gmaplocation extends Geolocation
                 "var {$id}_geocoder = new google.maps.Geocoder;
                 \$('#{$id}').bind('lat_lon_updated',function(evt){
                   var latlng = {
-                    lat: parseFloat( \$('input[name=\"{$id}_latitude\"]','#{$id}').val() ),
-                    lng: parseFloat( \$('input[name=\"{$id}_longitude\"]','#{$id}').val() )
+                    lat: parseFloat( \$('input[name=\"".$this->latitude->getName()."\"]','#{$id}').val() ),
+                    lng: parseFloat( \$('input[name=\"".$this->longitude->getName()."\"]','#{$id}').val() )
                   };
                   {$id}_geocoder.geocode({'location': latlng}, function(results, status) {
                     if (status === 'OK') {
@@ -385,7 +385,7 @@ class Gmaplocation extends Geolocation
 
             if ($this->lat_lon_type == 'textfield') {
                 $this->addJs(
-                    "\$('input[name=\"{$id}_latitude\"],input[name=\"{$id}_longitude\"]','#{$id}')
+                    "\$('input[name=\"".$this->latitude->getName()."\"],input[name=\"".$this->longitude->getName()."\"]','#{$id}')
                 .change(function(evt){
                     \$('#{$id}').trigger('lat_lon_updated');
                 });"
@@ -407,15 +407,15 @@ class Gmaplocation extends Geolocation
                 "\$('button.current_location','#{$id}')
             .click(function(evt){
               evt.preventDefault();
-              var lat = \$('input[name=\"{$id}_latitude\"]','#{$id}').val();
-              var lng = \$('input[name=\"{$id}_longitude\"]','#{$id}').val();
+              var lat = \$('input[name=\"".$this->latitude->getName()."\"]','#{$id}').val();
+              var lng = \$('input[name=\"".$this->longitude->getName()."\"]','#{$id}').val();
 
               if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                   lat = position.coords.latitude;
                   lng = position.coords.longitude;
-                  \$('input[name=\"{$id}_latitude\"]','#{$id}').val(lat);
-                  \$('input[name=\"{$id}_longitude\"]','#{$id}').val(lng);
+                  \$('input[name=\"".$this->latitude->getName()."\"]','#{$id}').val(lat);
+                  \$('input[name=\"".$this->longitude->getName()."\"]','#{$id}').val(lng);
                   ".(($this->with_reverse == true) ? "\$('#{$id}').trigger('lat_lon_updated');":"")."
 
                   {$update_map_func}

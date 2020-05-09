@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Fields;
 
+use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Containers\TagContainer;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
@@ -25,6 +26,8 @@ use Degami\Basics\Html\TagElement;
  */
 abstract class ComposedField extends TagContainer
 {
+    use BasicToolsTrait;
+
     /**
      * {@inheritdoc}
      *

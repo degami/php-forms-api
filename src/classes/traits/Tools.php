@@ -15,15 +15,11 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
-use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
-
 /**
  * tools functions
  */
 trait Tools
 {
-    use BasicToolsTrait;
-
     /**
      * scan_array private method
      *
