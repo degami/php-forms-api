@@ -67,7 +67,7 @@ abstract class ComposedField extends TagContainer
      */
     protected function processSubfieldsValues($values, $subfield, $subfieldName)
     {
-        $subfield->processValue($this->traverseArray($values, $this->getSubfieldName($subfieldName)));
+        $subfield->processValue(static::traverseArray($values, $this->getSubfieldName($subfieldName)));
     }
 
     /**
