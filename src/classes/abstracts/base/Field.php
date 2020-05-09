@@ -356,7 +356,7 @@ abstract class Field extends Element implements FieldInterface
      */
     public function getHtmlId()
     {
-        return strtolower(!empty($this->id) ? $this->getId() : $this->getName());
+        return preg_replace("/\[(.*?)\]/i", "_\\1", strtolower(!empty($this->id) ? $this->getId() : $this->getName()));
     }
 
     /**
