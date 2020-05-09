@@ -228,7 +228,7 @@ abstract class Field extends Element implements FieldInterface
      */
     public function getValues()
     {
-        return $this->getValue();
+        return ($this->getValue() != null) ? $this->getValue() : $this->getDefaultValue();
     }
 
     /**
@@ -606,10 +606,10 @@ abstract class Field extends Element implements FieldInterface
             "\$('#".$event['target']."')" :
             "\$('#{$id}').parent()").
           ";
-          var jsondata = { 
-            'name':\$('#{$id}').attr('name'), 
+          var jsondata = {
+            'name':\$('#{$id}').attr('name'),
             'value':\$('#{$id}').val(),
-            'callback':'{$event['callback']}' 
+            'callback':'{$event['callback']}'
           };
           var postdata = new FormData();
           postdata.append('form_id', '{$form->getId()}');
@@ -620,9 +620,9 @@ abstract class Field extends Element implements FieldInterface
             if( \$this.serialize() != '' ){
               var elem = \$this.serialize().split('=',2);
               postdata.append(elem[0], elem[1]);
-            }else if( 
-                \$this.prop('tagName').toLowerCase() == 'input' && 
-                \$this.attr('type').toLowerCase() == 'file' 
+            }else if(
+                \$this.prop('tagName').toLowerCase() == 'input' &&
+                \$this.attr('type').toLowerCase() == 'file'
             ){
               postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
             }
@@ -656,7 +656,7 @@ abstract class Field extends Element implements FieldInterface
 
               var element_onsuccess = \$.data( \$('#{$id}','#{$form->getId()}')[0], 'element_onsuccess' );
               if( !!(
-                        element_onsuccess && element_onsuccess.constructor && 
+                        element_onsuccess && element_onsuccess.constructor &&
                         element_onsuccess.call && element_onsuccess.apply
               ) ){
                 element_onsuccess();
