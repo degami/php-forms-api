@@ -978,6 +978,11 @@ function repeatableform(FAPI\Form $form, &$form_state)
     ->addField('rep', array(
       'type' => 'repeatable',
       'title' => 'Emails',
+      'default_value' => [
+        ['name' => 'name1', 'email' => 'email1@email.domain'],
+        ['name' => 'name2', 'email' => 'email2@email.domain'],
+        ['name' => 'name3', 'email' => 'email3@email.domain'],
+      ],
     ))
     ->addField('name', array(
       'type' => 'textfield',

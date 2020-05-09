@@ -34,6 +34,9 @@ class Repeatable extends FieldsContainerMultiple
     /** @var array field order */
     private $repetable_insert_field_order = [];
 
+    /** @var array default values */
+    protected $default_value = [];
+
     /**
      * {@inheritdocs}
      *
@@ -43,6 +46,10 @@ class Repeatable extends FieldsContainerMultiple
     public function __construct(array $options = [], $name = null)
     {
         parent::__construct($options, $name);
+        if (is_array($options['default_value'])) {
+            $this->default_value = $options['default_value'];
+            $this->num_reps = count($this->default_value);
+        }
     }
 
     /**
@@ -120,6 +127,10 @@ class Repeatable extends FieldsContainerMultiple
                 $field
                     ->setId($this->getName().'_'.$i.'_'.$field->getName())
                     ->setName($this->getName().'['.$i.']['.$field->getName().']');
+
+                if (isset($this->default_value[$i][$rfield->getName()])) {
+                    $field->setValue($this->default_value[$i][$rfield->getName()]);
+                }
                 parent::addField($field->getName(), $field, $i);
             }
         }
@@ -193,7 +204,7 @@ class Repeatable extends FieldsContainerMultiple
                  */
                 $field = clone $rfield;
                 $field
-                    ->setId($this->getName().'_{x}_'.$field->getName())
+                    ->setId($this->getHtmlId().'_{x}_'.$field->getName())
                     ->setName($this->getName().'[{x}]['.$field->getName().']');
                 $repetatable_fields .= $field->renderHTML($fake_form);
             }
@@ -245,7 +256,7 @@ class Repeatable extends FieldsContainerMultiple
                 "\$('.btnaddmore', '#{$id}').click(function(evt){
                 evt.preventDefault();
                 var \$target = \$('.fields-target:eq(0)');
-                var newrownum = \$target.find('.repeatable-row').length;
+                var newrownum = \$target.find('.repeatable-row').length + 1;
                 \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target );
                 \$('input[name=\"{$id}-numreps\"]').val(newrownum);
                 {$js}
@@ -308,12 +319,6 @@ class Repeatable extends FieldsContainerMultiple
             ]);
             $inner->addChild($repeatablerow);
 
-            $repeatablerow->addChild(new TagElement([
-                'tag' => 'input',
-                'type' => 'hidden',
-                'name' => $id.'-numreps',
-                'value' => $this->num_reps,
-            ]));
             foreach ($partition_fields as $name => $field) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
                 $repeatablerow->addChild($field->renderHTML($form));
@@ -323,6 +328,12 @@ class Repeatable extends FieldsContainerMultiple
             );
         }
 
+        $tag->addChild(new TagElement([
+            'tag' => 'input',
+            'type' => 'hidden',
+            'name' => $id.'-numreps',
+            'value' => $this->num_reps,
+        ]));
         $tag->addChild(new TagElement([
             'tag' => 'button',
             'id' => $id.'-btn-addmore',
