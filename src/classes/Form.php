@@ -46,6 +46,7 @@ class Form extends Element
         Tools::slugify insteadof Processors;
         Tools::formatBytes insteadof Processors;
         Tools::processPlain insteadof Processors;
+        Tools::traverseArray insteadof Processors;
     }
 
     /**
