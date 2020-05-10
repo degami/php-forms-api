@@ -92,4 +92,14 @@ class Checkbox extends Field
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return mixed field value
+     */
+    public function getValues()
+    {
+        return $this->getValue();
+    }
 }

@@ -87,4 +87,14 @@ class Checkboxes extends FieldMultivalues
 
         return $tag;
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return mixed field value
+     */
+    public function getValues()
+    {
+        return $this->getValue();
+    }
 }
