@@ -166,9 +166,11 @@ class Repeatable extends FieldsContainerMultiple
              * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
              */
             if ($field->isAValue() == true) {
-                $matches = null;
-                if (preg_match("/".$this->getName()."\[([0-9]+)\]\[(.*?)\]/", $field->getName(), $matches)) {
-                    $out[ $matches[1] ][ $matches[2] ] = $field->getValue();
+                $key = str_replace($this->getName(), "", $field->getName());
+                if (preg_match('/\[([0-9]+)\]\[(.*?)\]/i', $key, $matches)) {
+                    $out[$matches[1]][$matches[2]] = $field->getValue();
+                } else {
+                    $out[$field->getName()] = $field->getValue();
                 }
             }
         }
@@ -266,9 +268,9 @@ class Repeatable extends FieldsContainerMultiple
                 "\$('.btnaddmore', '#{$id}').click(function(evt){
                 evt.preventDefault();
                 var \$target = \$('.fields-target:eq(0)');
-                var newrownum = \$target.find('.repeatable-row').length + 1;
+                var newrownum = \$target.find('.repeatable-row').length;
                 \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target );
-                \$('input[name=\"{$id}-numreps\"]').val(newrownum);
+                \$('input[name=\"{$id}-numreps\"]').val(newrownum + 1);
                 {$js}
               });"
             );
