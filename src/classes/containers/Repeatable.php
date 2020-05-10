@@ -26,7 +26,7 @@ use Degami\PHPFormsApi\Exceptions\FormException;
 class Repeatable extends FieldsContainerMultiple
 {
     /** @var integer number of initial repetitions */
-    protected $num_reps = 1;
+    protected $num_reps = null;
 
     /** @var array fields to repeat */
     private $repetable_fields = [];
@@ -114,7 +114,7 @@ class Repeatable extends FieldsContainerMultiple
         $id = $this->getHtmlId();
         if (isset($request[ $id.'-numreps' ])) {
             $this->num_reps = (int) $request[ $id.'-numreps' ];
-            if ($this->num_reps <= 0) {
+            if ($this->num_reps < 0) {
                 $this->num_reps = 1;
             }
         }
@@ -190,7 +190,7 @@ class Repeatable extends FieldsContainerMultiple
      */
     public function isValid()
     {
-        if ($this->numreps == 0) {
+        if ($this->num_reps == 0) {
             return true;
         }
         return parent::isValid();
