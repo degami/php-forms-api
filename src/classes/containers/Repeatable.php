@@ -294,6 +294,7 @@ class Repeatable extends FieldsContainerMultiple
             'tag' => 'div',
             'id' => $id,
             'attributes' => $this->attributes,
+            'text' => $this->getTitle(),
         ]);
 
         $target = new TagElement([
@@ -356,5 +357,71 @@ class Repeatable extends FieldsContainerMultiple
         ]));
 
         return $tag;
+    }
+
+
+    /**
+     * render the field
+     *
+     * @param Form $form form object
+     *
+     * @return string        the field html
+     */
+    public function renderHTML(Form $form)
+    {
+        $id = $this->getHtmlId();
+        $output = $this->getElementPrefix();
+        $output .= $this->getPrefix();
+
+        // this container needs a label
+        if (!empty($this->title)) {
+            if ($this->tooltip == false) {
+                $this->label_class .= " label-" . $this->getElementClassName();
+                $this->label_class = trim($this->label_class);
+                $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
+                $output .= "<label for=\"{$id}\" {$label_class}>".
+                            $this->getText($this->title).
+                            "</label>\n";
+            } else {
+                if (!in_array('title', array_keys($this->attributes))) {
+                    $this->attributes['title'] = strip_tags($this->getText($this->title));
+                }
+
+                $id = $this->getHtmlId();
+                $form->addJs("\$('#{$id}','#{$form->getId()}').tooltip();");
+            }
+        }
+
+
+        if (!$this->pre_rendered) {
+            $this->preRender($form);
+            $this->pre_rendered = true;
+        }
+        $output .= $this->renderField($form);
+
+        if (!($this instanceof FieldsContainer)) {
+            if (!empty($this->description)) {
+                $output .= "<div class=\"description\">{$this->description}</div>";
+            }
+        }
+        if ($form->errorsInline() == true && $this->hasErrors()) {
+            $output.= '<div class="inline-error has-errors">'.implode("<br />", $this->getErrors()).'</div>';
+        }
+
+        $output .= $this->getSuffix();
+        $output .= $this->getElementSuffix();
+
+        if (count($this->event) > 0 && trim($this->getAjaxUrl()) != '') {
+            foreach ($this->event as $event) {
+                $eventjs = $this->generateEventJs($event, $form);
+                $this->addJs($eventjs);
+            }
+        }
+
+        // let others alter the output
+        static::executeAlter("/.*?_".static::getClassNameString()."_render_output_alter$/i", [&$output]);
+
+        // return html string
+        return $output;
     }
 }
