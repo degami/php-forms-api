@@ -205,6 +205,8 @@ class Repeatable extends FieldsContainerMultiple
      */
     public function preRender(Form $form)
     {
+        static $selectorPluginAdded = false;
+
         if (!$this->pre_rendered) {
             $id = $this->getHtmlId();
 
@@ -258,7 +260,22 @@ class Repeatable extends FieldsContainerMultiple
             $this->addJs(
                 "\$('#{$id}').delegate('.remove-btn','click',function(evt){
                 evt.preventDefault();
-                \$(this).closest('.repeatable-row').remove();
+                var \$parent = \$(this).closest('.repeatable-row');
+
+                \$afterSiblings = \$parent.parent().nextAll();
+                \$parent.remove();
+
+                \$afterSiblings.each(function(key, element) {
+                    var regexp = /".str_replace(["[","]","/"], ['\[','\]','\/'], $this->getName())."\[([0-9]+)\]/;
+                    var \$inputs = \$(element).find('input, textarea, select').regex(regexp, $.fn.attr, ['name']);
+                    \$inputs.each(function(i, inp) {
+                        var nameMatches = \$(inp).attr('name').match(/^".str_replace(["[","]","/"], ['\[','\]','\/'], $this->getName())."\[([0-9]+)\](.*?)$/);
+                        var newNumber = parseInt(nameMatches[1]) - 1;
+                        var newName = '".$this->getName()."['+(newNumber)+']'+nameMatches[2];
+                        \$(inp).attr('name', newName)
+                    });
+                });
+
                 var \$target = $('.fields-target:eq(0)');
                 var newrownum = \$target.find('.repeatable-row').length;
                 \$('input[name=\"{$id}-numreps\"]').val(newrownum);
@@ -274,6 +291,19 @@ class Repeatable extends FieldsContainerMultiple
                 {$js}
               });"
             );
+
+
+            if (!$selectorPluginAdded) {
+                $this->addJs(
+                    "\$.fn.regex = function(pattern, fn, fn_a){
+                        var fn = fn || $.fn.text;
+                        return this.filter(function() {
+                            return pattern.test(fn.apply($(this), fn_a));
+                        });
+                    };"
+                );
+                $selectorPluginAdded = true;
+            }
         }
 
         return parent::preRender($form);
