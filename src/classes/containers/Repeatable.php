@@ -294,7 +294,6 @@ class Repeatable extends FieldsContainerMultiple
             'tag' => 'div',
             'id' => $id,
             'attributes' => $this->attributes,
-            'text' => $this->getTitle(),
         ]);
 
         $target = new TagElement([
