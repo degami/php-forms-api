@@ -612,19 +612,8 @@ class Form extends Element
         foreach ($this->getFields($step) as $name => $field) {
             if ($field instanceof FieldsContainer) {
                 $field->processValue($request);
-            } elseif (preg_match_all('/(.*?)(\[(.*?)\])+/i', $name, $matches, PREG_SET_ORDER)) {
-                $value = null;
-                if (isset($request[ $matches[0][1] ])) {
-                    $value = $request[ $matches[0][1] ];
-                    foreach ($matches as $match) {
-                        if (isset($value[ $match[3] ])) {
-                            $value = $value[ $match[3] ];
-                        }
-                    }
-                }
-                $field->processValue($value);
-            } elseif (isset($request[$name])) {
-                $field->processValue($request[$name]);
+            } elseif (($requestValue = static::traverseArray($request, $field->getName())) != null) {
+                $field->processValue($requestValue);
             } elseif ($field instanceof Checkbox || $field instanceof Radios) {
                 // no value on request[name] && field is a checkbox or radios group - process anyway with an empty value
                 $field->processValue(null);

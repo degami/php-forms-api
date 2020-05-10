@@ -88,8 +88,8 @@ abstract class SortableContainer extends FieldsContainerMultiple
 
             if ($field instanceof FieldsContainer) {
                 $this->getField($name)->processValue($values);
-            } elseif (isset($values[$name])) {
-                $this->getField($name)->processValue($values[$name]);
+            } elseif (($requestValue = static::traverseArray($values, $field->getName())) != null) {
+                $this->getField($name)->processValue($requestValue);
             }
 
             $this->deltas[$name] = isset($values[$this->getHtmlId().'-delta-'.$partitionindex]) ?
