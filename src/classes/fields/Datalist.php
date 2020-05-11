@@ -87,7 +87,7 @@ class Datalist extends FieldMultivalues
             'type' => 'text',
             'id' => $id,
             'name' => $this->name,
-            'value' => htmlspecialchars($this->value),
+            'value' => htmlspecialchars($this->getValues()),
             'attributes' => $this->attributes + ['size' => $this->size, 'list' => $this->name."-data"],
         ]));
 

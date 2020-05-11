@@ -64,7 +64,7 @@ class Radios extends FieldMultivalues
                 'id' => "{$id}-{$key}",
                 'name' => $this->name,
                 'value' => $key,
-                'attributes' => array_merge($attributes, ($this->value == $key) ? ['checked' => 'checked'] : []),
+                'attributes' => array_merge($attributes, ($this->getValues() == $key) ? ['checked' => 'checked'] : []),
                 'text' => $value,
             ]));
             $tag->addChild($tag_label);

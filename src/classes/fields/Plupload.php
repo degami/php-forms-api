@@ -203,7 +203,7 @@ class Plupload extends Field
         return "<div id=\"{$id}_uploader\"><p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p></div>
                 <div id=\"{$id}_log\"></div>
                 <input type=\"hidden\" id=\"{$id}_uploaded_json\" name=\"{$this->name}\" value=\"".
-                json_encode($this->value).
+                json_encode($this->getValues()).
                 "\" />";
     }
 

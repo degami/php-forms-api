@@ -88,7 +88,7 @@ class Colorpicker extends Field
           'tag' => 'input',
           'type' => 'text',
           'name' => $this->name,
-          'value' => htmlspecialchars($this->value),
+          'value' => htmlspecialchars($this->getValues()),
           'attributes' => $this->attributes + ['size' => $this->size, 'onFocus' => "blur();" ],
         ]));
 

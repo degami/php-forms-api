@@ -47,7 +47,7 @@ class Submit extends Clickable
             'type' => 'submit',
             'id' => $id,
             'name' => $this->name,
-            'value' => $this->getText($this->value),
+            'value' => $this->getText($this->getValues()),
             'attributes' => $this->attributes,
         ]);
         return $tag;

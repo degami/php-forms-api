@@ -61,7 +61,7 @@ class Reset extends Action
             'type' => 'reset',
             'id' => $id,
             'name' => $this->name,
-            'value' => $this->getText($this->value),
+            'value' => $this->getText($this->getValues()),
             'attributes' => $this->attributes,
         ]);
         return $tag;

@@ -65,7 +65,7 @@ class Time extends Field
             'type' => 'time',
             'id' => $id,
             'name' => $this->name,
-            'value' => htmlspecialchars($this->value),
+            'value' => htmlspecialchars($this->getValues()),
             'attributes' => $this->attributes + ['size' => $this->size],
         ]);
         return $tag;

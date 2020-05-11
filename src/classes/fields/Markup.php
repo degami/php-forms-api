@@ -47,7 +47,7 @@ class Markup extends Field
      */
     public function renderField(Form $form)
     {
-        $output = $this->value;
+        $output = $this->getValues();
         return $output;
     }
 

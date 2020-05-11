@@ -166,7 +166,7 @@ class Password extends Field
     public function isValid()
     {
         if ($this->with_confirm == true) {
-            if (!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->value) {
+            if (!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->getValues()) {
                 $this->addError($this->getText("The passwords do not match"), __FUNCTION__);
 
                 if ($this->stop_on_first_error) {

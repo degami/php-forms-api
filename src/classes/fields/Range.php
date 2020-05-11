@@ -60,7 +60,7 @@ class Range extends Number
             'type' => 'range',
             'id' => $id,
             'name' => $this->name,
-            'value' => $this->value,
+            'value' => $this->getValues(),
             'attributes' => $this->attributes,
         ]);
         return $tag;

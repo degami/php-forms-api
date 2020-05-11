@@ -42,7 +42,7 @@ class Button extends Clickable
     {
         parent::__construct($options, $name);
         if (empty($this->label)) {
-            $this->label = $this->value;
+            $this->label = $this->getValues();
         }
     }
 
@@ -64,7 +64,7 @@ class Button extends Clickable
             'tag' => 'button',
             'id' => $id,
             'name' => $this->name,
-            'value' => $this->value,
+            'value' => $this->getValues(),
             'text' => $this->getText($this->label),
             'attributes' => $this->attributes,
             'has_close' => true,

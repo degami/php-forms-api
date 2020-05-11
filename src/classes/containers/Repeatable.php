@@ -284,7 +284,7 @@ class Repeatable extends FieldsContainerMultiple
             $this->addJs(
                 "\$('.btnaddmore', '#{$id}').click(function(evt){
                 evt.preventDefault();
-                var \$target = \$('.fields-target:eq(0)');
+                var \$target = \$('.fields-target:eq(0)', '#{$id}');
                 var newrownum = \$target.find('.repeatable-row').length;
                 \$( '{$repetatable_fields}'.replace( new RegExp('\{x\}', 'g'), newrownum ) ).appendTo( \$target );
                 \$('input[name=\"{$id}-numreps\"]').val(newrownum + 1);

@@ -82,7 +82,7 @@ class Textarea extends Field
             'tag' => 'textarea',
             'id' => $id,
             'name' => $this->name,
-            'text' => $this->value,
+            'text' => $this->getValues(),
             'attributes' => $this->attributes + ['cols' => $this->size, 'rows' => $this->rows],
             'has_close' => true,
         ]);

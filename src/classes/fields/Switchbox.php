@@ -146,7 +146,7 @@ class Switchbox extends Radios
                 'value' => $key,
                 'attributes' => array_merge(
                     $attributes,
-                    (($this->value == $key) ? ['checked' => 'checked'] : [])
+                    (($this->getValues() == $key) ? ['checked' => 'checked'] : [])
                 ),
                 'text' => $this->getText($value),
             ]));

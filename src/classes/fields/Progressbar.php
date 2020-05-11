@@ -50,17 +50,17 @@ class Progressbar extends Markup
             return;
         }
         $id = $this->getHtmlId();
-        if ($this->indeterminate == true || !is_numeric($this->value)) {
+        if ($this->indeterminate == true || !is_numeric($this->getValues())) {
             $this->addJs("\$('#{$id}','#{$form->getId()}').progressbar({ value: false });");
         } elseif ($this->show_label == true) {
             $this->addJs(
                 "
-        \$('#{$id}','#{$form->getId()}').progressbar({ value: parseInt({$this->value}) });
-        \$('#{$id} .progress-label','#{$form->getId()}').text('{$this->value}%');
+        \$('#{$id}','#{$form->getId()}').progressbar({ value: parseInt(" . $this->getValues() . ") });
+        \$('#{$id} .progress-label','#{$form->getId()}').text('" . $this->getValues() . "%');
       "
             );
         } else {
-            $this->addJs("\$('#{$id}','#{$form->getId()}').progressbar({ value: parseInt({$this->value}) });");
+            $this->addJs("\$('#{$id}','#{$form->getId()}').progressbar({ value: parseInt(" . $this->getValues() . ") });");
         }
 
         parent::preRender($form);
