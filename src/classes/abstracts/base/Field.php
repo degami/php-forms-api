@@ -194,7 +194,9 @@ abstract class Field extends Element implements FieldInterface
             $this->event = new OrderedFunctions($this->event, 'event');
         }
 
-        $this->value = $this->default_value;
+        if (!$this->value) {
+            $this->value = $this->default_value;
+        }
     }
 
     /**
@@ -617,14 +619,25 @@ abstract class Field extends Element implements FieldInterface
           \$('#{$form->getId()} input,#{$form->getId()} select,#{$form->getId()} textarea')
           .each(function(index, elem){
             var \$this = \$(this);
-            if( \$this.serialize() != '' ){
-              var elem = \$this.serialize().split('=',2);
-              postdata.append(elem[0], elem[1]);
-            }else if(
+            if(
                 \$this.prop('tagName').toLowerCase() == 'input' &&
                 \$this.attr('type').toLowerCase() == 'file'
             ){
-              postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
+              if ((\$this)[0].files.length > 1) {
+                for (var i=0; i < (\$this)[0].files.length; i++) {
+                  postdata.append(\$this.attr('name')+'[]', (\$this)[0].files[i] );
+                }
+              } else if ((\$this)[0].files.length == 1) {
+                postdata.append(\$this.attr('name'), (\$this)[0].files[0] );
+              }
+            } else {
+              if (\$this.attr('multiple') != undefined && \$.isArray(\$this.val())) {
+                \$.each(\$this.val(), function(index, value) {
+                  postdata.append(\$this.attr('name')+'[]', value);
+                });
+              } else {
+                postdata.append(\$this.attr('name'), \$this.val());
+              }
             }
           });
           var \$loading = \$('<div id=\"{$id}-event-loading\"></div>')

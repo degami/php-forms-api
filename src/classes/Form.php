@@ -1283,7 +1283,7 @@ class Form extends Element
             $output_type = 'html';
         }
 
-        if ($this->isValid() === false) {
+        if (!Form::isPartial() && $this->isValid() === false) {
             $errors = $this->showErrors();
             $this->setAttribute('class', trim($this->getAttribute('class').' with-errors'));
             if (!$this->errorsInline()) {

@@ -168,9 +168,9 @@ class Repeatable extends FieldsContainerMultiple
             if ($field->isAValue() == true) {
                 $key = str_replace($this->getName(), "", $field->getName());
                 if (preg_match('/\[([0-9]+)\]\[(.*?)\]/i', $key, $matches)) {
-                    $out[$matches[1]][$matches[2]] = $field->getValue();
+                    $out[$matches[1]][$matches[2]] = $field->getValues();
                 } else {
-                    $out[$field->getName()] = $field->getValue();
+                    $out[$field->getName()] = $field->getValues();
                 }
             }
         }

@@ -15,7 +15,6 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
-
 use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
 use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Form;
@@ -603,5 +602,10 @@ abstract class Element extends BaseElement
             return $container;
         }
         return null;
+    }
+
+    public function getData()
+    {
+        return get_object_vars($this);
     }
 }

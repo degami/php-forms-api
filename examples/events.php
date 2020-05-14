@@ -15,7 +15,7 @@ function eventsform_submit(&$form)
   //var_dump($form->get_triggering_element());
   // Reset the form if you want it to display again.
   // $form->reset();
-    return $form_values;
+    return $form_values->toArray();
 }
 
 $form = FAPI\FormBuilder::getForm('eventsform');

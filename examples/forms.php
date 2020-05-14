@@ -732,31 +732,62 @@ function eventsform(FAPI\Form $form, &$form_state)
 
     $form->setAction($_SERVER['PHP_SELF']);
 
-    $fieldset = $form->addField('textfields', array(
-    'type' => 'fieldset',
-    'id' => 'fieldset-textfields',
-    'title' => 'textfields',
+    $fields = $form->addField('fields', array(
+        'type' => 'tag_container',
+        'id' => 'fieldset-textfields-target',
     ));
 
-    $num_textfields = 1; //isset($form_state['input_values']['num_textfields']) ? ($form_state['input_values']['num_textfields'] + 1) : 1;
-
+    $num_textfields = 0; //isset($form_state['input_values']['num_textfields']) ? (intval($form_state['input_values']['num_textfields']) + 1) : 1;
     foreach ($form_state['input_values'] as $key => $value) {
         if (preg_match("/^text_[0-9]+$/i", $key)) {
             $num_textfields++;
         }
     }
 
-    $fieldset->addField('num_textfields', array(
-    'type' => 'hidden',
-    'default_value' => $num_textfields,
-    ));
+    if ($num_textfields == 0 || $form->isPartial()) {
+        $num_textfields++;
+    }
 
     for ($i = 0; $i < $num_textfields; $i++) {
-        $fieldset->addField('text_'.$i, array(
+        $inner = $fields->addField('inner_'.$i, array(
+            'type' => 'fieldset',
+            'id' => 'fieldset-textfields',
+            'title' => 'textfields',
+        ));
+        $inner->addMarkup($i);
+
+        $inner->addField('text_'.$i, array(
         'type' => 'textfield',
         'title' => 'text',
         ));
+
+        $inner
+        ->addField('rep_'.$i, array(
+          'type' => 'repeatable',
+          'title' => 'Emails',
+          'default_value' => [
+            ['name' => 'name1', 'email' => 'email1@email.com'],
+          ],
+        ))
+        ->addField('name', array(
+          'type' => 'textfield',
+          'validate' => array('required'),
+          'preprocess' => array('trim'),
+          'title' => 'Your name',
+        ))
+        ->addField('email', array(
+          'type' => 'textfield',
+          'validate' => array('required', 'email'),
+          'title' => 'Your email address',
+        ));
     }
+
+    $fields->addField('num_textfields', array(
+    'type' => 'hidden',
+    'default_value' => $num_textfields,
+    'value' => $num_textfields,
+    ));
+
 
     if (FAPI\Form::isPartial()) {
         $jsondata = json_decode($form_state['input_values']['jsondata']);
@@ -764,7 +795,7 @@ function eventsform(FAPI\Form $form, &$form_state)
         if (is_callable($callback)) {
           //$target_elem = $callback( $form )->get_field('num_textfields');
           //$fieldset->add_js('console.log(JSON.parse(\''.json_encode( array( 'build_options' => preg_replace("/\\\"|\"|\n/","",serialize($target_elem->get_build_options())),  'id' => $target_elem->get_html_id(), 'value' => $target_elem->get_value()) ).'\'))');
-            $fieldset->addJs("\$('input[name=\"{$jsondata->name}\"]').focus();");
+            $fields->addJs("\$('input[name=\"{$jsondata->name}\"]').focus();");
         }
       //$fieldset->add_js('alert($("#num_textfields").val())');
       //$fieldset->add_js('console.log($("#num_textfields").val())');
@@ -778,7 +809,7 @@ function eventsform(FAPI\Form $form, &$form_state)
       array(
         'event' => 'click',
         'callback' => 'events_form_callback',
-        'target' => 'fieldset-textfields',
+        'target' => 'fieldset-textfields-target',
         'effect' => 'fade',
         'method' => 'replace',
       ),
@@ -795,7 +826,7 @@ function eventsform(FAPI\Form $form, &$form_state)
 
 function events_form_callback(FAPI\Form $form)
 {
-    return $form->getField('textfields');
+    return $form->getField('fields');
 }
 
 
