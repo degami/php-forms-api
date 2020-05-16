@@ -134,19 +134,24 @@ function multistepform(FAPI\Form $form, &$form_state)
     ->addField('login_info', array(
     'type'=>'fieldset'
     ), 0)
-    ->addField('username', array(
+    ->addField('user[username]', array(
     'title' => 'Username',
     'type'=>'textfield',
     'validate' => array('required'),
     'preprocess' => array('trim'),
     ))
-    ->addField('password', array(
+    ->addField('user[password]', array(
     'title' => 'Password',
     'type'=>'password',
     'validate' => array('required'),
     'preprocess' => array('trim'),
     ))
-    ->addField('image', array(
+    ->addField('user[image]', array(
+    'title' => 'Picture',
+    'type'=>'file',
+    'destination' => dirname(__FILE__),
+    ))
+    ->addField('image2', array(
     'title' => 'Picture',
     'type'=>'file',
     'destination' => dirname(__FILE__),
@@ -161,7 +166,7 @@ function multistepform(FAPI\Form $form, &$form_state)
     'type'=>'submit',
     'value' => 'Continue',
     ));
-
+/*
   // add to step 1
     $form
     ->addField('personal_info', array(
@@ -187,7 +192,7 @@ function multistepform(FAPI\Form $form, &$form_state)
     'type'=>'submit',
     'value' => 'Save',
     ));
-
+*/
     return $form;
 }
 

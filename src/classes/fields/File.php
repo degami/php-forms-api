@@ -89,20 +89,23 @@ class File extends Field
      */
     public function processValue($value)
     {
-        $this->value = [
-            'filepath' => (isset($value['filepath'])) ?
-              $value['filepath'] :
-              $this->destination .'/'. basename($_FILES[$this->getName()]['name']),
-            'filename' => (isset($value['filename'])) ?
-              $value['filename'] :
-              basename($_FILES[$this->getName()]['name']),
-            'filesize' => (isset($value['filesize'])) ?
-              $value['filesize'] :
-              $_FILES[$this->getName()]['size'],
-            'mimetype' => (isset($value['mimetype'])) ?
-              $value['mimetype'] :
-              $_FILES[$this->getName()]['type'],
-        ];
+        if (($requestValue = static::traverseArray($this->convertFilesArray(), $this->getName())) != null) {
+            $this->value = [
+                'filepath' => (isset($value['filepath'])) ?
+                    $value['filepath'] :
+                    $this->destination .'/'. basename($requestValue['name']),
+                'filename' => (isset($value['filename'])) ?
+                    $value['filename'] :
+                    basename($requestValue['name']),
+                'filesize' => (isset($value['filesize'])) ?
+                    $value['filesize'] :
+                    $requestValue['size'],
+                'mimetype' => (isset($value['mimetype'])) ?
+                    $value['mimetype'] :
+                    $requestValue['type'],
+            ];
+        }
+
         if (isset($value['uploaded'])) {
             $this->uploaded = $value['uploaded'];
         }
@@ -111,6 +114,23 @@ class File extends Field
                 $this->uploaded = true;
             }
         }
+    }
+
+    protected function convertFilesArray()
+    {
+        $out = [];
+        foreach ($_FILES as $input_name => $input_value) {
+            foreach (['name','type','tmp_name','error','size'] as $prop) {
+                if (is_array($input_value[$prop])) {
+                    foreach ($input_value[$prop] as $key => $value) {
+                        $out[$input_name][$key][$prop] = $value ?? null;
+                    }
+                } else {
+                     $out[$input_name][$prop] = $input_value[$prop] ?? null;
+                }
+            }
+        }
+        return $out;
     }
 
     /**
