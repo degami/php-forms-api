@@ -470,7 +470,6 @@ class Form extends Element
      * Return form elements (all the steps) values
      *
      * @return     array form values
-     * @deprecated
      */
     public function values()
     {
@@ -796,7 +795,6 @@ class Form extends Element
      * starts the form processing, validating and submitting
      *
      * @param      array $values the request values array
-     * @deprecated
      */
     public function process($values = [])
     {
@@ -1440,7 +1438,6 @@ class Form extends Element
      *
      * @param      string $override_output_type output type
      * @return     string                       the form html
-     * @deprecated
      */
     public function render($override_output_type = null)
     {
