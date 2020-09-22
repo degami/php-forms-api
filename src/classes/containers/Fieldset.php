@@ -65,7 +65,7 @@ class Fieldset extends FieldsContainer
             if (!$js_collapsible_added) {
                 $this->addJs(
                     "
-          \$('fieldset.collapsible').find('legend').css({'cursor':'pointer'}).click(function(evt){
+          \$('fieldset.collapsible').find('legend:not(\".collapsible-attached\")').css({'cursor':'pointer'}).click(function(evt){
             evt.preventDefault();
             var \$this = \$(this);
             \$this.parent().find('.fieldset-inner').toggle( 'blind', {}, 500, function(){
@@ -75,7 +75,7 @@ class Fieldset extends FieldsContainer
                 \$this.parent().removeClass('collapsed').addClass('expanded');
               }
             });
-          });
+          }).addClass('collapsible-attached');
           \$('fieldset.collapsible.collapsed .fieldset-inner').hide();"
                 );
                 $js_collapsible_added = true;
