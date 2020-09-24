@@ -636,7 +636,18 @@ abstract class Field extends Element implements FieldInterface
                   postdata.append(\$this.attr('name')+'[]', value);
                 });
               } else {
-                postdata.append(\$this.attr('name'), \$this.val());
+                var addvalue = true;
+                if (
+                  \$this.prop('tagName').toLowerCase() == 'input' &&
+                  (\$this.attr('type').toLowerCase() == 'radio' || \$this.attr('type').toLowerCase() == 'checkbox')
+                ) {
+                  if (\$this.attr('checked') != 'checked') {
+                    addvalue = false;
+                  }
+                }
+                if(addvalue) {
+                  postdata.append(\$this.attr('name'), \$this.val());
+                }
               }
             }
           });
