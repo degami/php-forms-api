@@ -40,6 +40,13 @@ class Fieldset extends FieldsContainer
     protected $collapsed = false;
 
     /**
+     * inner div attributes
+     *
+     * @var array
+     */
+    protected $inner_attributes = [];
+
+    /**
      * {@inheritdoc}
      *
      * @param Form $form form object
@@ -119,9 +126,17 @@ class Fieldset extends FieldsContainer
                 'text' => $this->getText($this->title),
             ]));
         }
+
+        $inner_attributes = $this->inner_attributes;
+        if (!isset($inner_attributes['class'])) {
+            $inner_attributes['class'] = '';
+        }
+        $inner_attributes['class'] .= ' fieldset-inner';
+        $inner_attributes['class'] = trim($inner_attributes['class']);
+
         $inner = new TagElement([
             'tag' => 'div',
-            'attributes' => ['class' => 'fieldset-inner'],
+            'attributes' => $inner_attributes,
         ]);
         foreach ($this->getFields() as $name => $field) {
             /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
