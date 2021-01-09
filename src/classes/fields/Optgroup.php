@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Abstracts\Fields\Optionable;
 use Degami\Basics\Html\TagElement;
@@ -35,10 +36,10 @@ class Optgroup extends Optionable
     /**
      * Class constructor
      *
-     * @param string $label   label
-     * @param array  $options options array
+     * @param string $label label
+     * @param array $options options array
      */
-    public function __construct($label, $options)
+    public function __construct(string $label, array $options)
     {
         if (isset($options['options'])) {
             foreach ($options['options'] as $key => $value) {
@@ -60,7 +61,7 @@ class Optgroup extends Optionable
      * @param  mixed $needle element to find
      * @return boolean         TRUE if element is present
      */
-    public function optionsHasKey($needle)
+    public function optionsHasKey($needle): bool
     {
         return FieldMultivalues::hasKey($needle, $this->options);
     }
@@ -69,21 +70,23 @@ class Optgroup extends Optionable
      * Add option
      *
      * @param Option $option option to add
+     * @return Optgroup
      */
-    public function addOption(Option $option)
+    public function addOption(Option $option): Optgroup
     {
         $option->setParent($this);
         $this->options[] = $option;
+
+        return $this;
     }
 
     /**
      * render the optgroup
      *
      * @param Select $form_field select field
-     *
-     * @return string        the optgroup html
+     * @return TagElement        the optgroup html
      */
-    public function renderHTML(Select $form_field)
+    public function renderHTML(Select $form_field): TagElement
     {
         $this->no_translation = $form_field->no_translation;
         $tag = new TagElement([

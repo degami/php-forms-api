@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 
@@ -33,9 +34,9 @@ class Multiselect extends Select
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options, $name)
+    public function __construct(array $options, string $name = null)
     {
         if (!is_array($options)) {
             $options = [];
@@ -48,7 +49,7 @@ class Multiselect extends Select
 
         foreach ($this->getDefaultValue() as $value) {
             foreach ($this->leftOptions as $k => $v) {
-                /** @var \Degami\PHPFormsApi\Fields\Option $v */
+                /** @var Option $v */
                 if ($v->getKey() == $value) {
                     $this->rightOptions[] = clone $v;
                     unset($this->leftOptions[$k]);
@@ -117,7 +118,7 @@ class Multiselect extends Select
         $values = $this->getValue();
         foreach (array_values($values) as $keyval) {
             foreach ($this->leftOptions as $k => $v) {
-                /** @var \Degami\PHPFormsApi\Fields\Option $v */
+                /** @var Option $v */
                 if ($v->getKey() == $keyval) {
                     $this->rightOptions[] = clone $v;
                     unset($this->leftOptions[$k]);
@@ -130,8 +131,7 @@ class Multiselect extends Select
      * {@inheritdoc}
      *
      * @param Form $form form object
-     *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -187,7 +187,7 @@ class Multiselect extends Select
             ]));
         }
         foreach ($this->leftOptions as $key => $value) {
-            /** @var \Degami\PHPFormsApi\Fields\Option $value */
+            /** @var Option $value */
             $select_left->addChild($value->renderHTML($this));
         }
         $td1->addChild($select_left);
@@ -226,7 +226,7 @@ class Multiselect extends Select
             ]));
         }
         foreach ($this->rightOptions as $key => $value) {
-            /** @var \Degami\PHPFormsApi\Fields\Option $value */
+            /** @var Option $value */
             $select_right->addChild($value->renderHTML($this));
         }
         $td3->addChild($select_right);

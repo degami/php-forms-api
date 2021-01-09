@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Clickable;
@@ -42,9 +43,9 @@ class ImageButton extends Clickable
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         $this->default_value = [
             'x'=>-1,
@@ -59,7 +60,7 @@ class ImageButton extends Clickable
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -84,7 +85,7 @@ class ImageButton extends Clickable
      *
      * @param array $request request array
      */
-    public function alterRequest(&$request)
+    public function alterRequest(array &$request)
     {
         foreach ($request as $key => $val) {
             //IMAGE BUTTONS HANDLE

@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Interfaces;
 
+use Degami\Basics\Html\BaseElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Form;
 
 /**
@@ -29,7 +31,7 @@ interface FieldInterface
      *
      * @return boolean include_me
      */
-    public function isAValue(); // tells if component value is passed on the parent values() function call
+    public function isAValue() : bool; // tells if component value is passed on the parent values() function call
 
     /**
      * Pre-render hook
@@ -43,7 +45,7 @@ interface FieldInterface
      *
      * @param Form $form form object
      *
-     * @return string|tag_element the field html
+     * @return string|BaseElement the field html
      */
     public function renderField(Form $form); // renders html
 
@@ -59,12 +61,12 @@ interface FieldInterface
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid();
+    public function isValid() : bool;
 
     /**
      * Return form elements values into this element
      *
-     * @return array form values
+     * @return mixed form values
      */
     public function getValues();
 
@@ -73,5 +75,5 @@ interface FieldInterface
      *
      * @return string one of 'parent' or 'this'
      */
-    public function onAddReturn();
+    public function onAddReturn() : string;
 }

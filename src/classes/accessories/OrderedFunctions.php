@@ -29,14 +29,17 @@ class OrderedFunctions extends DataBag
     /** @var string type */
     private $type;
 
+    /** @var array|null */
+    protected $dataelement_data = [];
+
     /**
      * Class constructor
      *
-     * @param array  $array         initially contained elements
-     * @param string $type          type of elements
-     * @param string $sort_callback sort callback name
+     * @param array $array initially contained elements
+     * @param string $type type of elements
+     * @param callable $sort_callback sort callback name
      */
-    public function __construct(array $array, $type, $sort_callback = null)
+    public function __construct(array $array, string $type, $sort_callback = null)
     {
         parent::__construct($array);
         $this->type = $type;
@@ -77,9 +80,9 @@ class OrderedFunctions extends DataBag
      * Check if element is present
      *
      * @param  mixed $value value to search
-     * @return boolean       TRUE if $value was found
+     * @return bool       TRUE if $value was found
      */
-    public function hasValue($value)
+    public function hasValue($value): bool
     {
         return in_array($value, $this->getValues());
     }
@@ -87,10 +90,10 @@ class OrderedFunctions extends DataBag
     /**
      * Check if key is in the array keys
      *
-     * @param  integer $key key to search
-     * @return boolean       TRUE if key was found
+     * @param int $key key to search
+     * @return bool       TRUE if key was found
      */
-    public function hasKey($key)
+    public function hasKey(int $key): bool
     {
         return in_array($key, array_keys($this->dataelement_data));
     }
@@ -98,9 +101,9 @@ class OrderedFunctions extends DataBag
     /**
      * Return element values
      *
-     * @return array element values
+     * @return mixed element values
      */
-    public function getValues()
+    public function getValues(): array
     {
         $out = [];
         foreach ($this->dataelement_data as $key => $value) {
@@ -117,22 +120,28 @@ class OrderedFunctions extends DataBag
      * Adds a new element to array elements
      *
      * @param mixed $value element to add
+     * @return self
      */
-    public function addElement($value)
+    public function addElement($value): OrderedFunctions
     {
         $this->dataelement_data[] = $value;
         $this->sort();
+
+        return $this;
     }
 
     /**
      * removes an element from array elements
      *
      * @param mixed $value element to remove
+     * @return self
      */
-    public function removeElement($value)
+    public function removeElement($value): OrderedFunctions
     {
         $this->dataelement_data = array_diff($this->dataelement_data, [$value]);
         $this->sort();
+
+        return $this;
     }
 
     /**
@@ -140,7 +149,7 @@ class OrderedFunctions extends DataBag
      *
      * @return array element to array
      */
-    public function toArray()
+    public function toArray(): ?array
     {
         return $this->dataelement_data;
     }

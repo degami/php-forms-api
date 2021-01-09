@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
@@ -29,7 +30,7 @@ class Checkboxes extends FieldMultivalues
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {

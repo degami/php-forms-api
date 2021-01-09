@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
 
@@ -42,9 +43,9 @@ class Geolocation extends ComposedField
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
 
@@ -100,7 +101,7 @@ class Geolocation extends ComposedField
     /**
      * {@inheritdoc} . it simply calls the sub elements process
      *
-     * @param array $values value to set
+     * @param mixed $values value to set
      */
     public function processValue($values)
     {
@@ -113,7 +114,7 @@ class Geolocation extends ComposedField
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->latitude->isValid() && $this->longitude->isValid();
     }
@@ -124,7 +125,7 @@ class Geolocation extends ComposedField
      *
      * @return string errors as an html <li> list
      */
-    public function showErrors()
+    public function showErrors() : string
     {
         $out = trim($this->latitude->showErrors() . $this->longitude->showErrors());
         return ($out == '') ? '' : $out;
@@ -134,16 +135,18 @@ class Geolocation extends ComposedField
     /**
      * resets the sub elements
      */
-    public function resetField()
+    public function resetField() : Field
     {
         $this->latitude->resetField();
         $this->longitude->resetField();
+
+        return $this;
     }
 
     /**
      * Return field value
      *
-     * @return array field value
+     * @return mixed field value
      */
     public function getValues()
     {

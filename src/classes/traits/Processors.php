@@ -23,10 +23,10 @@ trait Processors
     /**
      * applies trim to text
      *
-     * @param  string $text text to trim
+     * @param string $text text to trim
      * @return string       trimmed version of $text
      */
-    public static function processTrim($text)
+    public static function processTrim(string $text): string
     {
         return trim($text);
     }
@@ -34,10 +34,10 @@ trait Processors
     /**
      * applies ltrim to text
      *
-     * @param  string $text text to ltrim
+     * @param string $text text to ltrim
      * @return string       ltrimmed version of $text
      */
-    public static function processLtrim($text)
+    public static function processLtrim(string $text): string
     {
         return ltrim($text);
     }
@@ -45,10 +45,10 @@ trait Processors
     /**
      * applies rtrim to text
      *
-     * @param  string $text text to rtrim
+     * @param string $text text to rtrim
      * @return string       rtrimmed version of $text
      */
-    public static function processRtrim($text)
+    public static function processRtrim(string $text): string
     {
         return rtrim($text);
     }
@@ -56,10 +56,10 @@ trait Processors
     /**
      * applies xss checks on string (weak version)
      *
-     * @param  string $string text to check
+     * @param string $string text to check
      * @return string         safe value
      */
-    public static function processXssWeak($string)
+    public static function processXssWeak(string $string): string
     {
         return call_user_func_array(
             [__CLASS__, 'processXss'],
@@ -130,10 +130,10 @@ trait Processors
     /**
      * Check if $text's character encoding is utf8
      *
-     * @param  string $text text to check
+     * @param string $text text to check
      * @return boolean       is utf8
      */
-    private static function _validateUtf8($text)
+    private static function _validateUtf8(string $text): bool
     {
         if (strlen($text) == 0) {
             return true;
@@ -144,11 +144,11 @@ trait Processors
     /**
      * applies xss checks on string
      *
-     * @param  string $string       text to check
-     * @param  string $allowed_tags allowed tags
+     * @param string $string text to check
+     * @param string $allowed_tags allowed tags
      * @return string         safe value
      */
-    public static function processXss($string, $allowed_tags = FORMS_XSS_ALLOWED_TAGS)
+    public static function processXss(string $string, $allowed_tags = FORMS_XSS_ALLOWED_TAGS): string
     {
         // Only operate on valid UTF-8 strings. This is necessary to prevent cross
         // site scripting issues on Internet Explorer 6.
@@ -189,11 +189,11 @@ trait Processors
     /**
      * _filter_xss_split private method
      *
-     * @param  string  $m     string to split
-     * @param  boolean $store store elements into static $allowed html
+     * @param string $m string to split
+     * @param boolean $store store elements into static $allowed html
      * @return string         string
      */
-    private static function _filterXssSplit($m, $store = false)
+    private static function _filterXssSplit(string $m, $store = false): string
     {
         static $allowed_html;
 
@@ -255,10 +255,10 @@ trait Processors
     /**
      * _filter_xss_attributes private method
      *
-     * @param  string $attr attributes string
+     * @param string $attr attributes string
      * @return array        filtered attributes array
      */
-    private static function _filterXssAttributes($attr)
+    private static function _filterXssAttributes(string $attr): array
     {
         $attrarr = [];
         $mode = 0;
@@ -390,11 +390,11 @@ trait Processors
     /**
      * [_filter_xss_bad_protocol private method
      *
-     * @param  string  $string string
-     * @param  boolean $decode process entity decode on string
+     * @param string $string string
+     * @param boolean $decode process entity decode on string
      * @return string          safe value
      */
-    private static function _filterXssBadProtocol($string, $decode = true)
+    private static function _filterXssBadProtocol(string $string, $decode = true): string
     {
         if ($decode) {
             $string = call_user_func_array([__CLASS__, 'processEntityDecode'], [ $string ]);
@@ -411,10 +411,10 @@ trait Processors
     /**
      * _strip_dangerous_protocols private method
      *
-     * @param  string $uri uri
+     * @param string $uri uri
      * @return string      safe value
      */
-    private static function _stripDangerousProtocols($uri)
+    private static function _stripDangerousProtocols(string $uri): string
     {
         static $allowed_protocols;
 
@@ -465,10 +465,10 @@ trait Processors
     /**
      * applies entity_decode to text
      *
-     * @param  string $text text to decode
+     * @param string $text text to decode
      * @return string       decoded version of $text
      */
-    public static function processEntityDecode($text)
+    public static function processEntityDecode(string $text): string
     {
         return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
     }
@@ -476,10 +476,10 @@ trait Processors
     /**
      * applies addslashes to text
      *
-     * @param  string $text text to addslash
+     * @param string $text text to addslash
      * @return string       addslashed version of $text
      */
-    public static function processAddslashes($text)
+    public static function processAddslashes(string $text): string
     {
         if (!get_magic_quotes_gpc() && !preg_match("/\\/i", $text)) {
             return addslashes($text);

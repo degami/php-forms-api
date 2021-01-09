@@ -15,6 +15,10 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\Basics\Html\BaseElement;
+use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
+use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\SortableContainer;
 use Degami\Basics\Html\TagElement;
@@ -30,10 +34,9 @@ class Sortable extends SortableContainer
      *
      * @param  string $name  field name
      * @param  mixed  $field field to add, can be an array or a field subclass
-     * @param  null   $_p    unused
      * @throws FormException
      */
-    public function addField($name, $field, $_p = null)
+    public function addField(string $name, $field) : Field
     {
         //force every field to have its own tab.
         $this->deltas[$name] = count($this->getFields());
@@ -44,9 +47,8 @@ class Sortable extends SortableContainer
      * {@inheritdoc}
      *
      * @param string $name field name
-     * @param mixed  $_p   UNUSED
      */
-    public function removeField($name, $_p = null)
+    public function removeField(string $name) : FieldsContainer
     {
         parent::removeField($name, $this->deltas['name']);
         unset($this->deltas[$name]);
@@ -83,7 +85,7 @@ class Sortable extends SortableContainer
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -104,7 +106,7 @@ class Sortable extends SortableContainer
 
             $partition_fields = $this->getPartitionFields($partitionindex);
             foreach ($partition_fields as $key => $elem) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
+                /** @var Field $elem */
                 $weights[$key]  = $elem->getWeight();
                 $order[$key] = $insertorder[$key];
             }
@@ -137,7 +139,7 @@ class Sortable extends SortableContainer
             $inner->addChild($inner_inline);
 
             foreach ($partition_fields as $name => $field) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+                /** @var Field $field */
                 $inner_inline->addChild($field->renderHTML($form));
             }
             $inner_inline->addChild(new TagElement([

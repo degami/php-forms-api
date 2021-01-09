@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
+use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
@@ -45,7 +46,7 @@ trait Containers
      *
      * @return array        the array of field elements
      */
-    public function &getFields()
+    public function &getFields(): array
     {
         return $this->fields;
     }
@@ -55,7 +56,7 @@ trait Containers
      *
      * @return string  parent namespace
      */
-    private function parentNameSpace()
+    private function parentNameSpace(): string
     {
         $namespaceParts = explode('\\', __NAMESPACE__);
         return implode("\\", array_slice($namespaceParts, 0, -1));
@@ -64,13 +65,12 @@ trait Containers
     /**
      * Returns a field object instance
      *
-     * @param string $name  field name
-     * @param mixed  $field field to add, can be an array or a field subclass
-     *
+     * @param string $name field name
+     * @param mixed $field field to add, can be an array or a field subclass
      * @return Field instance
      * @throws FormException
      */
-    public function getFieldObj($name, $field)
+    public function getFieldObj(string $name, $field): Field
     {
         if (is_array($field)) {
             $parentNS = $this->parentNameSpace();
@@ -116,10 +116,9 @@ trait Containers
      * Check if field is a field container
      *
      * @param Field $field field instance
-     *
      * @return boolean true if field is a field container
      */
-    public function isFieldContainer(Field $field)
+    public function isFieldContainer(Field $field): bool
     {
         return $field instanceof FieldsContainer && !($field instanceof ComposedField);
     }
@@ -128,8 +127,10 @@ trait Containers
      * add markup helper
      *
      * @param string $markup markup to add
+     * @param array $options
+     * @return Element
      */
-    public function addMarkup($markup, $options = [])
+    public function addMarkup(string $markup, array $options = []): Element
     {
         static $lastMarkupIndex = 0;
         return $this->addField('_markup_'.time().'_'.$lastMarkupIndex++, [

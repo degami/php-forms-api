@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
@@ -29,9 +30,9 @@ class Value extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         $this->container_tag = '';
         $this->container_class = '';
@@ -46,7 +47,7 @@ class Value extends Field
      *
      * @param Form $form form object
      *
-     * @return string        an empty string
+     * @return string|BaseElement        an empty string
      */
     public function renderField(Form $form)
     {
@@ -58,7 +59,7 @@ class Value extends Field
      *
      * @return boolean this field is always valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         return true;
     }
@@ -68,7 +69,7 @@ class Value extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

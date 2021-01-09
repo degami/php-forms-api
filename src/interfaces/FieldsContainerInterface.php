@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Interfaces;
 
+use Degami\PHPFormsApi\Abstracts\Base\Element;
+use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Form;
 
 /**
@@ -26,22 +28,24 @@ interface FieldsContainerInterface extends FieldInterface
     /**
      * Add field to form
      *
-     * @param string $name  field name
-     * @param mixed  $field field to add, can be an array or a field subclass
+     * @param string $name field name
+     * @param mixed $field field to add, can be an array or a field subclass
+     * @return FieldsContainer
      */
-    public function addField($name, $field);
+    public function addField(string $name, $field) : Element;
 
     /**
      * remove field from form
      *
      * @param string $name field name
+     * @return FieldsContainer
      */
-    public function removeField($name);
+    public function removeField(string $name) : FieldsContainer;
 
     /**
      * on_add_return overload
      *
      * @return string 'this'
      */
-    public function onAddReturn();
+    public function onAddReturn(): string;
 }

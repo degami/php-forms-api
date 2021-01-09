@@ -162,9 +162,9 @@ abstract class Field extends Element implements FieldInterface
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct($options = [], string $name = null)
     {
         parent::__construct($options, $name);
 
@@ -206,7 +206,7 @@ abstract class Field extends Element implements FieldInterface
      * @param  string $name    field name
      * @return Field
      */
-    public static function getInstance($options = [], $name = null)
+    public static function getInstance($options = [], $name = null): Field
     {
         // let others alter the field
         static::executeAlter("/.*?_".static::getClassNameString()."_alter$/i", [&$options, &$name]);
@@ -218,7 +218,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return SessionBag
      */
-    public function getSessionBag()
+    public function getSessionBag(): SessionBag
     {
         return $this->session_bag;
     }
@@ -281,12 +281,16 @@ abstract class Field extends Element implements FieldInterface
 
     /**
      * resets the field
+     *
+     * @return self
      */
-    public function resetField()
+    public function resetField(): Field
     {
         $this->setValue($this->getDefaultValue());
         $this->pre_rendered = false;
         $this->setErrors([]);
+
+        return $this;
     }
 
     /**
@@ -424,7 +428,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string one of 'parent' or 'this'
      */
-    public function onAddReturn()
+    public function onAddReturn() : string
     {
         return 'parent';
     }
@@ -434,7 +438,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return boolean valid state
      */
-    public function isValid()
+    public function isValid() : bool
     {
         $this->setErrors([]);
 
@@ -489,7 +493,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string errors as a <li> list
      */
-    public function showErrors()
+    public function showErrors(): string
     {
         return $this->notifications->renderHTML('error');
     }
@@ -503,7 +507,6 @@ abstract class Field extends Element implements FieldInterface
     {
         $this->pre_rendered = true;
         // should not return value, just change element/form state
-        return;
     }
 
     /**
@@ -513,7 +516,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string        the field html
      */
-    public function renderHTML(Form $form)
+    public function renderHTML(Form $form): string
     {
         $id = $this->getHtmlId();
         $output = $this->getElementPrefix();
@@ -709,7 +712,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @param array &$request request array
      */
-    public function alterRequest(&$request)
+    public function alterRequest(array &$request)
     {
         // implementing this function fields can change the request array
     }

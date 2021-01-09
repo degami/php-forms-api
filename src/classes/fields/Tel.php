@@ -24,7 +24,6 @@ use Degami\Basics\Html\TagElement;
  */
 class Tel extends Field
 {
-
     /**
      * {@inheritdoc}
      *
@@ -49,7 +48,7 @@ class Tel extends Field
             $this->value = '';
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'input',
             'type' => 'tel',
             'id' => $id,
@@ -57,7 +56,6 @@ class Tel extends Field
             'value' => htmlspecialchars($this->getValues()),
             'attributes' => $this->attributes + ['size' => $this->size],
         ]);
-        return $tag;
     }
 
     /**
@@ -65,7 +63,7 @@ class Tel extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

@@ -33,7 +33,7 @@ abstract class ComposedField extends TagContainer
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }
@@ -43,7 +43,7 @@ abstract class ComposedField extends TagContainer
      *
      * @return string 'parent'
      */
-    public function onAddReturn()
+    public function onAddReturn() : string
     {
         return 'parent';
     }
@@ -55,7 +55,7 @@ abstract class ComposedField extends TagContainer
      * @param string $subfieldName
      * @return string
      */
-    protected function getSubfieldName($subfieldName)
+    protected function getSubfieldName(string $subfieldName): string
     {
         return $this->getName() . (preg_match("/.*?\[.*?\]$/", $this->getName()) ? '['.$subfieldName.']' : '_'.$subfieldName);
     }
@@ -68,7 +68,7 @@ abstract class ComposedField extends TagContainer
      * @param Field $subfield
      * @param string $subfieldName
      */
-    protected function processSubfieldsValues($values, $subfield, $subfieldName)
+    protected function processSubfieldsValues(array $values, Field $subfield, string $subfieldName)
     {
         $subfield->processValue(static::traverseArray($values, $this->getSubfieldName($subfieldName)));
     }
@@ -78,7 +78,7 @@ abstract class ComposedField extends TagContainer
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|TagElement        the element html
      */
     public function renderField(Form $form)
     {

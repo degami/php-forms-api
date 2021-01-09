@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
@@ -93,7 +94,7 @@ class ImageCaptcha extends Captcha
      *
      * @return string text
      */
-    private function getRandomText()
+    private function getRandomText(): string
     {
         $this->code = '';
         $length = mt_rand($this->min_length, $this->max_length);
@@ -115,7 +116,7 @@ class ImageCaptcha extends Captcha
      * @param  resource $im image resource
      * @return integer
      */
-    private function getRandomColor($im)
+    private function getRandomColor($im): int
     {
         // never white, never black
         return imagecolorallocate($im, mt_rand(20, 185), mt_rand(20, 185), mt_rand(20, 185));
@@ -166,7 +167,7 @@ class ImageCaptcha extends Captcha
      *
      * @return string image representation as base64 string
      */
-    private function getImageString()
+    private function getImageString(): string
     {
         $text = $this->getRandomText();
 
@@ -236,7 +237,7 @@ class ImageCaptcha extends Captcha
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -280,7 +281,7 @@ class ImageCaptcha extends Captcha
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         if ($this->already_validated == true) {
             return true;

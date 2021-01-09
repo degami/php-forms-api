@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
@@ -45,11 +46,11 @@ class MathCaptcha extends Captcha
     private $op;
 
     /**
-     * Get a math challege code
+     * Get a math challenge code
      *
      * @return string challenge string
      */
-    private function getMathCode()
+    private function getMathCode(): string
     {
         $this->code = '';
         $operators = ['+','-','*','/'];
@@ -106,8 +107,7 @@ class MathCaptcha extends Captcha
      * {@inheritdoc}
      *
      * @param Form $form form object
-     *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -157,7 +157,7 @@ class MathCaptcha extends Captcha
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         if ($this->already_validated == true) {
             return true;

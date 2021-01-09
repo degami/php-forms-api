@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\Basics\Html\TagElement;
@@ -56,9 +57,9 @@ class Dateselect extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         $this->start_year = date('Y')-100;
         $this->end_year = date('Y')+100;
@@ -109,7 +110,7 @@ class Dateselect extends Field
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -201,7 +202,7 @@ class Dateselect extends Field
     /**
      * {@inheritdoc}
      *
-     * @param array $value value to set
+     * @param mixed $value value to set
      */
     public function processValue($value)
     {
@@ -221,7 +222,7 @@ class Dateselect extends Field
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $year = $this->value['year'];
         $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -243,7 +244,7 @@ class Dateselect extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue(): bool
     {
         return true;
     }
@@ -253,7 +254,7 @@ class Dateselect extends Field
      *
      * @return int start timestamp
      */
-    public function tsStart()
+    public function tsStart(): int
     {
         $year = $this->value['year'];
         $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -267,7 +268,7 @@ class Dateselect extends Field
      *
      * @return int end timestamp
      */
-    public function tsEnd()
+    public function tsEnd(): int
     {
         $year = $this->value['year'];
         $month = isset($this->value['month']) ? $this->value['month'] : 1;
@@ -281,7 +282,7 @@ class Dateselect extends Field
      *
      * @return string date value
      */
-    public function valueString()
+    public function valueString(): string
     {
         $value = $this->getValues();
         $out = (($value['year'] < 10) ? '0':'').((int) $value['year']);

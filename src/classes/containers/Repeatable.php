@@ -15,6 +15,9 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\Basics\Html\BaseElement;
+use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
 use Degami\Basics\Html\TagElement;
@@ -29,10 +32,10 @@ class Repeatable extends FieldsContainerMultiple
     protected $num_reps = null;
 
     /** @var array fields to repeat */
-    private $repetable_fields = [];
+    private $repeatable_fields = [];
 
     /** @var array field order */
-    private $repetable_insert_field_order = [];
+    private $repeatable_insert_field_order = [];
 
     /** @var array default values */
     protected $default_value = [];
@@ -55,14 +58,12 @@ class Repeatable extends FieldsContainerMultiple
     /**
      * Override add_field
      *
-     * @param string  $name
-     * @param mixed   $field
-     * @param integer $partitions_index
-     *
+     * @param string $name
+     * @param mixed $field
      * @return $this|mixed
      * @throws FormException
      */
-    public function addField($name, $field, $partitions_index = 0)
+    public function addField(string $name, $field): Field
     {
         $field = $this->getFieldObj($name, $field);
 
@@ -70,8 +71,8 @@ class Repeatable extends FieldsContainerMultiple
             throw new FormException('Can\'t nest field_containers into repeteables');
         }
 
-        $this->repetable_fields[$name] = $field;
-        $this->repetable_insert_field_order[] = $name;
+        $this->repeatable_fields[$name] = $field;
+        $this->repeatable_insert_field_order[] = $name;
 
         if (!method_exists($field, 'onAddReturn')) {
             if ($this->isFieldContainer($field)) {
@@ -90,14 +91,13 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @param $name
      * @param integer $partitions_index unused
-     *
-     * @return Repatable
+     * @return self
      */
-    public function removeField($name, $partitions_index = 0)
+    public function removeField(string $name): FieldsContainer
     {
-        unset($this->repetable_fields[$name]);
-        if (($key = array_search($name, $this->repetable_insert_field_order)) !== false) {
-            unset($this->repetable_insert_field_order[$key]);
+        unset($this->repeatable_fields[$name]);
+        if (($key = array_search($name, $this->repeatable_insert_field_order)) !== false) {
+            unset($this->repeatable_insert_field_order[$key]);
         }
         return $this;
     }
@@ -106,10 +106,9 @@ class Repeatable extends FieldsContainerMultiple
      * {@inheritdoc}
      *
      * @param array $request
-     *
      * @throws FormException
      */
-    public function alterRequest(&$request)
+    public function alterRequest(array &$request)
     {
         $id = $this->getHtmlId();
         if (isset($request[ $id.'-numreps' ])) {
@@ -119,9 +118,9 @@ class Repeatable extends FieldsContainerMultiple
             }
         }
         for ($i = 0; $i < $this->num_reps; $i++) {
-            foreach ($this->repetable_fields as $rfield) {
+            foreach ($this->repeatable_fields as $rfield) {
                 /**
-                 * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
+                 * @var Field $field
                  */
                 $field = clone $rfield;
                 $field
@@ -146,7 +145,7 @@ class Repeatable extends FieldsContainerMultiple
     {
         foreach ($this->getFields() as $i => $field) {
             /**
-             * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
+             * @var Field $field
              */
             $field->processValue(static::traverseArray($values, $field->getName()));
         }
@@ -156,14 +155,14 @@ class Repeatable extends FieldsContainerMultiple
     /**
      * {@inheritdoc}
      *
-     * @return array|mixed
+     * @return mixed
      */
     public function getValue()
     {
         $out = [];
         foreach ($this->getFields() as $i => $field) {
             /**
-             * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
+             * @var Field $field
              */
             if ($field->isAValue() == true) {
                 $key = str_replace($this->getName(), "", $field->getName());
@@ -180,17 +179,17 @@ class Repeatable extends FieldsContainerMultiple
     /**
      * {@inheritdoc}
      *
-     * @return array|mixed
+     * @return mixed
      */
     public function getValues()
     {
-        return $this->getValue();
+        return is_array($this->getValue()) ? $this->getValue() : [$this->getValue()];
     }
 
     /**
      * {@inheritdocs}
      */
-    public function isValid()
+    public function isValid() : bool
     {
         if ($this->num_reps == 0) {
             return true;
@@ -201,7 +200,7 @@ class Repeatable extends FieldsContainerMultiple
     /**
      * {@inheritdoc}
      *
-     * @param \Degami\PHPFormsApi\Form $form
+     * @param Form $form
      */
     public function preRender(Form $form)
     {
@@ -212,9 +211,9 @@ class Repeatable extends FieldsContainerMultiple
 
             $repetatable_fields = "<div id=\"{$id}-row-{x}\">\n<div class=\"repeatable-row\">";
             $fake_form = new Form();
-            foreach ($this->repetable_fields as $rfield) {
+            foreach ($this->repeatable_fields as $rfield) {
                 /**
-                 * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
+                 * @var Field $field
                  */
                 $field = clone $rfield;
                 $field
@@ -306,7 +305,7 @@ class Repeatable extends FieldsContainerMultiple
             }
         }
 
-        return parent::preRender($form);
+        parent::preRender($form);
     }
 
 
@@ -314,7 +313,7 @@ class Repeatable extends FieldsContainerMultiple
      * {@inheritdocs}
      *
      * @param  Form $form form object
-     * @return string|tag_element the field html
+     * @return string|BaseElement the field html
      */
     public function renderField(Form $form)
     {
@@ -341,7 +340,7 @@ class Repeatable extends FieldsContainerMultiple
             $partition_fields = $this->getPartitionFields($partitionindex);
 
             foreach ($partition_fields as $key => $elem) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
+                /** @var Field $elem */
                 $weights[$key]  = $elem->getWeight();
                 $order[$key] = $insertorder[$key];
             }
@@ -362,7 +361,7 @@ class Repeatable extends FieldsContainerMultiple
             $inner->addChild($repeatablerow);
 
             foreach ($partition_fields as $name => $field) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+                /** @var Field $field */
                 $repeatablerow->addChild($field->renderHTML($form));
             }
             $repeatablerow->addChild(
@@ -396,7 +395,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @return string        the field html
      */
-    public function renderHTML(Form $form)
+    public function renderHTML(Form $form) : string
     {
         $id = $this->getHtmlId();
         $output = $this->getElementPrefix();

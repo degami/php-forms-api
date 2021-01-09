@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
@@ -29,9 +30,9 @@ class Datalist extends FieldMultivalues
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options, $name)
+    public function __construct(array $options = [], string $name = null)
     {
         if (isset($options['options'])) {
             foreach ($options['options'] as $k => $o) {
@@ -61,8 +62,7 @@ class Datalist extends FieldMultivalues
      * {@inheritdoc}
      *
      * @param Form $form form object
-     *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -99,7 +99,7 @@ class Datalist extends FieldMultivalues
             'has_close' => true,
         ]);
         foreach ($this->options as $key => $opt) {
-            /** @var \Degami\PHPFormsApi\Fields\Option $opt */
+            /** @var Option $opt */
             $dlist->addChild(new TagElement([
                 'tag' => 'option',
                 'type' => null,

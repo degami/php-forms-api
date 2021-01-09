@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi;
 
+use Degami\Basics\DataBag;
 use \Exception;
 use Degami\Basics\Traits\ToolsTrait as BasicToolsTrait;
 use Degami\PHPFormsApi\Traits\Tools;
@@ -78,7 +79,7 @@ class Form extends Element
     protected $method = 'post';
 
     /**
-     * "form is already processsd" flag
+     * "form is already processed" flag
      *
      * @var boolean
      */
@@ -212,13 +213,13 @@ class Form extends Element
 
         $this->setClassProperties($options);
 
-        $hassubmitter = false;
+        $has_submitter = false;
         foreach ($this->submit as $s) {
             if (!empty($s) && is_callable($s)) {
-                $hassubmitter = true;
+                $has_submitter = true;
             }
         }
-        if (!$hassubmitter) {
+        if (!$has_submitter) {
             array_push($this->submit, "{$this->form_id}_submit");
         }
 
@@ -226,13 +227,13 @@ class Form extends Element
         //   array_push($this->submit, "{$this->form_id}_submit");
         // }
 
-        $hasvalidator = false;
+        $has_validator = false;
         foreach ($this->validate as $v) {
             if (!empty($v) && is_callable($v)) {
-                $hasvalidator = true;
+                $has_validator = true;
             }
         }
-        if (!$hasvalidator) {
+        if (!$has_validator) {
             array_push($this->validate, "{$this->form_id}_validate");
         }
 
@@ -261,7 +262,7 @@ class Form extends Element
      *
      * @return SessionBag
      */
-    public function getSessionBag()
+    public function getSessionBag(): SessionBag
     {
         return $this->session_bag;
     }
@@ -270,10 +271,9 @@ class Form extends Element
      * Set form id
      *
      * @param string $form_id set the form id used for getting the submit function name
-     *
-     * @return Form
+     * @return self
      */
-    public function setFormId($form_id)
+    public function setFormId(string $form_id): Form
     {
         $this->form_id = $form_id;
         return $this;
@@ -284,7 +284,7 @@ class Form extends Element
      *
      * @return string form id
      */
-    public function getFormId()
+    public function getFormId(): string
     {
         return $this->form_id;
     }
@@ -294,10 +294,9 @@ class Form extends Element
      * Set the form action attribute
      *
      * @param string $action the form action url
-     *
-     * @return Form
+     * @return self
      */
-    public function setAction($action)
+    public function setAction(string $action): Form
     {
         $this->action = $action;
         return $this;
@@ -308,7 +307,7 @@ class Form extends Element
      *
      * @return string the form action
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
@@ -317,10 +316,9 @@ class Form extends Element
      * Set the form method
      *
      * @param string $method form method
-     *
-     * @return Form
+     * @return self
      */
-    public function setMethod($method)
+    public function setMethod(string $method): Form
     {
         $this->method = strtolower(trim($method));
         return $this;
@@ -331,7 +329,7 @@ class Form extends Element
      *
      * @return string form method
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -340,10 +338,9 @@ class Form extends Element
      * Set the ajax submit url used for form submission
      *
      * @param string $ajax_submit_url ajax endpoint url
-     *
-     * @return Form
+     * @return self
      */
-    public function setAjaxSubmitUrl($ajax_submit_url)
+    public function setAjaxSubmitUrl(string $ajax_submit_url): Form
     {
         $this->ajax_submit_url = $ajax_submit_url;
         return $this;
@@ -354,7 +351,7 @@ class Form extends Element
      *
      * @return string the form ajax submission url
      */
-    public function getAjaxSubmitUrl()
+    public function getAjaxSubmitUrl(): string
     {
         return $this->ajax_submit_url;
     }
@@ -363,10 +360,9 @@ class Form extends Element
      * Set the form render output type
      *
      * @param string $output_type output type ( 'html' / 'json' )
-     *
      * @return Form
      */
-    public function setOutputType($output_type)
+    public function setOutputType(string $output_type): Form
     {
         $this->output_type = $output_type;
         return $this;
@@ -377,7 +373,7 @@ class Form extends Element
      *
      * @return string form output type
      */
-    public function getOutputType()
+    public function getOutputType(): string
     {
         return $this->output_type;
     }
@@ -387,10 +383,9 @@ class Form extends Element
      * Set no_token flag
      *
      * @param boolean $no_token no token flag
-     *
      * @return Form
      */
-    public function setNoToken($no_token)
+    public function setNoToken(bool $no_token): Form
     {
         $this->no_token = $no_token;
         return $this;
@@ -401,7 +396,7 @@ class Form extends Element
      *
      * @return boolean no token flag
      */
-    public function getNoToken()
+    public function getNoToken(): bool
     {
         return $this->no_token;
     }
@@ -411,10 +406,9 @@ class Form extends Element
      * Set the form on_dialog preference
      *
      * @param string $on_dialog the form on_dialog preference
-     *
      * @return Form
      */
-    public function setOnDialog($on_dialog)
+    public function setOnDialog(string $on_dialog): Form
     {
         $this->on_dialog = $on_dialog;
         return $this;
@@ -435,7 +429,7 @@ class Form extends Element
      *
      * @return string the form token used in form validation and submission process
      */
-    public function getFormToken()
+    public function getFormToken(): string
     {
         return $this->form_token;
     }
@@ -443,9 +437,9 @@ class Form extends Element
     /**
      * Return form elements (all the steps) values
      *
-     * @return array form values
+     * @return FormValues form values
      */
-    public function getValues()
+    public function getValues(): FormValues
     {
         // Warning: some messy logic in calling process->submit->values
         if (!$this->processed) {
@@ -469,19 +463,19 @@ class Form extends Element
     /**
      * Return form elements (all the steps) values
      *
-     * @return     array form values
+     * @return     FormValues form values
      */
-    public function values()
+    public function values(): FormValues
     {
         return $this->getValues();
     }
 
     /**
-     * Get current step elemets values
+     * Get current step elements values
      *
      * @return array step values
      */
-    private function getCurrentStepValues()
+    private function getCurrentStepValues(): array
     {
         $output = [];
         foreach ($this->getFields($this->current_step) as $name => $field) {
@@ -497,8 +491,10 @@ class Form extends Element
 
     /**
      * resets the form
+     *
+     * @return self
      */
-    public function resetField()
+    public function resetField(): Form
     {
         foreach ($this->getFields() as $name => $field) {
             $field->resetField();
@@ -536,14 +532,18 @@ class Form extends Element
         $this->valid = null;
         $this->current_step = 0;
         $this->submit_functions_results = [];
+
+        return $this;
     }
 
     /**
      * resets the form
+     *
+     * @return self
      */
-    public function reset()
+    public function reset(): Form
     {
-        $this->resetField();
+        return $this->resetField();
     }
 
     /**
@@ -551,7 +551,7 @@ class Form extends Element
      *
      * @return boolean form is submitted
      */
-    public function isSubmitted()
+    public function isSubmitted(): bool
     {
         return $this->submitted;
     }
@@ -562,7 +562,7 @@ class Form extends Element
      *
      * @return boolean form is processed
      */
-    public function isProcessed()
+    public function isProcessed(): bool
     {
         return $this->processed;
     }
@@ -589,11 +589,11 @@ class Form extends Element
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritdocs}
      *
      * @param array $request request array
      */
-    private function alterRequest(&$request)
+    private function alterRequest(array &$request)
     {
         foreach ($this->getFields($this->current_step) as $field) {
             $field->alterRequest($request);
@@ -603,10 +603,10 @@ class Form extends Element
     /**
      * copies the request values into the right form element
      *
-     * @param array   $request request array
-     * @param integer $step    step number
+     * @param array|DataBag   $request request array
+     * @param int $step    step number
      */
-    private function injectValues($request, $step)
+    private function injectValues($request, int $step)
     {
         foreach ($this->getFields($step) as $name => $field) {
             if ($field instanceof FieldsContainer) {
@@ -635,7 +635,7 @@ class Form extends Element
      *
      * @param array $request request array
      */
-    private function saveStepRequest($request)
+    private function saveStepRequest(array $request)
     {
         $files = $this->getStepFieldsByTypeAndName('file', null, $this->current_step);
         if (!empty($files)) {
@@ -668,9 +668,9 @@ class Form extends Element
      * save form_state array into form object, for use into process function
      *
      * @param array &$form_state [description]
-     * @return  Form
+     * @return self
      */
-    public function setFormState(&$form_state = [])
+    public function setFormState(&$form_state = []): Form
     {
         $this->form_state = $form_state;
         return $this;
@@ -681,7 +681,7 @@ class Form extends Element
      *
      * @return array array representation for the element properties
      */
-    public function toArray()
+    public function toArray(): array
     {
         $values = parent::toArray();
         unset($values['form_state']);
@@ -806,7 +806,7 @@ class Form extends Element
      *
      * @return boolean form is valid
      */
-    public function isValid()
+    public function isValid(): ?bool
     {
         if ($this->validated) {
             return $this->valid;
@@ -885,13 +885,13 @@ class Form extends Element
     /**
      * Add field to form
      *
-     * @param string  $name  field name
-     * @param mixed   $field field to add, can be an array or a field subclass
-     * @param integer $step  step to add the field to
-     *
+     * @param string $name field name
+     * @param mixed $field field to add, can be an array or a field subclass
+     * @param int $step step to add the field to
      * @return mixed
+     * @throws Exceptions\FormException
      */
-    public function addField($name, $field, $step = 0)
+    public function addField(string $name, $field, int $step = 0)
     {
         $field = $this->getFieldObj($name, $field);
         $field->setParent($this);
@@ -914,12 +914,11 @@ class Form extends Element
     /**
      * remove field from form
      *
-     * @param string  $name field name
-     * @param integer $step field step
-     *
-     * @return Form
+     * @param string $name field name
+     * @param int $step field step
+     * @return self
      */
-    public function removeField($name, $step = 0)
+    public function removeField(string $name, int $step = 0): Form
     {
         unset($this->fields[$step][$name]);
         if (($key = array_search($name, $this->insert_field_order)) !== false) {
@@ -933,7 +932,7 @@ class Form extends Element
      *
      * @return int steps number
      */
-    private function getNumSteps()
+    private function getNumSteps(): int
     {
         return count($this->fields);
     }
@@ -943,7 +942,7 @@ class Form extends Element
      *
      * @return boolean this is the final step
      */
-    private function isFinalStep()
+    private function isFinalStep(): bool
     {
         return ($this->getCurrentStep() >= $this->getNumSteps());
     }
@@ -953,7 +952,7 @@ class Form extends Element
      *
      * @return boolean [description]
      */
-    public static function isPartial()
+    public static function isPartial(): bool
     {
         return (isset($_REQUEST['partial']) && $_REQUEST['partial'] == 'true');
     }
@@ -961,10 +960,10 @@ class Form extends Element
     /**
      * Get the fields array by reference
      *
-     * @param  integer $step step number
+     * @param  int $step step number
      * @return array        the array of elements for the step specified
      */
-    public function &getFields($step = 0)
+    public function &getFields(int $step = 0): array
     {
         $notfound = [];
         if (!isset($this->fields[$step])) {
@@ -977,11 +976,11 @@ class Form extends Element
      * Get the step fields by type and name
      *
      * @param  array|string $field_types field types
-     * @param  string       $name        field name
-     * @param  integer      $step        step number
+     * @param  ?string       $name        field name
+     * @param  int      $step        step number
      * @return array               the array of fields matching the search criteria
      */
-    private function getStepFieldsByTypeAndName($field_types, $name = null, $step = 0)
+    private function getStepFieldsByTypeAndName($field_types, string $name = null, int $step = 0): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -1012,10 +1011,10 @@ class Form extends Element
     /**
      * Get the form fields by type (in all the steps)
      *
-     * @param  array $field_types field types
+     * @param array $field_types field types
      * @return array              fields in the form
      */
-    public function getFieldsByType($field_types)
+    public function getFieldsByType(array $field_types): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -1031,11 +1030,11 @@ class Form extends Element
     /**
      * Get the step fields by type and name (in all the steps)
      *
-     * @param  array  $field_types field types
-     * @param  string $name        field name
+     * @param array $field_types field types
+     * @param string $name field name
      * @return array              fields in the form matching the search criteria
      */
-    public function getFieldsByTypeAndName($field_types, $name)
+    public function getFieldsByTypeAndName(array $field_types, string $name): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -1051,12 +1050,12 @@ class Form extends Element
     /**
      * Get field by name
      *
-     * @param string  $field_name field name
-     * @param integer $step       step number where to find the field
+     * @param string $field_name field name
+     * @param int $step step number where to find the field
      *
      * @return Element subclass field object
      */
-    public function getField($field_name, $step = 0)
+    public function getField(string $field_name, int $step = 0): ?Element
     {
         return isset($this->fields[$step][$field_name]) ? $this->fields[$step][$field_name] : null;
     }
@@ -1064,13 +1063,12 @@ class Form extends Element
     /**
      * Set field
      *
-     * @param string  $field_name field name
-     * @param Element $field      subclass field object
-     * @param integer $step       step number where to put the field
-     *
-     * @return Form
+     * @param string $field_name field name
+     * @param Element $field subclass field object
+     * @param integer $step step number where to put the field
+     * @return self
      */
-    public function setField($field_name, $field, $step = 0)
+    public function setField(string $field_name, Element $field, $step = 0): Form
     {
         $field->setName($field_name);
         $this->fields[$step][$field_name] = $field;
@@ -1080,9 +1078,9 @@ class Form extends Element
     /**
      * Get the submit element which submitted the form
      *
-     * @return action subclass the submitter
+     * @return ?Element subclass the submitter
      */
-    public function getTriggeringElement()
+    public function getTriggeringElement(): ?Element
     {
         $fields = $this->getFieldsByType(['submit','button','image_button']);
         foreach ($fields as $field) {
@@ -1112,11 +1110,10 @@ class Form extends Element
     /**
      * Set form submit functions list
      *
-     * @param OrderedFunctions $submit set the form submit functions list
-     *
-     * @return Form
+     * @param array|OrderedFunctions $submit set the form submit functions list
+     * @return self
      */
-    public function setSubmit($submit)
+    public function setSubmit($submit): Form
     {
         if (!($submit instanceof OrderedFunctions)) {
             $submit = new OrderedFunctions($submit, 'submitter');
@@ -1139,11 +1136,10 @@ class Form extends Element
     /**
      * Set form validate functions list
      *
-     * @param OrderedFunctions $validate set the form validate functions list
-     *
-     * @return Form
+     * @param array|OrderedFunctions $validate set the form validate functions list
+     * @return self
      */
-    public function setValidate($validate)
+    public function setValidate($validate): Form
     {
         if (!($validate instanceof OrderedFunctions)) {
             $validate = new OrderedFunctions($validate, 'validator');
@@ -1158,7 +1154,7 @@ class Form extends Element
      *
      * @return string the form id
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->form_id;
     }
@@ -1166,9 +1162,9 @@ class Form extends Element
     /**
      * Get the current step number
      *
-     * @return integer current step
+     * @return int current step
      */
-    public function getCurrentStep()
+    public function getCurrentStep(): int
     {
         return $this->current_step;
     }
@@ -1178,7 +1174,7 @@ class Form extends Element
      *
      * @return string ajax form submit url
      */
-    public function getAjaxUrl()
+    public function getAjaxUrl(): string
     {
         return $this->ajax_submit_url;
     }
@@ -1188,7 +1184,7 @@ class Form extends Element
      *
      * @return string errors as an html <li> list
      */
-    public function showErrors()
+    public function showErrors(): string
     {
         return $this->notifications->renderHTML('error');
     }
@@ -1198,7 +1194,7 @@ class Form extends Element
      *
      * @return string highlights as an html <li> list
      */
-    public function showHighlights()
+    public function showHighlights(): string
     {
         return $this->notifications->renderHTML('highlight');
     }
@@ -1206,10 +1202,10 @@ class Form extends Element
     /**
      * Sets inline error preference
      *
-     * @param  boolean $inline_errors error preference
-     * @return Form
+     * @param boolean $inline_errors error preference
+     * @return self
      */
-    public function setInlineErrors($inline_errors)
+    public function setInlineErrors(bool $inline_errors): Form
     {
         $this->inline_errors = $inline_errors;
 
@@ -1219,9 +1215,9 @@ class Form extends Element
     /**
      * Returns inline error preference
      *
-     * @return boolean errors should be presented inline after every elemen
+     * @return boolean errors should be presented inline after every element
      */
-    public function getInlineErrors()
+    public function getInlineErrors(): bool
     {
         return $this->inline_errors;
     }
@@ -1229,16 +1225,17 @@ class Form extends Element
     /**
      * Returns inline error preference
      *
-     * @return boolean errors should be presented inline after every elemen
+     * @return boolean errors should be presented inline after every element
      */
-    public function errorsInline()
+    public function errorsInline(): bool
     {
         return $this->getInlineErrors();
     }
 
 
     /**
-     * {@inheritdoc}. using this hook form elements can modify the form element
+     * {@inheritdocs}.
+     * using this hook form elements can modify the form element
      */
     public function preRender()
     {
@@ -1257,10 +1254,10 @@ class Form extends Element
     /**
      * renders the form
      *
-     * @param  string $override_output_type output type
+     * @param  ?string $override_output_type output type
      * @return string                       the form html
      */
-    public function renderHTML($override_output_type = null)
+    public function renderHTML(string $override_output_type = null)
     {
         $output = '';
         $errors = '';
@@ -1377,7 +1374,7 @@ class Form extends Element
             });"];
 
             $output = "<script type=\"text/javascript\">".
-                        $this->encapsulateJs(array_map([$this, minifyJs], $initial_js)).
+                        $this->encapsulateJs(array_map([$this, 'minifyJs'], $initial_js)).
                         "</script>\n".
                         "<div id=\"{$this->getId()}-formcontainer\"></div>";
         } else {
@@ -1436,10 +1433,10 @@ class Form extends Element
     /**
      * renders the form
      *
-     * @param      string $override_output_type output type
+     * @param      ?string $override_output_type output type
      * @return     string                       the form html
      */
-    public function render($override_output_type = null)
+    public function render(string $override_output_type = null)
     {
         return $this->renderHTML($override_output_type);
     }
@@ -1449,7 +1446,7 @@ class Form extends Element
      *
      * @return string the js into a jquery sandbox
      */
-    public function generateJs()
+    public function generateJs(): string
     {
         if (!$this->pre_rendered) {
             $this->preRender();
@@ -1490,7 +1487,7 @@ class Form extends Element
      *
      * @return string 'this'
      */
-    protected function onAddReturn()
+    protected function onAddReturn(): string
     {
         return 'this';
     }
@@ -1499,8 +1496,9 @@ class Form extends Element
      * Set the form definition function name
      *
      * @param string $function_name form definition function name
+     * @return self
      */
-    public function setDefinitionFunction($function_name)
+    public function setDefinitionFunction(string $function_name): Form
     {
         $this->definition_function = $function_name;
         return $this;
@@ -1509,7 +1507,7 @@ class Form extends Element
     /**
      * Get the form definition function body
      *
-     * @return string form definition function body
+     * @return string|false form definition function body
      */
     public function getDefinitionBody()
     {
@@ -1543,7 +1541,7 @@ class Form extends Element
         return $body;
     }
 
-    private function encapsulateJs($js_array, $jquery_var_name = 'jQuery')
+    private function encapsulateJs($js_array, $jquery_var_name = 'jQuery'): string
     {
         if (!is_array($js_array)) {
             $js_array = [$js_array];

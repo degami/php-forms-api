@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
 
@@ -44,7 +45,7 @@ class Recaptcha extends Captcha
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -59,7 +60,7 @@ class Recaptcha extends Captcha
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         if ($this->already_validated == true) {
             return true;
@@ -103,7 +104,7 @@ class Recaptcha extends Captcha
      *
      * @param array $request request array
      */
-    public function alterRequest(&$request)
+    public function alterRequest(array &$request)
     {
         foreach ($request as $key => $val) {
             //RECAPTCHA HANDLE

@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\Basics\Html\TagElement;
@@ -33,9 +34,9 @@ class Checkbox extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
         $this->value = null;
@@ -49,7 +50,7 @@ class Checkbox extends Field
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -88,7 +89,7 @@ class Checkbox extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue(): bool
     {
         return true;
     }

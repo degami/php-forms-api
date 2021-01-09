@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Containers;
 
+use Degami\PHPFormsApi\Abstracts\Base\Element;
+use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
@@ -30,7 +32,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     use Containers;
 
     /**
-     * Element subelements
+     * Element sub-elements
      *
      * @var array
      */
@@ -41,7 +43,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      *
      * @return array partitions
      */
-    public function &getPartitions()
+    public function &getPartitions(): array
     {
         return $this->partitions;
     }
@@ -51,7 +53,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      *
      * @return integer partitions number
      */
-    public function numPartitions()
+    public function numPartitions(): int
     {
         return count($this->partitions);
     }
@@ -60,9 +62,9 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * Add a new partition
      *
      * @param  string $title partition title
-     * @return FieldsContainerMultiple
+     * @return self
      */
-    public function addPartition($title)
+    public function addPartition($title): FieldsContainerMultiple
     {
         $this->partitions[] = ['title'=>$title,'fieldnames'=>[]];
 
@@ -72,16 +74,23 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * Add field to element
      *
-     * @param  string  $name             field name
-     * @param  mixed   $field            field to add, can be an array or a field subclass
-     * @param  integer $partitions_index index of partition to add field to
-     * @return Field
+     * @param string $name field name
+     * @param mixed $field field to add, can be an array or a field subclass
+     * @return Element
      * @throws FormException
      */
-    public function addField($name, $field, $partitions_index = 0)
+    public function addField(string $name, $field): Element
     {
         $field = $this->getFieldObj($name, $field);
         $field->setParent($this);
+
+        $partitions_index  = null;
+        if (func_num_args() == 3) {
+            $partitions_index = func_get_arg(2);
+        }
+        if (!is_numeric($partitions_index) || !array_key_exists($partitions_index, $this->partitions)) {
+            $partitions_index = $this->numPartitions() - 1;
+        }
 
         $this->fields[$name] = $field;
         $this->insert_field_order[$partitions_index][] = $name;
@@ -105,12 +114,16 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * remove field from form
      *
-     * @param  string  $name             field name
-     * @param  integer $partitions_index field partition
+     * @param string $name field name
      * @return FieldsContainerMultiple
      */
-    public function removeField($name, $partitions_index = 0)
+    public function removeField(string $name) : FieldsContainer
     {
+        $partitions_index = func_get_arg(1);
+        if (!is_numeric($partitions_index)) {
+            $partitions_index = $this->getPartitionIndex($name);
+        }
+
         unset($this->fields[$name]);
         if (isset($this->insert_field_order[$partitions_index])
             && ($key = array_search($name, $this->insert_field_order[$partitions_index])) !== false
@@ -128,14 +141,14 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * Get partition fields array
      *
-     * @param  integer $partitions_index partition index
+     * @param  int $partitions_index partition index
      * @return array             partition fields array
      */
-    public function &getPartitionFields($partitions_index)
+    public function &getPartitionFields(int $partitions_index): array
     {
         $out = [];
-        $fieldsnames = $this->partitions[$partitions_index]['fieldnames'];
-        foreach ($fieldsnames as $name) {
+        $field_names = $this->partitions[$partitions_index]['fieldnames'];
+        foreach ($field_names as $name) {
             $out[$name] = $this->getField($name);
         }
         return $out;
@@ -146,10 +159,10 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      *
      * @param  array   $fields          array of new fields to set for partition
      * @param  integer $partition_index partition index
-     * @return FieldsContainerMultiple
+     * @return self
      * @throws FormException
      */
-    public function setPartitionFields($fields, $partition_index = 0)
+    public function setPartitionFields(array $fields, $partition_index = 0): FieldsContainerMultiple
     {
         $fields_names = $this->partitions[$partition_index]['fieldnames'];
         foreach ($fields_names as $name) {
@@ -170,11 +183,11 @@ abstract class FieldsContainerMultiple extends FieldsContainer
     /**
      * Check if partition has errors
      *
-     * @param  integer $partitions_index partition index
+     * @param  int $partitions_index partition index
      * @param  Form    $form             form object
      * @return boolean           partition has errors
      */
-    public function partitionHasErrors($partitions_index, Form $form)
+    public function partitionHasErrors(int $partitions_index, Form $form): bool
     {
         if (!$form->isProcessed()) {
             return false;
@@ -195,7 +208,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * @param  string $field_name field name
      * @return integer            partition index, -1 on failure
      */
-    public function getPartitionIndex($field_name)
+    public function getPartitionIndex($field_name): int
     {
         foreach ($this->partitions as $partitions_index => $partition) {
             if (in_array($field_name, $partition['fieldnames'])) {

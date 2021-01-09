@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\ComposedField;
 
@@ -48,9 +49,9 @@ class Datetimeselect extends ComposedField
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
 
@@ -122,7 +123,7 @@ class Datetimeselect extends ComposedField
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         return $this->date->isValid() && $this->time->isValid();
     }
@@ -132,7 +133,7 @@ class Datetimeselect extends ComposedField
      *
      * @return string errors as an html <li> list
      */
-    public function showErrors()
+    public function showErrors() : string
     {
         $out = trim($this->date->showErrors() . $this->time->showErrors());
         return ($out == '') ? '' : $out;
@@ -141,16 +142,18 @@ class Datetimeselect extends ComposedField
     /**
      * resets the sub elements
      */
-    public function resetField()
+    public function resetField() : Field
     {
         $this->date->resetField();
         $this->time->resetField();
+
+        return $this;
     }
 
     /**
      * Return field value
      *
-     * @return array field value
+     * @return mixed field value
      */
     public function getValues()
     {

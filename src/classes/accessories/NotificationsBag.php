@@ -30,7 +30,7 @@ class NotificationsBag extends MultiLevelDataBag
      *
      * @return string the notification list html
      */
-    public function renderHTML($group = null)
+    public function renderHTML($group = null): string
     {
         if ($group == null) {
             $out = "";

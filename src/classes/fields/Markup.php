@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
@@ -28,9 +29,9 @@ class Markup extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
         if (isset($options['value'])) {
@@ -43,20 +44,19 @@ class Markup extends Field
      *
      * @param Form $form form object
      *
-     * @return string        the element value
+     * @return string|BaseElement        the element value
      */
     public function renderField(Form $form)
     {
-        $output = $this->getValues();
-        return $output;
+        return $this->getValues();
     }
 
     /**
      * validate function
      *
-     * @return boolean this field is always valid
+     * @return bool this field is always valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         return true;
     }
@@ -64,9 +64,9 @@ class Markup extends Field
     /**
      * {@inheritdoc}
      *
-     * @return boolean this is not a value
+     * @return bool this is not a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return false;
     }

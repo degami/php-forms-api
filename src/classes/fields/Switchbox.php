@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 
@@ -40,9 +41,9 @@ class Switchbox extends Radios
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct(array $options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         $this->no_value = 0;
         $this->no_label = $this->getText('No');
@@ -106,7 +107,7 @@ class Switchbox extends Radios
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {

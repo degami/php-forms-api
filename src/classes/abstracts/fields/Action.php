@@ -55,7 +55,7 @@ abstract class Action extends Field
      *
      * @return boolean this is not a value
      */
-    public function isAValue()
+    public function isAValue(): bool
     {
         return false;
     }
@@ -65,7 +65,7 @@ abstract class Action extends Field
      *
      * @return boolean this field is always valid
      */
-    public function isValid()
+    public function isValid(): bool
     {
         return true;
     }

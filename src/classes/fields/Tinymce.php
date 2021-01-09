@@ -35,7 +35,7 @@ class Tinymce extends Textarea
      *
      * @return array tinymce options
      */
-    public function &getTinymceOptions()
+    public function &getTinymceOptions(): array
     {
         return $this->tinymce_options;
     }
@@ -44,10 +44,10 @@ class Tinymce extends Textarea
      * Set tinymce options array
      *
      * @param array $options array of valid tinymce options
+     * @return self
      */
-    public function setTinymceOptions($options)
+    public function setTinymceOptions(array $options): Tinymce
     {
-        $options = (array) $options;
         $options = array_filter($options, [$this, 'isValidTinymceOption']);
         $this->tinymce_options = $options;
 
@@ -80,10 +80,10 @@ class Tinymce extends Textarea
     /**
      * filters valid tinymce options
      *
-     * @param  string $propertyname property name
+     * @param string $propertyname property name
      * @return boolean TRUE if is a valid tinymce option
      */
-    private function isValidTinymceOption($propertyname)
+    private function isValidTinymceOption(string $propertyname): bool
     {
         // could be used to filter elements
         return true;

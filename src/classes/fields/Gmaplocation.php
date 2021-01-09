@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 
@@ -121,7 +122,7 @@ class Gmaplocation extends Geolocation
     protected $with_map = true;
 
     /**
-     * enable reverse geociding information box
+     * enable reverse geocoding information box
      *
      * @var boolean
      */
@@ -131,9 +132,9 @@ class Gmaplocation extends Geolocation
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
         $defaults = isset($options['default_value']) ? $options['default_value'] : ['latitude' => 0, 'longitude' => 0];
@@ -245,7 +246,7 @@ class Gmaplocation extends Geolocation
     /**
      * Return field value
      *
-     * @return array field value
+     * @return mixed field value
      */
     public function getValues()
     {
@@ -435,7 +436,7 @@ class Gmaplocation extends Geolocation
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {

@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Fields\Action;
@@ -29,9 +30,9 @@ class Reset extends Action
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
         if (isset($options['value'])) {
@@ -44,7 +45,7 @@ class Reset extends Action
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -56,7 +57,7 @@ class Reset extends Action
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'input',
             'type' => 'reset',
             'id' => $id,
@@ -64,6 +65,5 @@ class Reset extends Action
             'value' => $this->getText($this->getValues()),
             'attributes' => $this->attributes,
         ]);
-        return $tag;
     }
 }

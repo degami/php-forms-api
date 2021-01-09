@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\Basics\Html\TagElement;
@@ -106,8 +107,7 @@ class Password extends Field
      * {@inheritdoc}
      *
      * @param Form $form form object
-     *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -163,7 +163,7 @@ class Password extends Field
      *
      * @return boolean check if element is valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         if ($this->with_confirm == true) {
             if (!isset($_REQUEST["{$this->name}_confirm"]) || $_REQUEST["{$this->name}_confirm"] != $this->getValues()) {
@@ -182,7 +182,7 @@ class Password extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

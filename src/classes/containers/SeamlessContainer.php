@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 
@@ -31,7 +32,7 @@ class SeamlessContainer extends FieldsContainer
      *
      * @return string        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form): string
     {
         $output = "";
 
@@ -39,7 +40,7 @@ class SeamlessContainer extends FieldsContainer
         $weights = [];
         $order = [];
         foreach ($this->getFields() as $key => $elem) {
-            /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
+            /** @var Field $elem */
             $weights[$key]  = $elem->getWeight();
             $order[$key] = $insertorder[$key];
         }
@@ -47,7 +48,7 @@ class SeamlessContainer extends FieldsContainer
             array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->getFields());
         }
         foreach ($this->getFields() as $name => $field) {
-            /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+            /** @var Field $field */
             $output .= $field->renderHTML($form);
         }
 

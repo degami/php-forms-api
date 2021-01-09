@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 
@@ -29,7 +30,7 @@ class Range extends Number
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -55,7 +56,7 @@ class Range extends Number
             ];
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'input',
             'type' => 'range',
             'id' => $id,
@@ -63,6 +64,5 @@ class Range extends Number
             'value' => $this->getValues(),
             'attributes' => $this->attributes,
         ]);
-        return $tag;
     }
 }

@@ -60,7 +60,6 @@ class Textarea extends Field
      * {@inheritdoc}
      *
      * @param Form $form form object
-     *
      * @return string        the element html
      */
     public function renderField(Form $form)
@@ -78,7 +77,7 @@ class Textarea extends Field
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'textarea',
             'id' => $id,
             'name' => $this->name,
@@ -86,7 +85,6 @@ class Textarea extends Field
             'attributes' => $this->attributes + ['cols' => $this->size, 'rows' => $this->rows],
             'has_close' => true,
         ]);
-        return $tag;
     }
 
     /**
@@ -94,7 +92,7 @@ class Textarea extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\Basics\Html\TagElement;
@@ -28,9 +29,9 @@ class Time extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         $this->default_value = '00:00';
         parent::__construct($options, $name);
@@ -41,7 +42,7 @@ class Time extends Field
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -60,7 +61,7 @@ class Time extends Field
             $this->value = '';
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'input',
             'type' => 'time',
             'id' => $id,
@@ -68,7 +69,6 @@ class Time extends Field
             'value' => htmlspecialchars($this->getValues()),
             'attributes' => $this->attributes + ['size' => $this->size],
         ]);
-        return $tag;
     }
 
     /**
@@ -76,7 +76,7 @@ class Time extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

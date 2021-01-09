@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
 use Degami\Basics\Html\TagElement;
@@ -69,7 +70,7 @@ class Tabs extends FieldsContainerMultiple
             $partition_fields = $this->getPartitionFields($tabindex);
 
             foreach ($partition_fields as $key => $elem) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
+                /** @var Field $elem */
                 $weights[$key]  = $elem->getWeight();
                 $order[$key] = $insertorder[$key];
             }
@@ -93,7 +94,7 @@ class Tabs extends FieldsContainerMultiple
             ]);
 
             foreach ($partition_fields as $name => $field) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+                /** @var Field $field */
                 $inner->addChild($field->renderHTML($form));
             }
             $tag->addChild($inner);
@@ -106,8 +107,9 @@ class Tabs extends FieldsContainerMultiple
      * Add a new tab
      *
      * @param string $title tab title
+     * @return self
      */
-    public function addTab($title)
+    public function addTab(string $title): Tabs
     {
         return $this->addPartition($title);
     }

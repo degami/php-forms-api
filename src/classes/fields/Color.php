@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\Basics\Html\TagElement;
@@ -28,9 +29,9 @@ class Color extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
         if (!empty($this->default_value) && !$this->isRGB($this->default_value)) {
@@ -41,10 +42,10 @@ class Color extends Field
     /**
      * Check if string is an RGB representation
      *
-     * @param  string $str string to check
+     * @param string $str string to check
      * @return boolean     true if string is RGB
      */
-    private function isRGB($str)
+    private function isRGB(string $str): bool
     {
         return preg_match("/^#?([a-f\d]{3}([a-f\d]{3})?)$/i", $str);
     }
@@ -54,7 +55,7 @@ class Color extends Field
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -73,7 +74,7 @@ class Color extends Field
             $this->value = '';
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'input',
             'type' => 'color',
             'id' => $id,
@@ -81,7 +82,6 @@ class Color extends Field
             'value' => htmlspecialchars($this->getValues()),
             'attributes' => $this->attributes + ['size' => $this->size],
         ]);
-        return $tag;
     }
 
     /**
@@ -89,7 +89,7 @@ class Color extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue(): bool
     {
         return true;
     }

@@ -28,7 +28,7 @@ class FormBuilder
      *
      * @return bool
      */
-    public static function sessionPresent()
+    public static function sessionPresent(): bool
     {
         return (defined('PHP_VERSION_ID') && PHP_VERSION_ID > 54000) ?
           (session_status() === PHP_SESSION_ACTIVE) : (trim(session_id()) != '');
@@ -40,7 +40,7 @@ class FormBuilder
      *
      * @return SessionBag
      */
-    public static function getSessionBag($refresh = false)
+    public static function getSessionBag($refresh = false): SessionBag
     {
         /** @var SessionBag */
         static $session_bag = null;
@@ -53,10 +53,10 @@ class FormBuilder
     /**
      * Returns the form_id
      *
-     * @param  callable $function_name the function name
+     * @param  string|callable $function_name the function name
      * @return string                   the form_id
      */
-    public static function getFormId($function_name)
+    public static function getFormId($function_name): string
     {
         if (is_string($function_name)) {
             return $function_name;
@@ -70,10 +70,10 @@ class FormBuilder
     /**
      * Returns callable function name string
      *
-     * @param  callable $function_name callable element
+     * @param  string|callable $function_name callable element
      * @return string                 the function name
      */
-    public static function getDefinitionFunctionName($function_name)
+    public static function getDefinitionFunctionName($function_name): ?string
     {
         return static::getCallablaStringName($function_name);
     }
@@ -81,10 +81,10 @@ class FormBuilder
     /**
      * Returns callable function name string
      *
-     * @param  callable $function_name callable element
+     * @param  string|callable $function_name callable element
      * @return string                 the function name
      */
-    public static function getCallablaStringName($function_name)
+    public static function getCallablaStringName($function_name): ?string
     {
         if (is_string($function_name)) {
             return $function_name;
@@ -103,17 +103,17 @@ class FormBuilder
 
     /**
      * Returns a form object.
-     * This function calls the form definitor function passing an
+     * This function calls the form definition function passing an
      * initial empty form object and the form state
      *
-     * @param callable $callable
+     * @param string|callable $callable
      * @param array    &$form_state  form state by reference
      * @param array    $form_options additional form constructor options
      *
      * @return Form             a new form object
      * @throws FormException
      */
-    public static function buildForm($callable, &$form_state, $form_options = [])
+    public static function buildForm($callable, array &$form_state, $form_options = []): Form
     {
         $before = memory_get_usage();
 
@@ -166,13 +166,12 @@ class FormBuilder
     /**
      * Get a new form object
      *
-     * @param  callable $callable form definition callable
-     * @param  string $form_id form_id (optional)
-     *
-     * @return Form         a new form object
+     * @param string|callable $callable form definition callable
+     * @param null $form_id form_id (optional)
+     * @return Form a new form object
      * @throws FormException
      */
-    public static function getForm($callable, $form_id = null)
+    public static function getForm($callable, $form_id = null): Form
     {
         $form_state = [];
         $args = func_get_args();
@@ -187,19 +186,18 @@ class FormBuilder
             $form_options['form_id'] = $form_id;
         }
 
-        $form = FormBuilder::buildForm($callable, $form_state, $form_options);
-        return $form;
+        return FormBuilder::buildForm($callable, $form_state, $form_options);
     }
 
     /**
      * Returns rendered form's html string
      *
-     * @param  callable $callable form definition callable
+     * @param  string|callable $callable form definition callable
      * @param  string $form_id form_id (optional)
      * @return string          form html
      * @throws FormException
      */
-    public static function renderForm($callable, $form_id = null)
+    public static function renderForm($callable, $form_id = null): string
     {
         $form = FormBuilder::getForm($callable, $form_id);
         return $form->renderHTML();
@@ -208,10 +206,10 @@ class FormBuilder
     /**
      * Prepares the form_state array
      *
-     * @param  string $form_id the form_id
+     * @param string $form_id the form_id
      * @return array           the form_state array
      */
-    public static function getRequestValues($form_id)
+    public static function getRequestValues(string $form_id): array
     {
         $out = ['input_values' => [] , 'input_form_definition' => null];
         foreach (['_POST' => $_POST,'_GET' => $_GET,'_REQUEST' => $_REQUEST] as $key => $array) {
@@ -236,7 +234,7 @@ class FormBuilder
      * @param  string|null $element_name element name
      * @return array                      form field info
      */
-    public static function guessFormType($value, $element_name = null)
+    public static function guessFormType($value, string $element_name = null): array
     {
         $default_value = $value;
         $vtype = gettype($default_value);
@@ -333,12 +331,13 @@ class FormBuilder
     /**
      * Get a form to represent given object
      *
-     * @param  Form  $form        initial form object
-     * @param  array &$form_state form state
-     * @param  mixed $object      object to represent
+     * @param Form $form initial form object
+     * @param array &$form_state form state
+     * @param mixed $object object to represent
      * @return Form                form object
+     * @throws FormException
      */
-    public static function objFormDefinition(Form $form, &$form_state, $object)
+    public static function objFormDefinition(Form $form, array &$form_state, $object): Form
     {
         $form->setFormId(get_class($object));
         $fields = get_object_vars($object) + get_class_vars(get_class($object));
@@ -377,11 +376,10 @@ class FormBuilder
      * Returns a form object representing the object parameter
      *
      * @param object $object the object to map
-     *
      * @return Form form object
      * @throws FormException
      */
-    public static function objectForm($object)
+    public static function objectForm(object $object): Form
     {
         $form_state = [];
         $form_state['build_info']['args'] = [$object];

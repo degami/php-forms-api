@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 
 /**
@@ -35,9 +36,9 @@ class Slider extends Select
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options, $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         // get the "default_value" index value
         $values = call_user_func_array([__CLASS__, 'arrayGetValues'], [ $this->default_value, $this->options ]);
@@ -102,7 +103,7 @@ class Slider extends Select
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -112,7 +113,7 @@ class Slider extends Select
                 $this->options[ $this->default_value ]->getLabel() :
                 '';
         if (trim($text) == '' && count($this->options) > 0) {
-            /** @var \Degami\PHPFormsApi\Fields\Option $option */
+            /** @var Option $option */
             $option = reset($this->options);
             $text = $option->getLabel();
         }

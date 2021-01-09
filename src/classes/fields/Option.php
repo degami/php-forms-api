@@ -34,11 +34,11 @@ class Option extends Optionable
     /**
      * Class constructor
      *
-     * @param string $key     key
-     * @param string $label   label
-     * @param array  $options build options
+     * @param string $key key
+     * @param string $label label
+     * @param array $options build options
      */
-    public function __construct($key, $label, $options = [])
+    public function __construct(string $key, string $label, $options = [])
     {
         $this->setKey(trim($key));
         parent::__construct($label, $options);
@@ -49,9 +49,9 @@ class Option extends Optionable
      *
      * @param Select $form_field select field
      *
-     * @return string        the option html
+     * @return TagElement        the option html
      */
-    public function renderHTML(Select $form_field)
+    public function renderHTML(Select $form_field): TagElement
     {
         $this->no_translation = $form_field->no_translation;
         $field_value = $form_field->getValue();

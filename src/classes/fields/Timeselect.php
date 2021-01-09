@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\Basics\Html\TagElement;
@@ -43,9 +44,9 @@ class Timeselect extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         $this->default_value = [
             'hours'=>0,
@@ -96,7 +97,7 @@ class Timeselect extends Field
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -189,7 +190,7 @@ class Timeselect extends Field
     /**
      * {@inheritdoc}
      *
-     * @param array $value value to set
+     * @param mixed $value value to set
      */
     public function processValue($value)
     {
@@ -209,7 +210,7 @@ class Timeselect extends Field
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         $check = true;
         $check &= ($this->value['hours']>=0 && $this->value['hours']<=23);
@@ -238,7 +239,7 @@ class Timeselect extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }
@@ -248,7 +249,7 @@ class Timeselect extends Field
      *
      * @return string date value
      */
-    public function valueString()
+    public function valueString(): string
     {
         $value = $this->getValues();
         $out = (($value['hours'] < 10) ? '0':'').((int) $value['hours']);

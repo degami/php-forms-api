@@ -15,6 +15,9 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\Basics\Html\BaseElement;
+use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Form;
 use Degami\Basics\Html\TagElement;
 use Degami\Basics\Html\TagList;
@@ -33,7 +36,7 @@ class BulkTable extends TableContainer
      *
      * @return array $operations array of callable
      */
-    public function &getOperations()
+    public function &getOperations(): array
     {
         return $this->operations;
     }
@@ -41,12 +44,12 @@ class BulkTable extends TableContainer
     /**
      * Add operation to operations array
      *
-     * @param  string $key       key
-     * @param  string $label     label
-     * @param  mixed  $operation operation
-     * @return BulkTable
+     * @param string $key key
+     * @param string $label label
+     * @param mixed $operation operation
+     * @return self
      */
-    public function addOperation($key, $label, $operation)
+    public function addOperation(string $key, string $label, $operation): BulkTable
     {
         $this->operations[$key] = ['key'=>$key,'label'=>$label,'op'=>$operation];
 
@@ -56,7 +59,7 @@ class BulkTable extends TableContainer
     /**
      * {@inheritdoc}
      *
-     * @param  Form $form form object
+     * @param Form $form form object
      * @throws FormException
      */
     public function preRender(Form $form)
@@ -68,7 +71,7 @@ class BulkTable extends TableContainer
         $this->setTableHeader(array_merge(['&nbsp;'], $this->getTableHeader()));
         for ($i = 0; $i < $this->numRows(); $i++) {
             foreach ($this->getPartitionFields($i) as $key => $field) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+                /** @var Field $field */
                 $field->setName($this->getName()."[rows][$i][{$field->getName()}]");
             }
             $this->addField(
@@ -106,8 +109,7 @@ class BulkTable extends TableContainer
      * {@inheritdoc}
      *
      * @param Form $form form object
-     *
-     * @return string        the element html
+     * @return BaseElement        the element html
      */
     public function renderField(Form $form)
     {

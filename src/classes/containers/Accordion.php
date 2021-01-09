@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
 use Degami\Basics\Html\TagElement;
@@ -82,7 +83,7 @@ class Accordion extends FieldsContainerMultiple
             $partition_fields = $this->getPartitionFields($accordionindex);
 
             foreach ($partition_fields as $key => $elem) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
+                /** @var Field $elem */
                 $weights[$key]  = $elem->getWeight();
                 $order[$key] = $insertorder[$key];
             }
@@ -110,7 +111,7 @@ class Accordion extends FieldsContainerMultiple
                 ],
             ]);
             foreach ($partition_fields as $name => $field) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+                /** @var Field $field */
                 $inner->addChild($field->renderHTML($form));
             }
             $tag->addChild($inner);
@@ -123,8 +124,9 @@ class Accordion extends FieldsContainerMultiple
      * Adds a new accordion
      *
      * @param string $title accordion title
+     * @return self
      */
-    public function addAccordion($title)
+    public function addAccordion($title): Accordion
     {
         return $this->addPartition($title);
     }

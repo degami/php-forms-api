@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\Basics\Html\TagElement;
@@ -97,7 +98,7 @@ class Fieldset extends FieldsContainer
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return TagElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -107,7 +108,7 @@ class Fieldset extends FieldsContainer
         $weights = [];
         $order = [];
         foreach ($this->getFields() as $key => $elem) {
-            /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
+            /** @var Field $elem */
             $weights[$key]  = $elem->getWeight();
             $order[$key] = $insertorder[$key];
         }
@@ -139,7 +140,7 @@ class Fieldset extends FieldsContainer
             'attributes' => $inner_attributes,
         ]);
         foreach ($this->getFields() as $name => $field) {
-            /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+            /** @var Field $field */
             $inner->addChild($field->renderHTML($form));
         }
 

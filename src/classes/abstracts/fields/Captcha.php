@@ -50,7 +50,7 @@ abstract class Captcha extends Field
      *
      * @return boolean TRUE if element has already been validated
      */
-    public function isAlreadyValidated()
+    public function isAlreadyValidated(): bool
     {
         return $this->already_validated;
     }
@@ -60,7 +60,7 @@ abstract class Captcha extends Field
      *
      * @return boolean this is not a value
      */
-    public function isAValue()
+    public function isAValue(): bool
     {
         return false;
     }

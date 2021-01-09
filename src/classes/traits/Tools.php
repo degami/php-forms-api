@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Traits;
 
+use Degami\PHPFormsApi\Abstracts\Base\Element;
+
 /**
  * tools functions
  */
@@ -23,29 +25,28 @@ trait Tools
     /**
      * scan_array private method
      *
-     * @param  string $string string to search
-     * @param  array  $array  array to check
-     * @return mixed          found element / FALSE on failure
+     * @param string $string string to search
+     * @param array $array array to check
+     * @return mixed|bool          found element / FALSE on failure
      */
-    private static function scanArray($string, $array)
+    private static function scanArray(string $string, array $array)
     {
         list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
         if ($key && $rest) {
             return call_user_func_array([__CLASS__, 'scanArray'], [$rest, $array[$key]]);
-        } elseif ($key) {
+        } elseif ($key && isset($array[$key])) {
             return $array[$key];
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
      * applies array_flatten to array
      *
-     * @param  array $array array to flatten
+     * @param array $array array to flatten
      * @return array        monodimensional array
      */
-    public static function arrayFlatten($array)
+    public static function arrayFlatten(array $array): array
     {
         $return = [];
         foreach ($array as $key => $value) {
@@ -64,11 +65,11 @@ trait Tools
     /**
      * Get array values by key
      *
-     * @param  string $search_key key to search
-     * @param  array  $array      where to search
+     * @param ?string $search_key key to search
+     * @param array $array where to search
      * @return array              the filtered array
      */
-    public static function arrayGetValues($search_key, $array)
+    public static function arrayGetValues(?string $search_key, array $array): array
     {
         $return = [];
         foreach ($array as $key => $value) {
@@ -87,11 +88,11 @@ trait Tools
     /**
      * order elements by weight properties
      *
-     * @param  \Degami\PHPFormsApi\Abstracts\Base\Element $a first element
-     * @param  \Degami\PHPFormsApi\Abstracts\Base\Element $b second element
+     * @param Element $a first element
+     * @param Element $b second element
      * @return int    position
      */
-    public static function orderByWeight($a, $b)
+    public static function orderByWeight(Element $a, Element $b): int
     {
         if ($a->getWeight() == $b->getWeight()) {
             return 0;
@@ -102,11 +103,11 @@ trait Tools
     /**
      * order validation functions
      *
-     * @param  array $a first element
-     * @param  array $b second element
+     * @param array $a first element
+     * @param array $b second element
      * @return int    position
      */
-    public static function orderValidators($a, $b)
+    public static function orderValidators(array $a, array $b): int
     {
         if (is_array($a) && isset($a['validator'])) {
             $a = $a['validator'];
@@ -133,10 +134,10 @@ trait Tools
      * translate strings, using a function named "__()" if is defined.
      * The function should take a string written in english as parameter and return the translated version
      *
-     * @param  string $string string to translate
+     * @param string $string string to translate
      * @return string         the translated version
      */
-    public static function translateString($string)
+    public static function translateString(string $string): string
     {
         if (is_string($string) && function_exists('__')) {
             return __($string);
@@ -147,10 +148,10 @@ trait Tools
     /**
      * Returns the translated version of the input text ( when available ) depending on current element configuration
      *
-     * @param  string $text input text
+     * @param string $text input text
      * @return string       text to return (translated or not)
      */
-    protected function getText($text)
+    protected function getText(string $text): string
     {
         if ($this->no_translation == true) {
             return $text;
@@ -163,7 +164,7 @@ trait Tools
      *
      * @return string
      */
-    public static function getClassNameString()
+    public static function getClassNameString(): string
     {
         $called_class = array_map(
             "strtolower",
@@ -185,9 +186,9 @@ trait Tools
      * and if found executes it passing the arguments
      *
      * @param string $regexp regular Expression to find function
-     * @param mixed  $args   arguments array
+     * @param mixed $args arguments array
      */
-    public static function executeAlter($regexp, $args)
+    public static function executeAlter(string $regexp, $args)
     {
         $defined_functions = get_defined_functions();
         if (!is_array($args)) {

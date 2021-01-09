@@ -29,9 +29,9 @@ class Url extends Field
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
 
@@ -63,7 +63,7 @@ class Url extends Field
             $this->value = '';
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'input',
             'type' => 'url',
             'id' => $id,
@@ -71,7 +71,6 @@ class Url extends Field
             'value' => htmlspecialchars($this->getValues()),
             'attributes' => $this->attributes + ['size' => $this->size],
         ]);
-        return $tag;
     }
 
     /**
@@ -79,7 +78,7 @@ class Url extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Fields;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
+
 /**
  * The "clickable" field element (a button or a submit )
  *
@@ -34,9 +36,9 @@ abstract class Clickable extends Action
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct($options = [], string $name = null)
     {
         parent::__construct($options, $name);
         if (isset($options['value'])) {
@@ -50,7 +52,7 @@ abstract class Clickable extends Action
      *
      * @return boolean if this element was clicked
      */
-    public function getClicked()
+    public function getClicked(): bool
     {
         return $this->clicked;
     }
@@ -69,10 +71,10 @@ abstract class Clickable extends Action
     /**
      * reset this element
      */
-    public function resetField()
+    public function resetField() : Field
     {
         $this->clicked = false;
-        parent::resetField();
+        return parent::resetField();
     }
 
     /**
@@ -80,7 +82,7 @@ abstract class Clickable extends Action
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

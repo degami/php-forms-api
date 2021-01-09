@@ -49,7 +49,7 @@ abstract class FieldMultivalues extends Field
      *
      * @return array element options
      */
-    public function &getOptions()
+    public function &getOptions(): array
     {
         return $this->options;
     }
@@ -57,11 +57,11 @@ abstract class FieldMultivalues extends Field
     /**
      * Check if key is present into haystack
      *
-     * @param  mixed $needle   element to find
-     * @param  array $haystack where to find it
+     * @param mixed $needle element to find
+     * @param array $haystack where to find it
      * @return boolean           TRUE if element is found
      */
-    public static function hasKey($needle, $haystack)
+    public static function hasKey($needle, array $haystack): bool
     {
         foreach ($haystack as $key => $value) {
             if ($value instanceof Option) {
@@ -87,7 +87,7 @@ abstract class FieldMultivalues extends Field
      * @param  mixed $needle element to find
      * @return boolean TRUE if element is found
      */
-    public function optionsHasKey($needle)
+    public function optionsHasKey($needle): bool
     {
         return FieldMultivalues::hasKey($needle, $this->options);
     }
@@ -97,7 +97,7 @@ abstract class FieldMultivalues extends Field
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
 
@@ -129,7 +129,7 @@ abstract class FieldMultivalues extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue(): bool
     {
         return true;
     }

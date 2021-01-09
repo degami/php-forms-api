@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
 use Degami\Basics\Html\TagElement;
@@ -58,9 +59,9 @@ class TableContainer extends FieldsContainerMultiple
      * Set table header array
      *
      * @param  array $table_header table header elements array
-     * @return TableContainer
+     * @return self
      */
-    public function setTableHeader(array $table_header)
+    public function setTableHeader(array $table_header): TableContainer
     {
         $this->table_header = $table_header;
         return $this;
@@ -71,7 +72,7 @@ class TableContainer extends FieldsContainerMultiple
      *
      * @return array table header array
      */
-    public function getTableHeader()
+    public function getTableHeader(): array
     {
         return $this->table_header;
     }
@@ -80,9 +81,9 @@ class TableContainer extends FieldsContainerMultiple
      * Set rows / cols attributes array
      *
      * @param  array $col_row_attributes attributes array
-     * @return TableContainer
+     * @return self
      */
-    public function setColRowAttributes(array $col_row_attributes)
+    public function setColRowAttributes(array $col_row_attributes): TableContainer
     {
         $this->col_row_attributes = $col_row_attributes;
         return $this;
@@ -93,15 +94,17 @@ class TableContainer extends FieldsContainerMultiple
      *
      * @return array attributes array
      */
-    public function getColRowAttributes()
+    public function getColRowAttributes(): array
     {
         return $this->col_row_attributes;
     }
 
     /**
      * Add a new table row
+     *
+     * @return self
      */
-    public function addRow()
+    public function addRow(): TableContainer
     {
         $this->addPartition('table_row_'.$this->numPartitions());
         return $this;
@@ -110,9 +113,9 @@ class TableContainer extends FieldsContainerMultiple
     /**
      * Return number of table rows
      *
-     * @return integer number of table rows
+     * @return int number of table rows
      */
-    public function numRows()
+    public function numRows(): int
     {
         return $this->numPartitions();
     }

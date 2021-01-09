@@ -52,7 +52,7 @@ class SessionBag extends MultiLevelDataBag
      *
      * @return string
      */
-    public static function getSessionIdentifier()
+    public static function getSessionIdentifier(): ?string
     {
         static $session_identifier = null;
         if (!$session_identifier) {
@@ -75,5 +75,6 @@ class SessionBag extends MultiLevelDataBag
             session_destroy();
             session_start();
         }
+        return $this;
     }
 }

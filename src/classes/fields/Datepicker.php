@@ -114,7 +114,7 @@ class Datepicker extends Textfield
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

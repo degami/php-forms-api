@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Containers;
 
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 
@@ -45,7 +46,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
      *
      * @return string handle position
      */
-    public function getHandlePosition()
+    public function getHandlePosition(): string
     {
         return $this->handle_position;
     }
@@ -53,7 +54,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
     /**
      * Return form elements values into this element
      *
-     * @return array form values
+     * @return mixed form values
      */
     public function getValues()
     {
@@ -64,7 +65,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
 
         foreach ($fields_with_delta as $name => $info) {
             $field = $info['field'];
-            /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+            /** @var Field $field */
             if ($field->isAValue() == true) {
                 $output[$name] = $field->getValues();
                 if (is_array($output[$name]) && empty($output[$name])) {
@@ -83,7 +84,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
     public function processValue($values)
     {
         foreach ($this->getFields() as $name => $field) {
-            /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+            /** @var Field $field */
             $partitionindex = $this->getPartitionIndex($field->getName());
 
             if ($field instanceof FieldsContainer) {
@@ -103,7 +104,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
      *
      * @return array fields with delta
      */
-    private function getFieldsWithDelta()
+    private function getFieldsWithDelta(): array
     {
         $out = [];
         foreach ($this->getFields() as $key => $field) {
@@ -119,7 +120,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
      * @param  array $b second element
      * @return integer  order
      */
-    private static function orderbyDelta($a, $b)
+    private static function orderbyDelta($a, $b): int
     {
         if ($a['delta']==$b['delta']) {
             return 0;

@@ -36,9 +36,9 @@ class Button extends Clickable
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], string $name = null)
     {
         parent::__construct($options, $name);
         if (empty($this->label)) {
@@ -60,7 +60,7 @@ class Button extends Clickable
             $this->attributes['disabled']='disabled';
         }
 
-        $tag = new TagElement([
+        return new TagElement([
             'tag' => 'button',
             'id' => $id,
             'name' => $this->name,
@@ -69,6 +69,5 @@ class Button extends Clickable
             'attributes' => $this->attributes,
             'has_close' => true,
         ]);
-        return $tag;
     }
 }

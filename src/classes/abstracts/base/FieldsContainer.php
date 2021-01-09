@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
+use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Interfaces\FieldsContainerInterface;
 use Degami\PHPFormsApi\Traits\Containers;
 use Degami\PHPFormsApi\Form;
@@ -34,10 +35,10 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * Get the form fields by type
      *
-     * @param  array $field_types field types
+     * @param mixed $field_types field types
      * @return array              fields in the element
      */
-    public function getFieldsByType($field_types)
+    public function getFieldsByType($field_types): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -59,11 +60,11 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * Get fields by type and name
      *
-     * @param  array  $field_types field types
-     * @param  string $name        field name
+     * @param mixed $field_types field types
+     * @param string $name field name
      * @return array              fields in the element matching the search criteria
      */
-    public function getFieldsByTypeAndName($field_types, $name)
+    public function getFieldsByTypeAndName($field_types, string $name): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -88,10 +89,10 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * Get field by name
      *
-     * @param  string $field_name field name
-     * @return Element subclass field object
+     * @param string $field_name field name
+     * @return Element|null subclass field object
      */
-    public function getField($field_name)
+    public function getField(string $field_name): ?Element
     {
         return isset($this->fields[$field_name]) ? $this->fields[$field_name] : null;
     }
@@ -99,12 +100,12 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * Set field
      *
-     * @param string  $field_name field name
-     * @param Element $field      subclass field object
+     * @param string $field_name field name
+     * @param Element $field subclass field object
      *
      * @return FieldsContainer
      */
-    public function setField($field_name, $field)
+    public function setField(string $field_name, $field): FieldsContainer
     {
         $field->setName($field_name);
         $this->fields[$field_name] = $field;
@@ -114,13 +115,14 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * Add field to form
      *
-     * @param  string $name  field name
-     * @param  mixed  $field field to add, can be an array or a field subclass
+     * @param string $name field name
+     * @param mixed $field field to add, can be an array or a field subclass
+     * @return Element
      * @throws FormException
-     * @return Field
      */
-    public function addField($name, $field)
+    public function addField(string $name, $field): Element
     {
+        /** @var Field $field */
         $field = $this->getFieldObj($name, $field);
         $field->setParent($this);
 
@@ -142,10 +144,10 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * remove field from form
      *
-     * @param  string $name field name
+     * @param string $name field name
      * @return FieldsContainer
      */
-    public function removeField($name)
+    public function removeField(string $name): FieldsContainer
     {
         unset($this->fields[$name]);
         if (($key = array_search($name, $this->insert_field_order)) !== false) {
@@ -157,7 +159,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * Return form elements values into this element
      *
-     * @return array form values
+     * @return mixed form values
      */
     public function getValues()
     {
@@ -240,13 +242,13 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return boolean TRUE if element is valid
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $valid = true;
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
             if (!$field->isValid()) {
-                // not returnig FALSE to let all the fields to be validated
+                // not returning FALSE to let all the fields to be validated
                 $valid = false;
             }
         }
@@ -258,7 +260,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return string errors as an html <li> list
      */
-    public function showErrors()
+    public function showErrors(): string
     {
         $output = "";
         foreach ($this->getFields() as $field) {
@@ -271,12 +273,14 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
     /**
      * resets the fields
      */
-    public function resetField()
+    public function resetField(): Field
     {
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
             $field->resetField();
         }
+
+        return $this;
     }
 
     /**
@@ -284,7 +288,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue(): bool
     {
         return true;
     }
@@ -294,7 +298,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param array $request request array
      */
-    public function alterRequest(&$request)
+    public function alterRequest(array &$request)
     {
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
@@ -320,7 +324,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return string 'this'
      */
-    public function onAddReturn()
+    public function onAddReturn(): string
     {
         return 'this';
     }

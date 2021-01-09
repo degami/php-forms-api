@@ -19,5 +19,4 @@ use Degami\Basics\Exceptions\BasicException;
 
 class FormException extends BasicException
 {
-
 }

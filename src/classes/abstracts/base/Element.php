@@ -163,7 +163,7 @@ abstract class Element extends BaseElement
      *
      * @return array build_options
      */
-    public function getBuildOptions()
+    public function getBuildOptions(): ?array
     {
         return $this->build_options;
     }
@@ -175,7 +175,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function setName($name)
+    public function setName(string $name): Element
     {
         $this->name = $name;
 
@@ -187,7 +187,7 @@ abstract class Element extends BaseElement
      *
      * @return string element name
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -199,7 +199,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function setParent(Element $parent)
+    public function setParent(Element $parent): Element
     {
         $this->parent = $parent;
 
@@ -211,7 +211,7 @@ abstract class Element extends BaseElement
      *
      * @return Element element parent
      */
-    public function getParent()
+    public function getParent(): ?Element
     {
         return $this->parent;
     }
@@ -221,7 +221,7 @@ abstract class Element extends BaseElement
      *
      * @return int element weight
      */
-    public function getWeight()
+    public function getWeight(): int
     {
         return $this->weight;
     }
@@ -229,12 +229,12 @@ abstract class Element extends BaseElement
     /**
      * Add error
      *
-     * @param string $error_string           error string
+     * @param string $error_string error string
      * @param string $validate_function_name validation function name
      *
      * @return Element
      */
-    public function addError($error_string, $validate_function_name)
+    public function addError(string $error_string, string $validate_function_name): Element
     {
         $this->notifications['error'][$validate_function_name] = $error_string;
         return $this;
@@ -245,7 +245,7 @@ abstract class Element extends BaseElement
      *
      * @return array errors
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->notifications['error']->toArray();
     }
@@ -255,7 +255,7 @@ abstract class Element extends BaseElement
      *
      * @return boolean there are errors
      */
-    public function hasErrors()
+    public function hasErrors(): bool
     {
         return count($this->getErrors()) > 0;
     }
@@ -267,7 +267,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function setErrors($errors)
+    public function setErrors(array $errors): Element
     {
         $this->notifications['error'] = $errors;
 
@@ -281,7 +281,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function addHighlight($highlight_string)
+    public function addHighlight(string $highlight_string): Element
     {
         $this->notifications['highlight'][] = $highlight_string;
 
@@ -293,7 +293,7 @@ abstract class Element extends BaseElement
      *
      * @return array errors
      */
-    public function getHighlights()
+    public function getHighlights(): array
     {
         return $this->notifications['highlight']->toArray();
     }
@@ -303,7 +303,7 @@ abstract class Element extends BaseElement
      *
      * @return boolean there are highlights
      */
-    public function hasHighlights()
+    public function hasHighlights(): bool
     {
         return count($this->getHighlights()) > 0;
     }
@@ -315,7 +315,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function setHighlights($highlights)
+    public function setHighlights(array $highlights): Element
     {
         $this->notifications['highlight'] = $highlights;
 
@@ -330,7 +330,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function addJs($js, $as_is = false)
+    public function addJs($js, $as_is = false): Element
     {
         if (getenv('DEBUG') == true) {
             $as_is = true;
@@ -359,7 +359,7 @@ abstract class Element extends BaseElement
      * @param  string $js javascript minify
      * @return string
      */
-    public function minifyJs($js)
+    public function minifyJs($js): string
     {
         if (is_string($js) && trim($js) != '') {
             $js = trim(preg_replace("/\s+/", " ", str_replace("\n", "", "". $js)));
@@ -373,7 +373,7 @@ abstract class Element extends BaseElement
      *
      * @return array element's js array
      */
-    public function &getJs()
+    public function &getJs(): array
     {
         if ($this instanceof FieldsContainer || $this instanceof Form) {
             $js = array_filter(array_map('trim', $this->js));
@@ -382,7 +382,7 @@ abstract class Element extends BaseElement
                 $fields = $this->getFields($this->getCurrentStep());
             }
             foreach ($fields as $field) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+                /** @var Field $field */
                 $js = array_merge($js, $field->getJs());
             }
             return $js;
@@ -397,7 +397,7 @@ abstract class Element extends BaseElement
      * @param  string / array $css css to add
      * @return Element
      */
-    public function addCss($css)
+    public function addCss($css): Element
     {
         if (is_array($css)) {
             $css = array_filter(array_map('trim', $css));
@@ -414,12 +414,12 @@ abstract class Element extends BaseElement
      *
      * @return array element's css array
      */
-    public function &getCss()
+    public function &getCss(): array
     {
         if ($this instanceof FieldsContainer || $this instanceof Form) {
             $css = array_filter(array_map('trim', $this->css));
             foreach ($this->getFields() as $field) {
-                /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $field */
+                /** @var Field $field */
                 $css = array_merge($css, $field->getCss());
             }
             return $css;
@@ -432,7 +432,7 @@ abstract class Element extends BaseElement
      *
      * @return string element prefix
      */
-    public function getPrefix()
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
@@ -440,10 +440,10 @@ abstract class Element extends BaseElement
     /**
      * Set element prefix
      *
-     * @param  string $prefix element prefix
+     * @param string $prefix element prefix
      * @return Element
      */
-    public function setPrefix($prefix)
+    public function setPrefix(string $prefix): Element
     {
         $this->prefix = $prefix;
 
@@ -455,7 +455,7 @@ abstract class Element extends BaseElement
      *
      * @return string element suffix
      */
-    public function getSuffix()
+    public function getSuffix(): string
     {
         return $this->suffix;
     }
@@ -463,10 +463,10 @@ abstract class Element extends BaseElement
     /**
      * Set element suffix
      *
-     * @param  string $suffix element suffix
+     * @param string $suffix element suffix
      * @return Element
      */
-    public function setSuffix($suffix)
+    public function setSuffix(string $suffix): Element
     {
         $this->suffix = $suffix;
 
@@ -478,7 +478,7 @@ abstract class Element extends BaseElement
      *
      * @return string element container_tag
      */
-    public function getContainerTag()
+    public function getContainerTag(): string
     {
         return $this->container_tag;
     }
@@ -490,7 +490,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function setContainerTag($container_tag)
+    public function setContainerTag(string $container_tag): Element
     {
         $this->container_tag = $container_tag;
 
@@ -502,7 +502,7 @@ abstract class Element extends BaseElement
      *
      * @return string element container_class
      */
-    public function getContainerClass()
+    public function getContainerClass(): string
     {
         return $this->container_class;
     }
@@ -514,7 +514,7 @@ abstract class Element extends BaseElement
      *
      * @return Element
      */
-    public function setContainerClass($container_class)
+    public function setContainerClass(string $container_class): Element
     {
         $this->container_class = $container_class;
 
@@ -526,7 +526,7 @@ abstract class Element extends BaseElement
      *
      * @return string html for the element prefix
      */
-    public function getElementPrefix()
+    public function getElementPrefix(): string
     {
         if (!empty($this->container_tag)) {
             if (preg_match("/<\/?(.*?)\s.*?(class=\"(.*?)\")?.*?>/i", $this->container_tag, $matches)) {
@@ -564,7 +564,7 @@ abstract class Element extends BaseElement
      *
      * @return string html for the element suffix
      */
-    public function getElementSuffix()
+    public function getElementSuffix(): string
     {
         if (!empty($this->container_tag)) {
             return "</{$this->container_tag}>";
@@ -575,11 +575,11 @@ abstract class Element extends BaseElement
     /**
      * search field by field html id
      *
-     * @param  FieldContainer|Form $container container to search into
-     * @param  string              $field_id  field id
+     * @param Element $container container to search into
+     * @param string $field_id field id
      * @return Field|null                      Field object or null if not found
      */
-    protected static function searchFieldById($container, $field_id)
+    protected static function searchFieldById(Element $container, string $field_id)
     {
         /** @var Field $container */
         if ($container instanceof FieldsContainer || $container instanceof Form) {
@@ -604,7 +604,7 @@ abstract class Element extends BaseElement
         return null;
     }
 
-    public function getData()
+    public function getData(): array
     {
         return get_object_vars($this);
     }

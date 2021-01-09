@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\Basics\Html\BaseElement;
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\SortableContainer;
 use Degami\Basics\Html\TagElement;
@@ -68,8 +70,7 @@ class SortableTable extends SortableContainer
      * {@inheritdoc}
      *
      * @param Form $form form object
-     *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -122,7 +123,7 @@ class SortableTable extends SortableContainer
 
             foreach ($partition_fields as $key => $elem) {
                 /**
-                 * @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem
+                 * @var Field $elem
                  */
                 $weights[$key]  = $elem->getWeight();
                 $order[$key] = $insertorder[$key];
@@ -157,7 +158,7 @@ class SortableTable extends SortableContainer
 
             foreach ($partition_fields as $name => $field) {
                 /**
-                 * @var \Degami\PHPFormsApi\Abstracts\Base\Field $field
+                 * @var Field $field
                  */
                 $fieldhtml = $field->renderHTML($form);
                 if (trim($fieldhtml) != '') {

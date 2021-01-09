@@ -15,6 +15,8 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\Basics\Html\BaseElement;
+use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Traits\Containers;
@@ -31,13 +33,13 @@ class Nestable extends FieldsContainer
     public $level = 0;
 
     /** @var integer number of children */
-    public $childnum = 0;
+    public $child_num = 0;
 
     /** @var string tag for list */
     public $tag = 'ol';
 
     /** @var string css class for list */
-    public $tagclass = 'dd-list';
+    public $tag_class = 'dd-list';
 
     /** @var array children */
     public $children = [];
@@ -94,7 +96,7 @@ class Nestable extends FieldsContainer
      *
      * @return int
      */
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
@@ -102,19 +104,19 @@ class Nestable extends FieldsContainer
     /**
      * Add child
      *
-     * @param null $tag
-     * @param null $tagclass
+     * @param ?string $tag
+     * @param ?string $tag_class
      *
      * @return mixed
      * @throws FormException
      */
-    public function addChild($tag = null, $tagclass = null)
+    public function addChild($tag = null, $tag_class = null): Nestable
     {
         if ($tag == null) {
             $tag = $this->tag;
         }
-        if ($tagclass == null) {
-            $tagclass = $this->tagclass;
+        if ($tag_class == null) {
+            $tag_class = $this->tag_class;
         }
 
         $nextchild = new Nestable(
@@ -124,8 +126,8 @@ class Nestable extends FieldsContainer
                 'tag' => $tag,
                 'container_class' => '',
                 'container_tag' => '',
-                'attributes' => ['class' => $tagclass],
-                'childnum' => $this->numChildren(),
+                'attributes' => ['class' => $tag_class],
+                'child_num' => $this->numChildren(),
             ],
             $this->getName().'-leaf-'. $this->numChildren()
         );
@@ -141,7 +143,7 @@ class Nestable extends FieldsContainer
      *
      * @return int
      */
-    public function numChildren()
+    public function numChildren(): int
     {
         return count($this->getChildren());
     }
@@ -151,7 +153,7 @@ class Nestable extends FieldsContainer
      *
      * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return $this->numChildren() > 0;
     }
@@ -159,13 +161,14 @@ class Nestable extends FieldsContainer
     /**
      * Get a child
      *
-     * @param $numchild
+     * @param $num_child
      *
      * @return bool|mixed
      */
-    public function &getChild($numchild)
+    public function &getChild($num_child): bool
     {
-        return isset($this->children[$numchild]) ? $this->children[$numchild] : false;
+        $out = isset($this->children[$num_child]) ? $this->children[$num_child] : false;
+        return $out;
     }
 
     /**
@@ -173,7 +176,7 @@ class Nestable extends FieldsContainer
      *
      * @return array
      */
-    public function &getChildren()
+    public function &getChildren(): array
     {
         return $this->children;
     }
@@ -184,10 +187,10 @@ class Nestable extends FieldsContainer
      * @param string $name
      * @param mixed  $field
      *
-     * @return $this|\Degami\PHPFormsApi\Abstracts\Base\Field
+     * @return $this|Field
      * @throws FormException
      */
-    public function addField($name, $field)
+    public function addField(string $name, $field) : Field
     {
         $field = $this->getFieldObj($name, $field);
         if (!($field instanceof Nestable) && $this->isFieldContainer($field)) {
@@ -201,10 +204,10 @@ class Nestable extends FieldsContainer
     /**
      * remove field from form
      *
-     * @param  string $name field name
-     * @return Nestable
+     * @param string $name field name
+     * @return self
      */
-    public function removeField($name)
+    public function removeField(string $name) : FieldsContainer
     {
         $this->fields_panel->removeField($name);
         return $this;
@@ -226,17 +229,16 @@ class Nestable extends FieldsContainer
     /**
      * Get a panel
      *
-     * @param $nestableid
-     *
-     * @return bool|\Degami\PHPFormsApi\Containers\TagContainer|null
+     * @param string $nestable_id
+     * @return bool|TagContainer|null
      */
-    private function getPanelById($nestableid)
+    private function getPanelById(string $nestable_id)
     {
-        if ($this->getHtmlId() == $nestableid) {
+        if ($this->getHtmlId() == $nestable_id) {
             return $this->fields_panel;
         }
         foreach ($this->getChildren() as $key => $child) {
-            $return = $child->getPanelById($nestableid);
+            $return = $child->getPanelById($nestable_id);
             if ($return != false) {
                 return $return;
             }
@@ -248,18 +250,18 @@ class Nestable extends FieldsContainer
      * create values array
      *
      * @param  array    $tree          tree
-     * @param  Nestable $nestablefield field
+     * @param  Nestable $nestable_field field
      * @return array    values array
      */
-    private static function createValuesArray($tree, Nestable $nestablefield)
+    private static function createValuesArray(array $tree, Nestable $nestable_field): array
     {
         $out = [];
-        $panel = $nestablefield->getPanelById($tree['id']);
+        $panel = $nestable_field->getPanelById($tree['id']);
         if ($panel instanceof FieldsContainer) {
             $out['value'] = $panel->getValues();
             if (isset($tree['children'])) {
                 foreach ($tree['children'] as $child) {
-                    $out['children'][] = Nestable::createValuesArray($child, $nestablefield);
+                    $out['children'][] = Nestable::createValuesArray($child, $nestable_field);
                 }
             }
         }
@@ -269,7 +271,7 @@ class Nestable extends FieldsContainer
     /**
      * {@inheritdoc}
      *
-     * @return array
+     * @return mixed
      */
     public function getValues()
     {
@@ -280,22 +282,22 @@ class Nestable extends FieldsContainer
             }
             return $out;
         }
-        return parent::values();
+        return parent::getValues();
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param \Degami\PHPFormsApi\Form $form
+     * @param Form $form
      *
-     * @return string
+     * @return string|BaseElement
      */
     public function renderField(Form $form)
     {
         if (!isset($this->attributes['class'])) {
             $this->attributes['class'] = '';
         }
-        $this->attributes['class'] .= ' '.$this->tagclass;
+        $this->attributes['class'] .= ' '.$this->tag_class;
         $id = $this->getHtmlId();
 
         $attributes = $this->getAttributes();
@@ -303,7 +305,7 @@ class Nestable extends FieldsContainer
         if ($this->getLevel() == 0) {
             $out .= "<div class=\"dd\" id=\"{$id}\"><{$this->tag}{$attributes}>";
         }
-        $out .= '<li class="dd-item level-'.$this->level.' child-'.$this->childnum.'" data-id="'.$id.'">';
+        $out .= '<li class="dd-item level-'.$this->level.' child-'.$this->child_num.'" data-id="'.$id.'">';
         $out .= $this->fields_panel->renderHTML($form);
         if ($this->hasChildren()) {
             $out .= "<{$this->tag} {$attributes}>";
@@ -328,7 +330,7 @@ class Nestable extends FieldsContainer
     /**
      * {@inheritdoc}
      *
-     * @param \Degami\PHPFormsApi\Form $form
+     * @param Form $form
      */
     public function preRender(Form $form)
     {

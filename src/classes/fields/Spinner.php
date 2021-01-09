@@ -22,7 +22,6 @@ use Degami\PHPFormsApi\Form;
  */
 class Spinner extends Number
 {
-  
     /**
      * {@inheritdoc}
      *

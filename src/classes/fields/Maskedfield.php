@@ -46,9 +46,9 @@ class Maskedfield extends Textfield
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options, $name = null)
+    public function __construct(array $options, string $name = null)
     {
         if (!isset($options['attributes']['class'])) {
             $options['attributes']['class'] = '';
@@ -78,7 +78,7 @@ class Maskedfield extends Textfield
      *
      * @return boolean this TRUE if this element conforms to mask
      */
-    public function isValid()
+    public function isValid() : bool
     {
         $mask = $this->mask;
         $mask = preg_replace("(\[|\]|\(|\))", "\\\1", $mask);

@@ -15,6 +15,7 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
+use Degami\Basics\Html\BaseElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\Basics\Html\TagElement;
@@ -44,7 +45,7 @@ class File extends Field
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|BaseElement        the element html
      */
     public function renderField(Form $form)
     {
@@ -116,7 +117,7 @@ class File extends Field
         }
     }
 
-    protected function convertFilesArray()
+    protected function convertFilesArray(): array
     {
         $out = [];
         foreach ($_FILES as $input_name => $input_value) {
@@ -138,7 +139,7 @@ class File extends Field
      *
      * @return boolean TRUE if file was uploaded
      */
-    public function isUploaded()
+    public function isUploaded(): bool
     {
         return $this->uploaded;
     }
@@ -168,7 +169,7 @@ class File extends Field
      *
      * @return boolean this field is always valid
      */
-    public function isValid()
+    public function isValid() : bool
     {
         if ($this->uploaded) {
             return true;
@@ -181,7 +182,7 @@ class File extends Field
      *
      * @return boolean this is a value
      */
-    public function isAValue()
+    public function isAValue() : bool
     {
         return true;
     }

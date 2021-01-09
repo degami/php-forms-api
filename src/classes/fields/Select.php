@@ -37,9 +37,9 @@ class Select extends FieldMultivalues
      * Class constructor
      *
      * @param array  $options build options
-     * @param string $name    field name
+     * @param ?string $name    field name
      */
-    public function __construct($options, $name)
+    public function __construct(array $options = [], string $name = null)
     {
         if (isset($options['options'])) {
             foreach ($options['options'] as $k => $o) {

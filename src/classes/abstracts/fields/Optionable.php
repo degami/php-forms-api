@@ -34,7 +34,7 @@ abstract class Optionable extends Element
      *
      * @return mixed the element label
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -43,9 +43,9 @@ abstract class Optionable extends Element
      * Set the element label
      *
      * @param  mixed $label element label
-     * @return Option
+     * @return self
      */
-    public function setLabel($label)
+    public function setLabel($label): Optionable
     {
         $this->label = $label;
 
@@ -55,10 +55,10 @@ abstract class Optionable extends Element
     /**
      * Class constructor
      *
-     * @param string $label   label
-     * @param array  $options options array
+     * @param string $label label
+     * @param array $options options array
      */
-    public function __construct($label, $options)
+    public function __construct(string $label, array $options)
     {
         parent::__construct();
         $this->setLabel($label);
