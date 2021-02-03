@@ -99,7 +99,7 @@ abstract class FieldMultivalues extends Field
      */
     public function isValid(): bool
     {
-        $titlestr = (!empty($this->title)) ? $this->title : !empty($this->name) ? $this->name : $this->id;
+        $titlestr = (!empty($this->title)) ? $this->title : (!empty($this->name) ? $this->name : $this->id);
 
         if (!is_array($this->value) && !empty($this->value)) {
             $check = $this->optionsHasKey($this->value);
