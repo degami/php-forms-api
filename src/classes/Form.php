@@ -1302,7 +1302,7 @@ class Form extends Element
         $weights = $order = [];
         foreach ($this->getFields($this->current_step) as $key => $elem) {
             $weights[$key]  = $elem->getWeight();
-            $order[$key] = $insertorder[$key];
+            $order[$key] = isset($insertorder[$key]) ? $insertorder[$key] : PHP_INT_MAX;
         }
         if (count($this->getFields($this->current_step)) > 0) {
             array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->getFields($this->current_step));

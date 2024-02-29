@@ -57,7 +57,7 @@ $form = FAPI\FormBuilder::getForm('contactform', 'my_very_own_contactform');
   <meta charset="utf-8" />
   <title>Example contact form</title>
     <?php include "header.php";?>
-  <script type="text/javascript" src='http://cdn.tinymce.com/4/tinymce.min.js'></script>
+  <script type="text/javascript" src='http://cdn.tinymce.com/5/tinymce.min.js'></script>
   <style>
     input[type=text],textarea{
       width: 100%;
