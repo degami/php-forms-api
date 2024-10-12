@@ -68,7 +68,7 @@ class SessionBag extends MultiLevelDataBag
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    public function clear() : self
     {
         parent::clear();
         if (FormBuilder::sessionPresent()) {

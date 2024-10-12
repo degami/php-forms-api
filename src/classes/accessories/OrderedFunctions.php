@@ -30,7 +30,7 @@ class OrderedFunctions extends DataBag
     private $type;
 
     /** @var array|null */
-    protected $dataelement_data = [];
+    protected array $dataelement_data = [];
 
     /**
      * Class constructor
@@ -70,7 +70,7 @@ class OrderedFunctions extends DataBag
     /**
      * rewind pointer position
      */
-    public function rewind()
+    public function rewind() : void
     {
         parent::rewind();
         $this->sort();
@@ -149,7 +149,7 @@ class OrderedFunctions extends DataBag
      *
      * @return array element to array
      */
-    public function toArray(): ?array
+    public function toArray(): array
     {
         return $this->dataelement_data;
     }
