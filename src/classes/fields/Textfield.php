@@ -55,7 +55,7 @@ class Textfield extends Field
             'type' => 'text',
             'id' => $id,
             'name' => $this->name,
-            'value' => htmlspecialchars($this->getValues()),
+            'value' => htmlspecialchars((string) $this->getValues()),
             'attributes' => $this->attributes + ['size' => $this->size],
         ]);
     }

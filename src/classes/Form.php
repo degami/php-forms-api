@@ -197,6 +197,8 @@ class Form extends Element
      */
     private $form_state = [];
 
+    public $allocatedSize = 0;
+
     /**
      * Class constructor
      *

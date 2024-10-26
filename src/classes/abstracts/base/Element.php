@@ -83,7 +83,7 @@ abstract class Element extends BaseElement
     /**
      * Element errors array
      *
-     * @var array
+     * @var object
      */
     protected $notifications;
 
