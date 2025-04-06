@@ -74,6 +74,16 @@ class Tinymce extends Textarea
             $tinymce_options->{$key} = $value;
         }
         $this->addJs("tinymce.init(".json_encode($tinymce_options).");");
+        $this->addJs("
+            document.querySelector('form').addEventListener('submit', function() {
+                const editor = tinymce.get('$id');
+                const content = editor.getBody().innerHTML;
+                const textarea = document.querySelector('textarea#$id');
+                if (textarea) {
+                    textarea.value = content;
+                }
+            });
+        ");
         parent::preRender($form);
     }
 
