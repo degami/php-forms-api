@@ -38,7 +38,7 @@ class Slider extends Select
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct(array $options = [], string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         // get the "default_value" index value
         $values = call_user_func_array([__CLASS__, 'arrayGetValues'], [ $this->default_value, $this->options ]);

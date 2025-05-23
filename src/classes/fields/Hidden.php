@@ -30,7 +30,7 @@ class Hidden extends Field
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct(array $options = [], string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         $this->container_tag = '';
         $this->container_class = '';

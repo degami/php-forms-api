@@ -49,7 +49,7 @@ class Autocomplete extends Textfield
      * @param array $options build options
      * @param ?string $name field name
      */
-    public function __construct(array $options = [], string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         if (!isset($options['attributes']['class'])) {
             $options['attributes']['class'] = '';

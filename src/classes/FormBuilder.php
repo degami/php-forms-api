@@ -234,7 +234,7 @@ class FormBuilder
      * @param  string|null $element_name element name
      * @return array                      form field info
      */
-    public static function guessFormType($value, string $element_name = null): array
+    public static function guessFormType($value, ?string $element_name = null): array
     {
         $default_value = $value;
         $vtype = gettype($default_value);

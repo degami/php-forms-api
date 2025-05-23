@@ -164,7 +164,7 @@ abstract class Field extends Element implements FieldInterface
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct($options = [], string $name = null)
+    public function __construct($options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
 

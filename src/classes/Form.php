@@ -982,7 +982,7 @@ class Form extends Element
      * @param  int      $step        step number
      * @return array               the array of fields matching the search criteria
      */
-    private function getStepFieldsByTypeAndName($field_types, string $name = null, int $step = 0): array
+    private function getStepFieldsByTypeAndName($field_types, ?string $name = null, int $step = 0): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -1259,7 +1259,7 @@ class Form extends Element
      * @param  ?string $override_output_type output type
      * @return string                       the form html
      */
-    public function renderHTML(string $override_output_type = null)
+    public function renderHTML(?string $override_output_type = null)
     {
         $output = '';
         $errors = '';
@@ -1438,7 +1438,7 @@ class Form extends Element
      * @param      ?string $override_output_type output type
      * @return     string                       the form html
      */
-    public function render(string $override_output_type = null)
+    public function render(?string $override_output_type = null)
     {
         return $this->renderHTML($override_output_type);
     }

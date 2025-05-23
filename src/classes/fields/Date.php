@@ -31,7 +31,7 @@ class Date extends Field
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct(array $options = [], string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         $this->default_value = date('Y-m-d');
         parent::__construct($options, $name);

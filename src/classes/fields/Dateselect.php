@@ -59,7 +59,7 @@ class Dateselect extends Field
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct(array $options = [], string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         $this->start_year = date('Y')-100;
         $this->end_year = date('Y')+100;

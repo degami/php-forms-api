@@ -134,7 +134,7 @@ class Gmaplocation extends Geolocation
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct(array $options = [], string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
         $defaults = isset($options['default_value']) ? $options['default_value'] : ['latitude' => 0, 'longitude' => 0];

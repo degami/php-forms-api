@@ -31,7 +31,7 @@ class Color extends Field
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct(array $options = [], string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
         if (!empty($this->default_value) && !$this->isRGB($this->default_value)) {
