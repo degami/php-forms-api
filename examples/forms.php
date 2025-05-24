@@ -263,6 +263,12 @@ function showallform(FAPI\Form $form, &$form_state)
     'weight' => -10,
     ));
 
+    $form->getField('fieldset')->addField('email', array(
+    'type' => 'otp',
+    'title' => 'Your OTP',
+    'otp_length' => 6,
+    ));
+
     $form->addField('fieldset2', array(
     'type' => 'fieldset',
     'attributes'=>array(

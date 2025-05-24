@@ -25,6 +25,19 @@ use Degami\Basics\Html\TagElement;
  */
 class Textfield extends Field
 {
+    /**
+     * Element maxlenght
+     *
+     * @var integer
+     */
+    protected $maxlength = null;
+
+    /**
+     * Element minlength
+     *
+     * @var integer
+     */
+    protected $minlength = null;
 
     /**
      * {@inheritdoc}

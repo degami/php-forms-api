@@ -346,6 +346,15 @@ The value after submit is an array containing fields x,y
       'type' => 'hidden',
     );
 
+#### OTP (one time passwords)
+
+    $options += array(
+      'type' => 'otp',
+      'otp_length' => 6,
+      'otp_type' => 'numeric', // can be numeric, alpha, alpha_numeric
+      'show_characters' => false
+    );
+
 #### Markup
 
     $options += array(
