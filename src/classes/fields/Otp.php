@@ -37,6 +37,8 @@ class Otp extends Textfield
 
     protected $show_characters = false;
 
+    protected $show_hide = false;
+
     public function __construct($options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
@@ -47,6 +49,9 @@ class Otp extends Textfield
         }
         if (isset($options['otp_length'])) {
             $this->minlength = $this->maxlength = $this->otp_length;
+        }
+        if ($this->show_characters == true)  {
+            $this->show_hide = false;
         }
     }
 
@@ -70,6 +75,23 @@ class Otp extends Textfield
                 $('#{$id}').val(value);
             });
         ");
+
+        if ($this->show_hide) {
+            $this->addJs("
+                $('.otp-show-hide', '#{$id}_digits').on('click', function(e) {
+                    e.preventDefault();
+                    var inputs = $('#{$id}_digits input');
+                    if (inputs.attr('type') === 'password') {
+                        inputs.attr('type', 'text');
+                        $(this).text('".$this->getText('Hide')."');
+                    } else {
+                        inputs.attr('type', 'password');
+                        $(this).text('".$this->getText('Show')."');
+                    }
+                });            
+            ");
+        }
+
         parent::preRender($form);
     }
 
@@ -155,6 +177,17 @@ class Otp extends Textfield
                     'onkeyup' => $onKeyUp,
                     'style' => "width: auto !important; display: inline-flex; text-align: center;margin-right: 5px;",
                 ] + $this->attributes,
+            ]));
+        }
+        if ($this->show_hide) {
+            $container->addMarkup(new TagElement([
+                'tag' => 'a',
+                'href' => '#',
+                'attributes' => [
+                    'class' => 'otp-show-hide',
+                    'style' => 'cursor: pointer; margin-left: 10px;',
+                ],
+                'text' => $this->getText( $this->show_characters ? 'Hide' : 'Show' ),
             ]));
         }
         $container->addMarkup('</div>');
