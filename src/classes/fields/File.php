@@ -41,6 +41,13 @@ class File extends Field
     protected $destination;
 
     /**
+     * rename destination file if it already exists
+     * 
+     * @var boolean
+     */
+    protected $rename_on_existing = false;
+
+    /**
      * {@inheritdoc}
      *
      * @param Form $form form object
@@ -111,6 +118,25 @@ class File extends Field
             $this->uploaded = $value['uploaded'];
         }
         if ($this->isValid()) {
+            if ($this->rename_on_existing) {
+                $filepath = $this->value['filepath']; $counter = 0;
+                do {
+                    if (!file_exists($filepath)) {
+                        break;
+                    }
+
+                    $path_parts = pathinfo($filepath);
+                    $filepath = $path_parts['dirname'] . '/' . $path_parts['filename'] . '_' . (++$counter) . '.' . $path_parts['extension'];
+                } while (file_exists($filepath));
+
+                if ($filepath != $this->value['filepath']) {
+                    $this->value['renamed'] = true;
+                }
+
+                $this->value['filepath'] = $filepath;
+                $this->value['filename'] = basename($filepath);
+            }
+
             if (@move_uploaded_file($_FILES[$this->getName()]['tmp_name'], $this->value['filepath']) == true) {
                 $this->uploaded = true;
             }
