@@ -29,7 +29,7 @@ trait Validators
      */
     public static function validateRequired($value = null)
     {
-        if (!empty($value) || (!is_array($value) && trim($value) != '')) {
+        if (!empty($value) || (!is_array($value) && trim("".$value) != '')) {
             return true;
         } else {
             return "<em>%t</em> is required";
@@ -44,7 +44,7 @@ trait Validators
      */
     public static function validateNotzero($value = null)
     {
-        if ((!empty($value) && (!is_array($value) && trim($value) != '0'))) {
+        if ((!empty($value) && (!is_array($value) && trim("".$value) != '0'))) {
             return true;
         } else {
             return "<em>%t</em> is required";
@@ -60,7 +60,7 @@ trait Validators
      */
     public static function validateMaxLength($value, $options)
     {
-        if (strlen($value) > $options) {
+        if (strlen("".$value) > $options) {
             return "Maximum length of <em>%t</em> is {$options}";
         }
         return true;
@@ -75,7 +75,7 @@ trait Validators
      */
     public static function validateMinLength($value, $options)
     {
-        if (strlen($value) < $options) {
+        if (strlen("".$value) < $options) {
             return "<em>%t</em> must be longer than {$options}";
         }
         return true;
@@ -90,7 +90,7 @@ trait Validators
      */
     public static function validateExactLength($value, $options)
     {
-        if (strlen($value) != $options) {
+        if (strlen("".$value) != $options) {
             return "<em>%t</em> must be {$options} characters long.";
         }
         return true;
@@ -105,7 +105,7 @@ trait Validators
      */
     public static function validateRegexp($value, $options)
     {
-        if (!preg_match($options, $value)) {
+        if (!preg_match($options, "".$value)) {
             return "<em>%t</em> must match the regular expression \"$options\".";
         }
         return true;
@@ -119,7 +119,7 @@ trait Validators
      */
     public static function validateAlpha($value)
     {
-        if (!preg_match("/^([a-z])+$/i", $value)) {
+        if (!preg_match("/^([a-z])+$/i", "".$value)) {
             return "<em>%t</em> must contain alphabetic characters.";
         }
         return true;
@@ -133,7 +133,7 @@ trait Validators
      */
     public static function validateAlphaNumeric($value)
     {
-        if (!preg_match("/^([a-z0-9])+$/i", $value)) {
+        if (!preg_match("/^([a-z0-9])+$/i", "".$value)) {
             return "<em>%t</em> must only contain alpha numeric characters.";
         }
         return true;
@@ -147,7 +147,7 @@ trait Validators
      */
     public static function validateAlphaDash($value)
     {
-        if (!preg_match("/^([-a-z0-9_-])+$/i", $value)) {
+        if (!preg_match("/^([-a-z0-9_-])+$/i", "".$value)) {
             return "<em>%t</em> must contain only alpha numeric characters, underscore, or dashes";
         }
         return true;
@@ -175,7 +175,7 @@ trait Validators
      */
     public static function validateInteger($value)
     {
-        if (!preg_match('/^[\-+]?[0-9]+$/', $value)) {
+        if (!preg_match('/^[\-+]?[0-9]+$/', "".$value)) {
             return "<em>%t</em> must be an integer.";
         }
         return true;
