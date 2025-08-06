@@ -520,8 +520,9 @@ abstract class Field extends Element implements FieldInterface
     public function renderHTML(Form $form): string
     {
         $id = $this->getHtmlId();
+        $output = '';
         if (!($this instanceof Hidden)) {
-            $output = $this->getElementPrefix();
+            $output .= $this->getElementPrefix();
             $output .= $this->getPrefix();
         }
 
