@@ -231,7 +231,7 @@ class TableContainer extends FieldsContainerMultiple
             $tbody->addChild($trow);
 
             // hidden fields are always first
-            usort($$this->getPartitionFields($trindex), function($fieldA, $fieldB){
+            usort($this->getPartitionFields($trindex), function($fieldA, $fieldB){
                 if (is_object($fieldA) && is_a($fieldA, Hidden::class)) {
                     return -1;
                 }
