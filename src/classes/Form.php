@@ -34,6 +34,7 @@ use Degami\PHPFormsApi\Fields\Radios;
 use Degami\PHPFormsApi\Fields\Select;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 use Degami\PHPFormsApi\Accessories\SessionBag;
+use Degami\PHPFormsApi\Fields\Hidden;
 
 /**
  * The form object class
@@ -1309,6 +1310,17 @@ class Form extends Element
         if (count($this->getFields($this->current_step)) > 0) {
             array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->getFields($this->current_step));
         }
+
+        // hidden fields are always first
+        usort($this->getFields($this->current_step), function($fieldA, $fieldB){
+            if (is_object($fieldA) && is_a($fieldA, Hidden::class)) {
+                return -1;
+            }
+            if (is_object($fieldB) && is_a($fieldB, Hidden::class)) {
+                return 1;
+            }
+            return 0;
+        });
 
         foreach ($this->getFields($this->current_step) as $name => $field) {
             if (is_object($field) && method_exists($field, 'renderHTML')) {

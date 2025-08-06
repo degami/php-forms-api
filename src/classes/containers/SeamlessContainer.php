@@ -18,6 +18,7 @@ namespace Degami\PHPFormsApi\Containers;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
+use Degami\PHPFormsApi\Fields\Hidden;
 
 /**
  * an hidden field container
@@ -47,6 +48,18 @@ class SeamlessContainer extends FieldsContainer
         if (count($this->getFields()) > 0) {
             array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->getFields());
         }
+
+        // hidden fields are always first
+        usort($this->getFields(), function($fieldA, $fieldB){
+            if (is_object($fieldA) && is_a($fieldA, Hidden::class)) {
+                return -1;
+            }
+            if (is_object($fieldB) && is_a($fieldB, Hidden::class)) {
+                return 1;
+            }
+            return 0;
+        });
+
         foreach ($this->getFields() as $name => $field) {
             /** @var Field $field */
             $output .= $field->renderHTML($form);

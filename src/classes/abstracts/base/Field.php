@@ -22,6 +22,7 @@ use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Fields\Checkbox;
 use Degami\PHPFormsApi\Accessories\SessionBag;
+use Degami\PHPFormsApi\Fields\Hidden;
 
 /**
  * The field element class.
@@ -35,28 +36,28 @@ abstract class Field extends Element implements FieldInterface
     /**
      * validate functions list
      *
-     * @var array
+     * @var array|OrderedFunctions
      */
     protected $validate = [];
 
     /**
      * preprocess functions list
      *
-     * @var array
+     * @var array|OrderedFunctions
      */
     protected $preprocess = [];
 
     /**
      * postprocess functions list
      *
-     * @var array
+     * @var array|OrderedFunctions
      */
     protected $postprocess = [];
 
     /**
      * Element js events list
      *
-     * @var array
+     * @var array|OrderedFunctions
      */
     protected $event = [];
 
@@ -519,8 +520,10 @@ abstract class Field extends Element implements FieldInterface
     public function renderHTML(Form $form): string
     {
         $id = $this->getHtmlId();
-        $output = $this->getElementPrefix();
-        $output .= $this->getPrefix();
+        if (!($this instanceof Hidden)) {
+            $output = $this->getElementPrefix();
+            $output .= $this->getPrefix();
+        }
 
         if (!($this instanceof FieldsContainer) && !($this instanceof Checkbox)) {
             // containers do not need label. checkbox too, as the render function prints the label itself
@@ -557,6 +560,7 @@ abstract class Field extends Element implements FieldInterface
             $this->preRender($form);
             $this->pre_rendered = true;
         }
+
         $output .= $this->renderField($form);
 
         if (!($this instanceof FieldsContainer)) {
@@ -568,8 +572,10 @@ abstract class Field extends Element implements FieldInterface
             $output.= '<div class="inline-error has-errors">'.implode("<br />", $this->getErrors()).'</div>';
         }
 
-        $output .= $this->getSuffix();
-        $output .= $this->getElementSuffix();
+        if (!($this instanceof Hidden)) {
+            $output .= $this->getSuffix();
+            $output .= $this->getElementSuffix();
+        }
 
         if (count($this->event) > 0 && trim($this->getAjaxUrl()) != '') {
             foreach ($this->event as $event) {

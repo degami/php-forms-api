@@ -19,6 +19,7 @@ use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
 use Degami\Basics\Html\TagElement;
+use Degami\PHPFormsApi\Fields\Hidden;
 
 /**
  * a table field container
@@ -228,6 +229,17 @@ class TableContainer extends FieldsContainerMultiple
                 'id' => $id.'-row-'.$trindex,
             ]);
             $tbody->addChild($trow);
+
+            // hidden fields are always first
+            usort($$this->getPartitionFields($trindex), function($fieldA, $fieldB){
+                if (is_object($fieldA) && is_a($fieldA, Hidden::class)) {
+                    return -1;
+                }
+                if (is_object($fieldB) && is_a($fieldB, Hidden::class)) {
+                    return 1;
+                }
+                return 0;
+            });
 
             $cols = 0;
             foreach ($this->getPartitionFields($trindex) as $name => $field) {

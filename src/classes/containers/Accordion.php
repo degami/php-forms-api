@@ -19,6 +19,7 @@ use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\FieldsContainerMultiple;
 use Degami\Basics\Html\TagElement;
+use Degami\PHPFormsApi\Fields\Hidden;
 
 /**
  * an accordion field container
@@ -110,6 +111,18 @@ class Accordion extends FieldsContainerMultiple
                     )
                 ],
             ]);
+
+            // hidden fields are always first
+            usort($partition_fields, function($fieldA, $fieldB){
+                if (is_object($fieldA) && is_a($fieldA, Hidden::class)) {
+                    return -1;
+                }
+                if (is_object($fieldB) && is_a($fieldB, Hidden::class)) {
+                    return 1;
+                }
+                return 0;
+            });
+
             foreach ($partition_fields as $name => $field) {
                 /** @var Field $field */
                 $inner->addChild($field->renderHTML($form));

@@ -22,6 +22,7 @@ use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\SortableContainer;
 use Degami\Basics\Html\TagElement;
+use Degami\PHPFormsApi\Fields\Hidden;
 
 /**
  * a sortable field container
@@ -137,6 +138,17 @@ class Sortable extends SortableContainer
                 'attributes' => ['style' => 'display: inline-block;'],
             ]);
             $inner->addChild($inner_inline);
+
+            // hidden fields are always first
+            usort($partition_fields, function($fieldA, $fieldB){
+                if (is_object($fieldA) && is_a($fieldA, Hidden::class)) {
+                    return -1;
+                }
+                if (is_object($fieldB) && is_a($fieldB, Hidden::class)) {
+                    return 1;
+                }
+                return 0;
+            });
 
             foreach ($partition_fields as $name => $field) {
                 /** @var Field $field */
