@@ -1060,7 +1060,17 @@ class Form extends Element
      */
     public function getField(string $field_name, int $step = 0): ?Element
     {
-        return isset($this->fields[$step][$field_name]) ? $this->fields[$step][$field_name] : null;
+        if (isset($this->fields[$step][$field_name])) {
+            return $this->fields[$step][$field_name];
+        }
+
+        $found = array_filter($this->fields[$step], fn ($el) => $el->getName() == $field_name);
+
+        if (!empty($found)) {
+            return current($found);
+        }
+
+        return null;
     }
 
     /**
