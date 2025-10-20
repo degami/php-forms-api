@@ -117,6 +117,16 @@ class File extends Field
         if (isset($value['uploaded'])) {
             $this->uploaded = $value['uploaded'];
         }
+        if (($requestValue['size'] ?? 0) == 0) {
+            $this->uploaded = false;
+        } else {
+            $this->uploaded = true;
+        }
+
+        if (!$this->uploaded) {
+            return;
+        }
+
         if ($this->isValid()) {
             if ($this->rename_on_existing) {
                 $filepath = $this->value['filepath']; $counter = 0;
