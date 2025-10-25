@@ -588,7 +588,7 @@ abstract class Field extends Element implements FieldInterface
 
         if (!($this instanceof FieldsContainer)) {
             if (!empty($this->description)) {
-                $output .= "<div class=\"description\">{$this->description}</div>";
+                $output .= "<div class=\"description\">".$this->getText($this->description)."</div>";
             }
         }
         if ($form->errorsInline() == true && $this->hasErrors()) {
