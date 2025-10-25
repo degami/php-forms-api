@@ -104,6 +104,21 @@ abstract class Field extends Element implements FieldInterface
     protected $title = null;
 
     /**
+     * Element title prefix
+     *
+     * @var null
+     */
+    protected $title_prefix = null;
+
+    /**
+     * Element title suffix
+     *
+     * @var null
+     */
+    protected $title_suffix = null;
+
+
+    /**
      * Element description
      *
      * @var null
@@ -544,11 +559,18 @@ abstract class Field extends Element implements FieldInterface
                     $this->label_class = trim($this->label_class);
                     $label_class = (!empty($this->label_class)) ? " class=\"{$this->label_class}\"" : "";
                     $output .= "<label for=\"{$id}\" {$label_class}>{$requiredbefore}".
-                                $this->getText($this->title).
+                                ($this->title_prefix ? $this->getText($this->title_prefix) . ' ' : '') .
+                                $this->getText($this->title) .
+                                ($this->title_suffix ? ' ' . $this->getText($this->title_suffix) : '') .
                                 "{$requiredafter}</label>\n";
                 } else {
                     if (!in_array('title', array_keys($this->attributes))) {
-                        $this->attributes['title'] = strip_tags($this->getText($this->title).$required);
+                        $this->attributes['title'] = strip_tags(
+                            ($this->title_prefix ? $this->getText($this->title_prefix) . ' ' : '') .
+                            $this->getText($this->title) .
+                            ($this->title_suffix ? ' ' . $this->getText($this->title_suffix) : '') .
+                            $required
+                        );
                     }
 
                     $id = $this->getHtmlId();
