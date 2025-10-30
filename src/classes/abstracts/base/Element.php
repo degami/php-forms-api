@@ -20,6 +20,7 @@ use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Accessories\NotificationsBag;
 use Degami\Basics\Html\BaseElement;
+use Degami\Basics\Html\TagElement;
 
 /**
  * Base element class
@@ -65,6 +66,13 @@ abstract class Element extends BaseElement
      * @var string
      */
     protected $container_class;
+
+    /**
+     * inner div attributes
+     *
+     * @var array
+     */
+    protected $container_attributes = [];
 
     /**
      * Element label class
@@ -554,7 +562,32 @@ abstract class Element extends BaseElement
                 $class .= ' has-errors';
             }
             $class = trim($class);
-            return "<{$this->container_tag} class=\"{$class}\">";
+
+            $container_attributes = $this->container_attributes;
+            if (!isset($container_attributes['class'])) {
+                $container_attributes['class'] = '';
+            }
+            $container_attributes['class'] .= ' ' . $class;
+            $container_attributes['class'] = trim($container_attributes['class']);
+
+
+            $container_id = $container_attributes['id'] ?? null;
+            unset($container_attributes['id']);
+
+            $containerContructorArray = [
+                'tag' => $this->container_tag,
+                'attributes' => $container_attributes,
+            ];
+            if (!is_null($container_id)) {
+                $containerContructorArray['id'] = $container_id;
+            }
+
+            $container = new TagElement($containerContructorArray);
+
+            return preg_replace("/<\/".$this->container_tag.">$/", "", (string)$container);
+
+//            $this->container_attributes['class'] = ($this->container_attributes['class'] ?? '') . $class;
+//            return "<{$this->container_tag} class=\"{$class}\">";
         }
         return '';
     }

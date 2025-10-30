@@ -73,7 +73,7 @@ class TagContainer extends FieldsContainer
         foreach ($this->getFields() as $key => $elem) {
             /** @var Field $elem */
             $weights[$key]  = $elem->getWeight();
-            $order[$key] = $insertorder[$key] ?? PHP_INT_MAX;
+            $order[$key] = isset($insertorder[$key]) ? $insertorder[$key] : PHP_INT_MAX;
         }
         if (count($this->getFields()) > 0) {
             array_multisort($weights, SORT_ASC, $order, SORT_ASC, $this->getFields());

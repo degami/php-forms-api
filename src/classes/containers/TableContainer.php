@@ -216,7 +216,7 @@ class TableContainer extends FieldsContainerMultiple
             foreach ($this->getPartitionFields($trindex) as $key => $elem) {
                 /** @var \Degami\PHPFormsApi\Abstracts\Base\Field $elem */
                 $weights[$key]  = $elem->getWeight();
-                $order[$key] = $insertorder[$key];
+                $order[$key] = isset($insertorder[$key]) ? $insertorder[$key] : PHP_INT_MAX;
             }
             if (count($this->getPartitionFields($trindex)) > 0) {
                 $partition_fields = $this->getPartitionFields($trindex);

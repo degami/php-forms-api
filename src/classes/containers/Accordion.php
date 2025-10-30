@@ -86,7 +86,7 @@ class Accordion extends FieldsContainerMultiple
             foreach ($partition_fields as $key => $elem) {
                 /** @var Field $elem */
                 $weights[$key]  = $elem->getWeight();
-                $order[$key] = $insertorder[$key];
+                $order[$key] = isset($insertorder[$key]) ? $insertorder[$key] : PHP_INT_MAX;
             }
             if (count($partition_fields) > 0) {
                 array_multisort($weights, SORT_ASC, $order, SORT_ASC, $partition_fields);
