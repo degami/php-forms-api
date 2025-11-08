@@ -166,19 +166,10 @@ trait Tools
      */
     public static function getClassNameString(): string
     {
-        $called_class = array_map(
-            "strtolower",
-            explode(
-                "\\",
-                preg_replace(
-                    "/^Degami\\\\PHPFormsApi\\\\(.*?)$/i",
-                    "\\1",
-                    get_called_class()
-                ),
-                2
-            )
-        );
-        return $called_class[1]."_".preg_replace("/s$/", "", $called_class[0]);
+        $basename = basename(strtolower(str_replace("\\", "/", get_called_class())));
+        $parentname = basename(dirname(strtolower(str_replace("\\", "/", get_called_class()))));
+
+        return $basename.'_'.preg_replace("/s$/", "", $parentname);
     }
 
     /**
