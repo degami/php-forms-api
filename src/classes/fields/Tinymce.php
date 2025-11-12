@@ -1,7 +1,6 @@
 <?php
 /**
  * PHP FORMS API
- * PHP Version 5.5
  *
  * @category Utils
  * @package  Degami\PHPFormsApi
@@ -28,7 +27,7 @@ class Tinymce extends Textarea
      *
      * @var array
      */
-    protected $tinymce_options = [];
+    protected $tinymce_options = FORMS_DEFAULT_TINYMCE_OPTIONS;
 
     /**
      * Get tinymce options array

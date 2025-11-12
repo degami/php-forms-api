@@ -1,7 +1,6 @@
 <?php
 /**
  * PHP FORMS API
- * PHP Version 5.5
  *
  * @category Utils
  * @package  Degami\PHPFormsApi

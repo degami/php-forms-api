@@ -1,7 +1,6 @@
 <?php
 /**
  * PHP FORMS API defines
- * PHP Version 5.5
  *
  * @category Utils
  * @package  Degami\PHPFormsApi
@@ -78,5 +77,20 @@ if (!defined('FORMS_HIGHLIGHTS_TEMPLATE')) {
     define(
         'FORMS_HIGHLIGHTS_TEMPLATE',
         '<div class="ui-state-highlight ui-corner-all highlightsbox">' . FORMS_HIGHLIGHTS_ICON . '<ul>%s</ul></div>'
+    );
+}
+if (!defined('FORMS_DEFAULT_TINYMCE_OPTIONS')) {
+    define(
+        'FORMS_DEFAULT_TINYMCE_OPTIONS',
+        [
+            'menubar' => false,
+            'plugins' => "code,link,lists,advlist,preview,searchreplace,media,table",
+            'toolbar_mode' => "wrap",
+            'toolbar' => "undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify",
+            'relative_urls' => false,
+            'remove_script_host' => true,
+            'document_base_url' => "",
+            'content_style' => "body { font-family:Helvetica,Arial,sans-serif; font-size:16px }",
+        ]
     );
 }

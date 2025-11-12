@@ -1,7 +1,6 @@
 <?php
 /**
  * PHP FORMS API bootstrap
- * PHP Version 5.5
  *
  * @category Utils
  * @package  Degami\PHPFormsApi
