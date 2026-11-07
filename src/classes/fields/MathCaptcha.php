@@ -30,19 +30,19 @@ class MathCaptcha extends Captcha
      *
      * @var boolean
      */
-    protected $pre_filled = false;
+    protected bool $pre_filled = false;
 
     /** @var string challenge code */
-    private $code;
+    private string $code;
 
     /** @var integer first operator */
-    private $a;
+    private int $a;
 
     /** @var integer second operator */
-    private $b;
+    private int $b;
 
     /** @var string operation */
-    private $op;
+    private string $op;
 
     /**
      * Get a math challenge code
@@ -91,7 +91,7 @@ class MathCaptcha extends Captcha
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -108,7 +108,7 @@ class MathCaptcha extends Captcha
      * @param Form $form form object
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         $attributes = $this->getAttributes();
@@ -169,9 +169,6 @@ class MathCaptcha extends Captcha
             if (isset($this->value['code']) && isset($this->value['code_chk']) && sha1($this->value['code'].substr(md5(static::class), 0, 5)) == $this->value['code_chk']) {
                 return true;
             }
-
-            $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
-            return false;
         } else {
             if (!isset($this->getSessionBag()->math_captcha_code->{$this->getName()})) {
                 return true;
@@ -183,10 +180,10 @@ class MathCaptcha extends Captcha
                 if (isset($this->value['code']) && $this->value['code'] == $_sessval) {
                     return true;
                 }
-
-                $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
-                return false;
             }
         }
+
+        $this->addError($this->getText("Captcha response is not valid"), __FUNCTION__);
+        return false;
     }
 }

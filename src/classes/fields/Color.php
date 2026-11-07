@@ -56,7 +56,7 @@ class Color extends Field
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

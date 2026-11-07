@@ -15,6 +15,8 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\Basics\Html\BaseElement;
+use Degami\Basics\Html\TagElement;
+use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
@@ -29,34 +31,34 @@ class Nestable extends FieldsContainer
     use Containers;
 
     /** @var integer level*/
-    public $level = 0;
+    public int $level = 0;
 
     /** @var integer number of children */
-    public $child_num = 0;
+    public int $child_num = 0;
 
     /** @var string tag for list */
-    public $tag = 'ol';
+    public string $tag = 'ol';
 
     /** @var string css class for list */
-    public $tag_class = 'dd-list';
+    public string $tag_class = 'dd-list';
 
     /** @var array children */
-    public $children = [];
+    public array $children = [];
 
     /** @var TagContainer panel */
-    public $fields_panel = null;
+    public ?TagContainer $fields_panel = null;
 
     /** @var integer maximum depth */
-    public $maxDepth = 5;
+    public int $maxDepth = 5;
 
     /** @var integer group counter */
-    public static $group_counter = 0;
+    public static int $group_counter = 0;
 
     /** @var boolean css has been rendered flag */
-    public static $css_rendered = false;
+    public static bool $css_rendered = false;
 
     /** @var integer group */
-    public $group = 0;
+    public int $group = 0;
 
     /**
      * Nestable constructor.
@@ -66,7 +68,7 @@ class Nestable extends FieldsContainer
      *
      * @throws FormException
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
         $this->fields_panel = new TagContainer(
@@ -164,7 +166,7 @@ class Nestable extends FieldsContainer
      *
      * @return bool|mixed
      */
-    public function &getChild($num_child): bool
+    public function &getChild(int $num_child): bool
     {
         $out = isset($this->children[$num_child]) ? $this->children[$num_child] : false;
         return $out;
@@ -189,7 +191,7 @@ class Nestable extends FieldsContainer
      * @return $this|Field
      * @throws FormException
      */
-    public function addField(string $name, $field) : Field
+    public function addField(string $name, Element|array $field, mixed ...$args): Element
     {
         $field = $this->getFieldObj($name, $field);
         if (!($field instanceof Nestable) && $this->isFieldContainer($field)) {
@@ -206,7 +208,7 @@ class Nestable extends FieldsContainer
      * @param string $name field name
      * @return self
      */
-    public function removeField(string $name) : FieldsContainer
+    public function removeField(string $name, mixed ...$args): FieldsContainer
     {
         $this->fields_panel->removeField($name);
         return $this;
@@ -217,7 +219,7 @@ class Nestable extends FieldsContainer
      *
      * @param mixed $values
      */
-    public function processValue($values)
+    public function processValue($values) : void
     {
         parent::processValue($values);
         if (isset($values[$this->getName()])) {
@@ -231,7 +233,7 @@ class Nestable extends FieldsContainer
      * @param string $nestable_id
      * @return bool|TagContainer|null
      */
-    private function getPanelById(string $nestable_id)
+    private function getPanelById(string $nestable_id) : bool|TagContainer|null
     {
         if ($this->getHtmlId() == $nestable_id) {
             return $this->fields_panel;
@@ -272,7 +274,7 @@ class Nestable extends FieldsContainer
      *
      * @return mixed
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         if ($this->value) {
             $out = [];
@@ -291,7 +293,7 @@ class Nestable extends FieldsContainer
      *
      * @return string|BaseElement
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         if (!isset($this->attributes['class'])) {
             $this->attributes['class'] = '';
@@ -331,7 +333,7 @@ class Nestable extends FieldsContainer
      *
      * @param Form $form
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;

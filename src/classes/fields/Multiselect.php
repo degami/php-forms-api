@@ -24,10 +24,10 @@ use Degami\Basics\Html\TagElement;
 class Multiselect extends Select
 {
     /** @var array options on the left side */
-    private $leftOptions;
+    private array $leftOptions;
 
     /** @var array options on the right side */
-    private $rightOptions;
+    private array $rightOptions;
 
     /**
      * Class constructor
@@ -65,7 +65,7 @@ class Multiselect extends Select
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -107,7 +107,7 @@ class Multiselect extends Select
      *
      * @param array $value value to set
      */
-    public function processValue($value = [])
+    public function processValue($value = []) : void
     {
         parent::processValue($value);
 
@@ -132,7 +132,7 @@ class Multiselect extends Select
      * @param Form $form form object
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

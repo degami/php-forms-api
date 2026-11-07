@@ -25,16 +25,16 @@ class Switchbox extends Radios
 {
 
     /** @var mixed "no" value */
-    protected $no_value;
+    protected mixed $no_value;
 
     /** @var string "no" label */
-    protected $no_label;
+    protected string $no_label;
 
     /** @var mixed "yes" value */
-    protected $yes_value;
+    protected mixed $yes_value;
 
     /** @var string "yes" label */
-    protected $yes_label;
+    protected string $yes_label;
 
     /**
      * Class constructor
@@ -64,7 +64,7 @@ class Switchbox extends Radios
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -106,9 +106,9 @@ class Switchbox extends Radios
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         $tag = new TagElement([

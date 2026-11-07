@@ -31,7 +31,7 @@ class Checkboxes extends FieldMultivalues
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         if (!is_array($this->default_value)) {
@@ -93,7 +93,7 @@ class Checkboxes extends FieldMultivalues
      *
      * @return mixed field value
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         return $this->getValue();
     }

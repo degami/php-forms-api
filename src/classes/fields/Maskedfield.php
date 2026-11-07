@@ -26,14 +26,14 @@ class Maskedfield extends Textfield
      *
      * @var string
      */
-    protected $mask;
+    protected string $mask;
 
     /**
      * jQuery Mask Plugin patterns
      *
      * @var array
      */
-    private $translation = [
+    private array $translation = [
         '0'  =>  "\d",
         '9'  =>  "\d?",
         '#'  =>  "\d+",
@@ -62,7 +62,7 @@ class Maskedfield extends Textfield
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;

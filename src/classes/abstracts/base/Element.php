@@ -36,117 +36,120 @@ abstract class Element extends BaseElement
      *
      * @var string
      */
-    protected $name;
+    protected ?string $name;
 
     /**
      * Element parent
      *
-     * @var Element subclass
+     * @var Element|null
      */
-    protected $parent;
+    protected ?Element $parent;
 
     /**
      * Element weight
      *
      * @var integer
      */
-    protected $weight;
+    protected int $weight;
 
     /**
      * Element container tag
      *
-     * @var string
+     * @var string|null
      */
-    protected $container_tag;
+    protected ?string $container_tag;
 
     /**
      * Element container html class
      *
-     * @var string
+     * @var string|null
      */
-    protected $container_class;
+    protected ?string $container_class;
 
     /**
      * inner div attributes
      *
      * @var array
      */
-    protected $container_attributes = [];
+    protected array $container_attributes = [];
 
     /**
      * Element label class
      *
      * @var string
      */
-    protected $label_class;
+    protected string $label_class;
 
     /**
      * Element container inherits classes
      *
      * @var boolean
      */
-    protected $container_inherits_classes;
+    protected bool $container_inherits_classes;
 
     /**
      * Element errors array
      *
      * @var object
      */
-    protected $notifications;
+    protected NotificationsBag $notifications;
 
     /**
      * Element js array
      *
      * @var array
      */
-    protected $js;
+    protected array $js;
 
     /**
      * Element css array
      *
      * @var array
      */
-    protected $css;
+    protected array $css;
+
+    /**
+     * Element js files array
+     *
+     * @var array
+     */
+    protected array $js_files;
 
     /**
      * Element prefix
      *
      * @var string
      */
-    protected $prefix;
+    protected string $prefix;
 
     /**
      * Element suffix
      *
      * @var string
      */
-    protected $suffix;
+    protected string $suffix;
 
     /**
      * Element build options
      *
-     * @var null
+     * @var array
      */
-    protected $build_options;
+    protected array $build_options;
 
     /**
      * Element no translation flag. if true form::translate_string won't be applied
      *
-     * @var FALSE
+     * @var boolean
      */
-    protected $no_translation;
+    protected bool $no_translation = false;
 
     /**
      * Class constructor
      * @param array $options constructor options
      * @param string $name element name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
-        if ($options == null) {
-            $options = [];
-        }
-
         $this->name = $name;
         $this->parent = null;
         $this->weight = 0;
@@ -156,6 +159,7 @@ abstract class Element extends BaseElement
         $this->container_inherits_classes = false;
         $this->notifications = new NotificationsBag([ 'error' => [], 'highlight'=> [] ]);
         $this->js = [];
+        $this->js_files = [];
         $this->css = [];
         $this->prefix = '';
         $this->suffix = '';
@@ -244,6 +248,7 @@ abstract class Element extends BaseElement
     public function addError(string $error_string, string $validate_function_name): Element
     {
         $this->notifications['error'][$validate_function_name] = $error_string;
+
         return $this;
     }
 
@@ -394,9 +399,38 @@ abstract class Element extends BaseElement
             }
             return $js;
         }
+
         return $this->js;
     }
 
+    public function addJsFile($js_file): Element
+    {
+        if (is_array($js_file)) {
+            $this->js_files = array_merge($js_file, $this->js_files);
+        } elseif (is_string($js_file) && trim($js_file) != '') {
+            $this->js_files[] = trim($js_file);
+        }
+
+        return $this;
+    }
+
+    public function &getJsFiles(): array
+    {
+        if ($this instanceof FieldsContainer || $this instanceof Form) {
+            $js_files = array_filter(array_map('trim', $this->js_files));
+            $fields = $this->getFields();
+            if ($this instanceof Form) {
+                $fields = $this->getFields($this->getCurrentStep());
+            }
+            foreach ($fields as $field) {
+                /** @var Field $field */
+                $js_files = array_merge($js_files, $field->getJsFiles());
+            }
+            return $js_files;
+        }
+
+        return $this->js_files;
+    }
 
     /**
      * Add css to element
@@ -431,6 +465,7 @@ abstract class Element extends BaseElement
             }
             return $css;
         }
+
         return $this->css;
     }
 

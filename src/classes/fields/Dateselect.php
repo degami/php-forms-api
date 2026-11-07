@@ -29,28 +29,28 @@ class Dateselect extends Field
      *
      * @var string
      */
-    protected $granularity = 'day';
+    protected string $granularity = 'day';
 
     /**
      * start year
      *
      * @var integer
      */
-    protected $start_year;
+    protected int $start_year;
 
     /**
      * end year
      *
      * @var integer
      */
-    protected $end_year;
+    protected int $end_year;
 
     /**
      * "use js selects" flag
      *
      * @var boolean
      */
-    protected $js_selects = false;
+    protected bool $js_selects = false;
 
     /**
      * Class constructor
@@ -76,7 +76,7 @@ class Dateselect extends Field
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -111,7 +111,7 @@ class Dateselect extends Field
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 
@@ -203,7 +203,7 @@ class Dateselect extends Field
      *
      * @param mixed $value value to set
      */
-    public function processValue($value)
+    public function processValue($value) : void
     {
         $this->value = [
         'year' => $value['year'],

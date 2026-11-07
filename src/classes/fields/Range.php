@@ -29,9 +29,9 @@ class Range extends Number
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

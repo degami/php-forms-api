@@ -25,11 +25,11 @@ class NotificationsBag extends MultiLevelDataBag
     /**
      * render notifications
      *
-     * @param string the notification group
+     * @param string|null $group the notification group
      *
      * @return string the notification list html
      */
-    public function renderHTML($group = null): string
+    public function renderHTML(?string $group = null): string
     {
         if ($group == null) {
             $out = "";

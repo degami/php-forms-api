@@ -28,7 +28,7 @@ class Option extends Optionable
      *
      * @var string
      */
-    protected $key;
+    protected string $key;
 
     /**
      * Class constructor

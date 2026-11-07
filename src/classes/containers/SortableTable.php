@@ -32,14 +32,14 @@ class SortableTable extends SortableContainer
      *
      * @var array
      */
-    protected $table_header = [];
+    protected array $table_header = [];
 
     /**
      * {@inheritdoc}
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -72,7 +72,7 @@ class SortableTable extends SortableContainer
      * @param Form $form form object
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

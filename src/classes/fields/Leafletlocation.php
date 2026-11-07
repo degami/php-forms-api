@@ -30,35 +30,35 @@ class Leafletlocation extends Geolocation
      * @see https://www.mapbox.com/about/maps/
      * @var string
      */
-    protected $accessToken = null;
+    protected ?string $accessToken = null;
 
     /**
      * zoom
      *
      * @var integer
      */
-    protected $zoom = 8;
+    protected int $zoom = 8;
 
     /**
      * map width
      *
      * @var string
      */
-    protected $mapwidth = '100%';
+    protected string $mapwidth = '100%';
 
     /**
      * map height
      *
      * @var string
      */
-    protected $mapheight = '500px';
+    protected string $mapheight = '500px';
 
     /**
      * marker title
      *
      * @var null
      */
-    protected $markertitle = null;
+    protected ?string $markertitle = null;
 
     /**
      * map type - one of:
@@ -79,14 +79,14 @@ class Leafletlocation extends Geolocation
      *
      * @var string
      */
-    protected $maptype = 'mapbox.streets';
+    protected string $maptype = 'mapbox.streets';
 
     /**
      * input type where latitude and longitude are stored (hidden / textfield)
      *
      * @var string
      */
-    protected $lat_lon_type = 'hidden';
+    protected string $lat_lon_type = 'hidden';
 
     /**
      * Class constructor
@@ -143,7 +143,7 @@ class Leafletlocation extends Geolocation
      *
      * @param string $process_type preprocess type
      */
-    public function preProcess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess") :void
     {
         parent::preprocess($process_type);
     }
@@ -154,7 +154,7 @@ class Leafletlocation extends Geolocation
      *
      * @return mixed field value
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         return parent::getValues();
     }
@@ -164,7 +164,7 @@ class Leafletlocation extends Geolocation
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -227,7 +227,7 @@ class Leafletlocation extends Geolocation
      * @param Form $form form object
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         $attributes = $this->getAttributes();

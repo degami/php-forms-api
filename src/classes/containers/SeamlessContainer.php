@@ -14,7 +14,9 @@
 
 namespace Degami\PHPFormsApi\Containers;
 
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Fields\Hidden;
@@ -32,7 +34,7 @@ class SeamlessContainer extends FieldsContainer
      *
      * @return string        the element html
      */
-    public function renderField(Form $form): string
+    public function renderField(Form $form): TagElement|string
     {
         $output = "";
 

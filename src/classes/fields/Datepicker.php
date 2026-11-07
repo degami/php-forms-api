@@ -26,56 +26,56 @@ class Datepicker extends Textfield
      *
      * @var string
      */
-    protected $date_format = 'yy-mm-dd';
+    protected string $date_format = 'yy-mm-dd';
 
     /**
      * change month flag
      *
      * @var boolean
      */
-    protected $change_month = false;
+    protected bool $change_month = false;
 
     /**
      * change year flag
      *
      * @var boolean
      */
-    protected $change_year = false;
+    protected bool $change_year = false;
 
     /**
      * min date
      *
      * @var string
      */
-    protected $mindate = '-10Y';
+    protected string $mindate = '-10Y';
 
     /**
      * max date
      *
      * @var string
      */
-    protected $maxdate = '+10Y';
+    protected string $maxdate = '+10Y';
 
     /**
      * year range
      *
      * @var string
      */
-    protected $yearrange = '-10:+10';
+    protected string $yearrange = '-10:+10';
 
     /**
      * disabled dates array
      *
      * @var array
      */
-    protected $disabled_dates = []; // an array of date strings compliant to $date_format
+    protected array $disabled_dates = []; // an array of date strings compliant to $date_format
 
     /**
      * {@inheritdoc}
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;

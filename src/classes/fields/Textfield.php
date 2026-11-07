@@ -29,23 +29,23 @@ class Textfield extends Field
      *
      * @var integer
      */
-    protected $maxlength = null;
+    protected ?int $maxlength = null;
 
     /**
      * Element minlength
      *
      * @var integer
      */
-    protected $minlength = null;
+    protected ?int $minlength = null;
 
     /**
      * {@inheritdoc}
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

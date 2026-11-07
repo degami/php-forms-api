@@ -33,14 +33,14 @@ class Autocomplete extends Textfield
      *
      * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * minimum string length for autocomplete
      *
      * @var integer
      */
-    protected $min_length = 3;
+    protected int $min_length = 3;
 
     /**
      * Class constructor
@@ -63,7 +63,7 @@ class Autocomplete extends Textfield
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;

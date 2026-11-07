@@ -32,21 +32,21 @@ class Datetime extends ComposedField
      *
      * @var Date
      */
-    protected $date = null;
+    protected ?Date $date = null;
 
     /**
      * time sub_element
      *
      * @var Time
      */
-    protected $time = null;
+    protected ?Time $time = null;
 
     /**
      * "use js selects" flag
      *
      * @var boolean
      */
-    protected $js_selects = false;
+    protected bool $js_selects = false;
 
     /**
      * Class constructor
@@ -73,7 +73,7 @@ class Datetime extends ComposedField
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -104,7 +104,7 @@ class Datetime extends ComposedField
      *
      * @param string $process_type preprocess type
      */
-    public function preProcess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess") : void
     {
         $this->date->preProcess($process_type);
         $this->time->preProcess($process_type);
@@ -115,7 +115,7 @@ class Datetime extends ComposedField
      *
      * @param mixed $values value to set
      */
-    public function processValue($values)
+    public function processValue($values) : void
     {
         $this->processSubfieldsValues($values, $this->date, 'date');
         $this->processSubfieldsValues($values, $this->time, 'time');
@@ -158,7 +158,7 @@ class Datetime extends ComposedField
      *
      * @return mixed field value
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         return [
             'date'=> $this->date->getValues(),

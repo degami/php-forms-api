@@ -15,6 +15,7 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\Basics\Html\BaseElement;
+use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Form;
@@ -29,16 +30,16 @@ use Degami\PHPFormsApi\Fields\Hidden;
 class Repeatable extends FieldsContainerMultiple
 {
     /** @var integer number of initial repetitions */
-    protected $num_reps = null;
+    protected ?int $num_reps = null;
 
     /** @var array fields to repeat */
-    private $repeatable_fields = [];
+    private array $repeatable_fields = [];
 
     /** @var array field order */
-    private $repeatable_insert_field_order = [];
+    private array $repeatable_insert_field_order = [];
 
-    /** @var array default values */
-    protected $default_value = [];
+    /** @var mixed default values */
+    protected mixed $default_value = [];
 
     /**
      * {@inheritdocs}
@@ -59,11 +60,13 @@ class Repeatable extends FieldsContainerMultiple
      * Override add_field
      *
      * @param string $name
-     * @param mixed $field
-     * @return $this|mixed
+     * @param Element|array $field
+     * @param mixed ...$args
+     * 
+     * @return Element
      * @throws FormException
      */
-    public function addField(string $name, $field): Field
+    public function addField(string $name, Element|array $field, mixed ...$args): Element
     {
         $field = $this->getFieldObj($name, $field);
 
@@ -90,10 +93,11 @@ class Repeatable extends FieldsContainerMultiple
      * {@inheritdoc}
      *
      * @param $name
-     * @param integer $partitions_index unused
-     * @return self
+     * @param mixed ...$args additional arguments
+     * 
+     * @return Element
      */
-    public function removeField(string $name): FieldsContainer
+    public function removeField(string $name, mixed ...$args): Element
     {
         unset($this->repeatable_fields[$name]);
         if (($key = array_search($name, $this->repeatable_insert_field_order)) !== false) {
@@ -108,7 +112,7 @@ class Repeatable extends FieldsContainerMultiple
      * @param array $request
      * @throws FormException
      */
-    public function alterRequest(array &$request)
+    public function alterRequest(array &$request) : void
     {
         $id = $this->getHtmlId();
         if (isset($request[ $id.'-numreps' ])) {
@@ -141,7 +145,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @param mixed $values
      */
-    public function processValue($values)
+    public function processValue($values) : void
     {
         foreach ($this->getFields() as $i => $field) {
             /**
@@ -157,7 +161,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @return mixed
      */
-    public function getValue()
+    public function getValue() : mixed
     {
         $out = [];
         foreach ($this->getFields() as $i => $field) {
@@ -181,7 +185,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @return mixed
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         return is_array($this->getValue()) ? $this->getValue() : [$this->getValue()];
     }
@@ -202,7 +206,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @param Form $form
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         static $selectorPluginAdded = false;
 
@@ -313,9 +317,9 @@ class Repeatable extends FieldsContainerMultiple
      * {@inheritdocs}
      *
      * @param  Form $form form object
-     * @return string|BaseElement the field html
+     * @return TagElement|string the field html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 
@@ -406,7 +410,7 @@ class Repeatable extends FieldsContainerMultiple
      *
      * @return string        the field html
      */
-    public function renderHTML(Form $form) : string
+    public function renderHTML(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         $output = $this->getElementPrefix();

@@ -28,18 +28,20 @@ interface FieldsContainerInterface extends FieldInterface
      * Add field to form
      *
      * @param string $name field name
-     * @param mixed $field field to add, can be an array or a field subclass
+     * @param Element|array $field field to add, can be an array or a field subclass
+     * @param mixed ...$args additional arguments
      * @return FieldsContainer
      */
-    public function addField(string $name, $field) : Element;
+    public function addField(string $name, Element|array $field, mixed ...$args) : Element;
 
     /**
      * remove field from form
      *
      * @param string $name field name
-     * @return FieldsContainer
+     * @param mixed ...$args additional arguments - remove field from partition if partition index is passed
+     * @return Element
      */
-    public function removeField(string $name) : FieldsContainer;
+    public function removeField(string $name, mixed ...$args) : Element;
 
     /**
      * on_add_return overload

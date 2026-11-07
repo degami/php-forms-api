@@ -29,14 +29,14 @@ abstract class Captcha extends Field
      *
      * @var boolean
      */
-    protected $already_validated = false;
+    protected bool $already_validated = false;
 
     /**
      * {@inheritdoc}
      *
      * @param mixed $values value to set
      */
-    public function processValue($values)
+    public function processValue(mixed $values) : void
     {
         parent::processValue($values);
         if (isset($values['already_validated'])) {
@@ -68,15 +68,16 @@ abstract class Captcha extends Field
      * {@inheritdoc}
      *
      * @param Form $form form object
+     * @return void
      */
-    public function afterValidate(Form $form)
+    public function afterValidate(Form $form) : void
     {
         $session_value =$this->getValues();
         $session_value['already_validated'] = $this->isAlreadyValidated();
 
         if (FormBuilder::sessionPresent()) {
             $this->getSessionBag()->ensurePath("/{$form->getId()}/steps/{$form->getCurrentStep()}");
-            $this->getSessionBag()->{$form->getId()}->steps->{$form->getCurrentStep()}->{$this->getName()} = $session_value;
+            $this->getSessionBag()->{$form->getId()}->steps->{"".$form->getCurrentStep()}->{$this->getName()} = $session_value;
         }
     }
 }

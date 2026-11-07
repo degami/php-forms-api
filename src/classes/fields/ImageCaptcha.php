@@ -30,63 +30,63 @@ class ImageCaptcha extends Captcha
      *
      * @var string
      */
-    protected $out_type = 'png';
+    protected string $out_type = 'png';
 
     /**
      * availables characters for code
      *
      * @var string
      */
-    protected $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    protected string $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
     /**
      * minimum code length
      *
      * @var integer
      */
-    protected $min_length = 5;
+    protected int $min_length = 5;
 
     /**
      * maximum code length
      *
      * @var integer
      */
-    protected $max_length = 8;
+    protected int $max_length = 8;
 
     /**
      * image width
      *
      * @var integer
      */
-    protected $image_width = 100;
+    protected int $image_width = 100;
 
     /**
      * image height
      *
      * @var integer
      */
-    protected $image_height = 50;
+    protected int $image_height = 50;
 
     /**
      * text font size
      *
      * @var integer
      */
-    protected $font_size = 14;
+    protected int $font_size = 14;
 
     /**
      * pre-fill code into textfield
      *
      * @var boolean
      */
-    protected $pre_filled = false;
+    protected bool $pre_filled = false;
 
     /**
      * captcha code
      *
      * @var string
      */
-    private $code;
+    private string $code;
 
     /**
      * Gets a random text
@@ -238,7 +238,7 @@ class ImageCaptcha extends Captcha
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 //        $attributes = $this->getAttributes();

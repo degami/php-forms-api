@@ -30,7 +30,7 @@ class Select extends FieldMultivalues
      *
      * @var boolean
      */
-    protected $multiple = false;
+    protected bool $multiple = false;
 
     /**
      * Class constructor
@@ -82,7 +82,7 @@ class Select extends FieldMultivalues
      *
      * @return boolean field is multiple
      */
-    public function isMultiple()
+    public function isMultiple() : bool
     {
         return $this->multiple;
     }
@@ -93,7 +93,7 @@ class Select extends FieldMultivalues
      * @param  boolean $multiple multiple attribute
      * @return Select
      */
-    public function setMultiple($multiple = true)
+    public function setMultiple(bool $multiple = true)
     {
         $this->multiple = ($multiple == true);
         return $this;
@@ -104,7 +104,7 @@ class Select extends FieldMultivalues
      *
      * @return mixed field value
      */
-    public function getValue()
+    public function getValue() : mixed
     {
         return $this->value;
     }
@@ -114,9 +114,9 @@ class Select extends FieldMultivalues
      *
      * @param Form $form form object
      *
-     * @return string        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         $output = '';

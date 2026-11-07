@@ -31,28 +31,28 @@ class Password extends Field
      *
      * @var boolean
      */
-    protected $with_confirm = false;
+    protected bool $with_confirm = false;
 
     /**
      * confirmation input label
      *
      * @var string
      */
-    protected $confirm_string = "Confirm password";
+    protected string $confirm_string = "Confirm password";
 
     /**
      * "include javascript strength check" flag
      *
      * @var boolean
      */
-    protected $with_strength_check = false;
+    protected bool $with_strength_check = false;
 
     /**
      * {@inheritdoc}
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -106,9 +106,9 @@ class Password extends Field
      * {@inheritdoc}
      *
      * @param Form $form form object
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

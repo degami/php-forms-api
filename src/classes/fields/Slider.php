@@ -15,6 +15,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\Basics\Html\BaseElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Form;
 
 /**
@@ -66,7 +67,7 @@ class Slider extends Select
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -102,9 +103,9 @@ class Slider extends Select
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

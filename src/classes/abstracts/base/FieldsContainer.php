@@ -35,9 +35,10 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      * Get the form fields by type
      *
      * @param mixed $field_types field types
+     * 
      * @return array              fields in the element
      */
-    public function getFieldsByType($field_types): array
+    public function getFieldsByType(mixed $field_types): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -53,6 +54,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
                 }
             }
         }
+
         return $out;
     }
 
@@ -61,9 +63,10 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param mixed $field_types field types
      * @param string $name field name
+     * 
      * @return array              fields in the element matching the search criteria
      */
-    public function getFieldsByTypeAndName($field_types, string $name): array
+    public function getFieldsByTypeAndName(mixed $field_types, string $name): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -89,6 +92,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      * Get field by name
      *
      * @param string $field_name field name
+     * 
      * @return Element|null subclass field object
      */
     public function getField(string $field_name): ?Element
@@ -104,7 +108,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return FieldsContainer
      */
-    public function setField(string $field_name, $field): FieldsContainer
+    public function setField(string $field_name, Element $field): FieldsContainer
     {
         $field->setName($field_name);
         $this->fields[$field_name] = $field;
@@ -115,11 +119,13 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      * Add field to form
      *
      * @param string $name field name
-     * @param mixed $field field to add, can be an array or a field subclass
+     * @param Element|array $field field to add, can be an array or a field subclass
+     * @param mixed ...$args additional arguments - used by FieldsContainerMultiple to pass partition index
+     * 
      * @return Element
      * @throws FormException
      */
-    public function addField(string $name, $field): Element
+    public function addField(string $name, Element|array $field, mixed ...$args): Element
     {
         /** @var Field $field */
         $field = $this->getFieldObj($name, $field);
@@ -144,9 +150,10 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      * remove field from form
      *
      * @param string $name field name
-     * @return FieldsContainer
+     * @param mixed ...$args additional arguments - remove field from partition if partition index is passed
+     * @return Element
      */
-    public function removeField(string $name): FieldsContainer
+    public function removeField(string $name, mixed ...$args): Element
     {
         unset($this->fields[$name]);
         if (($key = array_search($name, $this->insert_field_order)) !== false) {
@@ -160,7 +167,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @return mixed form values
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         $output = [];
         foreach ($this->getFields() as $name => $field) {
@@ -180,7 +187,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param string $process_type preprocess type
      */
-    public function preProcess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess") : void
     {
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
@@ -193,7 +200,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param mixed $values value to set
      */
-    public function processValue($values)
+    public function processValue(mixed $values): void
     {
         foreach ($this->getFields() as $name => $field) {
             /** @var Field $field */
@@ -223,7 +230,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -297,7 +304,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param array $request request array
      */
-    public function alterRequest(array &$request)
+    public function alterRequest(array &$request) : void
     {
         foreach ($this->getFields() as $field) {
             /** @var Field $field */
@@ -310,7 +317,7 @@ abstract class FieldsContainer extends Field implements FieldsContainerInterface
      *
      * @param Form $form form object
      */
-    public function afterValidate(Form $form)
+    public function afterValidate(Form $form) : void
     {
         foreach ($this->getFields() as $field) {
             /** @var Field $field */

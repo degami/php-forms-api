@@ -31,14 +31,14 @@ abstract class SortableContainer extends FieldsContainerMultiple
      *
      * @var string
      */
-    protected $handle_position = 'left';
+    protected string $handle_position = 'left';
 
     /**
      * deltas array ( used for sorting )
      *
      * @var array
      */
-    protected $deltas = [];
+    protected array $deltas = [];
 
     /**
      * Get handle position (left/right)
@@ -55,7 +55,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
      *
      * @return mixed form values
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         $output = [];
 
@@ -80,7 +80,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
      *
      * @param mixed $values value to set
      */
-    public function processValue($values)
+    public function processValue(mixed $values) : void
     {
         foreach ($this->getFields() as $name => $field) {
             /** @var Field $field */
@@ -119,7 +119,7 @@ abstract class SortableContainer extends FieldsContainerMultiple
      * @param  array $b second element
      * @return integer  order
      */
-    private static function orderbyDelta($a, $b): int
+    private static function orderbyDelta(array $a, array $b): int
     {
         if ($a['delta']==$b['delta']) {
             return 0;

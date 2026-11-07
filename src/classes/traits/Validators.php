@@ -24,9 +24,9 @@ trait Validators
      * "required" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateRequired($value = null)
+    public static function validateRequired($value = null) : bool|string
     {
         if (!empty($value) || (!is_array($value) && trim("".$value) != '')) {
             return true;
@@ -39,9 +39,9 @@ trait Validators
      * "notZero" required validation function - useful for radios
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateNotzero($value = null)
+    public static function validateNotzero($value = null) : bool|string
     {
         if ((!empty($value) && (!is_array($value) && trim("".$value) != '0'))) {
             return true;
@@ -55,9 +55,9 @@ trait Validators
      *
      * @param  mixed $value   the element value
      * @param  mixed $options max length
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateMaxLength($value, $options)
+    public static function validateMaxLength($value, $options) : bool|string
     {
         if (strlen("".$value) > $options) {
             return "Maximum length of <em>%t</em> is {$options}";
@@ -70,9 +70,9 @@ trait Validators
      *
      * @param  mixed $value   the element value
      * @param  mixed $options min length
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateMinLength($value, $options)
+    public static function validateMinLength($value, $options) : bool|string
     {
         if (strlen("".$value) < $options) {
             return "<em>%t</em> must be longer than {$options}";
@@ -85,9 +85,9 @@ trait Validators
      *
      * @param  mixed $value   the element value
      * @param  mixed $options length
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateExactLength($value, $options)
+    public static function validateExactLength($value, $options) : bool|string
     {
         if (strlen("".$value) != $options) {
             return "<em>%t</em> must be {$options} characters long.";
@@ -100,9 +100,9 @@ trait Validators
      *
      * @param  mixed $value   the element value
      * @param  mixed $options regexp string
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateRegexp($value, $options)
+    public static function validateRegexp($value, $options) : bool|string
     {
         if (!preg_match($options, "".$value)) {
             return "<em>%t</em> must match the regular expression \"$options\".";
@@ -114,9 +114,9 @@ trait Validators
      * "alpha" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateAlpha($value)
+    public static function validateAlpha($value) : bool|string
     {
         if (!preg_match("/^([a-z])+$/i", "".$value)) {
             return "<em>%t</em> must contain alphabetic characters.";
@@ -128,9 +128,9 @@ trait Validators
      * "alpha_numeric" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateAlphaNumeric($value)
+    public static function validateAlphaNumeric($value) : bool|string
     {
         if (!preg_match("/^([a-z0-9])+$/i", "".$value)) {
             return "<em>%t</em> must only contain alpha numeric characters.";
@@ -142,9 +142,9 @@ trait Validators
      * "alpha_dash" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateAlphaDash($value)
+    public static function validateAlphaDash($value) : bool|string
     {
         if (!preg_match("/^([-a-z0-9_-])+$/i", "".$value)) {
             return "<em>%t</em> must contain only alpha numeric characters, underscore, or dashes";
@@ -156,9 +156,9 @@ trait Validators
      * "numeric" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateNumeric($value)
+    public static function validateNumeric($value) : bool|string
     {
         if (!is_numeric($value)) {
             return "<em>%t</em> must be numeric.";
@@ -170,9 +170,9 @@ trait Validators
      * "integer" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateInteger($value)
+    public static function validateInteger($value) : bool|string
     {
         if (!preg_match('/^[\-+]?[0-9]+$/', "".$value)) {
             return "<em>%t</em> must be an integer.";
@@ -185,9 +185,9 @@ trait Validators
      *
      * @param  mixed $value   the element value
      * @param  mixed $options elements to find into _REQUEST array
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateMatch($value, $options)
+    public static function validateMatch($value, $options) : bool|string
     {
         $other = call_user_func_array([__CLASS__, 'scan_array'], [$options, $_REQUEST]);
         if ($value != $other) {
@@ -201,9 +201,9 @@ trait Validators
      *
      * @param  mixed $value   the element value
      * @param  mixed $options file extension
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateFileExtension($value, $options)
+    public static function validateFileExtension($value, $options) : bool|string
     {
         if (!isset($value['filepath'])) {
             return "<em>%t</em> - Error. value has no filepath attribute";
@@ -220,9 +220,9 @@ trait Validators
      * "file_not_exists" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateFileNotExists($value)
+    public static function validateFileNotExists($value) : bool|string
     {
         if (!isset($value['filepath'])) {
             return "<em>%t</em> - Error. value has no filepath attribute";
@@ -238,9 +238,9 @@ trait Validators
      *
      * @param  mixed $value   the element value
      * @param  mixed $options max file size
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateMaxFileSize($value, $options)
+    public static function validateMaxFileSize($value, $options) : bool|string
     {
         if (!isset($value['filesize'])) {
             return "<em>%t</em> - Error. value has no filesize attribute";
@@ -256,9 +256,9 @@ trait Validators
      * "is_date" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateIsDate($value)
+    public static function validateIsDate($value) : bool|string
     {
         if (!$value || ($value && ($date = date_create($value)) === false)) {
             return "<em>%t</em> is not a valid date.";
@@ -270,9 +270,9 @@ trait Validators
      * "email" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateEmail($value)
+    public static function validateEmail($value) : bool|string
     {
         if (empty($value)) {
             return false;
@@ -318,9 +318,9 @@ trait Validators
      * "is_RGB" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateRgb($value)
+    public static function validateRgb($value) : bool|string
     {
         if (!$value || ($value && !preg_match("/^#?([a-f\d]{3}([a-f\d]{3})?)$/i", $value))) {
             return "<em>%t</em> is not a valid RGB color string.";
@@ -332,9 +332,9 @@ trait Validators
      * "is_URL" validation function
      *
      * @param  mixed $value the element value
-     * @return mixed        TRUE if valid or a string containing the error message
+     * @return bool|string        TRUE if valid or a string containing the error message
      */
-    public static function validateUrl($value)
+    public static function validateUrl($value) : bool|string
     {
         $URL_FORMAT =
         '/^(https?):\/\/'.                                         // protocol

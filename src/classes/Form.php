@@ -34,6 +34,7 @@ use Degami\PHPFormsApi\Fields\Select;
 use Degami\PHPFormsApi\Abstracts\Fields\FieldMultivalues;
 use Degami\PHPFormsApi\Accessories\SessionBag;
 use Degami\PHPFormsApi\Fields\Hidden;
+use Degami\Basics\Html\TagElement;
 
 /**
  * The form object class
@@ -47,14 +48,14 @@ class Form extends Element
      *
      * @var string
      */
-    protected $form_id = 'cs_form';
+    protected string $form_id = 'cs_form';
 
     /**
      * form definition function name
      *
      * @var string
      */
-    protected $definition_function = '';
+    protected string $definition_function = '';
 
 
     /**
@@ -62,140 +63,140 @@ class Form extends Element
      *
      * @var string
      */
-    protected $form_token = '';
+    protected string $form_token = '';
 
     /**
      * form action
      *
      * @var string
      */
-    protected $action = '';
+    protected string $action = '';
 
     /**
      * form method
      *
      * @var string
      */
-    protected $method = 'post';
+    protected string $method = 'post';
 
     /**
      * "form is already processed" flag
      *
      * @var boolean
      */
-    protected $processed = false;
+    protected bool $processed = false;
 
     /**
      * "form is already validated" flag
      *
      * @var boolean
      */
-    protected $validated = false;
+    protected bool $validated = false;
 
     /**
      * "form is already submitted" flag
      *
      * @var boolean
      */
-    protected $submitted = false;
+    protected bool $submitted = false;
 
     /**
      * "form is valid" flag
      *
-     * @var null
+     * @var boolean|null
      */
-    protected $valid = null;
+    protected ?bool $valid = null;
 
     /**
      * validate functions list
      *
      * @var array
      */
-    protected $validate = [];
+    protected OrderedFunctions|array $validate = [];
 
     /**
      * submit functions list
      *
      * @var array
      */
-    protected $submit = [];
+    protected OrderedFunctions|array $submit = [];
 
     /**
      * form output type (html/json)
      *
      * @var string
      */
-    protected $output_type = 'html';
+    protected string $output_type = 'html';
 
     /**
      * show inline errors
      *
      * @var boolean
      */
-    protected $inline_errors = false;
+    protected bool $inline_errors = false;
 
     /**
      * "form already pre-rendered" flag
      *
      * @var boolean
      */
-    protected $pre_rendered = false;
+    protected bool $pre_rendered = false;
 
     /**
      * "js was aleready generated" flag
      *
      * @var boolean
      */
-    protected $js_generated = false;
+    protected bool $js_generated = false;
 
     /**
      * ajax submit url
      *
      * @var string
      */
-    protected $ajax_submit_url = '';
+    protected string $ajax_submit_url = '';
 
     /**
      * print form on a dialog
      *
      * @var boolean
      */
-    protected $on_dialog = false;
+    protected bool $on_dialog = false;
 
     /**
      * current step
      *
      * @var integer
      */
-    private $current_step = 0;
+    private int $current_step = 0;
 
     /**
      * array of submit functions results
      *
      * @var array
      */
-    private $submit_functions_results = [];
+    private array $submit_functions_results = [];
 
     /**
      * "do not process form token" flag
      *
      * @var boolean
      */
-    private $no_token = false;
+    private bool $no_token = false;
 
     /**
      * Session Bag Object
      *
      * @var SessionBag
      */
-    private $session_bag = null;
+    private ?SessionBag $session_bag = null;
 
     /**
      * form state array
      *
      * @var array
      */
-    private $form_state = [];
+    private array $form_state = [];
 
     public $allocatedSize = 0;
 
@@ -204,9 +205,9 @@ class Form extends Element
      *
      * @param array $options build options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [], string $form_id = '')
     {
-        parent::__construct();
+        parent::__construct($options, $form_id);
 
         $this->build_options = $options;
         $this->session_bag = new SessionBag();
@@ -421,7 +422,7 @@ class Form extends Element
      *
      * @return string the form on_dialog preference
      */
-    public function getOnDialog()
+    public function getOnDialog(): string
     {
         return $this->on_dialog;
     }
@@ -576,7 +577,7 @@ class Form extends Element
      * @param  string $submit_function submit function name
      * @return mixed function(s) return value or function(s) data sent to stdout if not returning anything
      */
-    public function getSubmitResults($submit_function = '')
+    public function getSubmitResults($submit_function = '') : mixed
     {
         if (!$this->isSubmitted()) {
             return false;
@@ -594,8 +595,10 @@ class Form extends Element
      * {@inheritdocs}
      *
      * @param array $request request array
+     * 
+     * @return void
      */
-    private function alterRequest(array &$request)
+    private function alterRequest(array &$request) : void
     {
         foreach ($this->getFields($this->current_step) as $field) {
             $field->alterRequest($request);
@@ -607,8 +610,10 @@ class Form extends Element
      *
      * @param array|DataBag   $request request array
      * @param int $step    step number
+     * 
+     * @return void
      */
-    private function injectValues($request, int $step)
+    private function injectValues($request, int $step) : void
     {
         foreach ($this->getFields($step) as $name => $field) {
             if ($field instanceof FieldsContainer) {
@@ -636,8 +641,10 @@ class Form extends Element
      * save current step request array in session
      *
      * @param array $request request array
+     * 
+     * @return void
      */
-    private function saveStepRequest(array $request)
+    private function saveStepRequest(array $request) : void
     {
         $files = $this->getStepFieldsByTypeAndName('file', null, $this->current_step);
         if (!empty($files)) {
@@ -670,7 +677,8 @@ class Form extends Element
      * save form_state array into form object, for use into process function
      *
      * @param array &$form_state [description]
-     * @return self
+     * 
+     * @return Form
      */
     public function setFormState(&$form_state = []): Form
     {
@@ -694,8 +702,10 @@ class Form extends Element
      * starts the form processing, validating and submitting
      *
      * @param array $values the request values array
+     * 
+     * @return void
      */
-    public function processValue($values = [])
+    public function processValue($values = []) : void
     {
         $has_session = FormBuilder::sessionPresent();
         if ($has_session) {
@@ -797,8 +807,10 @@ class Form extends Element
      * starts the form processing, validating and submitting
      *
      * @param      array $values the request values array
+     * 
+     * @return void
      */
-    public function process($values = [])
+    public function process($values = []) : void
     {
         $this->processValue($values);
     }
@@ -890,10 +902,11 @@ class Form extends Element
      * @param string $name field name
      * @param mixed $field field to add, can be an array or a field subclass
      * @param int $step step to add the field to
+     * 
      * @return mixed
      * @throws Exceptions\FormException
      */
-    public function addField(string $name, $field, int $step = 0)
+    public function addField(string $name, $field, int $step = 0) : Element
     {
         $field = $this->getFieldObj($name, $field);
         $field->setParent($this);
@@ -918,9 +931,10 @@ class Form extends Element
      *
      * @param string $name field name
      * @param int $step field step
-     * @return self
+     * 
+     * @return Form
      */
-    public function removeField(string $name, int $step = 0): Form
+    public function removeField(string $name, int $step = 0): Element
     {
         unset($this->fields[$step][$name]);
         if (($key = array_search($name, $this->insert_field_order)) !== false) {
@@ -982,7 +996,7 @@ class Form extends Element
      * @param  int      $step        step number
      * @return array               the array of fields matching the search criteria
      */
-    private function getStepFieldsByTypeAndName($field_types, ?string $name = null, int $step = 0): array
+    private function getStepFieldsByTypeAndName(array|string $field_types, ?string $name = null, int $step = 0): array
     {
         if (!is_array($field_types)) {
             $field_types = [$field_types];
@@ -1055,7 +1069,7 @@ class Form extends Element
      * @param string $field_name field name
      * @param int $step step number where to find the field
      *
-     * @return Element subclass field object
+    * @return Element|null subclass field object
      */
     public function getField(string $field_name, int $step = 0): ?Element
     {
@@ -1078,7 +1092,8 @@ class Form extends Element
      * @param string $field_name field name
      * @param Element $field subclass field object
      * @param integer $step step number where to put the field
-     * @return self
+     * 
+     * @return Form
      */
     public function setField(string $field_name, Element $field, $step = 0): Form
     {
@@ -1114,7 +1129,7 @@ class Form extends Element
      *
      * @return OrderedFunctions form submit function(s)
      */
-    public function getSubmit()
+    public function getSubmit() : OrderedFunctions|array
     {
         return $this->submit;
     }
@@ -1125,7 +1140,7 @@ class Form extends Element
      * @param array|OrderedFunctions $submit set the form submit functions list
      * @return self
      */
-    public function setSubmit($submit): Form
+    public function setSubmit(OrderedFunctions|array $submit): Form
     {
         if (!($submit instanceof OrderedFunctions)) {
             $submit = new OrderedFunctions($submit, 'submitter');
@@ -1140,7 +1155,7 @@ class Form extends Element
      *
      * @return OrderedFunctions form validate function(s)
      */
-    public function getValidate()
+    public function getValidate() : OrderedFunctions|array
     {
         return $this->validate;
     }
@@ -1151,7 +1166,7 @@ class Form extends Element
      * @param array|OrderedFunctions $validate set the form validate functions list
      * @return self
      */
-    public function setValidate($validate): Form
+    public function setValidate(OrderedFunctions|array $validate): Form
     {
         if (!($validate instanceof OrderedFunctions)) {
             $validate = new OrderedFunctions($validate, 'validator');
@@ -1215,7 +1230,8 @@ class Form extends Element
      * Sets inline error preference
      *
      * @param boolean $inline_errors error preference
-     * @return self
+     * 
+     * @return Form
      */
     public function setInlineErrors(bool $inline_errors): Form
     {
@@ -1248,8 +1264,10 @@ class Form extends Element
     /**
      * {@inheritdocs}.
      * using this hook form elements can modify the form element
+     * 
+     * @return void
      */
-    public function preRender()
+    public function preRender() : void
     {
         if ($this->on_dialog == true) {
             $this->addJs('$("#'.$this->getFormId().'").dialog()');
@@ -1267,9 +1285,9 @@ class Form extends Element
      * renders the form
      *
      * @param  ?string $override_output_type output type
-     * @return string                       the form html
+     * @return string|TagElement                       the form html
      */
-    public function renderHTML(?string $override_output_type = null)
+    public function renderHTML(?string $override_output_type = null) : TagElement|string
     {
         $output = '';
         $errors = '';
@@ -1416,6 +1434,13 @@ class Form extends Element
                 $form_tag_html .= "<input type=\"hidden\" name=\"current_step\" value=\"{$this->current_step}\" />\n";
             }
             $form_tag_html .= "</form>\n";
+
+            if (!empty($this->getJsFiles())) {
+                foreach ($this->getJsFiles() as $jsfile) {
+                    $form_tag_html .= "<script type=\"text/javascript\" src=\"{$jsfile}\"></script>\n";
+                }
+            }
+
             $form_tag_html .= $this->getSuffix();
             $form_tag_html .= $this->getElementSuffix();
 
@@ -1457,9 +1482,9 @@ class Form extends Element
      * renders the form
      *
      * @param      ?string $override_output_type output type
-     * @return     string                       the form html
+     * @return     string|TagElement                       the form html
      */
-    public function render(?string $override_output_type = null)
+    public function render(?string $override_output_type = null) : TagElement|string
     {
         return $this->renderHTML($override_output_type);
     }
@@ -1530,9 +1555,9 @@ class Form extends Element
     /**
      * Get the form definition function body
      *
-     * @return string|false form definition function body
+     * @return string|bool form definition function body
      */
-    public function getDefinitionBody()
+    public function getDefinitionBody() : string|bool
     {
         $body = false;
 
@@ -1564,7 +1589,7 @@ class Form extends Element
         return $body;
     }
 
-    private function encapsulateJs($js_array, $jquery_var_name = 'jQuery'): string
+    private function encapsulateJs(array|string $js_array, $jquery_var_name = 'jQuery'): string
     {
         if (!is_array($js_array)) {
             $js_array = [$js_array];

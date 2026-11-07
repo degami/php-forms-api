@@ -79,9 +79,9 @@ if (!defined('FORMS_HIGHLIGHTS_TEMPLATE')) {
         '<div class="ui-state-highlight ui-corner-all highlightsbox">' . FORMS_HIGHLIGHTS_ICON . '<ul>%s</ul></div>'
     );
 }
-if (!defined('FORMS_DEFAULT_TINYMCE_OPTIONS')) {
+if (!defined('FORMS_DEFAULT_WYSIWYG_OPTIONS')) {
     define(
-        'FORMS_DEFAULT_TINYMCE_OPTIONS',
+        'FORMS_DEFAULT_WYSIWYG_OPTIONS',
         [
             'menubar' => false,
             'plugins' => "code,link,lists,advlist,preview,searchreplace,media,table",

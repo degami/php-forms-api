@@ -35,7 +35,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      *
      * @var array
      */
-    protected $partitions = [];
+    protected array $partitions = [];
 
     /**
      * Get element partitions
@@ -63,7 +63,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * @param  string $title partition title
      * @return self
      */
-    public function addPartition($title): FieldsContainerMultiple
+    public function addPartition(string $title): FieldsContainerMultiple
     {
         $this->partitions[] = ['title'=>$title,'fieldnames'=>[]];
 
@@ -74,11 +74,13 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * Add field to element
      *
      * @param string $name field name
-     * @param mixed $field field to add, can be an array or a field subclass
+     * @param Element|array $field field to add, can be an array or a field subclass
+     * @param mixed ...$args additional arguments - used by FieldsContainerMultiple to pass partition index
+     * 
      * @return Element
      * @throws FormException
      */
-    public function addField(string $name, $field): Element
+    public function addField(string $name, Element|array $field, mixed ...$args): Element
     {
         $field = $this->getFieldObj($name, $field);
         $field->setParent($this);
@@ -114,9 +116,10 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * remove field from form
      *
      * @param string $name field name
-     * @return FieldsContainerMultiple
+     * @param mixed ...$args additional arguments - remove field from partition if partition index is passed
+     * @return Element
      */
-    public function removeField(string $name) : FieldsContainer
+    public function removeField(string $name, mixed ...$args): Element
     {
         $partitions_index = func_get_arg(1);
         if (!is_numeric($partitions_index)) {
@@ -161,7 +164,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * @return self
      * @throws FormException
      */
-    public function setPartitionFields(array $fields, $partition_index = 0): FieldsContainerMultiple
+    public function setPartitionFields(array $fields, int $partition_index = 0): FieldsContainerMultiple
     {
         $fields_names = $this->partitions[$partition_index]['fieldnames'];
         foreach ($fields_names as $name) {
@@ -207,7 +210,7 @@ abstract class FieldsContainerMultiple extends FieldsContainer
      * @param  string $field_name field name
      * @return integer            partition index, -1 on failure
      */
-    public function getPartitionIndex($field_name): int
+    public function getPartitionIndex(string $field_name): int
     {
         foreach ($this->partitions as $partitions_index => $partition) {
             if (in_array($field_name, $partition['fieldnames'])) {

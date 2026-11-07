@@ -28,7 +28,7 @@ class BulkTable extends TableContainer
 {
 
     /** @var array available operations list */
-    protected $operations = [];
+    protected array $operations = [];
 
     /**
      * Get defined operations
@@ -59,9 +59,11 @@ class BulkTable extends TableContainer
      * {@inheritdoc}
      *
      * @param Form $form form object
+     * 
+     * @return void
      * @throws FormException
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered) {
             return;
@@ -108,9 +110,9 @@ class BulkTable extends TableContainer
      * {@inheritdoc}
      *
      * @param Form $form form object
-     * @return BaseElement        the element html
+     * @return TagElement|string        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 
@@ -168,9 +170,9 @@ class BulkTable extends TableContainer
      * {@inheritdocs}
      *
      * @param  mixed $values value to set
-     * @return null
+     * @return void
      */
-    public function processValue($values)
+    public function processValue($values) : void
     {
         foreach ($values[$this->getName()]['rows'] as $k => $row) {
             if (!isset($row['row_enabled']) || $row['row_enabled'] != 1) {

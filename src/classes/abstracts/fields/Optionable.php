@@ -26,12 +26,12 @@ abstract class Optionable extends Element
      *
      * @var string
      */
-    protected $label;
+    protected string $label;
 
     /**
      * Get the element label
      *
-     * @return mixed the element label
+     * @return string the element label
      */
     public function getLabel(): string
     {
@@ -41,10 +41,10 @@ abstract class Optionable extends Element
     /**
      * Set the element label
      *
-     * @param  mixed $label element label
+     * @param  string $label element label
      * @return self
      */
-    public function setLabel($label): Optionable
+    public function setLabel(string $label): Optionable
     {
         $this->label = $label;
 

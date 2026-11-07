@@ -14,87 +14,29 @@
 
 namespace Degami\PHPFormsApi\Fields;
 
-use Degami\PHPFormsApi\Form;
-use \stdClass;
+use Degami\PHPFormsApi\Abstracts\Fields\Wysiwyg;
 
 /**
- * tinymce beautified textarea
+ * The tinymce input field class
  */
-class Tinymce extends Textarea
+class Tinymce extends Wysiwyg
 {
-    /**
-     * tinymce options
-     *
-     * @var array
-     */
-    protected $tinymce_options = FORMS_DEFAULT_TINYMCE_OPTIONS;
+    protected string $wysiwyg_lib_path = "/js/tinymce/tinymce.min.js";
 
-    /**
-     * Get tinymce options array
-     *
-     * @return array tinymce options
-     */
-    public function &getTinymceOptions(): array
+    public function getWysiwygType(): string
     {
-        return $this->tinymce_options;
+        return "tinymce";
     }
 
-    /**
-     * Set tinymce options array
-     *
-     * @param array $options array of valid tinymce options
-     * @return self
-     */
-    public function setTinymceOptions(array $options): Tinymce
+    public function getWysiwygJsLibPath(): string
     {
-        $options = array_filter($options, [$this, 'isValidTinymceOption']);
-        $this->tinymce_options = $options;
+        return $this->wysiwyg_lib_path;
+    }
+
+    public function setWysiwygJsLibPath(string $path): Tinymce
+    {
+        $this->wysiwyg_lib_path = $path;
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param Form $form form object
-     */
-    public function preRender(Form $form)
-    {
-        if ($this->pre_rendered == true) {
-            return;
-        }
-        $id = $this->getHtmlId();
-        $this->tinymce_options['selector'] = "#{$id}";
-        $tinymce_options = new stdClass;
-        foreach ($this->tinymce_options as $key => $value) {
-            if (! $this->isValidTinymceOption($key)) {
-                continue;
-            }
-            $tinymce_options->{$key} = $value;
-        }
-        $this->addJs("tinymce.init(".json_encode($tinymce_options).");");
-        $this->addJs("
-            document.querySelector('form').addEventListener('submit', function() {
-                const editor = tinymce.get('$id');
-                const content = editor.getBody().innerHTML;
-                const textarea = document.querySelector('textarea#$id');
-                if (textarea) {
-                    textarea.value = content;
-                }
-            });
-        ");
-        parent::preRender($form);
-    }
-
-    /**
-     * filters valid tinymce options
-     *
-     * @param string $propertyname property name
-     * @return boolean TRUE if is a valid tinymce option
-     */
-    private function isValidTinymceOption(string $propertyname): bool
-    {
-        // could be used to filter elements
-        return true;
     }
 }

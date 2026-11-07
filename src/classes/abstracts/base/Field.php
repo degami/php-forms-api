@@ -14,6 +14,7 @@
 
 namespace Degami\PHPFormsApi\Abstracts\Base;
 
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Interfaces\FieldInterface;
 use Degami\PHPFormsApi\Traits\Tools;
 use Degami\PHPFormsApi\Accessories\OrderedFunctions;
@@ -37,141 +38,141 @@ abstract class Field extends Element implements FieldInterface
      *
      * @var array|OrderedFunctions
      */
-    protected $validate = [];
+    protected OrderedFunctions|array $validate = [];
 
     /**
      * preprocess functions list
      *
      * @var array|OrderedFunctions
      */
-    protected $preprocess = [];
+    protected OrderedFunctions|array $preprocess = [];
 
     /**
      * postprocess functions list
      *
      * @var array|OrderedFunctions
      */
-    protected $postprocess = [];
+    protected OrderedFunctions|array $postprocess = [];
 
     /**
      * Element js events list
      *
      * @var array|OrderedFunctions
      */
-    protected $event = [];
+    protected OrderedFunctions|array $event = [];
 
     /**
      * Element size
      *
      * @var integer
      */
-    protected $size = 20;
+    protected int $size = 20;
 
     /**
      * Element type
      *
      * @var string
      */
-    protected $type = '';
+    protected string $type = '';
 
     /**
      * "stop on first validation error" flag
      *
      * @var boolean
      */
-    protected $stop_on_first_error = false;
+    protected bool $stop_on_first_error = false;
 
     /**
      * "show tooltip instead of label" flag
      *
      * @var boolean
      */
-    protected $tooltip = false;
+    protected bool $tooltip = false;
 
     /**
      * Element id
      *
-     * @var null
+     * @var string|null
      */
-    protected $id = null;
+    protected ?string $id = null;
 
     /**
      * Element title
      *
-     * @var null
+     * @var string|null
      */
-    protected $title = null;
+    protected ?string $title = null;
 
     /**
      * Element title prefix
      *
-     * @var null
+     * @var string|null
      */
-    protected $title_prefix = null;
+    protected ?string $title_prefix = null;
 
     /**
      * Element title suffix
      *
-     * @var null
+     * @var string|null
      */
-    protected $title_suffix = null;
+    protected ?string $title_suffix = null;
 
 
     /**
      * Element description
      *
-     * @var null
+     * @var string|null
      */
-    protected $description = null;
+    protected ?string $description = null;
 
     /**
      * Element disabled
      *
      * @var boolean
      */
-    protected $disabled = false;
+    protected bool $disabled = false;
 
     /**
      * Element default value
      *
-     * @var null
+     * @var mixed
      */
-    protected $default_value = null;
+    protected mixed $default_value = null;
 
     /**
      * Element value
      *
-     * @var null
+     * @var mixed
      */
-    protected $value = null;
+    protected mixed $value = null;
 
     /**
      * "element already pre-rendered" flag
      *
      * @var boolean
      */
-    protected $pre_rendered = false;
+    protected bool $pre_rendered = false;
 
     /**
      * "this is a required field" position
      *
      * @var string
      */
-    protected $required_position = 'after';
+    protected string $required_position = 'after';
 
     /**
      * Element ajax url
      *
-     * @var null
+     * @var string|null
      */
-    protected $ajax_url = null;
+    protected ?string $ajax_url = null;
 
     /**
      * Session Bag Object
      *
-     * @var SessionBag
+     * @var SessionBag|null
      */
-    private $session_bag = null;
+    private ?SessionBag $session_bag = null;
 
     /**
      * Class constructor
@@ -179,7 +180,7 @@ abstract class Field extends Element implements FieldInterface
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct($options = [], ?string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
 
@@ -243,7 +244,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return mixed field value
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         return ($this->getValue() != null) ? $this->getValue() : $this->getDefaultValue();
     }
@@ -253,7 +254,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return mixed field value
      */
-    public function getValue()
+    public function getValue() : mixed
     {
         return $this->value;
     }
@@ -264,7 +265,7 @@ abstract class Field extends Element implements FieldInterface
      * @param  mixed $value value to set
      * @return Field
      */
-    public function setValue($value)
+    public function setValue(mixed $value)
     {
         $this->value = $value;
 
@@ -276,7 +277,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return mixed default value
      */
-    public function getDefaultValue()
+    public function getDefaultValue() : mixed
     {
         return $this->default_value;
     }
@@ -287,7 +288,7 @@ abstract class Field extends Element implements FieldInterface
      * @param  mixed $default_value default value
      * @return Field
      */
-    public function setDefaultValue($default_value)
+    public function setDefaultValue(mixed $default_value)
     {
         $this->default_value = $default_value;
 
@@ -313,7 +314,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string field type
      */
-    public function getType()
+    public function getType() : string
     {
         return $this->type;
     }
@@ -323,7 +324,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return OrderedFunctions field validate
      */
-    public function getValidate()
+    public function getValidate() : OrderedFunctions
     {
         return $this->validate;
     }
@@ -333,7 +334,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return OrderedFunctions field preprocess
      */
-    public function getPreprocess()
+    public function getPreprocess() : OrderedFunctions
     {
         return $this->preprocess;
     }
@@ -343,7 +344,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return OrderedFunctions field postprocess
      */
-    public function getPostprocess()
+    public function getPostprocess() : OrderedFunctions
     {
         return $this->postprocess;
     }
@@ -353,7 +354,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string field id
      */
-    public function getId()
+    public function getId() : string
     {
         return $this->id;
     }
@@ -364,7 +365,7 @@ abstract class Field extends Element implements FieldInterface
      * @param  string $id field id
      * @return Field
      */
-    public function setId($id)
+    public function setId(string $id) : Field
     {
         $this->id = $id;
         return $this;
@@ -375,7 +376,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string the html id attributes
      */
-    public function getHtmlId()
+    public function getHtmlId() : string
     {
         return preg_replace("/\[(.*?)\]/i", "_\\1", strtolower(!empty($this->id) ? $this->getId() : $this->getName()));
     }
@@ -385,7 +386,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string css class name
      */
-    public function getElementClassName()
+    public function getElementClassName() : string
     {
         return strtolower(substr(get_class($this), strrpos(get_class($this), '\\') + 1));
     }
@@ -395,7 +396,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string field ajax url
      */
-    public function getAjaxUrl()
+    public function getAjaxUrl() : string
     {
         return $this->ajax_url;
     }
@@ -404,8 +405,9 @@ abstract class Field extends Element implements FieldInterface
      * Process (set) the field value
      *
      * @param mixed $value value to set
+     * @return void
      */
-    public function processValue($value)
+    public function processValue($value) : void
     {
         $this->setValue($value);
     }
@@ -414,8 +416,10 @@ abstract class Field extends Element implements FieldInterface
      * execute the preprocess ( or postprocess ) list of functions
      *
      * @param string $process_type which list to process
+     * 
+     * @return void
      */
-    public function preProcess($process_type = "preprocess")
+    public function preProcess(string $process_type = "preprocess") : void
     {
         foreach ($this->{$process_type} as $processor) {
             $processor_func = "process".ucfirst($processor);
@@ -432,8 +436,10 @@ abstract class Field extends Element implements FieldInterface
 
     /**
      * postprocess field
+     * 
+     * @return void
      */
-    public function postProcess()
+    public function postProcess() : void
     {
         $this->preProcess("postprocess");
     }
@@ -517,8 +523,10 @@ abstract class Field extends Element implements FieldInterface
      * Pre render. this function will be overloaded by subclasses where needed
      *
      * @param Form $form form object
+     * 
+     * @return void
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         $this->pre_rendered = true;
         // should not return value, just change element/form state
@@ -531,7 +539,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string        the field html
      */
-    public function renderHTML(Form $form): string
+    public function renderHTML(Form $form): TagElement|string
     {
         $id = $this->getHtmlId();
         $output = '';
@@ -621,7 +629,7 @@ abstract class Field extends Element implements FieldInterface
      *
      * @return string         javascript code
      */
-    public function generateEventJs($event, Form $form)
+    public function generateEventJs(array $event, Form $form) : string
     {
         $id = $this->getHtmlId();
         if (empty($event['event'])) {

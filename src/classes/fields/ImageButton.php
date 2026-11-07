@@ -29,14 +29,14 @@ class ImageButton extends Clickable
      *
      * @var string
      */
-    protected $src;
+    protected string $src;
 
     /**
      * image alternate
      *
      * @var string
      */
-    protected $alt;
+    protected string $alt;
 
     /**
      * Class constructor
@@ -61,7 +61,7 @@ class ImageButton extends Clickable
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         if ($this->disabled == true) {

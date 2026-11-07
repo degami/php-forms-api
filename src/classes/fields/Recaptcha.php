@@ -15,6 +15,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\Basics\Html\BaseElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Fields\Captcha;
 
@@ -29,14 +30,14 @@ class Recaptcha extends Captcha
      *
      * @var string
      */
-    protected $publickey = '';
+    protected string $publickey = '';
 
     /**
      * private key
      *
      * @var string
      */
-    protected $privatekey = '';
+    protected string $privatekey = '';
 
 
     /**
@@ -44,9 +45,9 @@ class Recaptcha extends Captcha
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         if (!function_exists('recaptcha_get_html')) {
             return '';
@@ -103,7 +104,7 @@ class Recaptcha extends Captcha
      *
      * @param array $request request array
      */
-    public function alterRequest(array &$request)
+    public function alterRequest(array &$request) : void
     {
         foreach ($request as $key => $val) {
             //RECAPTCHA HANDLE

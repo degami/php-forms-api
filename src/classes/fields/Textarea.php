@@ -28,35 +28,35 @@ class Textarea extends Field
      *
      * @var integer
      */
-    protected $maxlength = null;
+    protected ?int $maxlength = null;
 
     /**
      * Element minlength
      *
      * @var integer
      */
-    protected $minlength = null;
+    protected ?int $minlength = null;
     
     /**
      * rows
      *
      * @var integer
      */
-    protected $rows = 5;
+    protected ?int $rows = 5;
 
     /**
      * resizable flag
      *
      * @var boolean
      */
-    protected $resizable = false;
+    protected bool $resizable = false;
 
     /**
      * {@inheritdoc}
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -72,9 +72,9 @@ class Textarea extends Field
      * {@inheritdoc}
      *
      * @param Form $form form object
-     * @return string        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

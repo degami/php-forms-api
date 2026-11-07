@@ -22,11 +22,11 @@ use Degami\Basics\DataBag;
 class OrderedFunctions extends DataBag
 {
 
-    /** @var null|string sort function name */
+    /** @var null|callable sort function name */
     private $sort_callback = null;
 
     /** @var string type */
-    private $type;
+    private string $type;
 
     /** @var array|null */
     protected array $dataelement_data = [];
@@ -38,7 +38,7 @@ class OrderedFunctions extends DataBag
      * @param string $type type of elements
      * @param callable $sort_callback sort callback name
      */
-    public function __construct(array $array, string $type, $sort_callback = null)
+    public function __construct(array $array, string $type, callable|array|null $sort_callback = null)
     {
         parent::__construct($array);
         $this->type = $type;
@@ -49,7 +49,7 @@ class OrderedFunctions extends DataBag
     /**
      * sort elements
      */
-    public function sort()
+    public function sort() : void
     {
         foreach ($this->dataelement_data as &$value) {
             if (is_string($value)) {
@@ -81,7 +81,7 @@ class OrderedFunctions extends DataBag
      * @param  mixed $value value to search
      * @return bool       TRUE if $value was found
      */
-    public function hasValue($value): bool
+    public function hasValue(mixed $value): bool
     {
         return in_array($value, $this->getValues());
     }
@@ -121,7 +121,7 @@ class OrderedFunctions extends DataBag
      * @param mixed $value element to add
      * @return self
      */
-    public function addElement($value): OrderedFunctions
+    public function addElement(mixed $value): OrderedFunctions
     {
         $this->dataelement_data[] = $value;
         $this->sort();
@@ -135,7 +135,7 @@ class OrderedFunctions extends DataBag
      * @param mixed $value element to remove
      * @return self
      */
-    public function removeElement($value): OrderedFunctions
+    public function removeElement(mixed $value): OrderedFunctions
     {
         $this->dataelement_data = array_diff($this->dataelement_data, [$value]);
         $this->sort();

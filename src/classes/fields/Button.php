@@ -52,7 +52,7 @@ class Button extends Clickable
      *
      * @return string        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         if ($this->disabled == true) {

@@ -39,7 +39,7 @@ class FormBuilder
      *
      * @return SessionBag
      */
-    public static function getSessionBag($refresh = false): SessionBag
+    public static function getSessionBag(bool $refresh = false): SessionBag
     {
         /** @var SessionBag */
         static $session_bag = null;
@@ -55,7 +55,7 @@ class FormBuilder
      * @param  string|callable $function_name the function name
      * @return string                   the form_id
      */
-    public static function getFormId($function_name): string
+    public static function getFormId(string|callable $function_name): string
     {
         if (is_string($function_name)) {
             return $function_name;
@@ -72,7 +72,7 @@ class FormBuilder
      * @param  string|callable $function_name callable element
      * @return string                 the function name
      */
-    public static function getDefinitionFunctionName($function_name): ?string
+    public static function getDefinitionFunctionName(string|callable $function_name): ?string
     {
         return static::getCallablaStringName($function_name);
     }
@@ -83,7 +83,7 @@ class FormBuilder
      * @param  string|callable $function_name callable element
      * @return string                 the function name
      */
-    public static function getCallablaStringName($function_name): ?string
+    public static function getCallablaStringName(string|callable $function_name): ?string
     {
         if (is_string($function_name)) {
             return $function_name;
@@ -112,7 +112,7 @@ class FormBuilder
      * @return Form             a new form object
      * @throws FormException
      */
-    public static function buildForm($callable, array &$form_state, $form_options = []): Form
+    public static function buildForm(string|callable $callable, array &$form_state, array $form_options = []): Form
     {
         $before = memory_get_usage();
 
@@ -126,7 +126,8 @@ class FormBuilder
             [
             'form_id' => $form_id,
             'definition_function' => $function_name,
-            ] + $form_options
+            ] + $form_options,
+            $form_id
         );
 
         $form_state += FormBuilder::getRequestValues($form_id);
@@ -170,7 +171,7 @@ class FormBuilder
      * @return Form a new form object
      * @throws FormException
      */
-    public static function getForm($callable, $form_id = null): Form
+    public static function getForm(string|callable $callable, ?string $form_id = null): Form
     {
         $form_state = [];
         $args = func_get_args();
@@ -196,7 +197,7 @@ class FormBuilder
      * @return string          form html
      * @throws FormException
      */
-    public static function renderForm($callable, $form_id = null): string
+    public static function renderForm(string|callable $callable, ?string $form_id = null): string
     {
         $form = FormBuilder::getForm($callable, $form_id);
         return $form->renderHTML();
@@ -233,7 +234,7 @@ class FormBuilder
      * @param  string|null $element_name element name
      * @return array                      form field info
      */
-    public static function guessFormType($value, ?string $element_name = null): array
+    public static function guessFormType(mixed $value, ?string $element_name = null): array
     {
         $default_value = $value;
         $vtype = gettype($default_value);

@@ -15,6 +15,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\Basics\Html\BaseElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
@@ -29,35 +30,35 @@ class Plupload extends Field
      *
      * @var array
      */
-    protected $filters = [];
+    protected array $filters = [];
 
     /**
      * upload.php url
      *
      * @var string
      */
-    protected $url     = ''; // url upload.php
+    protected string $url     = ''; // url upload.php
 
     /**
      * Moxie.swf url
      *
      * @var string
      */
-    protected $swf_url = ''; // url Moxie.swf
+    protected string $swf_url = ''; // url Moxie.swf
 
     /**
      * Moxie.xap url
      *
      * @var string
      */
-    protected $xap_url = ''; // url Moxie.xap
+    protected string $xap_url = ''; // url Moxie.xap
 
     /**
      * {@inheritdoc}
      *
      * @param mixed $value value to set
      */
-    public function processValue($value)
+    public function processValue($value) : void
     {
         $this->value = json_decode($value);
     }
@@ -67,7 +68,7 @@ class Plupload extends Field
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -194,9 +195,9 @@ class Plupload extends Field
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

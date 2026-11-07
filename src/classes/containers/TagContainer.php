@@ -30,7 +30,7 @@ class TagContainer extends FieldsContainer
      *
      * @var string
      */
-    protected $tag = 'div';
+    protected string $tag = 'div';
 
     /**
      * Class constructor
@@ -38,7 +38,7 @@ class TagContainer extends FieldsContainer
      * @param array  $options build options
      * @param string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], $name = null)
     {
         parent::__construct($options, $name);
 
@@ -54,7 +54,7 @@ class TagContainer extends FieldsContainer
      *
      * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

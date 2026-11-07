@@ -43,7 +43,7 @@ class Hidden extends Field
      *
      * @return string        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

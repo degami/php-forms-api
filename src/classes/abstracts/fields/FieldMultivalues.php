@@ -31,16 +31,17 @@ abstract class FieldMultivalues extends Field
      *
      * @var array
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
      * Adds an option to options array
      *
      * @param mixed $option option
      */
-    public function addOption($option)
+    public function addOption(mixed $option) : Field
     {
         $this->options[] = $option;
+        return $this;
     }
 
     /**
@@ -60,7 +61,7 @@ abstract class FieldMultivalues extends Field
      * @param array $haystack where to find it
      * @return boolean           TRUE if element is found
      */
-    public static function hasKey($needle, array $haystack): bool
+    public static function hasKey(mixed $needle, array $haystack): bool
     {
         foreach ($haystack as $key => $value) {
             if ($value instanceof Option) {
@@ -86,7 +87,7 @@ abstract class FieldMultivalues extends Field
      * @param  mixed $needle element to find
      * @return boolean TRUE if element is found
      */
-    public function optionsHasKey($needle): bool
+    public function optionsHasKey(mixed $needle): bool
     {
         return FieldMultivalues::hasKey($needle, $this->options);
     }

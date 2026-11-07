@@ -29,7 +29,7 @@ class Gmaplocation extends Geolocation
      *
      * @var Button
      */
-    protected $current_location_btn;
+    protected Button $current_location_btn;
 
 
     /**
@@ -37,35 +37,35 @@ class Gmaplocation extends Geolocation
      *
      * @var integer
      */
-    protected $zoom = 8;
+    protected int $zoom = 8;
 
     /**
      * scrollwheel
      *
      * @var boolean
      */
-    protected $scrollwheel = false;
+    protected bool $scrollwheel = false;
 
     /**
      * map width
      *
      * @var string
      */
-    protected $mapwidth = '100%';
+    protected string $mapwidth = '100%';
 
     /**
      * map height
      *
      * @var string
      */
-    protected $mapheight = '500px';
+    protected string $mapheight = '500px';
 
     /**
      * marker title
      *
      * @var null
      */
-    protected $markertitle = null;
+    protected ?string $markertitle = null;
 
     /**
      * map type - one of:
@@ -76,56 +76,56 @@ class Gmaplocation extends Geolocation
      *
      * @var string
      */
-    protected $maptype = 'google.maps.MapTypeId.ROADMAP';
+    protected string $maptype = 'google.maps.MapTypeId.ROADMAP';
 
     /**
      * enable geocode box
      *
      * @var boolean
      */
-    protected $with_geocode = false;
+    protected bool $with_geocode = false;
 
     /**
      * enable current location button
      *
      * @var boolean
      */
-    protected $with_current_location = false;
+    protected bool $with_current_location = false;
 
     /**
      * input type where latitude and longitude are stored (hidden / textfield)
      *
      * @var string
      */
-    protected $lat_lon_type = 'hidden';
+    protected string $lat_lon_type = 'hidden';
 
     /**
      * textfield subelement for geocode box
      *
-     * @var null
+     * @var Textfield|null
      */
-    protected $geocode_box = null;
+    protected ?Textfield $geocode_box = null;
 
     /**
      * textarea subelement for reverse geocoding informations
      *
-     * @var null
+     * @var Textarea|null
      */
-    protected $reverse_geocode_box = null;
+    protected ?Textarea $reverse_geocode_box = null;
 
     /**
      * "show map" flag
      *
      * @var boolean
      */
-    protected $with_map = true;
+    protected bool $with_map = true;
 
     /**
      * enable reverse geocoding information box
      *
      * @var boolean
      */
-    protected $with_reverse = false;
+    protected bool $with_reverse = false;
 
     /**
      * Class constructor
@@ -213,7 +213,7 @@ class Gmaplocation extends Geolocation
      *
      * @param string $process_type preprocess type
      */
-    public function preProcess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess") : void
     {
         parent::preprocess($process_type);
         if ($this->with_geocode == true) {
@@ -230,7 +230,7 @@ class Gmaplocation extends Geolocation
      *
      * @param array $values value to set
      */
-    public function processValue($values)
+    public function processValue($values) : void
     {
         parent::processValue($values);
 
@@ -247,7 +247,7 @@ class Gmaplocation extends Geolocation
      *
      * @return mixed field value
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         $out = parent::getValues();
         if ($this->with_geocode == true) {
@@ -264,7 +264,7 @@ class Gmaplocation extends Geolocation
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -437,7 +437,7 @@ class Gmaplocation extends Geolocation
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         $this->tag = 'div';

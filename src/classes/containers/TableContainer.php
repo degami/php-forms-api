@@ -31,28 +31,28 @@ class TableContainer extends FieldsContainerMultiple
      *
      * @var array
      */
-    protected $table_header = [];
+    protected array $table_header = [];
 
     /**
      * attributes for TRs or TDs
      *
      * @var array
      */
-    protected $col_row_attributes = [];
+    protected array $col_row_attributes = [];
 
     /**
      * table header attributes
      *
      * @var array
      */
-    protected $thead_attributes = [];
+    protected array $thead_attributes = [];
 
     /**
      * table body attributes
      *
      * @var array
      */
-    protected $tbody_attributes = [];
+    protected array $tbody_attributes = [];
 
 
     /**
@@ -126,7 +126,7 @@ class TableContainer extends FieldsContainerMultiple
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -143,7 +143,7 @@ class TableContainer extends FieldsContainerMultiple
      * @return string        the element html
      * @throws FormException
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

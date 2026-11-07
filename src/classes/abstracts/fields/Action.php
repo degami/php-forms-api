@@ -30,14 +30,14 @@ abstract class Action extends Field
      *
      * @var boolean
      */
-    protected $js_button = false;
+    protected bool $js_button = false;
 
     /**
      * {@inheritdoc}
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;

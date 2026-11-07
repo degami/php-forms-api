@@ -27,16 +27,16 @@ class Geolocation extends ComposedField
     /**
      * latitude
      *
-     * @var float
+     * @var Textfield
      */
-    protected $latitude;
+    protected Textfield|Hidden $latitude;
 
     /**
      * longitude
      *
-     * @var float
+     * @var Textfield
      */
-    protected $longitude;
+    protected Textfield|Hidden $longitude;
 
     /**
      * Class constructor
@@ -75,7 +75,7 @@ class Geolocation extends ComposedField
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -91,7 +91,7 @@ class Geolocation extends ComposedField
      *
      * @param string $process_type preprocess type
      */
-    public function preProcess($process_type = "preprocess")
+    public function preProcess($process_type = "preprocess") : void
     {
         $this->latitude->preProcess($process_type);
         $this->longitude->preProcess($process_type);
@@ -102,7 +102,7 @@ class Geolocation extends ComposedField
      *
      * @param mixed $values value to set
      */
-    public function processValue($values)
+    public function processValue($values) : void
     {
         $this->processSubfieldsValues($values, $this->latitude, 'latitude');
         $this->processSubfieldsValues($values, $this->longitude, 'longitude');
@@ -147,7 +147,7 @@ class Geolocation extends ComposedField
      *
      * @return mixed field value
      */
-    public function getValues()
+    public function getValues() : mixed
     {
         return [
             'latitude'=> $this->latitude->getValues(),

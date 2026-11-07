@@ -30,21 +30,21 @@ class File extends Field
      *
      * @var boolean
      */
-    protected $uploaded = false;
+    protected bool $uploaded = false;
 
     /**
      * file destination directory
      *
      * @var string
      */
-    protected $destination;
+    protected string $destination;
 
     /**
      * rename destination file if it already exists
      * 
      * @var boolean
      */
-    protected $rename_on_existing = false;
+    protected bool $rename_on_existing = false;
 
     /**
      * {@inheritdoc}
@@ -53,7 +53,7 @@ class File extends Field
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 
@@ -94,7 +94,7 @@ class File extends Field
      *
      * @param mixed $value value to set
      */
-    public function processValue($value)
+    public function processValue($value) : void
     {
         if (($requestValue = static::traverseArray($this->convertFilesArray(), $this->getName())) != null) {
             $this->value = [

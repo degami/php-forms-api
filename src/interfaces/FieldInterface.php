@@ -37,23 +37,23 @@ interface FieldInterface
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form);
+    public function preRender(Form $form) : void; // pre-render hook
 
     /**
      * The function that actually renders the html field
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement the field html
+     * @return string|TagElement the field html
      */
-    public function renderField(Form $form); // renders html
+    public function renderField(Form $form) : TagElement|string; // renders html
 
     /**
      * Process / set field value
      *
      * @param mixed $value value to set
      */
-    public function processValue($value);
+    public function processValue(mixed $value) : void; // process / set value
 
     /**
      * Check element validity
@@ -67,7 +67,7 @@ interface FieldInterface
      *
      * @return mixed form values
      */
-    public function getValues();
+    public function getValues() : mixed;
 
     /**
      * which element should return the add_field() function

@@ -27,13 +27,13 @@ class Accordion extends FieldsContainerMultiple
 {
 
     /** @var string height style */
-    protected $height_style = 'auto';
+    protected string $height_style = 'auto';
 
     /** @var integer active tab */
-    protected $active = '0';
+    protected int $active = 0;
 
     /** @var boolean collapsible */
-    protected $collapsible = false;
+    protected bool $collapsible = false;
 
 
     /**
@@ -41,7 +41,7 @@ class Accordion extends FieldsContainerMultiple
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -66,7 +66,7 @@ class Accordion extends FieldsContainerMultiple
      *
      * @return string        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
         $tag = new TagElement([

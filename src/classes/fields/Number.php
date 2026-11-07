@@ -29,21 +29,21 @@ class Number extends Field
      *
      * @var null
      */
-    protected $min = null;
+    protected int|float|null $min = null;
 
     /**
      * maximum value
      *
      * @var null
      */
-    protected $max = null;
+    protected int|float|null $max = null;
 
     /**
      * step value
      *
      * @var integer
      */
-    protected $step = 1;
+    protected int|float $step = 1;
 
     /**
      * Class constructor
@@ -51,7 +51,7 @@ class Number extends Field
      * @param array  $options build options
      * @param string $name    field name
      */
-    public function __construct($options = [], $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
 
@@ -63,9 +63,9 @@ class Number extends Field
      * {@inheritdoc}
      *
      * @param Form $form form object
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

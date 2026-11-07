@@ -31,7 +31,7 @@ class Tabs extends FieldsContainerMultiple
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -49,7 +49,7 @@ class Tabs extends FieldsContainerMultiple
      *
      * @return string        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

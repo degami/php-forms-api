@@ -67,7 +67,7 @@ abstract class ComposedField extends TagContainer
      * @param Field $subfield
      * @param string $subfieldName
      */
-    protected function processSubfieldsValues(array $values, Field $subfield, string $subfieldName)
+    protected function processSubfieldsValues(array $values, Field $subfield, string $subfieldName) : void
     {
         $subfield->processValue(static::traverseArray($values, $this->getSubfieldName($subfieldName)));
     }
@@ -79,7 +79,7 @@ abstract class ComposedField extends TagContainer
      *
      * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

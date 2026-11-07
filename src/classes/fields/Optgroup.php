@@ -30,7 +30,7 @@ class Optgroup extends Optionable
      *
      * @var array
      */
-    protected $options;
+    protected array $options;
 
     /**
      * Class constructor

@@ -30,21 +30,21 @@ class Progressbar extends Markup
      *
      * @var boolean
      */
-    protected $indeterminate = false;
+    protected bool $indeterminate = false;
 
     /**
      * "show label" flag
      *
      * @var boolean
      */
-    protected $show_label = false;
+    protected bool $show_label = false;
 
     /**
      * {@inheritdoc}
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -71,9 +71,9 @@ class Progressbar extends Markup
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

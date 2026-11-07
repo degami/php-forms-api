@@ -28,7 +28,7 @@ trait Tools
      * @param array $array array to check
      * @return mixed|bool          found element / FALSE on failure
      */
-    private static function scanArray(string $string, array $array)
+    private static function scanArray(string $string, array $array) : mixed
     {
         list($key, $rest) = preg_split('/[[\]]/', $string, 2, PREG_SPLIT_NO_EMPTY);
         if ($key && $rest) {
@@ -178,7 +178,7 @@ trait Tools
      * @param string $regexp regular Expression to find function
      * @param mixed $args arguments array
      */
-    public static function executeAlter(string $regexp, $args)
+    public static function executeAlter(string $regexp, $args) : void
     {
         $defined_functions = get_defined_functions();
         if (!is_array($args)) {

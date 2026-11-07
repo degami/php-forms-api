@@ -15,8 +15,8 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\Basics\Html\BaseElement;
+use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
-use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\PHPFormsApi\Exceptions\FormException;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Containers\SortableContainer;
@@ -33,10 +33,10 @@ class Sortable extends SortableContainer
      * {@inheritdoc}
      *
      * @param  string $name  field name
-     * @param  mixed  $field field to add, can be an array or a field subclass
+     * @param  Element|array  $field field to add, can be an array or a field subclass
      * @throws FormException
      */
-    public function addField(string $name, $field) : Field
+    public function addField(string $name, Element|array $field, mixed ...$args) : Element
     {
         //force every field to have its own tab.
         $this->deltas[$name] = count($this->getFields());
@@ -47,8 +47,11 @@ class Sortable extends SortableContainer
      * {@inheritdoc}
      *
      * @param string $name field name
+     * @param mixed ...$args additional arguments - remove field from partition if partition index is passed
+     * 
+     * @return Element
      */
-    public function removeField(string $name) : FieldsContainer
+    public function removeField(string $name, mixed ...$args) : Element
     {
         parent::removeField($name, $this->deltas['name']);
         unset($this->deltas[$name]);
@@ -60,7 +63,7 @@ class Sortable extends SortableContainer
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -87,7 +90,7 @@ class Sortable extends SortableContainer
      *
      * @return string|BaseElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

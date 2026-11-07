@@ -15,6 +15,7 @@
 namespace Degami\PHPFormsApi\Fields;
 
 use Degami\Basics\Html\BaseElement;
+use Degami\Basics\Html\TagElement;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\Field;
 
@@ -46,9 +47,9 @@ class Value extends Field
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        an empty string
+     * @return string|TagElement        an empty string
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         return '';
     }

@@ -30,15 +30,35 @@ class Otp extends Textfield
     public const TYPE_ALPHA = 'alpha';
     public const TYPE_ALPHA_NUMERIC = 'alpha_numeric';
 
-    protected $otp_length = 6;
+    /**
+     * otp length
+     * 
+     * @var int
+     */
+    protected int $otp_length = 6;
 
-    protected $otp_type = self::TYPE_NUMERIC;
+    /**
+     * otp type
+     * 
+     * @var string
+     */
+    protected string $otp_type = self::TYPE_NUMERIC;
 
-    protected $show_characters = false;
+    /**
+     * show characters
+     * 
+     * @var bool
+     */
+    protected bool $show_characters = false;
 
-    protected $show_hide = false;
+    /**
+     * show hide
+     * 
+     * @var bool
+     */
+    protected bool $show_hide = false;
 
-    public function __construct($options = [], ?string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
 
@@ -59,7 +79,7 @@ class Otp extends Textfield
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         if ($this->pre_rendered == true) {
             return;
@@ -99,9 +119,9 @@ class Otp extends Textfield
      *
      * @param Form $form form object
      *
-     * @return string|BaseElement        the element html
+     * @return string|TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

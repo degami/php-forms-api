@@ -29,7 +29,7 @@ abstract class Clickable extends Action
      *
      * @var boolean
      */
-    protected $clicked = false;
+    protected bool $clicked = false;
 
     /**
      * Class constructor
@@ -37,7 +37,7 @@ abstract class Clickable extends Action
      * @param array  $options build options
      * @param ?string $name    field name
      */
-    public function __construct($options = [], ?string $name = null)
+    public function __construct(array $options = [], ?string $name = null)
     {
         parent::__construct($options, $name);
         if (isset($options['value'])) {
@@ -61,7 +61,7 @@ abstract class Clickable extends Action
      *
      * @param mixed $value value to set
      */
-    public function processValue($value)
+    public function processValue(mixed $value) : void
     {
         parent::processValue($value);
         $this->clicked = true;

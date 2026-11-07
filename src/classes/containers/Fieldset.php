@@ -15,6 +15,7 @@
 namespace Degami\PHPFormsApi\Containers;
 
 use Degami\PHPFormsApi\Abstracts\Base\Field;
+use Degami\PHPFormsApi\Abstracts\Base\Element;
 use Degami\PHPFormsApi\Form;
 use Degami\PHPFormsApi\Abstracts\Base\FieldsContainer;
 use Degami\Basics\Html\TagElement;
@@ -52,7 +53,7 @@ class Fieldset extends FieldsContainer
      *
      * @param Form $form form object
      */
-    public function preRender(Form $form)
+    public function preRender(Form $form) : void
     {
         static $js_collapsible_added = false;
         if ($this->pre_rendered == true) {
@@ -100,7 +101,7 @@ class Fieldset extends FieldsContainer
      *
      * @return TagElement        the element html
      */
-    public function renderField(Form $form)
+    public function renderField(Form $form) : TagElement|string
     {
         $id = $this->getHtmlId();
 

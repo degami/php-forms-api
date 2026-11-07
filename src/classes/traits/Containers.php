@@ -31,14 +31,14 @@ trait Containers
      *
      * @var array
      */
-    protected $insert_field_order = [];
+    protected array $insert_field_order = [];
 
     /**
      * Element fields
      *
      * @var array
      */
-    protected $fields = [];
+    protected array $fields = [];
 
     /**
      * Get the fields array by reference
