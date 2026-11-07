@@ -52,7 +52,7 @@ abstract class Wysiwyg extends Textarea
      * @param array $options array of valid wysiwyg options
      * @return self
      */
-    public function setWysiwygOptions(array $options): Wysiwig
+    public function setWysiwygOptions(array $options): Wysiwyg
     {
         $options = array_filter($options, [$this, 'isValidWysiwygOption']);
         $this->wysiwyg_options = $options;
